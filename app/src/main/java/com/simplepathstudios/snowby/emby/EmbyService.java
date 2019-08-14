@@ -24,6 +24,6 @@ public interface EmbyService {
     @GET("emby/Users/{userId}/Views")
     Call<ItemPage<MediaView>> mediaOverview(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId);
 
-    @GET("http://9914.us:8096/emby/Users/{userId}/Items/Resume")
+    @GET("emby/Users/{userId}/Items/Resume")
     Call<ItemPage<MediaResume>> resumeOverview(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId);
 }

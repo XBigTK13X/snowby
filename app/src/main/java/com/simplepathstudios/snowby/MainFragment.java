@@ -82,6 +82,7 @@ public class MainFragment extends BrowseFragment {
     private Timer mBackgroundTimer;
     private String mBackgroundUri;
     private BackgroundManager mBackgroundManager;
+    private final ArrayObjectAdapter mainAdapter = new ArrayObjectAdapter(new ListRowPresenter());
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -91,6 +92,8 @@ public class MainFragment extends BrowseFragment {
         prepareBackgroundManager();
 
         setupUIElements();
+
+        setAdapter(mainAdapter);
 
         loadRows();
 
@@ -134,67 +137,65 @@ public class MainFragment extends BrowseFragment {
                         emby.mediaOverview(tokenAuthHeader,user.Id).enqueue(new Callback<ItemPage<MediaView>>() {
                             @Override
                             public void onResponse(Call<ItemPage<MediaView>> call, Response<ItemPage<MediaView>> response) {
-                                List<MediaView> overviewList = response.body().Items;
+                                final List<MediaView> overviewList = response.body().Items;
                                 emby.resumeOverview(tokenAuthHeader,user.Id).enqueue(new Callback<ItemPage<MediaResume>>() {
                                     @Override
                                     public void onResponse(Call<ItemPage<MediaResume>> call, Response<ItemPage<MediaResume>> response) {
-                                        List<MediaResume> resumeList = response.body().Items;
-                                        String x = "";
+                                        Log.i(TAG,"Data loaded, refreshing view");
+                                        mainAdapter.clear();
+                                        final List<MediaResume> resumeList = response.body().Items;
+
+                                        CardPresenter cardPresenter = new CardPresenter();
+
+                                        ArrayObjectAdapter mediaOverviewRow = new ArrayObjectAdapter(cardPresenter);
+                                        for(MediaView mediaView: overviewList){
+                                            mediaOverviewRow.add(mediaView);
+                                        }
+                                        HeaderItem mediaOverviewHeader = new HeaderItem(0, "Media");
+                                        mainAdapter.add(new ListRow(mediaOverviewHeader,mediaOverviewRow));
+
+                                        if(resumeList.size() > 0){
+                                            ArrayObjectAdapter resumeRow = new ArrayObjectAdapter(cardPresenter);
+                                            for(MediaResume mediaResume: resumeList){
+                                                resumeRow .add(mediaResume);
+                                            }
+                                            HeaderItem resumeHeader = new HeaderItem(1, "Resume");
+                                            mainAdapter.add(new ListRow(resumeHeader,resumeRow ));
+                                        }
+
+                                        HeaderItem gridHeader = new HeaderItem(2, "Preferences");
+
+                                        GridItemPresenter mGridPresenter = new GridItemPresenter();
+                                        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
+                                        gridRowAdapter.add(getResources().getString(R.string.grid_view));
+                                        gridRowAdapter.add(getString(R.string.error_fragment));
+                                        gridRowAdapter.add(getResources().getString(R.string.personal_settings));
+                                        mainAdapter.add(new ListRow(gridHeader, gridRowAdapter));
                                     }
 
                                     @Override
                                     public void onFailure(Call<ItemPage<MediaResume>> call, Throwable t) {
-                                        Throwable x = t;
+                                        Log.e(TAG,"An error occurred while getting in progress content",t);
                                     }
                                 });
                             }
                             @Override
                             public void onFailure(Call<ItemPage<MediaView>> call, Throwable t) {
-                                Throwable x = t;
+                                Log.e(TAG,"An error occurred while getting media overview",t);
                             }
                         });
                     }
                     @Override
                     public void onFailure(Call<AuthenticatedUser> call, Throwable t) {
-                        Throwable x = t;
+                        Log.e(TAG,"An error occurred while logging in",t);
                     }
                 });
             }
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Throwable x = t;
+                Log.e(TAG,"An error occurred while finding users",t);
             }
         });
-
-
-        List<Movie> list = MovieList.setupMovies();
-
-        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-        CardPresenter cardPresenter = new CardPresenter();
-
-        int i;
-        for (i = 0; i < NUM_ROWS; i++) {
-            if (i != 0) {
-                Collections.shuffle(list);
-            }
-            ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(cardPresenter);
-            for (int j = 0; j < NUM_COLS; j++) {
-                listRowAdapter.add(list.get(j % 5));
-            }
-            HeaderItem header = new HeaderItem(i, MovieList.MOVIE_CATEGORY[i]);
-            rowsAdapter.add(new ListRow(header, listRowAdapter));
-        }
-
-        HeaderItem gridHeader = new HeaderItem(i, "PREFERENCES");
-
-        GridItemPresenter mGridPresenter = new GridItemPresenter();
-        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
-        gridRowAdapter.add(getResources().getString(R.string.grid_view));
-        gridRowAdapter.add(getString(R.string.error_fragment));
-        gridRowAdapter.add(getResources().getString(R.string.personal_settings));
-        rowsAdapter.add(new ListRow(gridHeader, gridRowAdapter));
-
-        setAdapter(rowsAdapter);
     }
 
     private void prepareBackgroundManager() {
