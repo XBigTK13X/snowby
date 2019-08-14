@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.fragment;
 
 import android.os.Bundle;
 
@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 
 import android.util.Log;
 import android.view.View;
+
+import com.simplepathstudios.snowby.R;
 
 /*
  * This class demonstrates how to extend ErrorFragment
@@ -34,7 +36,7 @@ public class ErrorFragment extends androidx.leanback.app.ErrorFragment {
         setTitle(getResources().getString(R.string.app_name));
     }
 
-    void setErrorContent() {
+    public void setErrorContent() {
         setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.lb_ic_sad_cloud));
         setMessage(getResources().getString(R.string.error_fragment_message));
         setDefaultBackground(TRANSLUCENT);

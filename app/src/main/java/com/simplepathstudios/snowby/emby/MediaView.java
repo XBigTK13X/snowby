@@ -23,6 +23,16 @@ public class MediaView extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(){
-        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight=92&maxWidth=164&tag="+ImageTags.get("Primary")+"&quality=100";
+        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight=100&maxWidth=200&tag="+ImageTags.get("Primary")+"&quality=100";
+    }
+
+    @Override
+    public Integer getWidth() {
+        return 400;
+    }
+
+    @Override
+    public Integer getHeight() {
+        return 300;
     }
 }

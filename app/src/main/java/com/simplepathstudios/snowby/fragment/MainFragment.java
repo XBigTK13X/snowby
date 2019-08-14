@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.fragment;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -48,15 +48,22 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.simplepathstudios.snowby.CardPresenter;
+import com.simplepathstudios.snowby.Movie;
+import com.simplepathstudios.snowby.R;
+import com.simplepathstudios.snowby.activity.BrowseErrorActivity;
+import com.simplepathstudios.snowby.activity.DetailsActivity;
+import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
 import com.simplepathstudios.snowby.emby.AuthenticatedUser;
+import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.EmbyService;
 import com.simplepathstudios.snowby.emby.ItemPage;
 import com.simplepathstudios.snowby.emby.Login;
+import com.simplepathstudios.snowby.emby.MediaPreview;
 import com.simplepathstudios.snowby.emby.MediaResume;
 import com.simplepathstudios.snowby.emby.MediaView;
 import com.simplepathstudios.snowby.emby.User;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -73,8 +80,6 @@ public class MainFragment extends BrowseFragment {
     private static final int BACKGROUND_UPDATE_DELAY = 300;
     private static final int GRID_ITEM_WIDTH = 200;
     private static final int GRID_ITEM_HEIGHT = 200;
-    private static final int NUM_ROWS = 6;
-    private static final int NUM_COLS = 15;
 
     private final Handler mHandler = new Handler();
     private Drawable mDefaultBackground;
@@ -110,35 +115,26 @@ public class MainFragment extends BrowseFragment {
     }
 
     private void loadRows() {
-        String serverUrl = "http://9914.us:8096";
-        String deviceId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(serverUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final EmbyService emby = retrofit.create(EmbyService.class);
-
-        final String authHeader = "MediaBrowser Client=\"Snowby\", Device=\"" + android.os.Build.MODEL + "\", DeviceId=\"" + deviceId + "\", Version=\"1.0.0.0\"";
-
-        emby.listUsers().enqueue(new Callback<List<User>>(){
+        emby.api.listUsers().enqueue(new Callback<List<User>>(){
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 final User user = response.body().get(0);
                 Login login = new Login();
                 login.Username = user.Name;
                 login.Pw = "";
-                emby.login(authHeader, login).enqueue(new Callback<AuthenticatedUser>() {
+                emby.setUserId(user.Id);
+                emby.api.login(emby.authHeader, login).enqueue(new Callback<AuthenticatedUser>() {
                     @Override
                     public void onResponse(Call<AuthenticatedUser> call, Response<AuthenticatedUser> response) {
                         AuthenticatedUser authenticatedUser = response.body();
-                        final String tokenAuthHeader = authHeader + ", Token=\"" + authenticatedUser.AccessToken + "\"";
-                        emby.mediaOverview(tokenAuthHeader,user.Id).enqueue(new Callback<ItemPage<MediaView>>() {
+                        emby.setAccessToken(authenticatedUser.AccessToken);
+                        emby.api.mediaOverview(emby.authHeader,user.Id).enqueue(new Callback<ItemPage<MediaView>>() {
                             @Override
                             public void onResponse(Call<ItemPage<MediaView>> call, Response<ItemPage<MediaView>> response) {
                                 final List<MediaView> overviewList = response.body().Items;
-                                emby.resumeOverview(tokenAuthHeader,user.Id).enqueue(new Callback<ItemPage<MediaResume>>() {
+                                emby.api.resumeOverview(emby.authHeader,user.Id).enqueue(new Callback<ItemPage<MediaResume>>() {
                                     @Override
                                     public void onResponse(Call<ItemPage<MediaResume>> call, Response<ItemPage<MediaResume>> response) {
                                         Log.i(TAG,"Data loaded, refreshing view");
@@ -157,20 +153,11 @@ public class MainFragment extends BrowseFragment {
                                         if(resumeList.size() > 0){
                                             ArrayObjectAdapter resumeRow = new ArrayObjectAdapter(cardPresenter);
                                             for(MediaResume mediaResume: resumeList){
-                                                resumeRow .add(mediaResume);
+                                                resumeRow.add(mediaResume);
                                             }
                                             HeaderItem resumeHeader = new HeaderItem(1, "Resume");
                                             mainAdapter.add(new ListRow(resumeHeader,resumeRow ));
                                         }
-
-                                        HeaderItem gridHeader = new HeaderItem(2, "Preferences");
-
-                                        GridItemPresenter mGridPresenter = new GridItemPresenter();
-                                        ArrayObjectAdapter gridRowAdapter = new ArrayObjectAdapter(mGridPresenter);
-                                        gridRowAdapter.add(getResources().getString(R.string.grid_view));
-                                        gridRowAdapter.add(getString(R.string.error_fragment));
-                                        gridRowAdapter.add(getResources().getString(R.string.personal_settings));
-                                        mainAdapter.add(new ListRow(gridHeader, gridRowAdapter));
                                     }
 
                                     @Override
@@ -266,8 +253,21 @@ public class MainFragment extends BrowseFragment {
         @Override
         public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item,
                                   RowPresenter.ViewHolder rowViewHolder, Row row) {
+            if (item instanceof MediaView){
+                MediaView mediaView = (MediaView) item;
+                Log.d(TAG, "MediaPreview: "+mediaView.Name);
+                Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
+                intent.putExtra(MediaLibraryActivity.LIBRARY_ID, mediaView.Id);
 
-            if (item instanceof Movie) {
+                Bundle bundle =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                getActivity(),
+                                ((ImageCardView) itemViewHolder.view).getMainImageView(),
+                                MediaLibraryActivity.SHARED_ELEMENT_NAME)
+                                .toBundle();
+                getActivity().startActivity(intent, bundle);
+            }
+            else if (item instanceof Movie) {
                 Movie movie = (Movie) item;
                 Log.d(TAG, "Item: " + item.toString());
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
@@ -316,29 +316,4 @@ public class MainFragment extends BrowseFragment {
             });
         }
     }
-
-    private class GridItemPresenter extends Presenter {
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent) {
-            TextView view = new TextView(parent.getContext());
-            view.setLayoutParams(new ViewGroup.LayoutParams(GRID_ITEM_WIDTH, GRID_ITEM_HEIGHT));
-            view.setFocusable(true);
-            view.setFocusableInTouchMode(true);
-            view.setBackgroundColor(
-                    ContextCompat.getColor(getContext(), R.color.default_background));
-            view.setTextColor(Color.WHITE);
-            view.setGravity(Gravity.CENTER);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-            ((TextView) viewHolder.view).setText((String) item);
-        }
-
-        @Override
-        public void onUnbindViewHolder(ViewHolder viewHolder) {
-        }
-    }
-
 }

@@ -12,25 +12,27 @@
  * the License.
  */
 
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.activity;
 
+import android.app.Activity;
 import android.os.Bundle;
 
-import androidx.fragment.app.FragmentActivity;
+import com.simplepathstudios.snowby.R;
 
-/**
- * Loads {@link PlaybackVideoFragment}.
+/*
+ * Details activity class that loads LeanbackDetailsFragment class
  */
-public class PlaybackActivity extends FragmentActivity {
+public class DetailsActivity extends Activity {
+    public static final String SHARED_ELEMENT_NAME = "hero";
+    public static final String MOVIE = "Movie";
 
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(android.R.id.content, new PlaybackVideoFragment())
-                    .commit();
-        }
+        setContentView(R.layout.activity_details);
     }
+
 }

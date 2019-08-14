@@ -12,10 +12,12 @@
  * the License.
  */
 
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+
+import com.simplepathstudios.snowby.R;
 
 /*
  * Main Activity class that loads {@link MainFragment}.

@@ -37,4 +37,14 @@ public class MediaResume extends MediaPreview {
         //TODO Support movies as well
         return "http://9914.us:8096/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth=200&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
     }
+
+    @Override
+    public Integer getWidth() {
+        return 300;
+    }
+
+    @Override
+    public Integer getHeight() {
+        return 200;
+    }
 }

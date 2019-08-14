@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -27,10 +27,7 @@ import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewRow;
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter;
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
-import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ImageCardView;
-import androidx.leanback.widget.ListRow;
-import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnActionClickedListener;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
@@ -46,9 +43,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-
-import java.util.Collections;
-import java.util.List;
+import com.simplepathstudios.snowby.DetailsDescriptionPresenter;
+import com.simplepathstudios.snowby.Movie;
+import com.simplepathstudios.snowby.R;
+import com.simplepathstudios.snowby.activity.DetailsActivity;
+import com.simplepathstudios.snowby.activity.MainActivity;
+import com.simplepathstudios.snowby.activity.PlaybackActivity;
+import com.simplepathstudios.snowby.emby.MediaPreview;
+import com.simplepathstudios.snowby.emby.MediaResume;
 
 /*
  * LeanbackDetailsFragment extends DetailsFragment, a Wrapper fragment for leanback details screens.
@@ -87,7 +89,6 @@ public class VideoDetailsFragment extends DetailsFragment {
             mAdapter = new ArrayObjectAdapter(mPresenterSelector);
             setupDetailsOverviewRow();
             setupDetailsOverviewRowPresenter();
-            setupRelatedMovieListRow();
             setAdapter(mAdapter);
             initializeBackground(mSelectedMovie);
             setOnItemViewClickedListener(new ItemViewClickedListener());
@@ -188,21 +189,6 @@ public class VideoDetailsFragment extends DetailsFragment {
         mPresenterSelector.addClassPresenter(DetailsOverviewRow.class, detailsPresenter);
     }
 
-    private void setupRelatedMovieListRow() {
-        String subcategories[] = {getString(R.string.related_movies)};
-        List<Movie> list = MovieList.getList();
-
-        Collections.shuffle(list);
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(new CardPresenter());
-        for (int j = 0; j < NUM_COLS; j++) {
-            listRowAdapter.add(list.get(j % 5));
-        }
-
-        HeaderItem header = new HeaderItem(0, subcategories[0]);
-        mAdapter.add(new ListRow(header, listRowAdapter));
-        mPresenterSelector.addClassPresenter(ListRow.class, new ListRowPresenter());
-    }
-
     private int convertDpToPixel(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
@@ -215,7 +201,6 @@ public class VideoDetailsFragment extends DetailsFragment {
                 Object item,
                 RowPresenter.ViewHolder rowViewHolder,
                 Row row) {
-
             if (item instanceof Movie) {
                 Log.d(TAG, "Item: " + item.toString());
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
