@@ -27,16 +27,20 @@ import androidx.leanback.widget.PlaybackControlsRow;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.google.android.exoplayer2.util.Util;
+import com.simplepathstudios.snowby.SambaHttpStream;
 import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
 import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.Item;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.ExecutionException;
 
@@ -100,27 +104,23 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
     private class LoadVideo extends AsyncTask<String, Void, MediaSource> {
         @Override
         protected MediaSource doInBackground(String... smbPaths) {
+            final String videoPath = smbPaths[0];
             try {
-                SmbFile networkFile = new SmbFile(smbPaths[0]);
-                Uri videoUri = Uri.parse(smbPaths[0]);
+                SmbFile networkFile = new SmbFile(videoPath);
+                SambaHttpStream httpStream = new SambaHttpStream(networkFile);
+                Uri videoUri = httpStream.getUri();
+                Log.d(TAG,"Streaming Uri obtained: "+videoUri);
                 DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(),"snowby"));
                 MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
                 return videoSource;
-/*                    VideoSupportFragmentGlueHost glueHost =
-                            new VideoSupportFragmentGlueHost(PlaybackVideoFragment.this);
+                //FileDataSource fileSource = new FileDataSource();
+                //fileSource.open()
+                //return ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), "ua").createMediaSource(videoPath);
 
-                    MediaPlayerAdapter playerAdapter = new MediaPlayerAdapter(getContext());
-                    playerAdapter.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE);
-
-                    mediaTransportControlGlue = new PlaybackTransportControlGlue<>(getContext(), playerAdapter);
-                    mediaTransportControlGlue.setHost(glueHost);
-                    mediaTransportControlGlue.setTictle(item.getTitle());
-                    mediaTransportControlGlue.setSubtitle(item.getDescription());
-                    mediaTransportControlGlue.playWhenPrepared();
-                    //networkFile.
-                    playerAdapter.setDataSource();*/
             } catch (MalformedURLException e) {
-                Log.e(TAG,"Malformed URL provided for media: "+smbPaths[0],e);
+                Log.e(TAG,"Malformed URL provided for media: "+videoPath,e);
+            } catch (IOException e) {
+                Log.e(TAG,"IOException occurred while accessing media: "+videoPath,e);
             }
             return null;
         }
