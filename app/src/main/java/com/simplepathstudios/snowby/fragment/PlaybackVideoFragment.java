@@ -16,6 +16,7 @@ package com.simplepathstudios.snowby.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.leanback.app.VideoSupportFragment;
 import androidx.leanback.app.VideoSupportFragmentGlueHost;
@@ -23,42 +24,64 @@ import androidx.leanback.media.MediaPlayerAdapter;
 import androidx.leanback.media.PlaybackTransportControlGlue;
 import androidx.leanback.widget.PlaybackControlsRow;
 
-import com.simplepathstudios.snowby.Movie;
-import com.simplepathstudios.snowby.activity.DetailsActivity;
+import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
+import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
+import com.simplepathstudios.snowby.emby.EmbyApiClient;
+import com.simplepathstudios.snowby.emby.Item;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Handles video playback with media controls.
  */
 public class PlaybackVideoFragment extends VideoSupportFragment {
 
-    private PlaybackTransportControlGlue<MediaPlayerAdapter> mTransportControlGlue;
+    private final String TAG = "PlaybackVideoFragment";
+
+    private PlaybackTransportControlGlue<MediaPlayerAdapter> mediaTransportControlGlue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Movie movie =
-                (Movie) getActivity().getIntent().getSerializableExtra(DetailsActivity.MOVIE);
+        final String itemId =
+                (String) getActivity().getIntent().getSerializableExtra(PlaybackVideoActivity.PLAYBACK_TARGET);
 
-        VideoSupportFragmentGlueHost glueHost =
-                new VideoSupportFragmentGlueHost(PlaybackVideoFragment.this);
+        final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
+        emby.api.getItem(emby.authHeader,emby.userId, itemId).enqueue(new Callback<Item>() {
+            @Override
+            public void onResponse(Call<Item> call, Response<Item> response) {
+                Log.i(TAG,"Loaded information for media");
+                final Item item = response.body();
 
-        MediaPlayerAdapter playerAdapter = new MediaPlayerAdapter(getContext());
-        playerAdapter.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE);
+                VideoSupportFragmentGlueHost glueHost =
+                        new VideoSupportFragmentGlueHost(PlaybackVideoFragment.this);
 
-        mTransportControlGlue = new PlaybackTransportControlGlue<>(getContext(), playerAdapter);
-        mTransportControlGlue.setHost(glueHost);
-        mTransportControlGlue.setTitle(movie.getTitle());
-        mTransportControlGlue.setSubtitle(movie.getDescription());
-        mTransportControlGlue.playWhenPrepared();
-        playerAdapter.setDataSource(Uri.parse(movie.getVideoUrl()));
+                MediaPlayerAdapter playerAdapter = new MediaPlayerAdapter(getContext());
+                playerAdapter.setRepeatAction(PlaybackControlsRow.RepeatAction.INDEX_NONE);
+
+                mediaTransportControlGlue = new PlaybackTransportControlGlue<>(getContext(), playerAdapter);
+                mediaTransportControlGlue.setHost(glueHost);
+                mediaTransportControlGlue.setTitle(item.getTitle());
+                mediaTransportControlGlue.setSubtitle(item.getDescription());
+                mediaTransportControlGlue.playWhenPrepared();
+                playerAdapter.setDataSource(Uri.parse(item.getMediaPath()));
+            }
+
+            @Override
+            public void onFailure(Call<Item> call, Throwable t) {
+                Log.e(TAG,"An error occurred while media",t);
+            }
+        });
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (mTransportControlGlue != null) {
-            mTransportControlGlue.pause();
+        if (mediaTransportControlGlue != null) {
+            mediaTransportControlGlue.pause();
         }
     }
 }

@@ -48,9 +48,7 @@ import com.simplepathstudios.snowby.Movie;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.activity.DetailsActivity;
 import com.simplepathstudios.snowby.activity.MainActivity;
-import com.simplepathstudios.snowby.activity.PlaybackActivity;
-import com.simplepathstudios.snowby.emby.MediaPreview;
-import com.simplepathstudios.snowby.emby.MediaResume;
+import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
 
 /*
  * LeanbackDetailsFragment extends DetailsFragment, a Wrapper fragment for leanback details screens.
@@ -178,7 +176,7 @@ public class VideoDetailsFragment extends DetailsFragment {
             @Override
             public void onActionClicked(Action action) {
                 if (action.getId() == ACTION_WATCH_TRAILER) {
-                    Intent intent = new Intent(getActivity(), PlaybackActivity.class);
+                    Intent intent = new Intent(getActivity(), PlaybackVideoActivity.class);
                     intent.putExtra(DetailsActivity.MOVIE, mSelectedMovie);
                     startActivity(intent);
                 } else {

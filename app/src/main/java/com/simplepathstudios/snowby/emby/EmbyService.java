@@ -31,6 +31,6 @@ public interface EmbyService {
     @GET("emby/Users/{userId}/Items/{itemId}")
     Call<Item> getItem(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Path("itemId") String itemId);
 
-    @GET("emby/Users/{userId}/Items")
+    @GET("emby/Users/{userId}/Items?Recursive=true&IncludeItemTypes=Movie")
     Call<ItemPage<Item>> getItems(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Query("ParentId") String parentId);
 }

@@ -23,7 +23,10 @@ import com.simplepathstudios.snowby.fragment.PlaybackVideoFragment;
 /**
  * Loads {@link PlaybackVideoFragment}.
  */
-public class PlaybackActivity extends FragmentActivity {
+public class PlaybackVideoActivity extends FragmentActivity {
+
+    public static final String PLAYBACK_TARGET = "PLAYBACK_TARGET_ID";
+    public static final String SHARED_ELEMENT_NAME = "playback_video";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
