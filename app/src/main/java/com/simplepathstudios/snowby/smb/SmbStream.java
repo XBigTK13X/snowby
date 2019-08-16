@@ -46,14 +46,20 @@ public class SmbStream extends InputStream {
         bufferedStream.skip(offset);
     }
 
+    @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        //Log.d(TAG,"Reading "+len+" bytes at offset "+off);
         readBytes += len;
-        if(readBytes % 1000000 == 0){
-            //Log.d(TAG,"Read a total of "+readBytes+" bytes");
-            //Log.d(TAG, "Latest buffer " + Arrays.toString(b));
+        if(readBytes % 1000 == 0){
+            Log.d(TAG, "Reading "+len+" bytes at offset "+off);
+            Log.d(TAG, "Read a total of "+readBytes+" bytes with available "+bufferedStream.available());
+            Log.d(TAG, "Latest buffer " + Arrays.toString(b));
         }
         return bufferedStream.read(b, off, len);
+    }
+
+    @Override
+    public int read(byte[] b) throws IOException{
+        return read(b,0,b.length);
     }
 
     @Override

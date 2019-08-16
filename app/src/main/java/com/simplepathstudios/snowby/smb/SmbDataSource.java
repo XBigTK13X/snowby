@@ -40,7 +40,6 @@ public class SmbDataSource extends BaseDataSource {
 
     @Override
     public int read(byte[] buffer, int offset, int readLength) throws IOException {
-        //Log.d(TAG,"Reading from data source "+ offset + " - "+readLength);
         return stream.read(buffer,offset,readLength);
     }
 
