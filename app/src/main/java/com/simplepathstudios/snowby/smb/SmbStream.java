@@ -30,20 +30,10 @@ public class SmbStream {
         createBufferedInputStream();
     }
 
-    public long length(){
-        try {
-            Log.d(TAG, "File length is "+file.length()+" bytes");
-            return file.length();
-        } catch (SmbException e) {
-            Log.e(TAG,"Unable to read file length", e);
-            return -1;
-        }
-    }
-
-    public void seek(long offset) throws IOException {
+    public long skip(long offset) throws IOException {
         Log.d(TAG,"Seeking to "+offset);
         createBufferedInputStream();
-        bufferedStream.skip(offset);
+        return bufferedStream.skip(offset);
     }
 
     public int read(byte[] b, int off, int len) throws IOException {
@@ -75,7 +65,10 @@ public class SmbStream {
 
     public long available(){
         try {
-            return bufferedStream.available();
+            long remaining = bufferedStream.available();
+            if(remaining == 0){
+                return file.length() - readBytes;
+            }
         } catch (IOException e) {
             Log.e(TAG,"Unable to read stream length",e);
         }

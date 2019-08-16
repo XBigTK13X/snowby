@@ -44,7 +44,6 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
 
     private final String TAG = "PlaybackVideoFragment";
 
-    private PlaybackTransportControlGlue<MediaPlayerAdapter> mediaTransportControlGlue;
 
     private SimpleExoPlayer player;
 
@@ -63,7 +62,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
                 Log.i(TAG,"Loaded information for media");
                 final Item item = response.body();
                 try {
-                    MediaSource videoSource = new SmbMediaLoad().execute(item.Path).get();
+                    MediaSource mediaSource = new SmbMediaLoad().execute(item.Path).get();
                     player.setPlayWhenReady(true);
                     player.addListener(new Player.EventListener(){
                         @Override
@@ -88,7 +87,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
                             Log.e(TAG,"An exoplayer error occurred",error);
                         }
                     });
-                    player.prepare(videoSource);
+                    player.prepare(mediaSource);
                 } catch (ExecutionException e) {
                     Log.e(TAG,"The media prep thread encountered an execution error",e);
                 } catch (InterruptedException e) {
@@ -101,13 +100,5 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
                 Log.e(TAG,"An error occurred while media was loading",t);
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (mediaTransportControlGlue != null) {
-            mediaTransportControlGlue.pause();
-        }
     }
 }

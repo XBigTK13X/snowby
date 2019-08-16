@@ -1,58 +1,109 @@
+//Modified from https://github.com/google/ExoPlayer/issues/4212#issuecomment-387071600
+
 package com.simplepathstudios.snowby.smb;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.upstream.BaseDataSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.TransferListener;
 
+import java.io.EOFException;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 
 import jcifs.smb.SmbFile;
 
 public class SmbDataSource extends BaseDataSource {
-    private final String TAG = "SmbDataSource";
+    private static final String TAG = "SmbDataSource";
+    private SmbStream inputStream;
+    private long bytesRemaining;
+    private boolean opened;
     private String path;
-    private SmbStream stream;
-    private Uri uri;
 
-    public SmbDataSource(String smbPath){
-        super(false);
-        Log.d(TAG,"Creating data source for "+smbPath);
+    public SmbDataSource(String smbPath) {
+        super(true);
         path = smbPath;
-        uri = Uri.parse(smbPath);
     }
 
     @Override
     public long open(DataSpec dataSpec) throws IOException {
-        Log.d(TAG,"Opening data source " + path);
-        stream = new SmbStream(new SmbFile(path));
-        Log.d(TAG,"Seeking to "+dataSpec.absoluteStreamPosition);
-        stream.seek(dataSpec.absoluteStreamPosition);
-        Log.d(TAG,"Stream length is "+stream.length());
-        return stream.available();
+        try {
+
+            Log.d(TAG,"Opening data source " + path);
+            inputStream = new SmbStream(new SmbFile(path));
+            long skipped = inputStream.skip(dataSpec.position);
+            if (skipped < dataSpec.position)
+                throw new EOFException();
+
+            if (dataSpec.length != C.LENGTH_UNSET) {
+                bytesRemaining = dataSpec.length;
+            } else {
+                bytesRemaining = inputStream.available();
+                if (bytesRemaining == Integer.MAX_VALUE)
+                    bytesRemaining = C.LENGTH_UNSET;
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        opened = true;
+        return bytesRemaining;
     }
 
     @Override
     public int read(byte[] buffer, int offset, int readLength) throws IOException {
-        return stream.read(buffer,offset,readLength);
+        if (readLength == 0) {
+            return 0;
+        } else if (bytesRemaining == 0) {
+            return C.RESULT_END_OF_INPUT;
+        }
+
+        int bytesRead;
+        try {
+            int bytesToRead = bytesRemaining == C.LENGTH_UNSET ? readLength
+                    : (int) Math.min(bytesRemaining, readLength);
+            bytesRead = inputStream.read(buffer, offset, bytesToRead);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+
+        if (bytesRead == -1) {
+            if (bytesRemaining != C.LENGTH_UNSET) {
+                // End of stream reached having not read sufficient data.
+                throw new IOException(new EOFException());
+            }
+            return C.RESULT_END_OF_INPUT;
+        }
+        if (bytesRemaining != C.LENGTH_UNSET) {
+            bytesRemaining -= bytesRead;
+        }
+
+        return bytesRead;
     }
 
-    @Nullable
     @Override
     public Uri getUri() {
-        Log.d(TAG,"Getting uri " + uri);
-        return uri;
+        return Uri.parse(path);
     }
 
     @Override
     public void close() throws IOException {
-        Log.d(TAG,"Closing data source " + path);
-        stream.close();
+        try {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
+        } finally {
+            inputStream = null;
+            if (opened) {
+                opened = false;
+            }
+        }
     }
 }
