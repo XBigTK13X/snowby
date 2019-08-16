@@ -136,7 +136,7 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         Log.i(TAG, "Loaded "+libraryItems.size() + " library items");
 
                         for(Item item: libraryItems){
-                            if(item.Name.contains("Super: Broly")){
+                            if(item.Name.contains("Blazing Saddles")){
                                 adapter.add(item);
                             }
                         }

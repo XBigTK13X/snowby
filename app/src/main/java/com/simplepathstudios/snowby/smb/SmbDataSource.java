@@ -22,7 +22,7 @@ public class SmbDataSource extends BaseDataSource {
     private Uri uri;
 
     public SmbDataSource(String smbPath){
-        super(true);
+        super(false);
         Log.d(TAG,"Creating data source for "+smbPath);
         path = smbPath;
         uri = Uri.parse(smbPath);

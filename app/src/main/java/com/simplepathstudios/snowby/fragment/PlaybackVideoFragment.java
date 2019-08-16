@@ -14,8 +14,6 @@
 
 package com.simplepathstudios.snowby.fragment;
 
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -28,12 +26,10 @@ import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.simplepathstudios.snowby.smb.SmbDataSourceFactory;
 import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.Item;
+import com.simplepathstudios.snowby.smb.SmbMediaLoad;
 
 import java.util.concurrent.ExecutionException;
 
@@ -67,7 +63,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
                 Log.i(TAG,"Loaded information for media");
                 final Item item = response.body();
                 try {
-                    MediaSource videoSource = new LoadVideo().execute(item.Path).get();
+                    MediaSource videoSource = new SmbMediaLoad().execute(item.Path).get();
                     player.setPlayWhenReady(true);
                     player.addListener(new Player.EventListener(){
                         @Override
@@ -112,18 +108,6 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
         super.onPause();
         if (mediaTransportControlGlue != null) {
             mediaTransportControlGlue.pause();
-        }
-    }
-
-    private class LoadVideo extends AsyncTask<String, Void, MediaSource> {
-        @Override
-        protected MediaSource doInBackground(String... smbPaths) {
-            final String videoPath = smbPaths[0];
-            final Uri videoUri = Uri.parse(videoPath);
-            //https://github.com/google/ExoPlayer/issues/5883
-            DataSource.Factory dataSourceFactory = new SmbDataSourceFactory(videoPath);
-            MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(videoUri);
-            return videoSource;
         }
     }
 }
