@@ -49,6 +49,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.simplepathstudios.snowby.CardPresenter;
+import com.simplepathstudios.snowby.MediaCodecs;
 import com.simplepathstudios.snowby.Movie;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.activity.BrowseErrorActivity;
