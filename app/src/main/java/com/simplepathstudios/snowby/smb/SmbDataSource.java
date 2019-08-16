@@ -35,7 +35,7 @@ public class SmbDataSource extends BaseDataSource {
         Log.d(TAG,"Seeking to "+dataSpec.absoluteStreamPosition);
         stream.seek(dataSpec.absoluteStreamPosition);
         Log.d(TAG,"Stream length is "+stream.length());
-        return dataSpec.absoluteStreamPosition;
+        return stream.available();
     }
 
     @Override

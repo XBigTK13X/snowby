@@ -72,4 +72,13 @@ public class SmbStream {
         stream.close();
         file.close();
     }
+
+    public long available(){
+        try {
+            return bufferedStream.available();
+        } catch (IOException e) {
+            Log.e(TAG,"Unable to read stream length",e);
+        }
+        return 0;
+    }
 }
