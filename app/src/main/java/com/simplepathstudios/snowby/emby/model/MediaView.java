@@ -1,5 +1,7 @@
 package com.simplepathstudios.snowby.emby.model;
 
+import com.simplepathstudios.snowby.presenter.CardPresenter;
+
 public class MediaView extends MediaPreview {
     public String Name;
     public String Id;
@@ -21,7 +23,7 @@ public class MediaView extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(){
-        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight=100&maxWidth=200&tag="+ImageTags.get("Primary")+"&quality=100";
+        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight="+CardPresenter.CARD_HEIGHT+"&maxWidth="+ CardPresenter.CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
     @Override

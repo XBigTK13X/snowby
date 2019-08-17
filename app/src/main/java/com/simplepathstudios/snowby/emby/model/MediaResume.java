@@ -1,5 +1,7 @@
 package com.simplepathstudios.snowby.emby.model;
 
+import com.simplepathstudios.snowby.presenter.CardPresenter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,8 +35,7 @@ public class MediaResume extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(){
-        //TODO Support movies as well
-        return "http://9914.us:8096/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth=200&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
+        return "http://9914.us:8096/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth="+ CardPresenter.CARD_WIDTH +"maxHeight="+CardPresenter.CARD_HEIGHT+"&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
     }
 
     @Override

@@ -12,6 +12,7 @@ public class Item extends MediaPreview {
     public String ProductionYear;
     public List<String> Taglines;
     public String CollectionType;
+    public List<MediaStream> MediaStreams;
 
     @Override
     public String getTitle() {
@@ -20,7 +21,7 @@ public class Item extends MediaPreview {
 
     @Override
     public String getContent() {
-        return Type;
+        return getFidelity();
     }
 
     @Override
@@ -44,5 +45,22 @@ public class Item extends MediaPreview {
 
     public String getMediaPath(){
         return Path;
+    }
+
+    public String getFidelity(){
+        if(MediaStreams != null){
+            String videoFidelity = "";
+            String audioFidelity = "";
+            for(MediaStream stream: MediaStreams){
+                if(stream.Type.equals("Video") && (stream.IsDefault || videoFidelity.isEmpty()) ){
+                    videoFidelity = stream.DisplayTitle;
+                }
+                if(stream.Type.equals("Audio") && (stream.IsDefault || audioFidelity.isEmpty())){
+                    audioFidelity = stream.DisplayTitle.replace("(Default)","");
+                }
+            }
+            return videoFidelity + " + " + audioFidelity;
+        }
+        return "";
     }
 }

@@ -106,6 +106,7 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                     searchParams.SortBy = "PremiereDate,ProductionYear,SortName";
                     searchParams.SortOrder = "Descending";
                 }
+                String fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
                 emby.api.getItems(
                         emby.authHeader,
                         emby.userId,
@@ -113,7 +114,8 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         searchParams.Recursive,
                         searchParams.IncludeItemTypes,
                         searchParams.SortBy,
-                        searchParams.SortOrder
+                        searchParams.SortOrder,
+                        fields
                 ).enqueue(new Callback<ItemPage<Item>>() {
                     @Override
                     public void onResponse(Call<ItemPage<Item>> call, Response<ItemPage<Item>> response) {
@@ -167,10 +169,11 @@ public class MediaLibraryFragment extends VerticalGridFragment {
 
 
         VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
-        gridPresenter.setNumberOfColumns(8);
+        gridPresenter.setNumberOfColumns(3);
         setGridPresenter(gridPresenter);
+        String presenterMode = "EmbyItem";
+        ArrayObjectAdapter adapter = adapter = new ArrayObjectAdapter(new CardPresenter());
 
-        ArrayObjectAdapter adapter = new ArrayObjectAdapter(new CardPresenter());
         setAdapter(adapter);
     }
 

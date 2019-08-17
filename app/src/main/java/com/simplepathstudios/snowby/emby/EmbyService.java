@@ -45,5 +45,6 @@ public interface EmbyService {
             @Query("Recursive") String recursive,
             @Query("IncludeItemTypes") String includeItemTypes,
             @Query("SortBy") String sortBy,
-            @Query("SortOrder") String sortOrder);
+            @Query("SortOrder") String sortOrder,
+            @Query("Fields") String fields);
 }
