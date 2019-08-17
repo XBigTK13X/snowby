@@ -18,15 +18,13 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.leanback.app.VideoSupportFragment;
-import androidx.leanback.media.MediaPlayerAdapter;
-import androidx.leanback.media.PlaybackTransportControlGlue;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
+import com.simplepathstudios.snowby.activity.LegacyPlaybackVideoActivity;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.Item;
 import com.simplepathstudios.snowby.smb.SmbMediaLoad;
@@ -40,7 +38,7 @@ import retrofit2.Response;
 /**
  * Handles video playback with media controls.
  */
-public class PlaybackVideoFragment extends VideoSupportFragment {
+public class LegacyPlaybackVideoFragment extends VideoSupportFragment {
 
     private final String TAG = "PlaybackVideoFragment";
 
@@ -52,7 +50,7 @@ public class PlaybackVideoFragment extends VideoSupportFragment {
         super.onCreate(savedInstanceState);
 
         final String itemId =
-                (String) getActivity().getIntent().getSerializableExtra(PlaybackVideoActivity.PLAYBACK_TARGET);
+                (String) getActivity().getIntent().getSerializableExtra(LegacyPlaybackVideoActivity.PLAYBACK_TARGET);
 
         player = ExoPlayerFactory.newSimpleInstance(getContext());
         final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
