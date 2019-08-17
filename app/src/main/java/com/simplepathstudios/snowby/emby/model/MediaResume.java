@@ -1,6 +1,7 @@
 package com.simplepathstudios.snowby.emby.model;
 
 import com.simplepathstudios.snowby.presenter.CardPresenter;
+import com.simplepathstudios.snowby.util.SnowbyConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +36,6 @@ public class MediaResume extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(){
-        return "http://9914.us:8096/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth="+ CardPresenter.CARD_WIDTH +"maxHeight="+CardPresenter.CARD_HEIGHT+"&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
-    }
-
-    @Override
-    public Integer getWidth() {
-        return 300;
-    }
-
-    @Override
-    public Integer getHeight() {
-        return 200;
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth="+ SnowbyConstants.OVERVIEW_CARD_WIDTH+"maxHeight="+SnowbyConstants.OVERVIEW_CARD_HEIGHT+"&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
     }
 }

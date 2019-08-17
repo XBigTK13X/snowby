@@ -33,13 +33,6 @@ import com.simplepathstudios.snowby.emby.model.MediaPreview;
  */
 public class CardPresenter extends Presenter {
     private static final String TAG = "CardPresenter";
-
-    public static final int CARD_WIDTH = 600;
-    public static final int CARD_HEIGHT = 100;
-    private static int sSelectedBackgroundColor;
-    private static int sDefaultBackgroundColor;
-    private Drawable mDefaultCardImage;
-
     private static void updateCardBackgroundColor(ImageCardView view, boolean selected) {
         int color = selected ? sSelectedBackgroundColor : sDefaultBackgroundColor;
         // Both background colors should be set because the view's background is temporarily visible
@@ -47,6 +40,25 @@ public class CardPresenter extends Presenter {
         view.setBackgroundColor(color);
         view.findViewById(R.id.info_field).setBackgroundColor(color);
     }
+
+    private static int sSelectedBackgroundColor;
+    private static int sDefaultBackgroundColor;
+
+    private Drawable mDefaultCardImage;
+    private Boolean imageEnabled;
+    private Integer cardWidth;
+    private Integer cardHeight;
+
+    public CardPresenter(Boolean enableImages, Integer cardWidth, Integer cardHeight){
+        this.imageEnabled = enableImages;
+        this.cardWidth = cardWidth;
+        this.cardHeight = cardHeight;
+        if(!enableImages) {
+            this.cardHeight = this.cardHeight/2;
+        }
+    }
+
+    private CardPresenter(){}
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -84,14 +96,15 @@ public class CardPresenter extends Presenter {
         if (preview.getImageUrl() != null) {
             cardView.setTitleText(preview.getTitle());
             cardView.setContentText(preview.getContent());
-            cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
+            cardView.setMainImageDimensions(cardWidth, cardHeight);
 
-            /*Glide.with(viewHolder.view.getContext())
-                    .load(preview.getImageUrl())
-                    .centerCrop()
-                    .error(mDefaultCardImage)
-                    .into(cardView.getMainImageView());*/
-
+            if(imageEnabled){
+                Glide.with(viewHolder.view.getContext())
+                        .load(preview.getImageUrl())
+                        .centerCrop()
+                        .error(mDefaultCardImage)
+                        .into(cardView.getMainImageView());
+            }
         }
     }
 

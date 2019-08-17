@@ -1,6 +1,6 @@
 package com.simplepathstudios.snowby.emby.model;
 
-import com.simplepathstudios.snowby.presenter.CardPresenter;
+import com.simplepathstudios.snowby.util.SnowbyConstants;
 
 public class MediaView extends MediaPreview {
     public String Name;
@@ -10,6 +10,7 @@ public class MediaView extends MediaPreview {
     public String Etag;
     public String SortName;
     public String DisplayPreferencesId;
+    public String CollectionType;
 
     @Override
     public String getTitle() {
@@ -23,16 +24,6 @@ public class MediaView extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(){
-        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight="+CardPresenter.CARD_HEIGHT+"&maxWidth="+ CardPresenter.CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
-    }
-
-    @Override
-    public Integer getWidth() {
-        return 400;
-    }
-
-    @Override
-    public Integer getHeight() {
-        return 300;
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+ SnowbyConstants.EMBY_ITEM_CARD_HEIGHT+"&maxWidth="+ SnowbyConstants.EMBY_ITEM_CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 }

@@ -1,5 +1,7 @@
 package com.simplepathstudios.snowby.emby.model;
 
+import com.simplepathstudios.snowby.util.SnowbyConstants;
+
 import java.util.List;
 
 public class Item extends MediaPreview {
@@ -13,6 +15,8 @@ public class Item extends MediaPreview {
     public List<String> Taglines;
     public String CollectionType;
     public List<MediaStream> MediaStreams;
+    public String SeriesId;
+    public String SeasonId;
 
     @Override
     public String getTitle() {
@@ -26,17 +30,7 @@ public class Item extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl() {
-        return "http://9914.us:8096/emby/Items/"+Id+"/Images/Primary?maxHeight=100&maxWidth=200&tag="+ImageTags.get("Primary")+"&quality=100";
-    }
-
-    @Override
-    public Integer getWidth() {
-        return 400;
-    }
-
-    @Override
-    public Integer getHeight() {
-        return 300;
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+SnowbyConstants.OVERVIEW_CARD_HEIGHT+"&maxWidth="+SnowbyConstants.OVERVIEW_CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
     public String getDescription(){
@@ -56,10 +50,10 @@ public class Item extends MediaPreview {
                     videoFidelity = stream.DisplayTitle;
                 }
                 if(stream.Type.equals("Audio") && (stream.IsDefault || audioFidelity.isEmpty())){
-                    audioFidelity = stream.DisplayTitle.replace("(Default)","");
+                    audioFidelity = stream.DisplayTitle.replace("(Default)","").replace(stream.DisplayLanguage+ " ","");
                 }
             }
-            return videoFidelity + " + " + audioFidelity;
+            return "Video [" + videoFidelity + "] Audio [" + audioFidelity+"]";
         }
         return "";
     }

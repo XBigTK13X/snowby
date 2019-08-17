@@ -15,11 +15,13 @@
 package com.simplepathstudios.snowby.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
-import androidx.leanback.app.BackgroundManager;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.leanback.app.BrowseFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.HeaderItem;
@@ -27,37 +29,24 @@ import androidx.leanback.widget.ImageCardView;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnItemViewClickedListener;
-import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.simplepathstudios.snowby.presenter.CardPresenter;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.activity.BrowseErrorActivity;
 import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
-import com.simplepathstudios.snowby.emby.model.AuthenticatedUser;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
+import com.simplepathstudios.snowby.emby.model.AuthenticatedUser;
 import com.simplepathstudios.snowby.emby.model.ItemPage;
 import com.simplepathstudios.snowby.emby.model.Login;
 import com.simplepathstudios.snowby.emby.model.MediaResume;
 import com.simplepathstudios.snowby.emby.model.MediaView;
 import com.simplepathstudios.snowby.emby.model.User;
+import com.simplepathstudios.snowby.presenter.CardPresenter;
+import com.simplepathstudios.snowby.util.SnowbyConstants;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,41 +55,25 @@ import retrofit2.Response;
 public class MainFragment extends BrowseFragment {
     private static final String TAG = "MainFragment";
 
-    private static final int BACKGROUND_UPDATE_DELAY = 300;
-    private static final int GRID_ITEM_WIDTH = 200;
-    private static final int GRID_ITEM_HEIGHT = 200;
+    private final ArrayObjectAdapter adapter = new ArrayObjectAdapter(new ListRowPresenter());
 
-    private final Handler mHandler = new Handler();
-    private Drawable mDefaultBackground;
-    private DisplayMetrics mMetrics;
-    private Timer mBackgroundTimer;
-    private String mBackgroundUri;
-    private BackgroundManager mBackgroundManager;
-    private final ArrayObjectAdapter mainAdapter = new ArrayObjectAdapter(new ListRowPresenter());
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHeadersState(HEADERS_DISABLED);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate");
         super.onActivityCreated(savedInstanceState);
-
-        prepareBackgroundManager();
 
         setupUIElements();
 
-        setAdapter(mainAdapter);
+        setAdapter(adapter);
 
         loadRows();
 
         setupEventListeners();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (null != mBackgroundTimer) {
-            Log.d(TAG, "onDestroy: " + mBackgroundTimer.toString());
-            mBackgroundTimer.cancel();
-        }
     }
 
     private void loadRows() {
@@ -127,17 +100,21 @@ public class MainFragment extends BrowseFragment {
                                     @Override
                                     public void onResponse(Call<ItemPage<MediaResume>> call, Response<ItemPage<MediaResume>> response) {
                                         Log.i(TAG,"Data loaded, refreshing view");
-                                        mainAdapter.clear();
+                                        adapter.clear();
                                         final List<MediaResume> resumeList = response.body().Items;
 
-                                        CardPresenter cardPresenter = new CardPresenter();
+                                        CardPresenter cardPresenter = new CardPresenter(true, SnowbyConstants.OVERVIEW_CARD_WIDTH, SnowbyConstants.OVERVIEW_CARD_HEIGHT);
 
                                         ArrayObjectAdapter mediaOverviewRow = new ArrayObjectAdapter(cardPresenter);
                                         for(MediaView mediaView: overviewList){
-                                            mediaOverviewRow.add(mediaView);
+                                            if(mediaView.CollectionType.equals("movies") || mediaView.CollectionType.equals("tvshows")){
+                                                mediaOverviewRow.add(mediaView);
+                                            }
                                         }
-                                        HeaderItem mediaOverviewHeader = new HeaderItem(0, "Media");
-                                        mainAdapter.add(new ListRow(mediaOverviewHeader,mediaOverviewRow));
+                                        if(mediaOverviewRow.size() > 0){
+                                            HeaderItem mediaOverviewHeader = new HeaderItem(0, "Media");
+                                            adapter.add(new ListRow(mediaOverviewHeader,mediaOverviewRow));
+                                        }
 
                                         if(resumeList.size() > 0){
                                             ArrayObjectAdapter resumeRow = new ArrayObjectAdapter(cardPresenter);
@@ -145,7 +122,7 @@ public class MainFragment extends BrowseFragment {
                                                 resumeRow.add(mediaResume);
                                             }
                                             HeaderItem resumeHeader = new HeaderItem(1, "Resume");
-                                            mainAdapter.add(new ListRow(resumeHeader,resumeRow ));
+                                            adapter.add(new ListRow(resumeHeader,resumeRow ));
                                         }
                                     }
 
@@ -174,27 +151,8 @@ public class MainFragment extends BrowseFragment {
         });
     }
 
-    private void prepareBackgroundManager() {
-
-        mBackgroundManager = BackgroundManager.getInstance(getActivity());
-        mBackgroundManager.attach(getActivity().getWindow());
-
-        mDefaultBackground = ContextCompat.getDrawable(getContext(), R.drawable.default_background);
-        mMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
-    }
-
     private void setupUIElements() {
-        // setBadgeDrawable(getActivity().getResources().getDrawable(
-        // R.drawable.videos_by_google_banner));
-        setTitle(getString(R.string.browse_title)); // Badge, when set, takes precedent
-        // over title
-        setHeadersState(HEADERS_ENABLED);
-        setHeadersTransitionOnBackEnabled(true);
-
-        // set fastLane (or headers) background color
-        setBrandColor(ContextCompat.getColor(getContext(), R.color.fastlane_background));
-        // set search icon color
+        setTitle(getString(R.string.browse_title));
         setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.search_opaque));
     }
 
@@ -209,33 +167,6 @@ public class MainFragment extends BrowseFragment {
         });
 
         setOnItemViewClickedListener(new ItemViewClickedListener());
-        setOnItemViewSelectedListener(new ItemViewSelectedListener());
-    }
-
-    private void updateBackground(String uri) {
-        int width = mMetrics.widthPixels;
-        int height = mMetrics.heightPixels;
-        Glide.with(getActivity())
-                .load(uri)
-                .centerCrop()
-                .error(mDefaultBackground)
-                .into(new SimpleTarget<GlideDrawable>(width, height) {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource,
-                                                GlideAnimation<? super GlideDrawable>
-                                                        glideAnimation) {
-                        mBackgroundManager.setDrawable(resource);
-                    }
-                });
-        mBackgroundTimer.cancel();
-    }
-
-    private void startBackgroundTimer() {
-        if (null != mBackgroundTimer) {
-            mBackgroundTimer.cancel();
-        }
-        mBackgroundTimer = new Timer();
-        mBackgroundTimer.schedule(new UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY);
     }
 
     private final class ItemViewClickedListener implements OnItemViewClickedListener {
@@ -264,35 +195,6 @@ public class MainFragment extends BrowseFragment {
                     Toast.makeText(getActivity(), ((String) item), Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-    }
-
-    private final class ItemViewSelectedListener implements OnItemViewSelectedListener {
-        @Override
-        public void onItemSelected(
-                Presenter.ViewHolder itemViewHolder,
-                Object item,
-                RowPresenter.ViewHolder rowViewHolder,
-                Row row) {
-            /*
-            if (item instanceof Movie) {
-                mBackgroundUri = ((Movie) item).getBackgroundImageUrl();
-                startBackgroundTimer();
-            }
-            */
-        }
-    }
-
-    private class UpdateBackgroundTask extends TimerTask {
-
-        @Override
-        public void run() {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    updateBackground(mBackgroundUri);
-                }
-            });
         }
     }
 }

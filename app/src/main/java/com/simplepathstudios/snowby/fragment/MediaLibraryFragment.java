@@ -19,12 +19,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 
-import androidx.leanback.app.BackgroundManager;
 import androidx.leanback.app.VerticalGridFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ImageCardView;
 import androidx.leanback.widget.OnItemViewClickedListener;
-import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
@@ -37,10 +35,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.simplepathstudios.snowby.emby.model.MediaSearchParams;
 import com.simplepathstudios.snowby.presenter.CardPresenter;
 import com.simplepathstudios.snowby.R;
@@ -49,10 +43,9 @@ import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.model.Item;
 import com.simplepathstudios.snowby.emby.model.ItemPage;
+import com.simplepathstudios.snowby.util.SnowbyConstants;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,39 +54,17 @@ import retrofit2.Response;
 public class MediaLibraryFragment extends VerticalGridFragment {
     private static final String TAG = "MediaLibraryFragment";
 
-    private static final int BACKGROUND_UPDATE_DELAY = 300;
-    private static final int GRID_ITEM_WIDTH = 200;
-    private static final int GRID_ITEM_HEIGHT = 200;
-
-    private final Handler mHandler = new Handler();
-    private Drawable mDefaultBackground;
-    private DisplayMetrics mMetrics;
-    private Timer mBackgroundTimer;
-    private String mBackgroundUri;
-    private BackgroundManager mBackgroundManager;
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onActivityCreated(savedInstanceState);
 
-        prepareBackgroundManager();
-
-        loadRows();
+        loadGrid();
 
         setupEventListeners();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (null != mBackgroundTimer) {
-            Log.d(TAG, "onDestroy: " + mBackgroundTimer.toString());
-            mBackgroundTimer.cancel();
-        }
-    }
-
-    private void loadRows() {
+    private void loadGrid() {
         final String libraryId = (String) getActivity().getIntent().getSerializableExtra(MediaLibraryActivity.LIBRARY_ID);
         final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
         emby.api.item(emby.authHeader,emby.userId, libraryId).enqueue(new Callback<Item>() {
@@ -156,38 +127,22 @@ public class MediaLibraryFragment extends VerticalGridFragment {
         });
     }
 
-    private void prepareBackgroundManager() {
-
-        mBackgroundManager = BackgroundManager.getInstance(getActivity());
-        mBackgroundManager.attach(getActivity().getWindow());
-
-        mDefaultBackground = ContextCompat.getDrawable(getContext(), R.drawable.default_background);
-        mMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(mMetrics);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setBadgeDrawable(getActivity().getResources().getDrawable(
-        // R.drawable.videos_by_google_banner));
-        setTitle(getString(R.string.browse_title)); // Badge, when set, takes precedent
-        // set search icon color
+        setTitle(getString(R.string.browse_title));
         setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.search_opaque));
-
 
         VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
         gridPresenter.setNumberOfColumns(3);
         setGridPresenter(gridPresenter);
-        String presenterMode = "EmbyItem";
-        ArrayObjectAdapter adapter = adapter = new ArrayObjectAdapter(new CardPresenter());
+        ArrayObjectAdapter adapter = new ArrayObjectAdapter(new CardPresenter(false, SnowbyConstants.EMBY_ITEM_CARD_WIDTH,SnowbyConstants.EMBY_ITEM_CARD_HEIGHT));
 
         setAdapter(adapter);
     }
 
     private void setupEventListeners() {
         setOnSearchClickedListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity(), "Implement your own in-app search", Toast.LENGTH_LONG)
@@ -196,33 +151,6 @@ public class MediaLibraryFragment extends VerticalGridFragment {
         });
 
         setOnItemViewClickedListener(new ItemViewClickedListener());
-        setOnItemViewSelectedListener(new ItemViewSelectedListener());
-    }
-
-    private void updateBackground(String uri) {
-        int width = mMetrics.widthPixels;
-        int height = mMetrics.heightPixels;
-        Glide.with(getActivity())
-                .load(uri)
-                .centerCrop()
-                .error(mDefaultBackground)
-                .into(new SimpleTarget<GlideDrawable>(width, height) {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource,
-                                                GlideAnimation<? super GlideDrawable>
-                                                        glideAnimation) {
-                        mBackgroundManager.setDrawable(resource);
-                    }
-                });
-        mBackgroundTimer.cancel();
-    }
-
-    private void startBackgroundTimer() {
-        if (null != mBackgroundTimer) {
-            mBackgroundTimer.cancel();
-        }
-        mBackgroundTimer = new Timer();
-        mBackgroundTimer.schedule(new UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY);
     }
 
     private final class ItemViewClickedListener implements OnItemViewClickedListener {
@@ -256,38 +184,6 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                     getActivity().startActivity(intent, bundle);
                 }
             }
-        }
-    }
-
-    private final class ItemViewSelectedListener implements OnItemViewSelectedListener {
-        @Override
-        public void onItemSelected(
-                Presenter.ViewHolder itemViewHolder,
-                Object item,
-                RowPresenter.ViewHolder rowViewHolder,
-                Row row) {
-            if (item != null){
-                /*
-                How to show an image from the video in the background
-                if (item instanceof Movie) {
-                    mBackgroundUri = ((Movie) item).getBackgroundImageUrl();
-                    startBackgroundTimer();
-                }
-                */
-            }
-        }
-    }
-
-    private class UpdateBackgroundTask extends TimerTask {
-
-        @Override
-        public void run() {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    updateBackground(mBackgroundUri);
-                }
-            });
         }
     }
 }
