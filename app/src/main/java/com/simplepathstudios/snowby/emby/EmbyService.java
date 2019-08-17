@@ -53,8 +53,8 @@ public interface EmbyService {
     Call<ItemPage<Item>> nextUp(@Header(AUTH_HEADER_KEY) String authHeader, @Query("SeriesId") String seriesId, @Query("UserId") String userId, @Query("Limit") String limit);
 
     @GET("emby/Shows/{seriesId}/Seasons")
-    Call<ItemPage<Item>> seasons(@Header(AUTH_HEADER_KEY) String authHeader, @Path("SeriesId") String seriesId, @Query("userId") String userId);
+    Call<ItemPage<Item>> seasons(@Header(AUTH_HEADER_KEY) String authHeader, @Path("seriesId") String seriesId, @Query("userId") String userId);
 
     @GET("emby/Shows/{seriesId}/Episodes")
-    Call<ItemPage<Item>> episodes(@Header(AUTH_HEADER_KEY) String authHeader, @Path("seriesId") String seriesId, @Query("seasonId") String seasonId, @Query("userId") String userId);
+    Call<ItemPage<Item>> episodes(@Header(AUTH_HEADER_KEY) String authHeader, @Path("seriesId") String seriesId, @Query("seasonId") String seasonId, @Query("userId") String userId, @Query("Fields") String fields);
 }

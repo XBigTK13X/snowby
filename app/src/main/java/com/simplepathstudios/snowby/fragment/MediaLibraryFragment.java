@@ -15,9 +15,7 @@
 package com.simplepathstudios.snowby.fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.leanback.app.VerticalGridFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -30,7 +28,6 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.VerticalGridPresenter;
 
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -65,37 +62,50 @@ public class MediaLibraryFragment extends VerticalGridFragment {
     }
 
     private void loadGrid() {
-        final String libraryId = (String) getActivity().getIntent().getSerializableExtra(MediaLibraryActivity.LIBRARY_ID);
+        final String libraryId = (String) getActivity().getIntent().getSerializableExtra(MediaLibraryActivity.PARENT_ID);
         final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
         emby.api.item(emby.authHeader,emby.userId, libraryId).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
-                final Item library = response.body();
+                Call<ItemPage<Item>> query = null;
+                final Item embyItem = response.body();
                 MediaSearchParams searchParams = new MediaSearchParams();
-                if(library.CollectionType.equals("movies")) {
-                    searchParams.IncludeItemTypes = "Movie";
-                    searchParams.SortBy = "PremiereDate,ProductionYear,SortName";
-                    searchParams.SortOrder = "Descending";
-                    searchParams.Fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
+                if(embyItem.CollectionType != null){
+                    if(embyItem.CollectionType.equals("movies")) {
+                        searchParams.IncludeItemTypes = "Movie";
+                        searchParams.SortBy = "SortName";
+                        searchParams.SortOrder = "Ascending";
+                        searchParams.Fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
+                    }
+                    else if(embyItem.CollectionType.equals("tvshows")){
+                        searchParams.IncludeItemTypes = "Series";
+                        searchParams.SortOrder = "Ascending";
+                        searchParams.SortBy = "SortName";
+                        searchParams.Fields = "BasicSyncInfo,MediaSourceCount,SortName";
+                    }
+                    query = emby.api.items(
+                            emby.authHeader,
+                            emby.userId,
+                            libraryId,
+                            searchParams.Recursive,
+                            searchParams.IncludeItemTypes,
+                            searchParams.SortBy,
+                            searchParams.SortOrder,
+                            searchParams.Fields,
+                            searchParams.Filters
+                    );
+                    //searchParams.Filters = "IsUnplayed";
                 }
-                else if(library.CollectionType.equals("tvshows")){
-                    searchParams.IncludeItemTypes = "Series";
-                    searchParams.SortOrder = "Ascending";
-                    searchParams.SortBy = "SortName";
-                    searchParams.Fields = "BasicSyncInfo,MediaSourceCount,SortName";
+                else {
+                    if(embyItem.Type.equals("Series")){
+                        query = emby.api.seasons(emby.authHeader,embyItem.Id,emby.userId);
+                    }
+                    else if(embyItem.Type.equals("Season")){
+                        searchParams.Fields = "MediaStreams";
+                        query = emby.api.episodes(emby.authHeader,embyItem.ParentId,embyItem.Id,emby.userId,searchParams.Fields);
+                    }
                 }
-                searchParams.Filters = "IsUnplayed";
-                emby.api.items(
-                        emby.authHeader,
-                        emby.userId,
-                        libraryId,
-                        searchParams.Recursive,
-                        searchParams.IncludeItemTypes,
-                        searchParams.SortBy,
-                        searchParams.SortOrder,
-                        searchParams.Fields,
-                        searchParams.Filters
-                ).enqueue(new Callback<ItemPage<Item>>() {
+                query.enqueue(new Callback<ItemPage<Item>>() {
                     @Override
                     public void onResponse(Call<ItemPage<Item>> call, Response<ItemPage<Item>> response) {
                         Log.i(TAG,"Data loaded, refreshing view");
@@ -159,8 +169,8 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                                   RowPresenter.ViewHolder rowViewHolder, Row row) {
             if (item instanceof Item) {
                 final Item embyItem = (Item)item;
-                if(embyItem.Type.equals("Movie")){
-                    Log.d(TAG, "Playable Media: "+embyItem.Name);
+                if(embyItem.Type.equals("Movie") || embyItem.Type.equals("Episode")){
+                    Log.d(TAG, "Selected playable media: " + embyItem.Name);
                     Intent intent = new Intent(getActivity(), PlaybackVideoActivity.class);
                     intent.putExtra(PlaybackVideoActivity.PLAYBACK_TARGET, embyItem.Id);
                     Bundle bundle =
@@ -170,11 +180,17 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                                     PlaybackVideoActivity.SHARED_ELEMENT_NAME)
                                     .toBundle();
                     getActivity().startActivity(intent, bundle);
-                } else{
-                    Log.d(TAG, "Item: " + embyItem.Name);
-                    Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
-                    intent.putExtra(getResources().getString(R.string.library), embyItem.Id);
+                }
+                else if (embyItem.Type.equals("Series") || embyItem.Type.equals("Season")){
+                    if(embyItem.Type.equals("Series")){
+                        Log.d(TAG, "Selected the TV Series: "+embyItem.Name);
+                    }
+                    else {
+                        Log.d(TAG, "Selected " + embyItem.SeriesName + " "+embyItem.Name);
+                    }
 
+                    Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
+                    intent.putExtra(MediaLibraryActivity.PARENT_ID, embyItem.Id);
                     Bundle bundle =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(
                                     getActivity(),
@@ -182,6 +198,9 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                                     MediaLibraryActivity.SHARED_ELEMENT_NAME)
                                     .toBundle();
                     getActivity().startActivity(intent, bundle);
+                }
+                else{
+                    Log.e(TAG,"Unhandled item selection type: "+embyItem.Type);
                 }
             }
         }

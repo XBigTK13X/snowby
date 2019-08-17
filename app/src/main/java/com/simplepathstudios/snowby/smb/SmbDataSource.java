@@ -74,8 +74,9 @@ public class SmbDataSource extends BaseDataSource {
 
         if (bytesRead == -1) {
             if (bytesRemaining != C.LENGTH_UNSET) {
-                // End of stream reached having not read sufficient data.
-                throw new IOException(new EOFException());
+                // This should only happen when seeking to the end of the file.
+
+                //throw new IOException(new EOFException());
             }
             return C.RESULT_END_OF_INPUT;
         }

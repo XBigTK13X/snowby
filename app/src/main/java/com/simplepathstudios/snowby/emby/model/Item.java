@@ -15,11 +15,16 @@ public class Item extends MediaPreview {
     public List<String> Taglines;
     public String CollectionType;
     public List<MediaStream> MediaStreams;
-    public String SeriesId;
-    public String SeasonId;
+    public String SeriesName;
+    public String ParentId;
+    public String SeasonName;
+    public String IndexNumber;
 
     @Override
     public String getTitle() {
+        if(Type.equals("Episode")){
+            return SeasonName.replace("Season ","S") + "E"+IndexNumber +" - "+ Name;
+        }
         return Name;
     }
 
@@ -33,14 +38,6 @@ public class Item extends MediaPreview {
         return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+SnowbyConstants.OVERVIEW_CARD_HEIGHT+"&maxWidth="+SnowbyConstants.OVERVIEW_CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
-    public String getDescription(){
-        return Overview;
-    }
-
-    public String getMediaPath(){
-        return Path;
-    }
-
     public String getFidelity(){
         if(MediaStreams != null){
             String videoFidelity = "";
@@ -48,12 +45,21 @@ public class Item extends MediaPreview {
             for(MediaStream stream: MediaStreams){
                 if(stream.Type.equals("Video") && (stream.IsDefault || videoFidelity.isEmpty()) ){
                     videoFidelity = stream.DisplayTitle;
+                    if(!videoFidelity.toLowerCase().contains(stream.Codec.toLowerCase())){
+                        videoFidelity += stream.Codec;
+                    }
                 }
                 if(stream.Type.equals("Audio") && (stream.IsDefault || audioFidelity.isEmpty())){
-                    audioFidelity = stream.DisplayTitle.replace("(Default)","").replace(stream.DisplayLanguage+ " ","");
+                    audioFidelity = stream.DisplayTitle.replace("(Default)","");
+                    if(stream.DisplayLanguage != null){
+                        audioFidelity = audioFidelity.replace(stream.DisplayLanguage,"");
+                    }
+                    if(!audioFidelity.toLowerCase().contains(stream.Codec.toLowerCase())){
+                        audioFidelity += stream.Codec;
+                    }
                 }
             }
-            return "Video [" + videoFidelity + "] Audio [" + audioFidelity+"]";
+            return "Video [" + videoFidelity.trim() + "] Audio [" + audioFidelity.trim() + "]";
         }
         return "";
     }

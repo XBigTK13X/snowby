@@ -177,7 +177,7 @@ public class MainFragment extends BrowseFragment {
                 MediaView mediaView = (MediaView) item;
                 Log.d(TAG, "MediaPreview: "+mediaView.Name);
                 Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
-                intent.putExtra(MediaLibraryActivity.LIBRARY_ID, mediaView.Id);
+                intent.putExtra(MediaLibraryActivity.PARENT_ID, mediaView.Id);
 
                 Bundle bundle =
                         ActivityOptionsCompat.makeSceneTransitionAnimation(
