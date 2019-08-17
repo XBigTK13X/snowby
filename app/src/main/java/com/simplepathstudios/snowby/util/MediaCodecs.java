@@ -1,4 +1,4 @@
-package com.simplepathstudios.snowby;
+package com.simplepathstudios.snowby.util;
 
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;

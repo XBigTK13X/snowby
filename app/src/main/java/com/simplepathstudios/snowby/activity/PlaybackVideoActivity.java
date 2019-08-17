@@ -54,7 +54,7 @@ public final class PlaybackVideoActivity extends Activity {
         playerView = findViewById(R.id.player_view);
 
         final String itemId =
-                (String) getIntent().getSerializableExtra(LegacyPlaybackVideoActivity.PLAYBACK_TARGET);
+                (String) getIntent().getSerializableExtra(PlaybackVideoActivity.PLAYBACK_TARGET);
         final EmbyApiClient emby = EmbyApiClient.getInstance(this);
         emby.api.getItem(emby.authHeader,emby.userId, itemId).enqueue(new Callback<Item>() {
             @Override

@@ -15,7 +15,6 @@
 package com.simplepathstudios.snowby.fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,32 +34,23 @@ import androidx.leanback.widget.RowPresenter;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 
-import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.simplepathstudios.snowby.CardPresenter;
-import com.simplepathstudios.snowby.MediaCodecs;
-import com.simplepathstudios.snowby.Movie;
+import com.simplepathstudios.snowby.presenter.CardPresenter;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.activity.BrowseErrorActivity;
-import com.simplepathstudios.snowby.activity.DetailsActivity;
 import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
 import com.simplepathstudios.snowby.emby.AuthenticatedUser;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
-import com.simplepathstudios.snowby.emby.EmbyService;
 import com.simplepathstudios.snowby.emby.ItemPage;
 import com.simplepathstudios.snowby.emby.Login;
-import com.simplepathstudios.snowby.emby.MediaPreview;
 import com.simplepathstudios.snowby.emby.MediaResume;
 import com.simplepathstudios.snowby.emby.MediaView;
 import com.simplepathstudios.snowby.emby.User;
@@ -72,8 +62,6 @@ import java.util.TimerTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainFragment extends BrowseFragment {
     private static final String TAG = "MainFragment";
@@ -268,19 +256,7 @@ public class MainFragment extends BrowseFragment {
                                 .toBundle();
                 getActivity().startActivity(intent, bundle);
             }
-            else if (item instanceof Movie) {
-                Movie movie = (Movie) item;
-                Log.d(TAG, "Item: " + item.toString());
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                intent.putExtra(DetailsActivity.MOVIE, movie);
-
-                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((ImageCardView) itemViewHolder.view).getMainImageView(),
-                        DetailsActivity.SHARED_ELEMENT_NAME)
-                        .toBundle();
-                getActivity().startActivity(intent, bundle);
-            } else if (item instanceof String) {
+            else if (item instanceof String) {
                 if (((String) item).contains(getString(R.string.error_fragment))) {
                     Intent intent = new Intent(getActivity(), BrowseErrorActivity.class);
                     startActivity(intent);
@@ -298,10 +274,12 @@ public class MainFragment extends BrowseFragment {
                 Object item,
                 RowPresenter.ViewHolder rowViewHolder,
                 Row row) {
+            /*
             if (item instanceof Movie) {
                 mBackgroundUri = ((Movie) item).getBackgroundImageUrl();
                 startBackgroundTimer();
             }
+            */
         }
     }
 

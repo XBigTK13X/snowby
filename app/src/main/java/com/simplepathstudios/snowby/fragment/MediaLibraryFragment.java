@@ -14,22 +14,15 @@
 
 package com.simplepathstudios.snowby.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.leanback.app.BackgroundManager;
-import androidx.leanback.app.BrowseFragment;
 import androidx.leanback.app.VerticalGridFragment;
-import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
-import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ImageCardView;
-import androidx.leanback.widget.ListRow;
-import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
@@ -39,36 +32,22 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.VerticalGridPresenter;
 
-import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.simplepathstudios.snowby.CardPresenter;
-import com.simplepathstudios.snowby.Movie;
+import com.simplepathstudios.snowby.presenter.CardPresenter;
 import com.simplepathstudios.snowby.R;
-import com.simplepathstudios.snowby.activity.BrowseErrorActivity;
-import com.simplepathstudios.snowby.activity.DetailsActivity;
 import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
 import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
-import com.simplepathstudios.snowby.emby.AuthenticatedUser;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
-import com.simplepathstudios.snowby.emby.EmbyService;
 import com.simplepathstudios.snowby.emby.Item;
 import com.simplepathstudios.snowby.emby.ItemPage;
-import com.simplepathstudios.snowby.emby.Login;
-import com.simplepathstudios.snowby.emby.MediaPreview;
-import com.simplepathstudios.snowby.emby.MediaResume;
-import com.simplepathstudios.snowby.emby.MediaView;
-import com.simplepathstudios.snowby.emby.User;
 
 import java.util.List;
 import java.util.Timer;
@@ -77,8 +56,6 @@ import java.util.TimerTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MediaLibraryFragment extends VerticalGridFragment {
     private static final String TAG = "MediaLibraryFragment";
@@ -266,10 +243,13 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                 RowPresenter.ViewHolder rowViewHolder,
                 Row row) {
             if (item != null){
+                /*
+                How to show an image from the video in the background
                 if (item instanceof Movie) {
                     mBackgroundUri = ((Movie) item).getBackgroundImageUrl();
                     startBackgroundTimer();
                 }
+                */
             }
         }
     }
