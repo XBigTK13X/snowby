@@ -1,7 +1,6 @@
-package com.simplepathstudios.snowby.emby;
+package com.simplepathstudios.snowby.emby.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class MediaResume extends MediaPreview {

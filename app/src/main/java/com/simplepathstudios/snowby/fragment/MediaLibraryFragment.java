@@ -41,13 +41,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.simplepathstudios.snowby.emby.model.MediaSearchParams;
 import com.simplepathstudios.snowby.presenter.CardPresenter;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.activity.MediaLibraryActivity;
 import com.simplepathstudios.snowby.activity.PlaybackVideoActivity;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
-import com.simplepathstudios.snowby.emby.Item;
-import com.simplepathstudios.snowby.emby.ItemPage;
+import com.simplepathstudios.snowby.emby.model.Item;
+import com.simplepathstudios.snowby.emby.model.ItemPage;
 
 import java.util.List;
 import java.util.Timer;
@@ -99,7 +100,21 @@ public class MediaLibraryFragment extends VerticalGridFragment {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
                 final Item library = response.body();
-                emby.api.getItems(emby.authHeader, emby.userId, libraryId).enqueue(new Callback<ItemPage<Item>>() {
+                MediaSearchParams searchParams = new MediaSearchParams();
+                if(library.CollectionType.equals("movies")) {
+                    searchParams.IncludeItemTypes = "Movie";
+                    searchParams.SortBy = "PremiereDate,ProductionYear,SortName";
+                    searchParams.SortOrder = "Descending";
+                }
+                emby.api.getItems(
+                        emby.authHeader,
+                        emby.userId,
+                        libraryId,
+                        searchParams.Recursive,
+                        searchParams.IncludeItemTypes,
+                        searchParams.SortBy,
+                        searchParams.SortOrder
+                ).enqueue(new Callback<ItemPage<Item>>() {
                     @Override
                     public void onResponse(Call<ItemPage<Item>> call, Response<ItemPage<Item>> response) {
                         Log.i(TAG,"Data loaded, refreshing view");
@@ -113,9 +128,7 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         Log.i(TAG, "Loaded "+libraryItems.size() + " library items");
 
                         for(Item item: libraryItems){
-                            //if(item.Name.contains("Blazing Saddles")){
-                                adapter.add(item);
-                            //}
+                            adapter.add(item);
                         }
                     }
 

@@ -20,13 +20,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.simplepathstudios.snowby.R;
-import com.simplepathstudios.snowby.activity.PlayerManager;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
-import com.simplepathstudios.snowby.emby.Item;
+import com.simplepathstudios.snowby.emby.model.Item;
 import com.simplepathstudios.snowby.smb.SmbMediaLoad;
 
 import java.util.concurrent.ExecutionException;

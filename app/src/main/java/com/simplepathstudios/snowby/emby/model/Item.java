@@ -1,4 +1,4 @@
-package com.simplepathstudios.snowby.emby;
+package com.simplepathstudios.snowby.emby.model;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ public class Item extends MediaPreview {
     public String MediaType;
     public String ProductionYear;
     public List<String> Taglines;
+    public String CollectionType;
 
     @Override
     public String getTitle() {

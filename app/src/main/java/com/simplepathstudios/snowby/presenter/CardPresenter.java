@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.simplepathstudios.snowby.R;
-import com.simplepathstudios.snowby.emby.MediaPreview;
+import com.simplepathstudios.snowby.emby.model.MediaPreview;
 
 /*
  * A CardPresenter is used to generate Views and bind Objects to them on demand.
@@ -88,13 +88,13 @@ public class CardPresenter extends Presenter {
             cardView.setTitleText(preview.getTitle());
             cardView.setContentText(preview.getContent());
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-            /*
+
             Glide.with(viewHolder.view.getContext())
                     .load(preview.getImageUrl())
                     .centerCrop()
                     .error(mDefaultCardImage)
                     .into(cardView.getMainImageView());
-             */
+
         }
     }
 

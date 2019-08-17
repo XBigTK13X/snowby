@@ -1,6 +1,7 @@
 package com.simplepathstudios.snowby.activity;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -50,6 +51,7 @@ public class PlayerManager {
                 Log.e(TAG,"An exoplayer error occurred",error);
             }
         });
+        playerView.setShutterBackgroundColor(Color.BLACK);
         playerView.setPlayer(player);
 
         // Prepare the player with the source.

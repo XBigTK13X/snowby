@@ -1,4 +1,4 @@
-package com.simplepathstudios.snowby.emby;
+package com.simplepathstudios.snowby.emby.model;
 
 import java.util.HashMap;
 

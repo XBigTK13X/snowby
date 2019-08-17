@@ -1,6 +1,12 @@
 package com.simplepathstudios.snowby.emby;
 
-import com.simplepathstudios.snowby.emby.User;
+import com.simplepathstudios.snowby.emby.model.AuthenticatedUser;
+import com.simplepathstudios.snowby.emby.model.Item;
+import com.simplepathstudios.snowby.emby.model.ItemPage;
+import com.simplepathstudios.snowby.emby.model.Login;
+import com.simplepathstudios.snowby.emby.model.MediaResume;
+import com.simplepathstudios.snowby.emby.model.MediaView;
+import com.simplepathstudios.snowby.emby.model.User;
 
 import java.util.List;
 
@@ -31,6 +37,13 @@ public interface EmbyService {
     @GET("emby/Users/{userId}/Items/{itemId}")
     Call<Item> getItem(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Path("itemId") String itemId);
 
-    @GET("emby/Users/{userId}/Items?Recursive=true&IncludeItemTypes=Movie")
-    Call<ItemPage<Item>> getItems(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Query("ParentId") String parentId);
+    @GET("emby/Users/{userId}/Items")
+    Call<ItemPage<Item>> getItems(
+            @Header(AUTH_HEADER_KEY) String authHeader,
+            @Path("userId") String userId,
+            @Query("ParentId") String parentId,
+            @Query("Recursive") String recursive,
+            @Query("IncludeItemTypes") String includeItemTypes,
+            @Query("SortBy") String sortBy,
+            @Query("SortOrder") String sortOrder);
 }

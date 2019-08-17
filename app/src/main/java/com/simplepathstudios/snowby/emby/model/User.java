@@ -1,4 +1,4 @@
-package com.simplepathstudios.snowby.emby;
+package com.simplepathstudios.snowby.emby.model;
 
 public class User{
     public String Name = "";

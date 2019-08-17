@@ -1,6 +1,4 @@
-package com.simplepathstudios.snowby.emby;
-
-import java.util.HashMap;
+package com.simplepathstudios.snowby.emby.model;
 
 public class MediaView extends MediaPreview {
     public String Name;
