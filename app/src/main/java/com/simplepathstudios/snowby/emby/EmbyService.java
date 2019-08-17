@@ -35,10 +35,10 @@ public interface EmbyService {
     Call<ItemPage<MediaResume>> resumeOverview(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId);
 
     @GET("emby/Users/{userId}/Items/{itemId}")
-    Call<Item> getItem(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Path("itemId") String itemId);
+    Call<Item> item(@Header(AUTH_HEADER_KEY) String authHeader, @Path("userId") String userId, @Path("itemId") String itemId);
 
     @GET("emby/Users/{userId}/Items")
-    Call<ItemPage<Item>> getItems(
+    Call<ItemPage<Item>> items(
             @Header(AUTH_HEADER_KEY) String authHeader,
             @Path("userId") String userId,
             @Query("ParentId") String parentId,
@@ -46,5 +46,15 @@ public interface EmbyService {
             @Query("IncludeItemTypes") String includeItemTypes,
             @Query("SortBy") String sortBy,
             @Query("SortOrder") String sortOrder,
-            @Query("Fields") String fields);
+            @Query("Fields") String fields,
+            @Query("Filters") String filters);
+
+    @GET("emby/Shows/NextUp")
+    Call<ItemPage<Item>> nextUp(@Header(AUTH_HEADER_KEY) String authHeader, @Query("SeriesId") String seriesId, @Query("UserId") String userId, @Query("Limit") String limit);
+
+    @GET("emby/Shows/{seriesId}/Seasons")
+    Call<ItemPage<Item>> seasons(@Header(AUTH_HEADER_KEY) String authHeader, @Path("SeriesId") String seriesId, @Query("userId") String userId);
+
+    @GET("emby/Shows/{seriesId}/Episodes")
+    Call<ItemPage<Item>> episodes(@Header(AUTH_HEADER_KEY) String authHeader, @Path("seriesId") String seriesId, @Query("seasonId") String seasonId, @Query("userId") String userId);
 }

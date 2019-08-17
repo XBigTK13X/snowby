@@ -96,7 +96,7 @@ public class MediaLibraryFragment extends VerticalGridFragment {
     private void loadRows() {
         final String libraryId = (String) getActivity().getIntent().getSerializableExtra(MediaLibraryActivity.LIBRARY_ID);
         final EmbyApiClient emby = EmbyApiClient.getInstance(getContext());
-        emby.api.getItem(emby.authHeader,emby.userId, libraryId).enqueue(new Callback<Item>() {
+        emby.api.item(emby.authHeader,emby.userId, libraryId).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
                 final Item library = response.body();
@@ -105,9 +105,16 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                     searchParams.IncludeItemTypes = "Movie";
                     searchParams.SortBy = "PremiereDate,ProductionYear,SortName";
                     searchParams.SortOrder = "Descending";
+                    searchParams.Fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
                 }
-                String fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
-                emby.api.getItems(
+                else if(library.CollectionType.equals("tvshows")){
+                    searchParams.IncludeItemTypes = "Series";
+                    searchParams.SortOrder = "Ascending";
+                    searchParams.SortBy = "SortName";
+                    searchParams.Fields = "BasicSyncInfo,MediaSourceCount,SortName";
+                }
+                searchParams.Filters = "IsUnplayed";
+                emby.api.items(
                         emby.authHeader,
                         emby.userId,
                         libraryId,
@@ -115,7 +122,8 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         searchParams.IncludeItemTypes,
                         searchParams.SortBy,
                         searchParams.SortOrder,
-                        fields
+                        searchParams.Fields,
+                        searchParams.Filters
                 ).enqueue(new Callback<ItemPage<Item>>() {
                     @Override
                     public void onResponse(Call<ItemPage<Item>> call, Response<ItemPage<Item>> response) {

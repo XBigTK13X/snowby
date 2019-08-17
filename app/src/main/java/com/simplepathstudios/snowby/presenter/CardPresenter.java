@@ -50,8 +50,6 @@ public class CardPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        Log.d(TAG, "onCreateViewHolder");
-
         sDefaultBackgroundColor =
                 ContextCompat.getColor(parent.getContext(), R.color.default_background);
         sSelectedBackgroundColor =
@@ -83,17 +81,16 @@ public class CardPresenter extends Presenter {
         MediaPreview preview = (MediaPreview) item;
         ImageCardView cardView = (ImageCardView) viewHolder.view;
 
-        Log.d(TAG, "onBindViewHolder");
         if (preview.getImageUrl() != null) {
             cardView.setTitleText(preview.getTitle());
             cardView.setContentText(preview.getContent());
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
 
-            Glide.with(viewHolder.view.getContext())
+            /*Glide.with(viewHolder.view.getContext())
                     .load(preview.getImageUrl())
                     .centerCrop()
                     .error(mDefaultCardImage)
-                    .into(cardView.getMainImageView());
+                    .into(cardView.getMainImageView());*/
 
         }
     }

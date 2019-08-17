@@ -5,4 +5,6 @@ public class MediaSearchParams {
     public String IncludeItemTypes = null;
     public String SortBy = null;
     public String SortOrder = null;
+    public String Fields = null;
+    public String Filters = null;
 }

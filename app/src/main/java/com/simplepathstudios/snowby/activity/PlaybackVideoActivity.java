@@ -54,7 +54,7 @@ public final class PlaybackVideoActivity extends Activity {
         final String itemId =
                 (String) getIntent().getSerializableExtra(PlaybackVideoActivity.PLAYBACK_TARGET);
         final EmbyApiClient emby = EmbyApiClient.getInstance(this);
-        emby.api.getItem(emby.authHeader,emby.userId, itemId).enqueue(new Callback<Item>() {
+        emby.api.item(emby.authHeader,emby.userId, itemId).enqueue(new Callback<Item>() {
             @Override
             public void onResponse(Call<Item> call, Response<Item> response) {
                 Log.i(TAG, "Loaded information for media");
