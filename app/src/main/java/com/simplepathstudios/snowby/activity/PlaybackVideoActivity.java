@@ -104,10 +104,8 @@ public final class PlaybackVideoActivity extends Activity {
 package com.simplepathstudios.snowby.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -120,8 +118,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.exoplayer2.C;
@@ -131,19 +127,11 @@ import com.google.android.exoplayer2.PlaybackPreparer;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.drm.DefaultDrmSessionManager;
-import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
-import com.google.android.exoplayer2.drm.FrameworkMediaDrm;
-import com.google.android.exoplayer2.drm.HttpMediaDrmCallback;
-import com.google.android.exoplayer2.drm.UnsupportedDrmException;
 import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer.DecoderInitializationException;
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil.DecoderQueryException;
 import com.google.android.exoplayer2.source.BehindLiveWindowException;
-import com.google.android.exoplayer2.source.ConcatenatingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.ads.AdsLoader;
-import com.google.android.exoplayer2.source.ads.AdsMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector.MappedTrackInfo;
@@ -154,25 +142,19 @@ import com.google.android.exoplayer2.ui.DebugTextViewHelper;
 import com.google.android.exoplayer2.ui.PlayerControlView;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.ui.spherical.SphericalSurfaceView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.HttpDataSource;
 import com.google.android.exoplayer2.util.ErrorMessageProvider;
 import com.google.android.exoplayer2.util.EventLogger;
 import com.google.android.exoplayer2.util.Util;
 import com.simplepathstudios.snowby.R;
 import com.simplepathstudios.snowby.emby.EmbyApiClient;
 import com.simplepathstudios.snowby.emby.model.Item;
-import com.simplepathstudios.snowby.player.PlayerManager;
 import com.simplepathstudios.snowby.player.TrackSelectionDialog;
-import com.simplepathstudios.snowby.smb.SmbDataSourceFactory;
 import com.simplepathstudios.snowby.smb.SmbMediaLoad;
 import com.simplepathstudios.snowby.util.RenderersManager;
 
-import java.lang.reflect.Constructor;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
@@ -381,7 +363,7 @@ public class PlaybackVideoActivity extends FragmentActivity
             TrackSelectionDialog trackSelectionDialog =
                     TrackSelectionDialog.createForTrackSelector(
                             trackSelector,
-                            /* onDismissListener= */ dismissedDialog -> isShowingTrackSelectionDialog = false);
+                            dismissedDialog -> isShowingTrackSelectionDialog = false);
             trackSelectionDialog.show(getSupportFragmentManager(), /* tag= */ null);
         }
     }

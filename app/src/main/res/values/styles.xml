@@ -3,13 +3,7 @@
 
     <style name="AppTheme" parent="@style/Theme.Leanback" />
 
-    <!-- ExoPlayer Demo
-    <style name="TrackSelectionDialogThemeOverlay" parent="ThemeOverlay.AppCompat.Dialog.Alert">
-        <item name="windowNoTitle">false</item>
-    </style>
-    -->
-
-    <!-- Replace obsolete with below from https://stackoverflow.com/a/36479126 -->
+    <!-- Replace obsolete ExoPlayer theme with https://stackoverflow.com/a/36479126 -->
     <style name="TrackSelectionDialogThemeOverlay">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
