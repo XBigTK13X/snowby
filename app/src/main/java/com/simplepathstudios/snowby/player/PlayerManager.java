@@ -1,4 +1,4 @@
-package com.simplepathstudios.snowby.activity;
+package com.simplepathstudios.snowby.player;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +11,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 
-
+// Needs a better name. It was called this in the copy-pasted source
 public class PlayerManager {
 
     private static final String TAG = "PlayerManager";
