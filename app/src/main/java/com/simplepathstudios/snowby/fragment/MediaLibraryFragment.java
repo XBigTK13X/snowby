@@ -14,6 +14,7 @@
 
 package com.simplepathstudios.snowby.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -29,7 +30,13 @@ import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.simplepathstudios.snowby.emby.model.MediaSearchParams;
@@ -50,6 +57,28 @@ import retrofit2.Response;
 
 public class MediaLibraryFragment extends VerticalGridFragment {
     private static final String TAG = "MediaLibraryFragment";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setTitle(getString(R.string.browse_title));
+        setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.search_opaque));
+
+        VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
+        gridPresenter.setNumberOfColumns(3);
+        setGridPresenter(gridPresenter);
+        ArrayObjectAdapter adapter = new ArrayObjectAdapter(new CardPresenter(false, SnowbyConstants.EMBY_ITEM_CARD_WIDTH,SnowbyConstants.EMBY_ITEM_CARD_HEIGHT));
+        setAdapter(adapter);
+    }
+
+    public void filterMedia(View v){
+        Log.d(TAG, "Filtering media");
+    }
+
+    public void sortMedia(View v){
+        Log.d(TAG, "Sorting media");
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -73,16 +102,17 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                 if(embyItem.CollectionType != null){
                     if(embyItem.CollectionType.equals("movies")) {
                         searchParams.IncludeItemTypes = "Movie";
-                        searchParams.SortBy = "SortName";
-                        searchParams.SortOrder = "Ascending";
                         searchParams.Fields = "DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName";
                     }
                     else if(embyItem.CollectionType.equals("tvshows")){
                         searchParams.IncludeItemTypes = "Series";
-                        searchParams.SortOrder = "Ascending";
-                        searchParams.SortBy = "SortName";
                         searchParams.Fields = "BasicSyncInfo,MediaSourceCount,SortName";
                     }
+                    searchParams.SortBy = "SortName";
+                    searchParams.SortOrder = "Ascending";
+                    searchParams.SortOrder = "Ascending";
+                    searchParams.SortBy = "SortName";
+                    //searchParams.Filters = "IsUnplayed";
                     query = emby.api.items(
                             emby.authHeader,
                             emby.userId,
@@ -94,7 +124,6 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                             searchParams.Fields,
                             searchParams.Filters
                     );
-                    //searchParams.Filters = "IsUnplayed";
                 }
                 else {
                     if(embyItem.Type.equals("Series")){
@@ -135,20 +164,6 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                 Log.e(TAG,"An error occurred while retrieving the parent",t);
             }
         });
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTitle(getString(R.string.browse_title));
-        setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.search_opaque));
-
-        VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
-        gridPresenter.setNumberOfColumns(3);
-        setGridPresenter(gridPresenter);
-        ArrayObjectAdapter adapter = new ArrayObjectAdapter(new CardPresenter(false, SnowbyConstants.EMBY_ITEM_CARD_WIDTH,SnowbyConstants.EMBY_ITEM_CARD_HEIGHT));
-
-        setAdapter(adapter);
     }
 
     private void setupEventListeners() {
