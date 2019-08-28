@@ -82,7 +82,7 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set display parameters for the BrowseFragment
-        headersState = HEADERS_ENABLED
+        headersState = HEADERS_DISABLED
         title = getString(R.string.app_name)
         badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon)
 
