@@ -4,7 +4,7 @@
     <!-- Main VLC Interface -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="app_name" translatable="false">VLC</string>
+    <string name="app_name" translatable="false">Snowby</string>
     <string name="other">Other</string>
     <string name="sortby">Sort by…</string>
     <string name="sortby_name">Name</string>
@@ -64,7 +64,7 @@
     <string name="ringtone_error">An error occurred while setting the ringtone.</string>
     <string name="pause">Pause</string>
     <string name="not_show_again">Don\'t show this message again.</string>
-    <string name="info_title">VLC</string>
+    <string name="info_title">Snowby</string>
     <string name="unknown_artist">Unknown Artist</string>
     <string name="unknown_album">Unknown Album</string>
     <string name="unknown_genre">Unknown Genre</string>
@@ -204,7 +204,7 @@
     <string name="open_mrl_dialog_title">Open network stream</string>
     <string name="open_mrl_dialog_msg">Enter network address: e.g. http://, mms:// or rtsp://</string>
     <string name="error_not_compatible">Sorry, your device is currently not supported by this version of VLC for Android™.</string>
-    <string name="error_problem">Sorry, VLC for Android had a problem loading and had to close.</string>
+    <string name="error_problem">Sorry, Snowby for Android had a problem loading and had to close.</string>
     <string name="error_message_is">The error message is (please mention this when debugging):\n</string>
     <string name="empty" translatable="false"></string>
     <string name="time_0" translatable="false">0:00</string>
@@ -217,7 +217,7 @@
     <string name="minus" translatable="false">−</string>
 
     <string name="encountered_error_title">Playback error</string>
-    <string name="encountered_error_message">VLC encountered an error with this media.\nPlease try refreshing the media library.</string>
+    <string name="encountered_error_message">Snowby encountered an error with this media.\nPlease try refreshing the media library.</string>
     <string name="invalid_location">The location %1$s cannot be played.</string>
 
     <string name="search">Search</string>
@@ -253,11 +253,11 @@
     <string name="hold_to_stop">Hold to stop</string>
 
     <!-- About -->
-    <string name="app_name_full">VLC for Android</string>
+    <string name="app_name_full">Snowby</string>
     <string name="licence">License</string>
     <string name="revision">Revision</string>
     <string name="about">About</string>
-    <string name="about_text">VLC for Android™ is a port of VLC media player, the popular open source media player. The Android™ version can read most files and network streams.</string>
+    <string name="about_text">Snowby is a customized version of VLC. It replaces the media library with an Emby content manager.</string>
     <string name="about_link" translatable="false">        &lt;a href=&quot;https://www.videolan.org/vlc/&quot;&gt;https://www.videolan.org/vlc/&lt;/a&gt;</string>
     <string name="authors" translatable="false">Edward&#160;Wang, Sébastien&#160;Toque, Adrien&#160;Maglo, Jean-Baptiste&#160;Kempf, Ludovic&#160;Fauvet, Rafaël&#160;Carré, Alexandre&#160;Perraud, Michael&#160;Merg, Martin&#160;Storsjö, Rémi&#160;Duraffort, Dominique&#160;Martinet, Jean-Philippe&#160;André, Felix&#160;Abecassis, Christoph&#160;Miebach, Hugo&#160;Beauzée-Luyssen, Felix&#160;Paul&#160;Kühne, John&#160;Mooring, Pavol&#160;Rusnak, Rohit&#160;Yadav, Tanguy&#160;Pruvot, Thomas&#160;Clavier, Asad&#160;Mehmood, Garret&#160;Kelly, Philipp&#160;Dreimann, Walter&#160;Heck, Thomas&#160;Guillem, Geoffrey&#160;Métais, Habib&#160;Kazemi, Nicolas&#160;Pomepuy</string>
     <string name="feedback_link" translatable="false">&lt;a href=&quot;https://forum.videolan.org/viewforum.php?f=35&quot;&gt;%s&lt;/a&gt;</string>
@@ -388,10 +388,10 @@
     <string name="enable_steal_remote_control">Exclusive headset remote control</string>
     <string name="enable_steal_remote_control_summary">Avoid conflicts by stealing the remote control from other apps. This prevents dialing on double click on HTC phones.</string>
     <string name="aout">Audio output</string>
-    <string name="aout_summary">Change the method that VLC uses to output audio.</string>
+    <string name="aout_summary">Change the method that Snowby uses to output audio.</string>
     <string name="aout_audiotrack" translatable="false">AudioTrack</string>
     <string name="aout_opensles" translatable="false">OpenSL ES</string>
-    <string name="audio_ducking_title">Lower VLC volume on notifications</string>
+    <string name="audio_ducking_title">Lower Snowby volume on notifications</string>
     <string name="audio_ducking_summary">Helps to hear audio notifications, navigation instructions or assistant talking</string>
     <string name="casting_category">Casting</string>
     <string name="casting_switch_title">Wireless casting</string>
@@ -441,12 +441,12 @@
     <string name="dump_media_db">Dump media database</string>
     <string name="dump_media_db_summary">Copy database to internal storage root</string>
     <string name="clear_media_db">Clear media database</string>
-    <string name="clear_media_db_summary">Access Android VLC info to clear data</string>
+    <string name="clear_media_db_summary">Access Android Snowby info to clear data</string>
     <string name="clear_history">Clear history</string>
     <string name="media_db_cleared">Media database cleared!</string>
     <string name="set_locale">Set locale</string>
     <string name="set_locale_detail">Leave blank to reset</string>
-    <string name="set_locale_popup">Quit and restart VLC for changes to take effect.</string>
+    <string name="set_locale_popup">Quit and restart Snowby for changes to take effect.</string>
     <string name="network_caching">Network caching value</string>
     <string name="network_caching_summary">The amount of time to buffer network media (in ms). Does not work with hardware decoding. Leave blank to reset.</string>
     <string name="resume_playback_title">Resume playback after a call</string>
@@ -479,7 +479,7 @@
 
     <string name="serious_crash">Unfortunately, a serious error has occurred and VLC had to close.</string>
     <string name="help_us_send_log">Help us improving VLC by sending the following crash log:</string>
-    <string name="restart_vlc">Restart VLC</string>
+    <string name="restart_vlc">Restart Snowby</string>
     <string name="send_log">Send the log</string>
     <string name="sending_log">Sending the log…</string>
 

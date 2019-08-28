@@ -6,12 +6,8 @@
 
     <uses-sdk tools:overrideLibrary="android.support.media.tv, androidx.tvprovider"/>
 
-    <uses-permission
-            android:name="android.permission.READ_LOGS"
-            android:maxSdkVersion="18"/> <!-- android:maxSdkVersion="15" -->
     <!-- vibration on audioplayer buttons long press -->
     <uses-permission android:name="android.permission.VIBRATE"/> <!-- used for setting ringtone -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/> <!-- STORAGE -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET"/> <!-- Launch recommendations service once device is booted -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/> <!-- Audio search on TV -->
@@ -144,7 +140,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme=""/>
                 <data android:scheme="file"/>
                 <data android:scheme="ftp"/>
                 <data android:scheme="ftps"/>
@@ -172,7 +167,7 @@
                 <data android:mimeType="application/x-extension-mp4"/>
                 <data android:mimeType="application/x-flac"/>
                 <data android:mimeType="application/x-matroska"/>
-                <data android:mimeType="application/x-mpegURL"/>
+                <data android:mimeType="application/x-mpegurl"/>
                 <data android:mimeType="application/x-ogg"/>
                 <data android:mimeType="application/x-quicktimeplayer"/>
                 <data android:mimeType="application/x-shockwave-flash"/>
@@ -185,7 +180,6 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme=""/>
                 <data android:scheme="file"/>
                 <data android:scheme="ftp"/>
                 <data android:scheme="content"/>
@@ -516,11 +510,6 @@
                 android:name=".gui.DialogActivity"
                 android:configChanges="orientation|screenSize"
                 android:theme="@style/VLCTransparentTheme"/>
-        <activity
-                android:name=".gui.wizard.MLWizardActivity"
-                android:configChanges="orientation|screenSize"
-                android:label="@string/ml_wizard_title"
-                android:theme="@style/Theme.MaterialComponents.Light.Dialog"/>
 
         <service android:name=".extensions.ExtensionManagerService"/>
         <service android:name=".PlaybackService">

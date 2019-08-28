@@ -24,6 +24,7 @@ package org.videolan.vlc.viewmodels.tv
 
 import android.app.Application
 import android.content.Intent
+import android.net.Uri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
@@ -34,6 +35,7 @@ import org.videolan.medialibrary.interfaces.AbstractMedialibrary
 import org.videolan.medialibrary.interfaces.media.AbstractMediaWrapper
 import org.videolan.medialibrary.media.DummyItem
 import org.videolan.medialibrary.media.MediaLibraryItem
+import org.videolan.medialibrary.media.MediaWrapper
 import org.videolan.vlc.ExternalMonitor
 import org.videolan.vlc.PlaybackService
 import org.videolan.vlc.R
@@ -134,6 +136,7 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
             (videos as MutableLiveData).value = mutableListOf<MediaLibraryItem>().apply {
                 add(DummyItem(HEADER_VIDEO, context.getString(R.string.videos_all), context.resources.getQuantityString(R.plurals.videos_quantity, it.size, it.size)))
                 addAll(it)
+                add(MediaWrapper(Uri.parse("smb://trove.9914.us/media/tv/Laid-Back Camp/Season 1/Laid-Back Camp - S01E05 - Two Camps, Two Campers' Views.mkv")))
             }
         }
     }
