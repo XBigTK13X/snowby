@@ -3,6 +3,7 @@ package com.simplepathstudios.snowby.emby.model;
 import com.simplepathstudios.snowby.util.SnowbyConstants;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.List;
 
 public class MediaResume extends MediaPreview {
@@ -34,7 +35,13 @@ public class MediaResume extends MediaPreview {
     }
 
     @Override
-    public String getPrimaryImageUrl(){
-        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth="+ SnowbyConstants.OVERVIEW_CARD_WIDTH+"maxHeight="+SnowbyConstants.OVERVIEW_CARD_HEIGHT+"&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
+    public String getPrimaryImageUrl(int width, int height){
+        if(ImageTags.containsKey("Thumb")){
+            return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/" + Id + "/Images/Thumb?maxWidth="+width+"&tag="+ImageTags.get("Thumb")+"&quality=100";
+        }
+        if(ParentBackdropImageTags.size()<=0){
+            return null;
+        }
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/" +ParentBackdropItemId+ "/Images/Backdrop?maxWidth="+ width+"maxHeight="+height+"&tag="+ParentBackdropImageTags.get(0)+"&quality=100";
     }
 }

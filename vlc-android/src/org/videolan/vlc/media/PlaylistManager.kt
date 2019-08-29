@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.simplepathstudios.snowby.util.SnowbyConstants
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
@@ -614,20 +615,7 @@ class PlaylistManager(val service: PlaybackService) : MediaWrapperList.EventList
     fun getMedia(position: Int) = mediaList.getMedia(position)
 
     private suspend fun getStartTime(mw: AbstractMediaWrapper) : Long {
-        val start = when {
-            mw.hasFlag(AbstractMediaWrapper.MEDIA_FROM_START) -> {
-                mw.removeFlags(AbstractMediaWrapper.MEDIA_FROM_START)
-                0L
-            }
-            savedTime <= 0L -> when {
-                mw.time > 0L -> mw.time
-                mw.type == AbstractMediaWrapper.TYPE_VIDEO || mw.isPodcast -> withContext(Dispatchers.IO) { medialibrary.findMedia(mw).getMetaLong(AbstractMediaWrapper.META_PROGRESS) }
-                else -> 0L
-            }
-            else -> savedTime
-        }
-        savedTime = 0L
-        return start
+        return SnowbyConstants.getResumePositionMilliseconds()
     }
 
     @Synchronized

@@ -25,33 +25,31 @@ package org.videolan.vlc.viewmodels.tv
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import com.simplepathstudios.snowby.emby.EmbyApiClient
+import com.simplepathstudios.snowby.emby.model.Item
+import com.simplepathstudios.snowby.emby.model.MediaResume
+import com.simplepathstudios.snowby.util.SnowbyConstants
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.actor
 import org.videolan.medialibrary.interfaces.AbstractMedialibrary
 import org.videolan.medialibrary.interfaces.media.AbstractMediaWrapper
 import org.videolan.medialibrary.media.DummyItem
 import org.videolan.medialibrary.media.MediaLibraryItem
 import org.videolan.medialibrary.media.MediaWrapper
-import org.videolan.vlc.ExternalMonitor
-import org.videolan.vlc.PlaybackService
-import org.videolan.vlc.R
-import org.videolan.vlc.database.models.BrowserFav
 import org.videolan.vlc.gui.DialogActivity
 import org.videolan.vlc.gui.tv.MainTvActivity
-import org.videolan.vlc.gui.tv.NowPlayingDelegate
 import org.videolan.vlc.gui.tv.TvUtil
 import org.videolan.vlc.gui.tv.audioplayer.AudioPlayerActivity
 import org.videolan.vlc.gui.tv.browser.TVActivity
 import org.videolan.vlc.gui.tv.browser.VerticalGridActivity
 import org.videolan.vlc.media.MediaUtils
-import org.videolan.vlc.media.PlaylistManager
-import org.videolan.vlc.repository.BrowserFavRepository
-import org.videolan.vlc.repository.DirectoryRepository
 import org.videolan.vlc.util.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 private const val NUM_ITEMS_PREVIEW = 5
 private const val TAG = "MainTvModel"
@@ -64,69 +62,20 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
     val context = getApplication<Application>().baseContext!!
     private val medialibrary = AbstractMedialibrary.getInstance()
     val settings = Settings.getInstance(context)
-    private val showInternalStorage = AndroidDevices.showInternalStorage()
-    private val browserFavRepository = BrowserFavRepository.getInstance(context)
-    private var updatedFavoritList: List<AbstractMediaWrapper> = listOf()
     var showHistory = false
         private set
+
     // LiveData
-    private val favorites: LiveData<List<BrowserFav>> = browserFavRepository.browserFavorites
-    val nowPlaying: LiveData<List<MediaLibraryItem>> = MutableLiveData()
     val videos: LiveData<List<MediaLibraryItem>> = MutableLiveData()
-    val audioCategories: LiveData<List<MediaLibraryItem>> = MutableLiveData()
-    val browsers: LiveData<List<MediaLibraryItem>> = MutableLiveData()
-    val history: LiveData<List<AbstractMediaWrapper>> = MutableLiveData()
-    val playlist: LiveData<List<MediaLibraryItem>> = MutableLiveData()
 
-    private val nowPlayingDelegate = NowPlayingDelegate(this)
-
-    private val updateActor = actor<Unit>(capacity = Channel.CONFLATED) {
-        for (action in channel) updateBrowsers()
-    }
-
-    private val historyActor = actor<Unit>(capacity = Channel.CONFLATED) {
-        for (action in channel) setHistory()
-    }
-
-    private val favObserver = Observer<List<BrowserFav>> { list ->
-        updatedFavoritList = convertFavorites(list)
-        if (!updateActor.isClosedForSend) updateActor.offer(Unit)
-    }
-
-    private val monitorObserver = Observer<Any> { updateActor.offer(Unit) }
-
-    private val playerObserver = Observer<Boolean> { updateAudioCategories() }
 
     init {
         medialibrary.addOnMedialibraryReadyListener(this)
         medialibrary.addOnDeviceChangeListener(this)
-        favorites.observeForever(favObserver)
-        ExternalMonitor.connected.observeForever(monitorObserver)
-        ExternalMonitor.storageUnplugged.observeForever(monitorObserver)
-        ExternalMonitor.storagePlugged.observeForever(monitorObserver)
-        PlaylistManager.showAudioPlayer.observeForever(playerObserver)
     }
 
     fun refresh() = launch {
-        updateNowPlaying()
         updateVideos()
-        updateAudioCategories()
-        historyActor.offer(Unit)
-        updateActor.offer(Unit)
-        updatePlaylists()
-    }
-
-    private suspend fun setHistory() {
-        if (!medialibrary.isStarted) return
-        val historyEnabled = settings.getBoolean(PLAYBACK_HISTORY, true)
-        showHistory = historyEnabled
-        if (!historyEnabled) (history as MutableLiveData).value = emptyList()
-        else updateHistory()
-    }
-
-    suspend fun updateHistory() {
-        if (!showHistory) return
-        (history as MutableLiveData).value = context.getFromMl { lastMediaPlayed().toMutableList() }
     }
 
     private fun updateVideos() = launch {
@@ -134,62 +83,11 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
             getPagedVideos(AbstractMedialibrary.SORT_INSERTIONDATE, true, NUM_ITEMS_PREVIEW, 0)
         }.let {
             (videos as MutableLiveData).value = mutableListOf<MediaLibraryItem>().apply {
-                add(DummyItem(HEADER_VIDEO, context.getString(R.string.videos_all), context.resources.getQuantityString(R.plurals.videos_quantity, it.size, it.size)))
-                addAll(it)
                 add(MediaWrapper(Uri.parse("smb://trove.9914.us/media/tv/Laid-Back Camp/Season 1/Laid-Back Camp - S01E05 - Two Camps, Two Campers' Views.mkv")))
             }
         }
     }
 
-    fun updateNowPlaying() = launch {
-        val list = mutableListOf<MediaLibraryItem>()
-        PlaybackService.service.value?.run {
-            currentMediaWrapper?.let {
-                DummyItem(CATEGORY_NOW_PLAYING, it.title, it.artist).apply { setArtWork(coverArt) }
-            }
-        }?.let { list.add(0, it) }
-        (nowPlaying as MutableLiveData).value = list
-    }
-
-    private fun updatePlaylists() = launch {
-        context.getFromMl {
-            getPagedPlaylists(AbstractMedialibrary.SORT_INSERTIONDATE, true, NUM_ITEMS_PREVIEW, 0)
-        }.let {
-            (playlist as MutableLiveData).value = mutableListOf<MediaLibraryItem>().apply {
-                //                add(DummyItem(HEADER_PLAYLISTS, context.getString(R.string.playlists), ""))
-                addAll(it)
-            }
-        }
-    }
-
-    private fun updateAudioCategories() {
-        val list = mutableListOf<MediaLibraryItem>(
-                DummyItem(CATEGORY_ARTISTS, context.getString(R.string.artists), ""),
-                DummyItem(CATEGORY_ALBUMS, context.getString(R.string.albums), ""),
-                DummyItem(CATEGORY_GENRES, context.getString(R.string.genres), ""),
-                DummyItem(CATEGORY_SONGS, context.getString(R.string.tracks), "")
-        )
-        (audioCategories as MutableLiveData).value = list
-    }
-
-    private suspend fun updateBrowsers() {
-        val list = mutableListOf<MediaLibraryItem>()
-        val directories = DirectoryRepository.getInstance(context).getMediaDirectoriesList(context).toMutableList()
-        if (!showInternalStorage && directories.isNotEmpty()) directories.removeAt(0)
-        directories.forEach { if (it.location.scanAllowed()) list.add(it) }
-
-        if (ExternalMonitor.isLan) {
-            list.add(DummyItem(HEADER_NETWORK, context.getString(R.string.network_browsing), null))
-            list.add(DummyItem(HEADER_STREAM, context.getString(R.string.open_mrl), null))
-            list.add(DummyItem(HEADER_SERVER, context.getString(R.string.server_add_title), null))
-            updatedFavoritList.forEach {
-                it.description = it.uri.scheme
-                list.add(it)
-            }
-        }
-        (browsers as MutableLiveData).value = list
-        delay(500L)
-    }
 
     override fun onMedialibraryIdle() {
         refresh()
@@ -207,12 +105,6 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
         super.onCleared()
         medialibrary.removeOnMedialibraryReadyListener(this)
         medialibrary.removeOnDeviceChangeListener(this)
-        favorites.removeObserver(favObserver)
-        ExternalMonitor.connected.removeObserver(monitorObserver)
-        ExternalMonitor.storageUnplugged.removeObserver(monitorObserver)
-        ExternalMonitor.storagePlugged.removeObserver(monitorObserver)
-        PlaylistManager.showAudioPlayer.removeObserver(playerObserver)
-        nowPlayingDelegate.onClear()
         cancel()
     }
 
@@ -246,6 +138,23 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
                     intent.putExtra(MainTvActivity.BROWSER_TYPE, item.id)
                     activity.startActivity(intent)
                 }
+            }
+            is MediaResume -> {
+                val emby = EmbyApiClient.getInstance(context)
+                emby.api.item(emby.authHeader, emby.userId, item.Id).enqueue(object : Callback<Item> {
+                    override fun onResponse(call: Call<Item>, response: Response<Item>) {
+                        Log.i(TAG, "Loaded information for media")
+                        val embyItem = response.body()
+                        val embyMedia = MediaWrapper(Uri.parse(embyItem?.Path))
+                        // In Emby one tick is one microsecond. Time units in VLC are Milliseconds
+                        SnowbyConstants.setResumePositionMilliseconds(embyItem!!.UserData.PlaybackPositionTicks/10000)
+                        MediaUtils.openMedia(activity, embyMedia)
+                    }
+
+                    override fun onFailure(call: Call<Item>, t: Throwable) {
+                        Log.e(TAG, "An error occurred while media was loading", t)
+                    }
+                })
             }
             is MediaLibraryItem -> TvUtil.openAudioCategory(activity, item)
         }

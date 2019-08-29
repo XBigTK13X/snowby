@@ -18,6 +18,11 @@
     <dimen name="info_appbar_height">150dp</dimen>
     <dimen name="audioplayer_controls_margin">0dp</dimen>
 
+    <dimen name="snowby_home_card_width">300dp</dimen>
+    <dimen name="snowby_home_card_height">150dp</dimen>
+    <dimen name="snowby_library_card_width">300dp</dimen>
+    <dimen name="snowby_library_card_height">150dp</dimen>
+
     <!--Keylines-->
     <dimen name="kl_half">4dp</dimen>
     <dimen name="kl_small">8dp</dimen>

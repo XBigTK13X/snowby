@@ -24,27 +24,31 @@ package org.videolan.vlc.gui.tv
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import androidx.lifecycle.Observer
+import com.simplepathstudios.snowby.emby.EmbyApiClient
+import com.simplepathstudios.snowby.emby.model.*
+import com.simplepathstudios.snowby.util.SnowbyConstants
 import kotlinx.coroutines.*
 import org.videolan.libvlc.util.AndroidUtil
 import org.videolan.medialibrary.interfaces.AbstractMedialibrary
 import org.videolan.medialibrary.interfaces.media.AbstractMediaWrapper
 import org.videolan.medialibrary.media.DummyItem
-import org.videolan.vlc.BuildConfig
-import org.videolan.vlc.R
-import org.videolan.vlc.RecommendationsService
+import org.videolan.vlc.*
 import org.videolan.vlc.gui.tv.TvUtil.diffCallback
 import org.videolan.vlc.gui.tv.audioplayer.AudioPlayerActivity
 import org.videolan.vlc.gui.tv.browser.VerticalGridActivity
-import org.videolan.vlc.reloadLibrary
 import org.videolan.vlc.util.*
 import org.videolan.vlc.viewmodels.tv.MainTvModel
 import org.videolan.vlc.viewmodels.tv.MainTvModel.Companion.getMainTvModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 private const val TAG = "VLC/MainTvFragment"
 
@@ -56,12 +60,6 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
     private var backgroundManager: BackgroundManager? = null
     private lateinit var rowsAdapter: ArrayObjectAdapter
 
-    private lateinit var nowPlayingAdapter: ArrayObjectAdapter
-    private lateinit var videoAdapter: ArrayObjectAdapter
-    private lateinit var categoriesAdapter: ArrayObjectAdapter
-    private lateinit var historyAdapter: ArrayObjectAdapter
-    private lateinit var playlistAdapter: ArrayObjectAdapter
-    private lateinit var browserAdapter: ArrayObjectAdapter
     private lateinit var otherAdapter: ArrayObjectAdapter
 
     private lateinit var nowPlayingRow: ListRow
@@ -99,85 +97,94 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ctx = requireActivity()
-        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
-        // Now Playing
-        nowPlayingAdapter = ArrayObjectAdapter(CardPresenter(ctx))
-        val nowPlayingHeader = HeaderItem(HEADER_CATEGORIES, getString(R.string.music_now_playing))
-        nowPlayingRow = ListRow(nowPlayingHeader, nowPlayingAdapter)
-        rowsAdapter.add(nowPlayingRow)
-        // Video
-        videoAdapter = ArrayObjectAdapter(CardPresenter(ctx))
-        val videoHeader = HeaderItem(0, getString(R.string.video))
-        videoRow = ListRow(videoHeader, videoAdapter)
-        rowsAdapter.add(videoRow)
-        // Audio
-        categoriesAdapter = ArrayObjectAdapter(CardPresenter(ctx))
-        val musicHeader = HeaderItem(HEADER_CATEGORIES, getString(R.string.audio))
-        audioRow = ListRow(musicHeader, categoriesAdapter)
-        rowsAdapter.add(audioRow)
-        //History
+        val emby = EmbyApiClient.getInstance(context)
 
-        // Playlists
-        playlistAdapter = ArrayObjectAdapter(CardPresenter(ctx))
-        val playlistHeader = HeaderItem(HEADER_PLAYLISTS, getString(R.string.playlists))
-        playlistRow = ListRow(playlistHeader, playlistAdapter)
-//        rowsAdapter.add(playlistRow)
+        val fragment = this
 
-        //Browser section
-        browserAdapter = ArrayObjectAdapter(CardPresenter(ctx))
-        val browserHeader = HeaderItem(HEADER_NETWORK, getString(R.string.browsing))
-        browsersRow = ListRow(browserHeader, browserAdapter)
-        rowsAdapter.add(browsersRow)
-        //Misc. section
-        otherAdapter = ArrayObjectAdapter(GenericCardPresenter(ctx))
-        val miscHeader = HeaderItem(HEADER_MISC, getString(R.string.other))
+        emby.api.listUsers().enqueue(object : Callback<List<User>> {
+            override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
+                val user = response.body()!![0]
+                val login = Login()
+                login.Username = user.Name
+                login.Pw = ""
+                emby.setUserId(user.Id)
+                emby.api.login(emby.authHeader, login).enqueue(object : Callback<AuthenticatedUser> {
+                    override fun onResponse(call: Call<AuthenticatedUser>, response: Response<AuthenticatedUser>) {
+                        val authenticatedUser = response.body()
+                        emby.setAccessToken(authenticatedUser!!.AccessToken)
+                        emby.api.mediaOverview(emby.authHeader, user.Id).enqueue(object : Callback<ItemPage<MediaView>> {
+                            override fun onResponse(call: Call<ItemPage<MediaView>>, response: Response<ItemPage<MediaView>>) {
+                                val overviewList = response.body()!!.Items
+                                emby.api.resumeOverview(emby.authHeader, user.Id).enqueue(object : Callback<ItemPage<MediaResume>> {
+                                    override fun onResponse(call: Call<ItemPage<MediaResume>>, response: Response<ItemPage<MediaResume>>) {
+                                        Log.i(TAG, "Data loaded, refreshing view")
+                                        val ctx = requireActivity()
+                                        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        otherAdapter.add(GenericCardItem(ID_SETTINGS, getString(R.string.preferences), "", R.drawable.ic_menu_preferences_big, R.color.tv_card_content_dark))
-        otherAdapter.add(GenericCardItem(ID_REFRESH, getString(R.string.refresh), "", R.drawable.ic_menu_scan, R.color.tv_card_content_dark))
-        otherAdapter.add(GenericCardItem(ID_ABOUT_TV, getString(R.string.about), "${getString(R.string.app_name_full)} ${BuildConfig.VERSION_NAME}", R.drawable.ic_menu_info_big, R.color.tv_card_content_dark))
-        otherAdapter.add(GenericCardItem(ID_LICENCE, getString(R.string.licence), "", R.drawable.ic_menu_open_source, R.color.tv_card_content_dark))
-        miscRow = ListRow(miscHeader, otherAdapter)
-        rowsAdapter.add(miscRow)
+                                        val resumeList = response.body()!!.Items
 
-        historyAdapter = ArrayObjectAdapter(CardPresenter(requireActivity()))
-        val historyHeader = HeaderItem(HEADER_HISTORY, getString(R.string.history))
-        historyRow = ListRow(historyHeader, historyAdapter)
+                                        val cardPresenter = CardPresenter(
+                                                requireActivity(),
+                                                VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_width),
+                                                VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_height)
+                                        )
 
-        adapter = rowsAdapter
-        onItemViewClickedListener = this
-        onItemViewSelectedListener = this
-        // ViewModel setup
-        registerDatasets()
-    }
+                                        val mediaOverviewRow = ArrayObjectAdapter(cardPresenter)
+                                        for (mediaView in overviewList) {
+                                            if (mediaView.CollectionType == "movies" || mediaView.CollectionType == "tvshows") {
+                                                mediaOverviewRow.add(mediaView)
+                                            }
+                                        }
+                                        if (mediaOverviewRow.size() > 0) {
+                                            val mediaOverviewHeader = HeaderItem(0, "Media")
+                                            rowsAdapter.add(ListRow(mediaOverviewHeader, mediaOverviewRow))
+                                        }
 
-    private fun registerDatasets() {
-        model.browsers.observe(this, Observer {
-            browserAdapter.setItems(it, diffCallback)
-        })
-        model.audioCategories.observe(this, Observer {
-            categoriesAdapter.setItems(it.toList(), diffCallback)
-        })
-        model.videos.observe(this, Observer {
-            videoAdapter.setItems(it, diffCallback)
-        })
-        model.nowPlaying.observe(this, Observer {
-            displayNowPlaying = it.isNotEmpty()
-            nowPlayingAdapter.setItems(it, diffCallback)
-        })
-        model.history.observe(this, Observer {
-            displayHistory = it.isNotEmpty()
-            if (it.isNotEmpty()) {
-                historyAdapter.setItems(it, diffCallback)
+                                        if (resumeList.size > 0) {
+                                            val resumeRow = ArrayObjectAdapter(cardPresenter)
+                                            for (mediaResume in resumeList) {
+                                                resumeRow.add(mediaResume)
+                                            }
+                                            val resumeHeader = HeaderItem(1, "Resume")
+                                            rowsAdapter.add(ListRow(resumeHeader, resumeRow))
+                                        }
+
+                                        //Misc. section
+                                        otherAdapter = ArrayObjectAdapter(GenericCardPresenter(ctx))
+                                        val miscHeader = HeaderItem(HEADER_MISC, getString(R.string.other))
+
+                                        otherAdapter.add(GenericCardItem(ID_SETTINGS, getString(R.string.preferences), "", R.drawable.ic_menu_preferences_big, R.color.tv_card_content_dark))
+                                        otherAdapter.add(GenericCardItem(ID_ABOUT_TV, getString(R.string.about), "${getString(R.string.app_name_full)} ${BuildConfig.VERSION_NAME}", R.drawable.ic_menu_info_big, R.color.tv_card_content_dark))
+                                        otherAdapter.add(GenericCardItem(ID_LICENCE, getString(R.string.licence), "", R.drawable.ic_menu_open_source, R.color.tv_card_content_dark))
+                                        miscRow = ListRow(miscHeader, otherAdapter)
+                                        rowsAdapter.add(miscRow)
+
+                                        adapter = rowsAdapter
+                                        onItemViewClickedListener = fragment
+                                        onItemViewSelectedListener = fragment
+                                    }
+
+                                    override fun onFailure(call: Call<ItemPage<MediaResume>>, t: Throwable) {
+                                        Log.e(TAG, "An error occurred while getting in progress content", t)
+                                    }
+                                })
+                            }
+
+                            override fun onFailure(call: Call<ItemPage<MediaView>>, t: Throwable) {
+                                Log.e(TAG, "An error occurred while getting media overview", t)
+                            }
+                        })
+                    }
+
+                    override fun onFailure(call: Call<AuthenticatedUser>, t: Throwable) {
+                        Log.e(TAG, "An error occurred while logging in", t)
+                    }
+                })
             }
-            resetLines()
-        })
 
-        model.playlist.observe(this, Observer {
-            displayPlaylist = it.isNotEmpty()
-            playlistAdapter.setItems(it, diffCallback)
-            resetLines()
-
+            override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                Log.e(TAG, "An error occurred while finding users", t)
+            }
         })
     }
 
@@ -234,16 +241,6 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
     override fun onItemClicked(itemViewHolder: Presenter.ViewHolder?, item: Any?, rowViewHolder: RowPresenter.ViewHolder?, row: Row?) {
         val activity = requireActivity()
         when (row?.id) {
-            HEADER_CATEGORIES -> {
-                if ((item as DummyItem).id == CATEGORY_NOW_PLAYING) { //NOW PLAYING CARD
-                    activity.startActivity(Intent(activity, AudioPlayerActivity::class.java))
-                    return
-                }
-                val intent = Intent(activity, VerticalGridActivity::class.java)
-                intent.putExtra(MainTvActivity.BROWSER_TYPE, HEADER_CATEGORIES)
-                intent.putExtra(CATEGORY, item.id)
-                activity.startActivity(intent)
-            }
             HEADER_MISC -> {
                 when ((item as GenericCardItem).id) {
                     ID_SETTINGS -> activity.startActivityForResult(Intent(activity, org.videolan.vlc.gui.tv.preferences.PreferencesActivity::class.java), ACTIVITY_RESULT_PREFERENCES)

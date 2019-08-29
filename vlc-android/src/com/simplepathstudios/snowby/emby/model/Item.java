@@ -34,8 +34,8 @@ public class Item extends MediaPreview {
     }
 
     @Override
-    public String getPrimaryImageUrl() {
-        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+SnowbyConstants.OVERVIEW_CARD_HEIGHT+"&maxWidth="+SnowbyConstants.OVERVIEW_CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
+    public String getPrimaryImageUrl(int width, int height) {
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+width+"&maxWidth="+height+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
     public String getFidelity(){

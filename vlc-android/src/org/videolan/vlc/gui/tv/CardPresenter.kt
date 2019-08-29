@@ -37,6 +37,9 @@ import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.bumptech.glide.Glide
+import com.simplepathstudios.snowby.emby.model.MediaPreview
+import com.simplepathstudios.snowby.emby.model.MediaResume
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.ObsoleteCoroutinesApi
 import org.videolan.medialibrary.Tools
@@ -54,7 +57,7 @@ import org.videolan.vlc.util.*
 @ObsoleteCoroutinesApi
 @ExperimentalCoroutinesApi
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-class CardPresenter(private val context: Activity) : Presenter() {
+class CardPresenter(private val context: Activity,private val cardWidth:Int = CARD_WIDTH, private val cardHeight:Int = CARD_HEIGHT) : Presenter() {
 
     private var mIsSeenMediaMarkerVisible = true
     private var sDefaultCardImage: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_default_cone)
@@ -126,7 +129,7 @@ class CardPresenter(private val context: Activity) : Presenter() {
         cardView.isFocusable = true
         cardView.isFocusableInTouchMode = true
         cardView.setBackgroundColor(ContextCompat.getColor(context, R.color.lb_details_overview_bg_color))
-        cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT)
+        cardView.setMainImageDimensions(cardWidth, cardHeight)
         return ViewHolder(cardView)
     }
 
@@ -155,6 +158,17 @@ class CardPresenter(private val context: Activity) : Presenter() {
                 holder.cardView.titleText = item
                 holder.cardView.contentText = ""
                 holder.updateCardViewImage(sDefaultCardImage)
+            }
+
+            is MediaPreview -> {
+                holder.cardView.titleText = item.getTitle()
+                holder.cardView.contentText = item.getContent()
+                holder.cardView.setMainImageDimensions(cardWidth, cardHeight)
+                Glide.with(viewHolder.view.context)
+                        .load(item.getImageUrl(cardWidth,cardHeight))
+                        .centerCrop()
+                        .error(sDefaultCardImage)
+                        .into(holder.cardView.mainImageView)
             }
         }
         if (item is DummyItem && item.id == CATEGORY_NOW_PLAYING) {
@@ -211,6 +225,8 @@ class CardPresenter(private val context: Activity) : Presenter() {
         private const val TAG = "CardPresenter"
         private val CARD_WIDTH = VLCApplication.appResources.getDimensionPixelSize(R.dimen.tv_grid_card_thumb_width)
         private val CARD_HEIGHT = VLCApplication.appResources.getDimensionPixelSize(R.dimen.tv_grid_card_thumb_height)
+        private val SNOWBY_HOME_CARD_WIDTH = VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_width)
+        private val SNOWBY_HOME_CARD_HEIGHT = VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_height)
 
     }
 }

@@ -23,7 +23,7 @@ public class MediaView extends MediaPreview {
     }
 
     @Override
-    public String getPrimaryImageUrl(){
-        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+ SnowbyConstants.EMBY_ITEM_CARD_HEIGHT+"&maxWidth="+ SnowbyConstants.EMBY_ITEM_CARD_WIDTH+"&tag="+ImageTags.get("Primary")+"&quality=100";
+    public String getPrimaryImageUrl(int width, int height){
+        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+ height+"&maxWidth="+ width+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 }
