@@ -30,19 +30,14 @@ import androidx.core.content.ContextCompat
 import androidx.leanback.app.BackgroundManager
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
-import androidx.lifecycle.Observer
 import com.simplepathstudios.snowby.emby.EmbyApiClient
 import com.simplepathstudios.snowby.emby.model.*
-import com.simplepathstudios.snowby.util.SnowbyConstants
+import com.simplepathstudios.snowby.util.SnowbySettings
 import kotlinx.coroutines.*
 import org.videolan.libvlc.util.AndroidUtil
 import org.videolan.medialibrary.interfaces.AbstractMedialibrary
 import org.videolan.medialibrary.interfaces.media.AbstractMediaWrapper
-import org.videolan.medialibrary.media.DummyItem
 import org.videolan.vlc.*
-import org.videolan.vlc.gui.tv.TvUtil.diffCallback
-import org.videolan.vlc.gui.tv.audioplayer.AudioPlayerActivity
-import org.videolan.vlc.gui.tv.browser.VerticalGridActivity
 import org.videolan.vlc.util.*
 import org.videolan.vlc.viewmodels.tv.MainTvModel
 import org.videolan.vlc.viewmodels.tv.MainTvModel.Companion.getMainTvModel
@@ -125,8 +120,8 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
 
                                         val cardPresenter = CardPresenter(
                                                 requireActivity(),
-                                                VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_width),
-                                                VLCApplication.appResources.getDimensionPixelSize(R.dimen.snowby_home_card_height)
+                                                SnowbySettings.getHomeCardWidth(),
+                                                SnowbySettings.getHomeCardHeight()
                                         )
 
                                         val mediaOverviewRow = ArrayObjectAdapter(cardPresenter)

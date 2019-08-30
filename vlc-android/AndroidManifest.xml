@@ -618,6 +618,10 @@
                 android:name=".gui.tv.LicenceActivity"
                 android:screenOrientation="landscape"
                 android:theme="@style/Theme.VLC.TV"/>
+        <activity
+            android:name="com.simplepathstudios.snowby.gui.MediaLibraryActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.VLC.TV"/>
 
         <service
                 android:name=".RecommendationsService"

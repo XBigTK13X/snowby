@@ -3,7 +3,7 @@ package com.simplepathstudios.snowby.emby;
 import android.content.Context;
 import android.provider.Settings;
 
-import com.simplepathstudios.snowby.util.SnowbyConstants;
+import com.simplepathstudios.snowby.util.SnowbySettings;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -25,7 +25,7 @@ public class EmbyApiClient {
         String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SnowbyConstants.EMBY_SERVER_ADDRESS)
+                .baseUrl(SnowbySettings.EMBY_SERVER_ADDRESS)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

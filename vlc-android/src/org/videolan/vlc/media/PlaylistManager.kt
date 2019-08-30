@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.simplepathstudios.snowby.util.SnowbyConstants
+import com.simplepathstudios.snowby.util.SnowbySettings
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
@@ -615,7 +615,7 @@ class PlaylistManager(val service: PlaybackService) : MediaWrapperList.EventList
     fun getMedia(position: Int) = mediaList.getMedia(position)
 
     private suspend fun getStartTime(mw: AbstractMediaWrapper) : Long {
-        return SnowbyConstants.getResumePositionMilliseconds()
+        return SnowbySettings.getResumePositionMilliseconds()
     }
 
     @Synchronized

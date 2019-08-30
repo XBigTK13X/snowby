@@ -156,7 +156,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
     private val mediaPlayerListener = MediaPlayer.EventListener { event ->
         when (event.type) {
             MediaPlayer.Event.Playing -> {
-                if (BuildConfig.DEBUG) Log.i(TAG, "MediaPlayer.Event.Playing")
+                if (BuildConfig.DEBUG) Log.i(TAG, "SnowbyMediaPlayer.Event.Playing")
                 executeUpdate()
                 publishState()
                 audioFocusHelper.changeAudioFocus(true)
@@ -171,7 +171,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
                 }
             }
             MediaPlayer.Event.Paused -> {
-                if (BuildConfig.DEBUG) Log.i(TAG, "MediaPlayer.Event.Paused")
+                if (BuildConfig.DEBUG) Log.i(TAG, "SnowbyMediaPlayer.Event.Paused")
                 executeUpdate()
                 publishState()
                 showNotification()

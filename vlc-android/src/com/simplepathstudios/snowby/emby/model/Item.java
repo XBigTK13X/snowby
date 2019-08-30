@@ -1,6 +1,6 @@
 package com.simplepathstudios.snowby.emby.model;
 
-import com.simplepathstudios.snowby.util.SnowbyConstants;
+import com.simplepathstudios.snowby.util.SnowbySettings;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class Item extends MediaPreview {
 
     @Override
     public String getPrimaryImageUrl(int width, int height) {
-        return SnowbyConstants.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+width+"&maxWidth="+height+"&tag="+ImageTags.get("Primary")+"&quality=100";
+        return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+width+"&maxWidth="+height+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
     public String getFidelity(){

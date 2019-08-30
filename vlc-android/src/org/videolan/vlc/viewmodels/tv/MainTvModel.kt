@@ -25,14 +25,13 @@ package org.videolan.vlc.viewmodels.tv
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
-import com.simplepathstudios.snowby.emby.EmbyApiClient
-import com.simplepathstudios.snowby.emby.model.Item
 import com.simplepathstudios.snowby.emby.model.MediaResume
-import com.simplepathstudios.snowby.util.SnowbyConstants
+import com.simplepathstudios.snowby.emby.model.MediaView
+import com.simplepathstudios.snowby.gui.MediaLibraryActivity
+import com.simplepathstudios.snowby.util.SnowbyMediaPlayer
 import kotlinx.coroutines.*
 import org.videolan.medialibrary.interfaces.AbstractMedialibrary
 import org.videolan.medialibrary.interfaces.media.AbstractMediaWrapper
@@ -47,9 +46,6 @@ import org.videolan.vlc.gui.tv.browser.TVActivity
 import org.videolan.vlc.gui.tv.browser.VerticalGridActivity
 import org.videolan.vlc.media.MediaUtils
 import org.videolan.vlc.util.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 private const val NUM_ITEMS_PREVIEW = 5
 private const val TAG = "MainTvModel"
@@ -140,21 +136,12 @@ class MainTvModel(app: Application) : AndroidViewModel(app), AbstractMedialibrar
                 }
             }
             is MediaResume -> {
-                val emby = EmbyApiClient.getInstance(context)
-                emby.api.item(emby.authHeader, emby.userId, item.Id).enqueue(object : Callback<Item> {
-                    override fun onResponse(call: Call<Item>, response: Response<Item>) {
-                        Log.i(TAG, "Loaded information for media")
-                        val embyItem = response.body()
-                        val embyMedia = MediaWrapper(Uri.parse(embyItem?.Path))
-                        // In Emby one tick is one microsecond. Time units in VLC are Milliseconds
-                        SnowbyConstants.setResumePositionMilliseconds(embyItem!!.UserData.PlaybackPositionTicks/10000)
-                        MediaUtils.openMedia(activity, embyMedia)
-                    }
-
-                    override fun onFailure(call: Call<Item>, t: Throwable) {
-                        Log.e(TAG, "An error occurred while media was loading", t)
-                    }
-                })
+                SnowbyMediaPlayer.start(activity,context,item.Id)
+            }
+            is MediaView -> {
+                val intent = Intent(activity, MediaLibraryActivity::class.java)
+                intent.putExtra(MediaLibraryActivity.PARENT_ID, item.Id)
+                activity.startActivity(intent)
             }
             is MediaLibraryItem -> TvUtil.openAudioCategory(activity, item)
         }
