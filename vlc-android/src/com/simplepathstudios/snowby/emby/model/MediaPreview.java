@@ -10,7 +10,7 @@ public abstract class MediaPreview {
     public String getImageUrl(int width, int height){
         if(ImageTags.size() > 0){
             String firstKey = ImageTags.keySet().iterator().next();
-            return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/" + Id + "/Images/"+firstKey+"?maxWidth="+width+"&tag="+ImageTags.get(firstKey)+"&quality=100";
+            return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/" + Id + "/Images/"+firstKey+"?maxWidth="+width+"&maxHeight="+height+"&tag="+ImageTags.get(firstKey)+"&quality=100";
         }
         return null;
     }

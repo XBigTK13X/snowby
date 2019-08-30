@@ -81,9 +81,10 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
 
         //Enable search feature only if we detect Google Play Services.
         if (AndroidDevices.hasPlayServices) {
-            setOnSearchClickedListener(this)
+            //TODO Renable for https://github.com/XBigTK13X/snowby/issues/12
+            // setOnSearchClickedListener(this)
             // set search icon color
-            searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.orange600)
+            // searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.orange600)
         }
         brandColor = ContextCompat.getColor(requireContext(), R.color.orange900)
         backgroundManager = BackgroundManager.getInstance(requireActivity()).apply { attach(requireActivity().window) }
