@@ -110,7 +110,7 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
                         emby.api.mediaOverview(emby.authHeader, user.Id).enqueue(object : Callback<ItemPage<MediaView>> {
                             override fun onResponse(call: Call<ItemPage<MediaView>>, response: Response<ItemPage<MediaView>>) {
                                 val overviewList = response.body()!!.Items
-                                emby.api.resumeOverview(emby.authHeader, user.Id).enqueue(object : Callback<ItemPage<MediaResume>> {
+                                emby.api.resumeOverview(emby.authHeader, user.Id, 1 ,"Primary,Backdrop,Thumb").enqueue(object : Callback<ItemPage<MediaResume>> {
                                     override fun onResponse(call: Call<ItemPage<MediaResume>>, response: Response<ItemPage<MediaResume>>) {
                                         Log.i(TAG, "Data loaded, refreshing view")
                                         val ctx = requireActivity()

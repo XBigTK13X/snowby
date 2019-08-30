@@ -45,6 +45,7 @@ import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.media.MediaBrowserServiceCompat
 import androidx.media.session.MediaButtonReceiver
+import com.simplepathstudios.snowby.util.SnowbyMediaPlayer
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.actor
@@ -156,7 +157,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
     private val mediaPlayerListener = MediaPlayer.EventListener { event ->
         when (event.type) {
             MediaPlayer.Event.Playing -> {
-                if (BuildConfig.DEBUG) Log.i(TAG, "SnowbyMediaPlayer.Event.Playing")
+                if (BuildConfig.DEBUG) Log.i(TAG, "MediaPlayer.Event.Playing")
                 executeUpdate()
                 publishState()
                 audioFocusHelper.changeAudioFocus(true)
@@ -171,7 +172,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
                 }
             }
             MediaPlayer.Event.Paused -> {
-                if (BuildConfig.DEBUG) Log.i(TAG, "SnowbyMediaPlayer.Event.Paused")
+                if (BuildConfig.DEBUG) Log.i(TAG, "MediaPlayer.Event.Paused")
                 executeUpdate()
                 publishState()
                 showNotification()
@@ -817,6 +818,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
         var actions = PLAYBACK_BASE_ACTIONS
         val hasMedia = playlistManager.hasCurrentMedia()
         var time = position ?: time
+        SnowbyMediaPlayer.updateProgress(time)
         var state = playlistManager.player.playbackState
         when (state) {
             PlaybackStateCompat.STATE_PLAYING -> actions = actions or (PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_STOP)
@@ -1183,6 +1185,7 @@ class PlaybackService : MediaBrowserServiceCompat(), CoroutineScope, LifecycleOw
         if (fromUser) {
             publishState(position)
         }
+        SnowbyMediaPlayer.updateProgress(position)
     }
 
     @MainThread

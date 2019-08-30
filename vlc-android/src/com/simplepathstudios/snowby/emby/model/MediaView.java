@@ -4,7 +4,6 @@ import com.simplepathstudios.snowby.util.SnowbySettings;
 
 public class MediaView extends MediaPreview {
     public String Name;
-    public String Id;
     public String ServerId;
     public String PresentationUniqueKey;
     public String Etag;
@@ -20,10 +19,5 @@ public class MediaView extends MediaPreview {
     @Override
     public String getContent() {
         return "";
-    }
-
-    @Override
-    public String getPrimaryImageUrl(int width, int height){
-        return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+ height+"&maxWidth="+ width+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 }

@@ -10,6 +10,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EmbyApiClient {
     private static EmbyApiClient __instance;
+    public static EmbyApiClient getInstance(){
+        return __instance;
+    }
     public static EmbyApiClient getInstance(Context context){
         if(__instance == null){
             __instance = new EmbyApiClient(context);

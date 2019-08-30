@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Item extends MediaPreview {
     public String Name;
-    public String Id;
     public String Type;
     public String Path;
     public String Overview;
@@ -31,11 +30,6 @@ public class Item extends MediaPreview {
     @Override
     public String getContent() {
         return getFidelity();
-    }
-
-    @Override
-    public String getPrimaryImageUrl(int width, int height) {
-        return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/"+Id+"/Images/Primary?maxHeight="+width+"&maxWidth="+height+"&tag="+ImageTags.get("Primary")+"&quality=100";
     }
 
     public String getFidelity(){
