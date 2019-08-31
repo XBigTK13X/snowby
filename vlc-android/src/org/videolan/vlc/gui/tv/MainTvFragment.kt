@@ -78,7 +78,7 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
         // Set display parameters for the BrowseFragment
         headersState = HEADERS_DISABLED
         title = getString(R.string.app_name)
-        badgeDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.icon)
+        badgeDrawable = null;
 
         //Enable search feature only if we detect Google Play Services.
         if (AndroidDevices.hasPlayServices) {

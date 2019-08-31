@@ -39,7 +39,7 @@
         android:name=".VLCApplication"
         android:allowBackup="true"
         android:appCategory="video"
-        android:banner="@drawable/banner"
+        android:banner="@drawable/snowby_banner"
         android:fullBackupContent="@xml/backup_rules"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
