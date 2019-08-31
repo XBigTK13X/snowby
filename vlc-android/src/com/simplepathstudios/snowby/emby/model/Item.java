@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Item extends MediaPreview {
     public String Name;
-    public String Type;
     public String Path;
     public String Overview;
     public String MediaType;
@@ -51,9 +50,10 @@ public class Item extends MediaPreview {
                     if(!audioFidelity.toLowerCase().contains(stream.Codec.toLowerCase())){
                         audioFidelity += stream.Codec;
                     }
+                    audioFidelity = audioFidelity.replace("Dolby Digital","DD");
                 }
             }
-            return "Video [" + videoFidelity.trim() + "] Audio [" + audioFidelity.trim() + "]";
+            return videoFidelity.trim() + " / " + audioFidelity.trim();
         }
         return "";
     }

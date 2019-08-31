@@ -38,6 +38,7 @@ import androidx.leanback.widget.Presenter
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.bumptech.glide.Glide
+import com.simplepathstudios.snowby.emby.model.Item
 import com.simplepathstudios.snowby.emby.model.MediaPreview
 import com.simplepathstudios.snowby.emby.model.MediaResume
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,7 +63,6 @@ class CardPresenter(private val context: Activity,private val cardWidth:Int = CA
     private var mIsSeenMediaMarkerVisible = true
     private var sDefaultCardImage: Drawable? = ContextCompat.getDrawable(context, R.drawable.ic_default_cone)
 
-    private val imageDefaultWidth: Float by lazy { context.resources.getDimension(R.dimen.tv_grid_card_thumb_width) }
 
     init {
         mIsSeenMediaMarkerVisible = Settings.getInstance(context).getBoolean("media_seen", true)
@@ -92,10 +92,6 @@ class CardPresenter(private val context: Activity,private val cardWidth:Int = CA
                 }
             }
             when {
-                item.itemType == MediaLibraryItem.TYPE_PLAYLIST -> {
-                    cardView.mainImageView.scaleType = ImageView.ScaleType.FIT_CENTER
-                    loadPlaylistImageWithWidth(cardView.mainImageView, item, imageDefaultWidth.toInt())
-                }
                 noArt -> {
                     cardView.mainImageView.scaleType = ImageView.ScaleType.CENTER_INSIDE
                     cardView.mainImage = BitmapDrawable(cardView.resources, getDefaultImage(item))
@@ -166,7 +162,6 @@ class CardPresenter(private val context: Activity,private val cardWidth:Int = CA
                 holder.cardView.setMainImageDimensions(cardWidth, cardHeight)
                 Glide.with(viewHolder.view.context)
                         .load(item.getImageUrl(cardWidth,cardHeight))
-                        .centerCrop()
                         .error(sDefaultCardImage)
                         .into(holder.cardView.mainImageView)
             }

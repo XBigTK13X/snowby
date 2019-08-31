@@ -33,4 +33,16 @@ public class SnowbySettings {
     public static int getHomeCardHeight(){
         return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_home_card_height);
     }
+
+    public static int getResumeCardWidth(){
+        return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_resume_card_width);
+    }
+
+    public static int getResumeCardHeight(){
+        return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_resume_card_height);
+    }
+
+    public static int getLibraryColumns(){
+        return 5;
+    }
 }

@@ -17,14 +17,9 @@ package com.simplepathstudios.snowby.gui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
 import androidx.leanback.app.VerticalGridFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
-import androidx.leanback.widget.ImageCardView;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
@@ -55,10 +50,10 @@ public class MediaLibraryFragment extends VerticalGridFragment {
         super.onCreate(savedInstanceState);
 
         setTitle(getString(R.string.app_name));
-        setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.design_default_color_primary));
+        //setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.design_default_color_primary));
 
         VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
-        gridPresenter.setNumberOfColumns(3);
+        gridPresenter.setNumberOfColumns(SnowbySettings.getLibraryColumns());
         setGridPresenter(gridPresenter);
         ArrayObjectAdapter adapter = new ArrayObjectAdapter(
                 new CardPresenter(
@@ -68,14 +63,6 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                 )
         );
         setAdapter(adapter);
-    }
-
-    public void filterMedia(View v){
-        Log.d(TAG, "Filtering media");
-    }
-
-    public void sortMedia(View v){
-        Log.d(TAG, "Sorting media");
     }
 
     @Override
@@ -185,16 +172,9 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                     else {
                         Log.d(TAG, "Selected " + embyItem.SeriesName + " "+embyItem.Name);
                     }
-
                     Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
                     intent.putExtra(MediaLibraryActivity.PARENT_ID, embyItem.Id);
-                    Bundle bundle =
-                            ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    getActivity(),
-                                    ((ImageCardView) itemViewHolder.view).getMainImageView(),
-                                    MediaLibraryActivity.SHARED_ELEMENT_NAME)
-                                    .toBundle();
-                    getActivity().startActivity(intent, bundle);
+                    getActivity().startActivity(intent);
                 }
                 else{
                     Log.e(TAG,"Unhandled item selection type: "+embyItem.Type);

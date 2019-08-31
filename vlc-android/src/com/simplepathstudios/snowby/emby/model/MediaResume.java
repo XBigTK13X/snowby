@@ -14,14 +14,11 @@ public class MediaResume extends MediaPreview {
     public String SeasonName;
     public String SeriesId;
     public String SeasonId;
-    public String Type;
     public long RunTimeTicks;
-    public int ParentBackdropItemId;
-    public List<String> ParentBackdropImageTags;
     public String MediaType;
 
     public MediaResume(){
-        ParentBackdropImageTags = new ArrayList<String>();
+        super(true);
     }
 
     @Override

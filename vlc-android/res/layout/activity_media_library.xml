@@ -1,35 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-        <Button
-            android:id="@+id/media_library_sort_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sort"
-            android:onClick="sortMedia"
-            style="?android:attr/borderlessButtonStyle"/>
-        <Button
-            android:id="@+id/media_library_filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter"
-            android:onClick="filterMedia"
-            style="?android:attr/borderlessButtonStyle"/>
-    </LinearLayout>
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/media_library_fragment"
-        android:name="com.simplepathstudios.snowby.gui.MediaLibraryFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:context=".activity.MediaLibraryActivity"
-        tools:deviceIds="tv">
-        <requestFocus/>
-    </fragment>
-</LinearLayout>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/media_library_fragment"
+    android:name="com.simplepathstudios.snowby.gui.MediaLibraryFragment"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.simplepathstudios.snowby.gui.MediaLibraryActivity"
+    tools:deviceIds="tv">
+    <requestFocus/>
+</fragment>

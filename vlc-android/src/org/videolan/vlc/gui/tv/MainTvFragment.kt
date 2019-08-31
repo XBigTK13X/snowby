@@ -119,13 +119,13 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
 
                                         val resumeList = response.body()!!.Items
 
-                                        val cardPresenter = CardPresenter(
+                                        val mediaViewPresenter = CardPresenter(
                                                 requireActivity(),
                                                 SnowbySettings.getHomeCardWidth(),
                                                 SnowbySettings.getHomeCardHeight()
                                         )
 
-                                        val mediaOverviewRow = ArrayObjectAdapter(cardPresenter)
+                                        val mediaOverviewRow = ArrayObjectAdapter(mediaViewPresenter)
                                         for (mediaView in overviewList) {
                                             if (mediaView.CollectionType == "movies" || mediaView.CollectionType == "tvshows") {
                                                 mediaOverviewRow.add(mediaView)
@@ -137,7 +137,12 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
                                         }
 
                                         if (resumeList.size > 0) {
-                                            val resumeRow = ArrayObjectAdapter(cardPresenter)
+                                            val mediaResumePresenter = CardPresenter(
+                                                    requireActivity(),
+                                                    SnowbySettings.getResumeCardWidth(),
+                                                    SnowbySettings.getResumeCardHeight()
+                                            )
+                                            val resumeRow = ArrayObjectAdapter(mediaResumePresenter)
                                             for (mediaResume in resumeList) {
                                                 resumeRow.add(mediaResume)
                                             }
