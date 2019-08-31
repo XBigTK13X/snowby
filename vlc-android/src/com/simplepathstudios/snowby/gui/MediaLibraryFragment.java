@@ -102,11 +102,9 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         searchParams.IncludeItemTypes = "Series";
                         searchParams.Fields = "BasicSyncInfo,MediaSourceCount,SortName";
                     }
-                    searchParams.SortBy = "SortName";
                     searchParams.SortOrder = "Ascending";
-                    searchParams.SortOrder = "Ascending";
-                    searchParams.SortBy = "SortName";
-                    //searchParams.Filters = "IsUnplayed";
+                    searchParams.SortBy = SnowbySettings.getSort(getContext()); //"SortName";
+                    searchParams.Filters = SnowbySettings.getFilters(getContext()); //"IsUnplayed";
                     query = emby.api.items(
                             emby.authHeader,
                             emby.userId,
@@ -124,7 +122,7 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                         query = emby.api.seasons(emby.authHeader,embyItem.Id,emby.userId);
                     }
                     else if(embyItem.Type.equals("Season")){
-                        searchParams.Fields = "MediaStreams";
+                        searchParams.Fields = "MediaStreams,Path";
                         query = emby.api.episodes(emby.authHeader,embyItem.ParentId,embyItem.Id,emby.userId,searchParams.Fields);
                     }
                 }

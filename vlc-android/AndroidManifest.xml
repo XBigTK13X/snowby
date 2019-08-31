@@ -623,6 +623,11 @@
             android:screenOrientation="landscape"
             android:theme="@style/Theme.VLC.TV"/>
 
+        <activity
+            android:name="com.simplepathstudios.snowby.gui.SnowbySettingsActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.VLC.TV"/>
+
         <service
                 android:name=".RecommendationsService"
                 android:exported="false"/>

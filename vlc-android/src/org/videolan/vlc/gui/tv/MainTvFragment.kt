@@ -32,6 +32,7 @@ import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.*
 import com.simplepathstudios.snowby.emby.EmbyApiClient
 import com.simplepathstudios.snowby.emby.model.*
+import com.simplepathstudios.snowby.gui.SnowbySettingsActivity
 import com.simplepathstudios.snowby.util.SnowbySettings
 import kotlinx.coroutines.*
 import org.videolan.libvlc.util.AndroidUtil
@@ -93,10 +94,13 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        refreshHomePage();
+    }
+
+    private fun refreshHomePage(){
+        Log.d(TAG,"Refreshing again!")
         val emby = EmbyApiClient.getInstance(context)
-
         val fragment = this
-
         emby.api.listUsers().enqueue(object : Callback<List<User>> {
             override fun onResponse(call: Call<List<User>>, response: Response<List<User>>) {
                 val user = response.body()!![0]
@@ -154,6 +158,7 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
                                         otherAdapter = ArrayObjectAdapter(GenericCardPresenter(ctx))
                                         val miscHeader = HeaderItem(HEADER_MISC, getString(R.string.other))
 
+                                        otherAdapter.add(GenericCardItem(ID_SNOWBY_SETTINGS, "Snowby", "", R.drawable.ic_menu_preferences_big, R.color.tv_card_content_dark))
                                         otherAdapter.add(GenericCardItem(ID_SETTINGS, getString(R.string.preferences), "", R.drawable.ic_menu_preferences_big, R.color.tv_card_content_dark))
                                         otherAdapter.add(GenericCardItem(ID_ABOUT_TV, getString(R.string.about), "${getString(R.string.app_name_full)} ${BuildConfig.VERSION_NAME}", R.drawable.ic_menu_info_big, R.color.tv_card_content_dark))
                                         otherAdapter.add(GenericCardItem(ID_LICENCE, getString(R.string.licence), "", R.drawable.ic_menu_open_source, R.color.tv_card_content_dark))
@@ -244,6 +249,7 @@ class MainTvFragment : BrowseSupportFragment(), OnItemViewSelectedListener, OnIt
         when (row?.id) {
             HEADER_MISC -> {
                 when ((item as GenericCardItem).id) {
+                    ID_SNOWBY_SETTINGS -> activity.startActivity(Intent(activity, SnowbySettingsActivity::class.java))
                     ID_SETTINGS -> activity.startActivityForResult(Intent(activity, org.videolan.vlc.gui.tv.preferences.PreferencesActivity::class.java), ACTIVITY_RESULT_PREFERENCES)
                     ID_REFRESH -> {
                         if (!AbstractMedialibrary.getInstance().isWorking) {

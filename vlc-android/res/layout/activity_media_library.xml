@@ -7,5 +7,4 @@
     android:layout_height="wrap_content"
     tools:context="com.simplepathstudios.snowby.gui.MediaLibraryActivity"
     tools:deviceIds="tv">
-    <requestFocus/>
 </fragment>

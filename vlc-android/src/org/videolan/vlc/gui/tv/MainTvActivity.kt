@@ -119,6 +119,11 @@ class MainTvActivity : BaseTvActivity() {
         handler.sendEmptyMessageDelayed(HIDE_LOADING, 500)
     }
 
+    override fun onResume() {
+        super.onResume()
+        browseFragment.onResume()
+    }
+
     override fun refresh() {
         this.reloadLibrary()
     }

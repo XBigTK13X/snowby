@@ -29,7 +29,7 @@ public class Item extends MediaPreview {
     @Override
     public String getContent() {
         if(UserData != null && UserData.UnplayedItemCount != null && UserData.UnplayedItemCount > 0){
-            return "("+UserData.UnplayedItemCount+") New Episodes";
+            return UserData.UnplayedItemCount + " New Episodes";
         }
         //TODO This isn't actually working. Also, try to get episode season/ep# in the resume card
         if(UserData != null && UserData.PlayedPercentage != null && UserData.PlayedPercentage > 0){
@@ -54,13 +54,23 @@ public class Item extends MediaPreview {
                     if(stream.DisplayLanguage != null){
                         audioFidelity = audioFidelity.replace(stream.DisplayLanguage,"");
                     }
+                    audioFidelity = audioFidelity.replace("Und","").replace("Undefined","");
                     if(!audioFidelity.toLowerCase().contains(stream.Codec.toLowerCase())){
                         audioFidelity += stream.Codec;
                     }
                     audioFidelity = audioFidelity.replace("Dolby Digital","DD");
                 }
             }
-            return videoFidelity.trim() + " / " + audioFidelity.trim();
+            String contentType = "";
+            if(Path != null){
+                if(Path.contains("Remux")){
+                    contentType = "RX ";
+                } else{
+                    contentType = "TC ";
+                }
+
+            }
+            return contentType + videoFidelity.trim() + " " + audioFidelity.trim();
         }
         return "";
     }
