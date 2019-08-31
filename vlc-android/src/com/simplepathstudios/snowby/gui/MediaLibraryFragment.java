@@ -52,14 +52,23 @@ public class MediaLibraryFragment extends VerticalGridFragment {
         setTitle(getString(R.string.app_name));
         //setSearchAffordanceColor(ContextCompat.getColor(getContext(), R.color.design_default_color_primary));
 
+        boolean isSeason = false;
+
+        try{
+            final String libraryType = (String) getActivity().getIntent().getSerializableExtra(MediaLibraryActivity.LIBRARY_TYPE);
+            isSeason = libraryType.equals("Season");
+        } catch(Exception swallow){
+
+        }
+
         VerticalGridPresenter gridPresenter = new VerticalGridPresenter();
-        gridPresenter.setNumberOfColumns(SnowbySettings.getLibraryColumns());
+        gridPresenter.setNumberOfColumns(SnowbySettings.getLibraryColumns(isSeason));
         setGridPresenter(gridPresenter);
         ArrayObjectAdapter adapter = new ArrayObjectAdapter(
                 new CardPresenter(
                     getActivity(),
-                    SnowbySettings.getLibraryCardWidth(),
-                    SnowbySettings.getLibraryCardHeight()
+                    SnowbySettings.getLibraryCardWidth(isSeason),
+                    SnowbySettings.getLibraryCardHeight(isSeason)
                 )
         );
         setAdapter(adapter);
@@ -166,13 +175,14 @@ public class MediaLibraryFragment extends VerticalGridFragment {
                     SnowbyMediaPlayer.INSTANCE.start(getActivity(),getContext(),embyItem.Id);
                 }
                 else if (embyItem.Type.equals("Series") || embyItem.Type.equals("Season")){
+                    Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
                     if(embyItem.Type.equals("Series")){
                         Log.d(TAG, "Selected the TV Series: "+embyItem.Name);
                     }
                     else {
                         Log.d(TAG, "Selected " + embyItem.SeriesName + " "+embyItem.Name);
+                        intent.putExtra(MediaLibraryActivity.LIBRARY_TYPE, "Season");
                     }
-                    Intent intent = new Intent(getActivity(), MediaLibraryActivity.class);
                     intent.putExtra(MediaLibraryActivity.PARENT_ID, embyItem.Id);
                     getActivity().startActivity(intent);
                 }

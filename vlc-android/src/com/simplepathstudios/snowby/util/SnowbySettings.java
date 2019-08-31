@@ -18,12 +18,12 @@ public class SnowbySettings {
         resumePositionMilliseconds = position;
     }
 
-    public static int getLibraryCardWidth(){
-        return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_library_card_width);
+    public static int getLibraryCardWidth(boolean isSeason){
+        return isSeason ? getResumeCardWidth() : VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_library_card_width);
     }
 
-    public static int getLibraryCardHeight(){
-        return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_library_card_height);
+    public static int getLibraryCardHeight(boolean isSeason){
+        return isSeason ? getResumeCardHeight() : VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_library_card_height);
     }
 
     public static int getHomeCardWidth(){
@@ -42,7 +42,7 @@ public class SnowbySettings {
         return VLCApplication.Companion.getAppResources().getDimensionPixelSize(R.dimen.snowby_resume_card_height);
     }
 
-    public static int getLibraryColumns(){
-        return 5;
+    public static int getLibraryColumns(boolean isSeason){
+        return isSeason ? 3: 5;
     }
 }

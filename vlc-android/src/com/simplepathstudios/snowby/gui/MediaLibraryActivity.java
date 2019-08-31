@@ -8,6 +8,7 @@ import org.videolan.vlc.R;
 
 public class MediaLibraryActivity extends Activity {
     public static final String PARENT_ID = "library_item_parent_id";
+    public static final String LIBRARY_TYPE = "library_item_type";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
