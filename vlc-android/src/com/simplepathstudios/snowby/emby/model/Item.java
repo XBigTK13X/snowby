@@ -28,6 +28,13 @@ public class Item extends MediaPreview {
 
     @Override
     public String getContent() {
+        if(UserData != null && UserData.UnplayedItemCount != null && UserData.UnplayedItemCount > 0){
+            return "("+UserData.UnplayedItemCount+") New Episodes";
+        }
+        //TODO This isn't actually working. Also, try to get episode season/ep# in the resume card
+        if(UserData != null && UserData.PlayedPercentage != null && UserData.PlayedPercentage > 0){
+            return Math.floor(UserData.PlayedPercentage) + "%";
+        }
         return getFidelity();
     }
 

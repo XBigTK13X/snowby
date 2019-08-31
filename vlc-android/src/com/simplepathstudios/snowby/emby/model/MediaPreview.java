@@ -50,7 +50,10 @@ public abstract class MediaPreview {
                 imageTag = ParentThumbImageTag;
             }
 
-            return SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/" + itemId + "/Images/" + imageType + "?maxWidth=" + width + "&maxHeight=" + height + "&tag=" + imageTag + "&quality=100";
+            String result = SnowbySettings.EMBY_SERVER_ADDRESS + "/emby/Items/" + itemId + "/Images/" + imageType;
+            result += "?maxWidth=" + width + "&maxHeight=" + height;
+            result += "&tag=" + imageTag + "&quality=100";
+            return result;
         }
         return null;
     }
