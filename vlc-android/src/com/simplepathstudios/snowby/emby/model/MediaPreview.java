@@ -28,7 +28,18 @@ public abstract class MediaPreview {
     public abstract String getTitle();
     public abstract String getContent();
 
+    protected boolean showSpoilers(){
+        if(Type != null && Type.equals("Episode")){
+            return UserData != null && UserData.Played !=null && UserData.Played;
+        }
+        return true;
+    }
+
     public String getImageUrl(int width, int height){
+        // Don't show thumbnails for episodes you haven't seen yet
+        if(!showSpoilers()){
+            return null;
+        }
         if(ImageTags.size() > 0){
             String itemId = Id;
             String imageType = "Primary";

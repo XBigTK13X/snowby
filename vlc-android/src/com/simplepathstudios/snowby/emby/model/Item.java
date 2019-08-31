@@ -21,7 +21,11 @@ public class Item extends MediaPreview {
     @Override
     public String getTitle() {
         if(Type.equals("Episode")){
-            return SeasonName.replace("Season ","S") + "E"+IndexNumber +" - "+ Name;
+            String result = SeasonName.replace("Season ","S") + "E"+IndexNumber;
+            if(showSpoilers()){
+               result += " - " + Name;
+            }
+            return result;
         }
         return Name;
     }

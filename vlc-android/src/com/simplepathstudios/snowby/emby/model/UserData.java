@@ -7,4 +7,5 @@ public class UserData {
     public Long PlaybackPositionTicks;
     public Date LastPlayedDate;
     public Integer UnplayedItemCount;
+    public Boolean Played;
 }
