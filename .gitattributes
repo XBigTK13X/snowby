@@ -1,0 +1,2 @@
+mpv.exe filter=lfs diff=lfs merge=lfs -text
+mpv.exe text !filter !merge !diff
