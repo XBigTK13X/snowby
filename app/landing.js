@@ -7,8 +7,10 @@ emby.apiClient.connect()
     })
     .then((landingPage)=>{
       let renderedLibraries = ''
-      landingPage.libraries.forEach(library=>{        
-        renderedLibraries += library.render()
+      landingPage.libraries.forEach(library=>{       
+        if(library.CollectionType === "movies" || library.CollectionType === "tvshows"){
+         renderedLibraries += library.render()  
+        }        
       })
       document.getElementById('media-libraries').innerHTML = renderedLibraries       
       document.getElementById('header').innerHTML = "Media Libraries"

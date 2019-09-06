@@ -18,6 +18,5 @@ emby.apiClient.connect()
     	document.getElementById('header').innerHTML = embyItem.Name
     	let cleanPath = embyItem.Path.replace("smb:","")
     	cleanPath = cleanPath.replace(/\//g,"\\");
-    	console.log(`Opening ${cleanPath}`)
     	shell.openItem(cleanPath)
     })

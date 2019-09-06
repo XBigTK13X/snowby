@@ -1,3 +1,7 @@
+html {
+	font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,system-ui,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Open Sans',sans-serif;	
+}
+
 a {
   text-decoration: none;
   color: #c7c7c7;
@@ -46,11 +50,25 @@ h1 {
 
 .title {
 	text-decoration: none;
-	font-weight: bold;
 	font-size: x-large;
 	color: #eeeeee;
 }
 
 .fidelity {
 	text-decoration: none;
+	font-size: smaller;
+}
+
+.navbar-button{
+	font-size: x-large;
+	font-weight: bold;
+	display: inline-block;
+	background: #c3c3c3;
+	border-radius: 10px;
+	padding: 15px;
+	margin: 15px;
+}
+
+div.navbar > a{
+	color:#0c0c0c;
 }

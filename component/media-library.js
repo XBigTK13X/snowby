@@ -7,6 +7,7 @@ module.exports = class MediaLibrary {
 		this.ImageTags = responseBody.ImageTags
 		this.ImageURL = `${settings.embyServerURL}/emby/Items/${this.Id}/Images/Primary?maxHeight=${settings.mediaLibraryCardHeight}&maxWidth=${settings.mediaLibraryCardWidth}&tag=${this.ImageTags.Primary}&quality=100`
 		this.LibraryHref = `./emby-item.html?embyItemId=${this.Id}`
+    this.CollectionType = responseBody.CollectionType
 	}
 
 	render() {
