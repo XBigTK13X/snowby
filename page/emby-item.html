@@ -5,12 +5,24 @@
     <title>Snowby</title>
     <link rel="stylesheet" type="text/css" href="../asset/snowby.css">
     <script>window.$ = window.jQuery = require('jquery');</script>
-    <script>require('jquery-lazy');</script>
-    <script src="../app/emby-item.js"></script>
+    <script>require('jquery-lazy');</script>    
   </head>
   <body>
+    <div class="navbar">
+      <a href="./landing.html" >
+        <div class="navbar-button">
+          Go Back Home
+        </div>
+      </a>
+      <a href="" id="watched-toggle">
+        <div class="navbar-button">
+          Toggle Watched
+        </div>    
+      </a>
+    </div>
     <h1 id="header">Loading...</h1>
     <div id="emby-items" class="grid-container">
     </div>
+    <script src="../app/emby-item.js"></script>
   </body>
 </html>

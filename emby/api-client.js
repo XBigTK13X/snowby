@@ -18,12 +18,12 @@ module.exports = {
 			authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`;
 			httpClient = axios.create(config)
 			httpClient.interceptors.request.use(request => {
-			  console.log({request})
+			  //console.log({request})
 			  return request
 			})
 
 			httpClient.interceptors.response.use(response => {
-			  console.log({response})
+			  //console.log({response})
 			  return response
 			})
 			const usersURL = "users/public"
@@ -81,7 +81,6 @@ module.exports = {
 			const url = `emby/Shows/${seriesId}/Seasons?${query}`
 			return httpClient.get(url)
 				.then(seasonsResponse=>{
-					console.log("Found a season",{seasonsResponse})
 					return seasonsResponse.data.Items.map(item=>new EmbyItem(item))
 				})
 		},

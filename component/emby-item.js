@@ -24,16 +24,16 @@ module.exports = class EmbyItem {
     const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth,settings.mediaLibraryCardHeight)
 		 return `      
           <a ${this.getHref()}>            
-          <div class="grid-item emby-item rounded">          
-            <div class="fidelity">
-              ${this.getFidelity()}
-            </div>
+          <div class="grid-item emby-item rounded">                      
           	<div class="poster">          		
           			<img class="lazy rounded" src="../asset/img/media-not-found.png" data-src="${imageUrl}"/>
           	</div>          	          
             <div class="title">
               ${this.getTitle()}      
             </div>          
+            <div class="fidelity">
+              ${this.getFidelity()}
+            </div>
           </div>
           </a>
         `
@@ -43,9 +43,9 @@ module.exports = class EmbyItem {
      if(this.Type === "Episode"){
           let result = this.SeasonName.replace("Season ","S") + "E"+this.IndexNumber;
           if(this.showSpoilers()){
-             result += " - " + this.Name;
+             return result + " - " + this.Name;
           }
-          return result;
+          return result + " - [Hidden]"
       }
       return this.Name;
   }
@@ -99,6 +99,9 @@ module.exports = class EmbyItem {
     }
 
     getFidelity(){
+      if(this.UserData.UnplayedItemCount > 0){
+          return this.UserData.UnplayedItemCount + " New Episodes";
+      }
       if(this.MediaStreams != null){
             let videoFidelity = "";
             let audioFidelity = "";

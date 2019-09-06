@@ -8,6 +8,10 @@ const _ = require('lodash')
 
 let parentItem;
 
+const toggleUrl = `./emby-item.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? "" : "&watched=true")
+
+document.getElementById('watched-toggle').href = toggleUrl
+
 emby.apiClient.connect()
     .then(()=>{
       return emby.apiClient.embyItem(queryParams.embyItemId) 
@@ -28,12 +32,11 @@ emby.apiClient.connect()
 		    }
 		    searchParams.SortBy = "SortName";
 		    searchParams.SortOrder = "Ascending";
-		    //searchParams.Filters = "IsUnplayed";
+		    searchParams.Filters = !queryParams.watched ? "IsUnplayed" : "";
 		    query = emby.apiClient.embyItems(embyItem.Id, searchParams);
 		}
 		else {
 		    if(embyItem.Type === "Series"){
-		    	console.log("Getting seasons")
 		        query = emby.apiClient.seasons(embyItem.Id);
 		    }
 		    else if(embyItem.Type === "Season"){
@@ -47,7 +50,6 @@ emby.apiClient.connect()
 		return query      
     })
     .then(embyItems=>{
-    	console.log("Found items",{embyItems})
     	let renderedItems = ""
 		embyItems.forEach(embyItem=>{        
 			renderedItems += embyItem.render()
