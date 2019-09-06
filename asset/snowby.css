@@ -1,0 +1,56 @@
+a {
+  text-decoration: none;
+  color: #c7c7c7;
+}
+
+body {
+	background: #010101;
+	color: #c7c7c7;
+}
+
+h1 {
+	text-align:center;
+}
+
+.grid-container{
+   display: grid;
+   grid-template-columns: repeat(auto-fill, 300px);
+   grid-column-gap: 2px;
+   grid-row-gap: 2px;
+}
+
+.grid-item {
+  padding: 10px 10px;
+  text-align:center;
+}
+
+.emby-item {
+	height: 400px;
+	background: #272727;
+	margin: 10px;
+}
+
+.poster {
+	height: 300px;
+	margin-bottom: 5px;
+}
+
+.rounded {
+	border-radius: 15px;
+}
+
+.media-library {
+	width: 100px;
+	height: 100px;
+}
+
+.title {
+	text-decoration: none;
+	font-weight: bold;
+	font-size: x-large;
+	color: #eeeeee;
+}
+
+.fidelity {
+	text-decoration: none;
+}
