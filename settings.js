@@ -4,7 +4,7 @@ module.exports = {
 	mediaLibraryCardWidth: "200",
 	windowWidth: 1920,
 	windowHeight: 1080,
-	fullScreen: false,
+	fullScreen: true,
 	menuBarVisible: false,
 	windowBackgroundColor: "#010101"
 }

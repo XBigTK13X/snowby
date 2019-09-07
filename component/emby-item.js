@@ -39,7 +39,7 @@ module.exports = class EmbyItem {
           ${anchor}
             <div class="grid-item grid-card-${this.Orientation} rounded">                      
             	<div class="poster-${this.Orientation}">          		
-            			<img class="lazy rounded" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+            			<img class="lazy rounded tile" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             	</div>          	          
               <div class="title">
                 ${this.getTitle()}      
@@ -53,21 +53,26 @@ module.exports = class EmbyItem {
   }
 
   getTitle(enableSeriesName){
+    let result = ''
     if(this.ForcedTitle){
-      return this.ForcedTitle
-    }
-     if(this.Type === "Episode"){
-        let result = ''
+      result = this.ForcedTitle
+    }else{
+        if(this.Type === "Episode"){
+          result = ''
           if(enableSeriesName){
             result += this.SeriesName + " - "
           }
           result += this.SeasonName.replace("Season ","S") + "E"+this.IndexNumber;
           if(this.showSpoilers()){
-             return result + " - " + this.Name;
-          }
-          return result + " - [Hidden]"
+             result = result + " - " + this.Name;
+          } 
+          else{
+             return result + " - [Hidden]"  
+          }          
       }
-      return this.Name;
+      result = this.Name
+    }
+      return result
   }
 
 	showSpoilers(){
@@ -112,6 +117,15 @@ module.exports = class EmbyItem {
             return result;
         }
         return this.NotFoundImage
+    }
+
+    isCollection(){
+      if(!_.isNil(this.CollectionType)){
+          if(this.CollectionType === "movies" || this.CollectionType === "tvshows"){
+              return true
+          }
+      }
+      return false
     }
 
     getHref(){
