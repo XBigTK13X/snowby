@@ -47,10 +47,11 @@ emby.apiClient.connect()
 		return query      
     })
     .then(embyItems=>{
-    	let renderedItems = ""
+    	let renderedItems = `<div class="grid-container">`
 		embyItems.forEach(embyItem=>{        
 			renderedItems += embyItem.render()
 		})
+		renderedItems += `</div>`
         document.getElementById('emby-items').innerHTML = renderedItems		
 		document.getElementById('header').innerHTML = parentItem.Name
 		$('.lazy').Lazy();

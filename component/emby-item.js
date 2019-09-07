@@ -3,7 +3,9 @@ const settings = require('../settings')
 const _ = require('lodash')
 
 module.exports = class EmbyItem {
-	constructor(responseBody) {
+	constructor(responseBody, horizontalOrientation) {
+    this.Orientation = horizontalOrientation ? "horizontal" : "vertical"
+
     this.CollectionType = responseBody.CollectionType
     this.Id = responseBody.Id
     this.ImageTags = responseBody.ImageTags
@@ -16,19 +18,20 @@ module.exports = class EmbyItem {
     this.UserData = responseBody.UserData
     this.IndexNumber = responseBody.IndexNumber
     this.MediaStreams = responseBody.MediaStreams
+    this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
     this.Path = responseBody.Path
     this.RunTimeTicks = responseBody.RunTimeTicks
     this.SeasonName = responseBody.SeasonName
-    this.SeriesName = responseBody.SeriesName
+    this.SeriesName = responseBody.SeriesName    
 	}
 
 	render() {
     const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth,settings.mediaLibraryCardHeight)
 		 return `      
           <a ${this.getHref()}>            
-          <div class="grid-item emby-item rounded">                      
-          	<div class="poster">          		
-          			<img class="lazy rounded" src="../asset/img/media-not-found.png" data-src="${imageUrl}"/>
+          <div class="grid-item grid-card-${this.Orientation} rounded">                      
+          	<div class="poster-${this.Orientation}">          		
+          			<img class="lazy rounded" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
           	</div>          	          
             <div class="title">
               ${this.getTitle()}      
@@ -66,7 +69,7 @@ module.exports = class EmbyItem {
 	getImageUrl(width, height){
         // Don't show thumbnails for episodes you haven't seen yet
         if(!this.showSpoilers()){
-            return '../asset/img/media-not-found.png'
+            return this.NotFoundImage
         }
         if(Object.keys(this.ImageTags).length > 0){
             let itemId = this.Id;
@@ -94,7 +97,7 @@ module.exports = class EmbyItem {
             result += "&tag=" + imageTag + "&quality=100";
             return result;
         }
-        return '../asset/img/media-not-found.png'
+        return this.NotFoundImage
     }
 
     getHref(){
