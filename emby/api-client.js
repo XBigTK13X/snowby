@@ -62,12 +62,13 @@ module.exports = {
 			const url = `Users/${userId}/Items/${itemId}`
 			return httpClient.get(url)
 				.then(itemResponse =>{
+					console.log({embyItem:itemResponse.data})
 					return new EmbyItem(itemResponse.data)
 				})
 		},
 		embyItems: (parentId, searchParams) => {
 			const query = queryString.stringify(searchParams)
-			const url = `emby/Users/${userId}/Items?${query}`
+			const url = `Users/${userId}/Items?${query}`
 			return httpClient.get(url)
 				.then(itemsResponse=>{
 					return itemsResponse.data.Items.map(item=>new EmbyItem(item))
@@ -78,7 +79,7 @@ module.exports = {
 				seriesId,
 				userId
 			})
-			const url = `emby/Shows/${seriesId}/Seasons?${query}`
+			const url = `Shows/${seriesId}/Seasons?${query}`
 			return httpClient.get(url)
 				.then(seasonsResponse=>{
 					return seasonsResponse.data.Items.map(item=>new EmbyItem(item))
@@ -90,11 +91,27 @@ module.exports = {
 				userId,
 				Fields:'MediaStreams'
 			})
-			const url = `emby/Shows/${seriesId}/Episodes?${query}`
+			const url = `Shows/${seriesId}/Episodes?${query}`
 			return httpClient.get(url)
 				.then(episodesResponse=>{
 					return episodesResponse.data.Items.map(item=>new EmbyItem(item))	
 				})
+		},
+		updateProgress: (embyItemId, embyTicks)=>{
+			const url = `Sessions/Playing/Progress`
+			const payload = {
+				ItemId: embyItemId,
+				PositionTicks: embyTicks
+			}
+			return httpClient.post(url, payload)
+		},
+		markPlayed: (embyItemId)=>{
+			const url = `Users/${userId}/PlayedItems/${embyItemId}`
+			return httpClient.post(url)
+		},
+		markUnplayed: (embyItemId)=>{
+			const url = `Users/${userId}/PlayedItems/${embyItemId}`
+			return httpClient.delete(url)
 		}
 	}
 }

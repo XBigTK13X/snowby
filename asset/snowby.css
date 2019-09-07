@@ -1,15 +1,14 @@
 html {
-	font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,system-ui,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Open Sans',sans-serif;	
+	font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,system-ui,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,'Open Sans',sans-serif;
+	background: #010101;
+	color: #c7c7c7;
 }
 
+
+/* Remove styling on tile text */
 a {
   text-decoration: none;
   color: #c7c7c7;
-}
-
-body {
-	background: #010101;
-	color: #c7c7c7;
 }
 
 h1 {
@@ -34,6 +33,12 @@ h1 {
 	margin: 10px;
 }
 
+
+.media-library {
+	width: 100px;
+	height: 100px;
+}
+
 .poster {
 	height: 300px;
 	margin-bottom: 5px;
@@ -41,11 +46,6 @@ h1 {
 
 .rounded {
 	border-radius: 15px;
-}
-
-.media-library {
-	width: 100px;
-	height: 100px;
 }
 
 .title {
@@ -67,8 +67,15 @@ h1 {
 	border-radius: 10px;
 	padding: 15px;
 	margin: 15px;
+	width: 300px;
+	text-align: center;
 }
 
 div.navbar > a{
 	color:#0c0c0c;
+}
+
+.media-info {
+	text-align: center;
+	font-size: x-large;
 }

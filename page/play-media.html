@@ -3,19 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title>Snowby</title>
-    <link rel="stylesheet" type="text/css" href="../asset/snowby.css">
-    <script src="../app/play-media.js"></script>
+    <link rel="stylesheet" type="text/css" href="../asset/snowby.css">    
   </head>
   <body>
+    <div id="navbar"></div>
+    <h1 id="header">Loading...</h1>
     <div class="navbar">
-      <a href="./landing.html" >
+      <a href="" id="mark-watched-button" >
         <div class="navbar-button">
-          Go Back Home
+          Mark Watched
         </div>
       </a>
+      <a href="" id="mark-unwatched-button">
+        <div class="navbar-button">
+          Mark Unwatched
+        </div>    
+      </a>    
     </div>
-    <h1 id="header">Loading...</h1>
-    <div id="media-info">
+    <div id="media-info" class="media-info">
     </div>
+    <script src="../app/play-media.js"></script>
   </body>
 </html>

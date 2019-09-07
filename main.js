@@ -1,19 +1,19 @@
 const { app, BrowserWindow } = require('electron')
+const settings = require('./settings')
 
 let win
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    width: settings.windowWidth,
+    height: settings.windowHeight,
     webPreferences: {
       nodeIntegration: true
     },
-    fullscreen:true
+    fullscreen: settings.fullScreen,
+    backgroundColor: settings.windowBackgroundColor,
+    autoHideMenuBar: !settings.menuBarVisible
   })
-
-  win.setMenuBarVisibility(false)
-
   win.maximize()
 
   win.loadFile('page/landing.html')
