@@ -52,7 +52,7 @@ module.exports = {
 			const url = `Users/${userId}/Views`
 			return httpClient.get(url)
 				.then(viewsResponse=>{
-					return viewsResponse.data.Items.map(item=>new EmbyItem(item, true))
+					return viewsResponse.data.Items.map(item=>new EmbyItem(item, {horizontal:true}))
 				})
 		},
 		embyItem: (itemId) => {
@@ -90,7 +90,7 @@ module.exports = {
 			const url = `Shows/${seriesId}/Episodes?${query}`
 			return httpClient.get(url)
 				.then(episodesResponse=>{
-					return episodesResponse.data.Items.map(item=>new EmbyItem(item, true))	
+					return episodesResponse.data.Items.map(item=>new EmbyItem(item, {horizontal:true}))	
 				})
 		},
 		updateProgress: (embyItemId, embyTicks)=>{

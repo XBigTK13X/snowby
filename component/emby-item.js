@@ -1,10 +1,14 @@
+const { shell } = require('electron')
+const _ = require('lodash')
 const settings = require('../settings')
 
-const _ = require('lodash')
-
 module.exports = class EmbyItem {
-	constructor(responseBody, horizontalOrientation) {
-    this.Orientation = horizontalOrientation ? "horizontal" : "vertical"
+	constructor(responseBody, options) {
+    this.Orientation = (options && options.horizontal) ? 'horizontal' : "vertical"
+
+    this.ForcedHref = options && options.link
+    this.ForcedImage = options && options.image
+    this.ForcedTitle = options && options.title
 
     this.CollectionType = responseBody.CollectionType
     this.Id = responseBody.Id
@@ -27,24 +31,31 @@ module.exports = class EmbyItem {
 
 	render() {
     const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth,settings.mediaLibraryCardHeight)
+    let anchor = `<a href="${this.getHref()}">`
+    if(this.ForcedHref){
+      anchor = `<a href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
+    }
 		 return `      
-          <a ${this.getHref()}>            
-          <div class="grid-item grid-card-${this.Orientation} rounded">                      
-          	<div class="poster-${this.Orientation}">          		
-          			<img class="lazy rounded" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
-          	</div>          	          
-            <div class="title">
-              ${this.getTitle()}      
-            </div>          
-            <div class="fidelity">
-              ${this.getFidelity()}
+          ${anchor}
+            <div class="grid-item grid-card-${this.Orientation} rounded">                      
+            	<div class="poster-${this.Orientation}">          		
+            			<img class="lazy rounded" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+            	</div>          	          
+              <div class="title">
+                ${this.getTitle()}      
+              </div>          
+              <div class="fidelity">
+                ${this.getFidelity()}
+              </div>
             </div>
-          </div>
           </a>
         `
-	}
+  }
 
   getTitle(enableSeriesName){
+    if(this.ForcedTitle){
+      return this.ForcedTitle
+    }
      if(this.Type === "Episode"){
         let result = ''
           if(enableSeriesName){
@@ -67,6 +78,9 @@ module.exports = class EmbyItem {
   }
 
 	getImageUrl(width, height){
+    if(this.ForcedImage){
+      return this.ForcedImage
+    }
         // Don't show thumbnails for episodes you haven't seen yet
         if(!this.showSpoilers()){
             return this.NotFoundImage
@@ -101,17 +115,20 @@ module.exports = class EmbyItem {
     }
 
     getHref(){
-      if(this.Type === "Movie" || this.Type === "Episode"){
-        return `href="./play-media.html?embyItemId=${this.Id}"`
+      if(this.ForcedHref){
+        return this.ForcedHref
       }
-      return `href="./emby-item.html?embyItemId=${this.Id}"`
+      if(this.Type === "Movie" || this.Type === "Episode"){
+        return `./play-media.html?embyItemId=${this.Id}`
+      }
+      return `./emby-item.html?embyItemId=${this.Id}`
     }
 
     getFidelity(){
-      if(this.UserData.UnplayedItemCount > 0){
+      if(this.UserData && this.UserData.UnplayedItemCount > 0){
           return this.UserData.UnplayedItemCount + " New Episodes";
       }
-      if(this.MediaStreams != null){
+      if(this.MediaStreams){
             let videoFidelity = "";
             let audioFidelity = "";
             for(let ii = 0; ii< this.MediaStreams.length; ii++){
@@ -124,7 +141,7 @@ module.exports = class EmbyItem {
                 }
                 if(stream.Type === "Audio" && (stream.IsDefault || audioFidelity === "")){
                     audioFidelity = stream.DisplayTitle.replace("(Default)","");
-                    if(stream.DisplayLanguage != null){
+                    if(stream.DisplayLanguage){
                         audioFidelity = audioFidelity.replace(stream.DisplayLanguage,"");
                     }
                     audioFidelity = audioFidelity.replace("Und","").replace("Undefined","");
@@ -135,7 +152,7 @@ module.exports = class EmbyItem {
                 }
             }
             let contentType = "";
-            if(this.Path != null){
+            if(this.Path){
                 if(this.Path.includes("Remux")){
                     contentType = "RX ";
                 } else{
