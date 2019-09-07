@@ -1,16 +1,13 @@
-const emby = require('../emby/api-client')
-
 const queryString = require('query-string')
+const _ = require('lodash')
+const emby = require('../emby/api-client')
+const navbar = require('../component/navbar')
 
 const queryParams = queryString.parse(location.search)
 
-const _ = require('lodash')
+navbar.render(true)
 
 let parentItem;
-
-const toggleUrl = `./emby-item.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? "" : "&watched=true")
-
-document.getElementById('watched-toggle').href = toggleUrl
 
 emby.apiClient.connect()
     .then(()=>{

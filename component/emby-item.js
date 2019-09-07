@@ -4,20 +4,22 @@ const _ = require('lodash')
 
 module.exports = class EmbyItem {
 	constructor(responseBody) {
-		this.Name = responseBody.Name
-		this.Id = responseBody.Id
-		this.ImageTags = responseBody.ImageTags
-		this.ParentId = responseBody.ParentId
-		this.CollectionType = responseBody.CollectionType
-		this.Type = responseBody.Type
-		this.UserData = responseBody.UserData
-		this.ResumeImage = false
-		this.ParentThumbItemId = responseBody.ParentThumbItemId
-		this.ParentThumbImageTag = responseBody.ParentThumbImageTag
-    this.Path = responseBody.Path
-    this.MediaStreams = responseBody.MediaStreams
-    this.SeasonName = responseBody.SeasonName
+    this.CollectionType = responseBody.CollectionType
+    this.Id = responseBody.Id
+    this.ImageTags = responseBody.ImageTags
+    this.Name = responseBody.Name
+    this.ParentId = responseBody.ParentId
+    this.ParentThumbImageTag = responseBody.ParentThumbImageTag
+    this.ParentThumbItemId = responseBody.ParentThumbItemId
+    this.ResumeImage = false
+    this.Type = responseBody.Type
+    this.UserData = responseBody.UserData
     this.IndexNumber = responseBody.IndexNumber
+    this.MediaStreams = responseBody.MediaStreams
+    this.Path = responseBody.Path
+    this.RunTimeTicks = responseBody.RunTimeTicks
+    this.SeasonName = responseBody.SeasonName
+    this.SeriesName = responseBody.SeriesName
 	}
 
 	render() {
@@ -39,9 +41,13 @@ module.exports = class EmbyItem {
         `
 	}
 
-  getTitle(){
+  getTitle(enableSeriesName){
      if(this.Type === "Episode"){
-          let result = this.SeasonName.replace("Season ","S") + "E"+this.IndexNumber;
+        let result = ''
+          if(enableSeriesName){
+            result += this.SeriesName + " - "
+          }
+          result += this.SeasonName.replace("Season ","S") + "E"+this.IndexNumber;
           if(this.showSpoilers()){
              return result + " - " + this.Name;
           }

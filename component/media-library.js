@@ -15,7 +15,7 @@ module.exports = class MediaLibrary {
           <a href="${this.LibraryHref}">            
           <div class="grid-item emby-item rounded">          
           <div class="poster">                    
-               <img src="${this.ImageURL}"/>
+               <img class="rounded" src="${this.ImageURL}"/>
           </div>                        
             <div class="title">
               ${this.Name}      
