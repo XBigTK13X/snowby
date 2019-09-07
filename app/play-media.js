@@ -24,10 +24,13 @@ emby.apiClient.connect()
       return emby.apiClient.embyItem(queryParams.embyItemId) 
     })
     .then((embyItem)=>{        
-    	document.getElementById('media-info').innerHTML = "Your media will begin playing shortly."
-    	document.getElementById('header').innerHTML = embyItem.getTitle(true)
-    	let cleanPath = embyItem.Path.replace("smb:","")
-    	cleanPath = cleanPath.replace(/\//g,"\\");
-        emby.apiClient.markPlayed(queryParams.embyItemId)
-    	shell.openItem(cleanPath)
+    	document.getElementById('media-info').innerHTML = ""
+    	document.getElementById('header').innerHTML = embyItem.getTitle(true)    	
+        document.getElementById('play-media-button').onclick = (event) => {
+            event.preventDefault()
+            emby.apiClient.markPlayed(queryParams.embyItemId)
+            let cleanPath = embyItem.Path.replace("smb:","")
+            cleanPath = cleanPath.replace(/\//g,"\\");
+            shell.openItem(cleanPath)
+        }
     })

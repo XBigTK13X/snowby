@@ -5,8 +5,6 @@ const navbar = require('../component/navbar')
 
 const queryParams = queryString.parse(location.search)
 
-navbar.render(true)
-
 let parentItem;
 
 emby.apiClient.connect()
@@ -14,6 +12,7 @@ emby.apiClient.connect()
       return emby.apiClient.embyItem(queryParams.embyItemId) 
     })
     .then((embyItem)=>{		
+    	navbar.render(embyItem.isCollection())
     	let query = Promise.resolve()    	
 		if(!_.isNil(embyItem.CollectionType)){
 			let searchParams = {

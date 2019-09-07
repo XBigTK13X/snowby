@@ -21,6 +21,12 @@ emby.apiClient.connect()
       }).render()
       menuEntries += new EmbyItem({},{
         horizontal: true,
+        link: "https://www.amazon.com/gp/video/storefront",
+        image: "../asset/img/amazon-logo.png",
+        title: "Amazon Prime"
+      }).render()
+      menuEntries += new EmbyItem({},{
+        horizontal: true,
         link: "http://overwatchleague.stream/nochat",
         image: "../asset/img/mlg-logo.png",
         title: "Overwatch League (MLG)"
@@ -30,7 +36,7 @@ emby.apiClient.connect()
         link: "https://www.twitch.tv/overwatchleague",
         image: "../asset/img/twitch-logo.png",
         title: "Overwatch League (Twitch)"
-      }).render()
+      }).render()      
       document.getElementById('media-libraries').innerHTML = menuEntries       
       document.getElementById('header').innerHTML = "Media Libraries"
       $('.lazy').Lazy();
