@@ -27,20 +27,26 @@ h1 {
   text-align:center;
 }
 
-.emby-item {
+.grid-card-vertical {
 	height: 400px;
 	background: #272727;
 	margin: 10px;
 }
 
-
-.media-library {
-	width: 100px;
-	height: 100px;
+.grid-card-horizontal {
+	height: 225px;
+	background: #272727;
+	margin: 10px;
 }
 
-.poster {
+
+.poster-vertical {
 	height: 300px;
+	margin-bottom: 5px;
+}
+
+.poster-horizontal {
+	height: 150px;
 	margin-bottom: 5px;
 }
 

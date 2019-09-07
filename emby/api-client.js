@@ -3,7 +3,6 @@ const os = require('os')
 const settings = require('../settings')
 const queryString = require('query-string')
 
-const MediaLibrary = require('../component/media-library')
 const EmbyItem = require('../component/emby-item')
 
 let httpClient, authHeader, userId;
@@ -50,19 +49,16 @@ module.exports = {
 				})
 		},
 		landingPage: () => {
-			let result = {}
 			const url = `Users/${userId}/Views`
 			return httpClient.get(url)
 				.then(viewsResponse=>{
-					result.libraries = viewsResponse.data.Items.map(item=>new MediaLibrary(item))
-					return result
+					return viewsResponse.data.Items.map(item=>new EmbyItem(item, true))
 				})
 		},
 		embyItem: (itemId) => {
 			const url = `Users/${userId}/Items/${itemId}`
 			return httpClient.get(url)
 				.then(itemResponse =>{
-					console.log({embyItem:itemResponse.data})
 					return new EmbyItem(itemResponse.data)
 				})
 		},
@@ -94,7 +90,7 @@ module.exports = {
 			const url = `Shows/${seriesId}/Episodes?${query}`
 			return httpClient.get(url)
 				.then(episodesResponse=>{
-					return episodesResponse.data.Items.map(item=>new EmbyItem(item))	
+					return episodesResponse.data.Items.map(item=>new EmbyItem(item, true))	
 				})
 		},
 		updateProgress: (embyItemId, embyTicks)=>{

@@ -1,6 +1,5 @@
 const { shell } = require('electron')
 const emby = require('../emby/api-client')
-const mediaLibrary = require('../component/media-library')
 const navbar = require('../component/navbar')
 
 const queryString = require('query-string')
