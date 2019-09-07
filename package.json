@@ -4,12 +4,14 @@
   "description": "Emby frontend that plays media in an external player.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package": "electron-packager . --overwrite --icon=./asset/img/snowflake.ico"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^6.0.7"
+    "electron": "^6.0.7",
+    "electron-packager": "^14.0.5"
   },
   "dependencies": {
     "axios": "^0.19.0",
