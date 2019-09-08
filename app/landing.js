@@ -1,5 +1,5 @@
 const emby = require('../emby/api-client')
-
+const settings = require('../settings')
 const EmbyItem = require('../component/emby-item')
 
 emby.apiClient.connect()
@@ -13,30 +13,16 @@ emby.apiClient.connect()
          menuEntries += library.render()  
         }        
       })
-      menuEntries += new EmbyItem({},{
-        horizontal: true,
-        link: "https://youtube.com",
-        image: "../asset/img/youtube-logo.png",
-        title: "YouTube"
-      }).render()
-      menuEntries += new EmbyItem({},{
-        horizontal: true,
-        link: "https://www.amazon.com/gp/video/storefront",
-        image: "../asset/img/amazon-logo.png",
-        title: "Amazon Prime"
-      }).render()
-      menuEntries += new EmbyItem({},{
-        horizontal: true,
-        link: "http://overwatchleague.stream/nochat",
-        image: "../asset/img/mlg-logo.png",
-        title: "Overwatch League (MLG)"
-      }).render()
-      menuEntries += new EmbyItem({},{
-        horizontal: true,
-        link: "https://www.twitch.tv/overwatchleague",
-        image: "../asset/img/twitch-logo.png",
-        title: "Overwatch League (Twitch)"
-      }).render()      
+
+      settings.landingLinks.forEach(landingLink=>{
+        menuEntries += new EmbyItem({},{
+          horizontal: true,
+          link: landingLink.link,
+          image: `../asset/img/${landingLink.image}`,
+          title: landingLink.title
+        }).render()
+      })
+
       document.getElementById('media-libraries').innerHTML = menuEntries       
       document.getElementById('header').innerHTML = "Media Libraries"
       $('.lazy').Lazy();
