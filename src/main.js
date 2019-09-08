@@ -39,5 +39,5 @@ app.on('activate', () => {
 })
 
 ipcMain.on('snowby-exit', (evt, arg) => {
-  app.quit(0)
+    app.quit(0)
 })
