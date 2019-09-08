@@ -6,10 +6,13 @@ module.exports = class EmbyItem {
     constructor(responseBody, options) {
         this.Orientation = options && options.horizontal ? 'horizontal' : 'vertical'
 
-        this.ForcedHref = options && options.link
+        this.ForcedHref = options && options.externalLink
+        this.InternalLink = options && options.internalLink
         this.ForcedImage = options && options.image
         this.ForcedTitle = options && options.title
         this.ForcedAction = options && options.action
+
+        this.SearchResultType = options && options.searchResultType
 
         this.CollectionType = responseBody.CollectionType
         this.Id = responseBody.Id
@@ -32,13 +35,7 @@ module.exports = class EmbyItem {
 
     render() {
         const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth, settings.mediaLibraryCardHeight)
-        let anchor = `<a href="${this.getHref()}">`
-        if (this.ForcedHref) {
-            anchor = `<a href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
-        }
-        if(this.ForcedAction){
-            anchor = `<a href="#" onclick="${this.ForcedAction}">`
-        }
+        let anchor = this.getAnchor()
         return `      
           ${anchor}
             <div class="grid-item grid-card-${this.Orientation} rounded">                      
@@ -131,17 +128,26 @@ module.exports = class EmbyItem {
         return false
     }
 
-    getHref() {
+    getAnchor() {
         if (this.ForcedHref) {
-            return this.ForcedHref
+            return `<a href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
+        }
+        if (this.ForcedAction) {
+            return `<a href="#" onclick="${this.ForcedAction}">`
+        }
+        if (this.InternalLink) {
+            return `<a href="${this.InternalLink}">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
-            return `./play-media.html?embyItemId=${this.Id}`
+            return `<a href="./play-media.html?embyItemId=${this.Id}">`
         }
-        return `./emby-item.html?embyItemId=${this.Id}`
+        return `<a href="./emby-item.html?embyItemId=${this.Id}">`
     }
 
     getFidelity() {
+        if (this.SearchResultType) {
+            return this.SearchResultType
+        }
         if (this.UserData && this.UserData.UnplayedItemCount > 0) {
             return this.UserData.UnplayedItemCount + ' New Episodes'
         }

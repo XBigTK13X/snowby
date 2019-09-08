@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package": "format-all && electron-packager . --overwrite --icon=./asset/img/snowflake.ico",
+    "package": "npm run format-all && electron-packager . --overwrite --icon=./asset/img/snowflake.ico",
     "format-all": "prettier --write \"src/**/*.{js,html,css}\""
   },
   "author": "",
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
+    "debounce": "^1.2.0",
     "jquery": "^3.4.1",
     "jquery-lazy": "^1.7.10",
     "lodash": "^4.17.15",
