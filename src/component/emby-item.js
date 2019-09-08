@@ -9,6 +9,7 @@ module.exports = class EmbyItem {
         this.ForcedHref = options && options.link
         this.ForcedImage = options && options.image
         this.ForcedTitle = options && options.title
+        this.ForcedAction = options && options.action
 
         this.CollectionType = responseBody.CollectionType
         this.Id = responseBody.Id
@@ -34,6 +35,9 @@ module.exports = class EmbyItem {
         let anchor = `<a href="${this.getHref()}">`
         if (this.ForcedHref) {
             anchor = `<a href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
+        }
+        if(this.ForcedAction){
+            anchor = `<a href="#" onclick="${this.ForcedAction}">`
         }
         return `      
           ${anchor}

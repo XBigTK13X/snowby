@@ -27,6 +27,14 @@ emby.apiClient
             ).render()
         })
 
+        menuEntries += new EmbyItem({},
+        {
+            horizontal: true,
+            action: "require('electron').ipcRenderer.send('snowby-exit'); return false;",
+            image: `../asset/img/exit.png`,
+            title: 'Exit'
+        }).render()
+
         document.getElementById('media-libraries').innerHTML = menuEntries
         document.getElementById('header').innerHTML = 'Media Libraries'
         $('.lazy').Lazy()

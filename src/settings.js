@@ -23,6 +23,11 @@ module.exports = {
             image: 'twitch-logo.png',
             title: 'Overwatch League (Twitch)',
         },
+        {
+            link: 'https://crunchyroll.com',
+            image: 'crunchyroll-logo.png',
+            title: 'Crunchyroll'
+        }
     ],
     mediaLibraryCardHeight: '300',
     mediaLibraryCardWidth: '200',
