@@ -26,12 +26,13 @@ h1 {
     text-align: center;
 }
 
-.grid-item:hover, .navbar-button:hover {
+.grid-item:hover,
+.navbar-button:hover {
     color: #7777c7;
 }
 
-
-.grid-item:active, .navbar-button:active {
+.grid-item:active,
+.navbar-button:active {
     color: #77c777;
 }
 

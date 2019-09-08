@@ -74,13 +74,12 @@ class EmbyApiClient {
         })
     }
     seasons(seriesId) {
-        const query = queryString.stringify({
-            seriesId,
-            userId: this.userId,
-        })
-        const url = `Shows/${seriesId}/Seasons?${query}`
-        return this.httpClient.get(url).then(seasonsResponse => {
-            return seasonsResponse.data.Items.map(item => new EmbyItem(item))
+        const seasonsUrl = `Shows/${seriesId}/Seasons?UserId=${this.userId}`
+        const nextUpUrl = `Shows/NextUp?SeriesId=${seriesId}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio&Limit=1&EnableTotalRecordCount=false`
+        return Promise.all([this.httpClient.get(seasonsUrl), this.httpClient.get(nextUpUrl)]).then(responses => {
+            let results = [new EmbyItem(responses[1].data.Items[0], { nextUp: true })]
+            results = results.concat(responses[0].data.Items.map(item => new EmbyItem(item)))
+            return results
         })
     }
     episodes(seriesId, seasonId) {

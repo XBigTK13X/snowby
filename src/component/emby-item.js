@@ -11,6 +11,7 @@ module.exports = class EmbyItem {
         this.ForcedImage = options && options.image
         this.ForcedTitle = options && options.title
         this.ForcedAction = options && options.action
+        this.NextUp = options && options.nextUp
 
         this.SearchResultType = options && options.searchResultType
 
@@ -67,6 +68,9 @@ module.exports = class EmbyItem {
                 if (this.showSpoilers()) {
                     result = result + ' - ' + this.Name
                 } else {
+                    if (this.NextUp) {
+                        return 'Next Up - ' + result
+                    }
                     return result + ' - [Hidden]'
                 }
             }
