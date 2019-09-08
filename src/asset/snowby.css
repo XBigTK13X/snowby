@@ -1,0 +1,96 @@
+html {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, system-ui, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+    background: #010101;
+    color: #c7c7c7;
+}
+
+/* Remove styling on tile text */
+a {
+    text-decoration: none;
+    color: #7b7979;
+}
+
+h1 {
+    text-align: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 15vw);
+    grid-column-gap: 0.2vw;
+    grid-row-gap: 0.2vw;
+}
+
+.grid-item {
+    padding: 0.1vw 0.1vw;
+    text-align: center;
+}
+
+.grid-card-vertical {
+    background: #272727;
+    height: 18vw;
+    margin: 0.1vw;
+}
+
+.poster-vertical {
+    height: 15vw;
+    margin: 0.2vw;
+}
+
+.grid-card-horizontal {
+    height: 10vw;
+    background: #272727;
+    margin: 0.2vw;
+}
+
+.poster-horizontal {
+    height: 7vw;
+    margin: 0.2vw;
+}
+
+.title {
+    text-decoration: none;
+    color: #eeeeee;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fidelity {
+    text-decoration: none;
+    font-size: smaller;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.rounded {
+    border-radius: 10px;
+}
+
+.navbar-button {
+    font-size: x-large;
+    font-weight: bold;
+    display: inline-block;
+    background: #c3c3c3;
+    border-radius: 10px;
+    padding: 0.2vw;
+    margin: 0.2vw;
+    width: 15vw;
+    height: 3vw;
+    text-align: center;
+}
+
+div.navbar > a {
+    color: #0c0c0c;
+}
+
+.media-info {
+    text-align: center;
+    font-size: x-large;
+}
+
+.tile {
+    max-width: 100%;
+    max-height: 100%;
+}
