@@ -1,8 +1,8 @@
 const queryString = require('query-string')
 
 module.exports = {
-	render: (showAllOptions) => {		
-		let navbarContent = `
+    render: showAllOptions => {
+        let navbarContent = `
 			<div class="navbar">
 		      <a href="./landing.html" >
 		        <div class="navbar-button">
@@ -15,18 +15,18 @@ module.exports = {
 		        </div>    
 		      </a>		      		    
 		`
-		if(showAllOptions){
-			const queryParams = queryString.parse(location.search)
-			const toggleUrl = `./emby-item.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? "" : "&watched=true")
-			navbarContent += `
+        if (showAllOptions) {
+            const queryParams = queryString.parse(location.search)
+            const toggleUrl = `./emby-item.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? '' : '&watched=true')
+            navbarContent += `
 			  <a href="${toggleUrl}" id="watched-toggle">
 		        <div class="navbar-button">
 		          Toggle Watched
 		        </div>    
 		      </a>
 			`
-		}
-		navbarContent += '</div>'
-		document.getElementById('navbar').innerHTML = navbarContent
-	}
+        }
+        navbarContent += '</div>'
+        document.getElementById('navbar').innerHTML = navbarContent
+    },
 }
