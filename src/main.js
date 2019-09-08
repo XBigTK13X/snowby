@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const settings = require('./settings')
 
 let win
@@ -36,4 +36,8 @@ app.on('activate', () => {
     if (win === null) {
         createWindow()
     }
+})
+
+ipcMain.on('snowby-exit', (evt, arg) => {
+  app.quit(0)
 })
