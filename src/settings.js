@@ -1,7 +1,7 @@
 module.exports = {
     debugEmbyApi: false,
     embyServerURL: 'http://9914.us:8096',
-    fullScreen: true,
+    fullScreen: false,
     landingLinks: [
         {
             link: 'https://youtube.com',

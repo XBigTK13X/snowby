@@ -7,7 +7,7 @@ html {
 /* Remove styling on tile text */
 a {
     text-decoration: none;
-    color: #7b7979;
+    color: #b8b8b8;
 }
 
 h1 {
@@ -16,7 +16,7 @@ h1 {
 
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 16.2vw);
+    grid-template-columns: repeat(auto-fill, 16vw);
     grid-column-gap: 0.2vw;
     grid-row-gap: 0.2vw;
 }
@@ -26,9 +26,18 @@ h1 {
     text-align: center;
 }
 
+.grid-item:hover, .navbar-button:hover {
+    color: #7777c7;
+}
+
+
+.grid-item:active, .navbar-button:active {
+    color: #77c777;
+}
+
 .grid-card-vertical {
     background: #272727;
-    height: 18vw;
+    height: 19vw;
     margin: 0.1vw;
 }
 
@@ -38,7 +47,7 @@ h1 {
 }
 
 .grid-card-horizontal {
-    height: 10vw;
+    height: 11vw;
     background: #272727;
     margin: 0.2vw;
 }
@@ -49,8 +58,9 @@ h1 {
 }
 
 .title {
+    font-weight: bold;
+    font-size: larger;
     text-decoration: none;
-    color: #eeeeee;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
