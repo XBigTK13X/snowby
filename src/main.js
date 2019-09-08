@@ -14,6 +14,7 @@ function createWindow() {
         fullscreen: settings.fullScreen,
         backgroundColor: settings.windowBackgroundColor,
         autoHideMenuBar: !settings.menuBarVisible,
+        icon: __dirname + '/asset/img/snowflake.ico',
     })
     win.maximize()
 
