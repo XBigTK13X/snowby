@@ -17,12 +17,12 @@ module.exports = {
         {
             link: 'http://overwatchleague.stream/nochat',
             image: 'mlg-logo.png',
-            title: 'Overwatch League (MLG)',
+            title: 'OWL (MLG)',
         },
         {
             link: 'https://www.twitch.tv/overwatchleague',
             image: 'twitch-logo.png',
-            title: 'Overwatch League (Twitch)',
+            title: 'OWL (Twitch)',
         },
         {
             link: 'https://crunchyroll.com',
