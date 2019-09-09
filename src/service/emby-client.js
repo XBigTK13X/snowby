@@ -5,7 +5,7 @@ const queryString = require('query-string')
 
 const EmbyItem = require('../component/emby-item')
 
-class EmbyApiClient {
+class EmbyClient {
     constructor() {
         this.httpClient = null
         this.authHeader = null
@@ -15,6 +15,7 @@ class EmbyApiClient {
             timeout: 30000,
         }
     }
+
     connect() {
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
         this.httpClient = axios.create(this.httpConfig)
@@ -54,18 +55,21 @@ class EmbyApiClient {
                 return true
             })
     }
-    landingPage() {
+
+    libraryViews() {
         const url = `Users/${this.userId}/Views`
         return this.httpClient.get(url).then(viewsResponse => {
             return viewsResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true }))
         })
     }
+
     embyItem(itemId) {
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient.get(url).then(itemResponse => {
             return new EmbyItem(itemResponse.data)
         })
     }
+
     embyItems(parentId, searchParams) {
         const query = queryString.stringify(searchParams)
         const url = `Users/${this.userId}/Items?${query}`
@@ -73,6 +77,7 @@ class EmbyApiClient {
             return itemsResponse.data.Items.map(item => new EmbyItem(item))
         })
     }
+
     seasons(seriesId) {
         const seasonsUrl = `Shows/${seriesId}/Seasons?UserId=${this.userId}`
         const nextUpUrl = `Shows/NextUp?SeriesId=${seriesId}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio&Limit=1&EnableTotalRecordCount=false`
@@ -86,6 +91,7 @@ class EmbyApiClient {
             return results
         })
     }
+
     episodes(seriesId, seasonId) {
         const query = queryString.stringify({
             seasonId,
@@ -97,6 +103,7 @@ class EmbyApiClient {
             return episodesResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true }))
         })
     }
+
     updateProgress(embyItemId, embyTicks) {
         const url = `Sessions/Playing/Progress`
         const payload = {
@@ -105,14 +112,17 @@ class EmbyApiClient {
         }
         return this.httpClient.post(url, payload)
     }
+
     markPlayed(embyItemId) {
         const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
         return this.httpClient.post(url)
     }
+
     markUnplayed(embyItemId) {
         const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
         return this.httpClient.delete(url)
     }
+
     search(query) {
         const movieURL = this.buildSearchURL(query, 'Movie')
         const seriesURL = this.buildSearchURL(query, 'Series')
@@ -125,6 +135,7 @@ class EmbyApiClient {
             ]
         })
     }
+
     buildSearchURL(query, itemType) {
         const encodedQuery = encodeURIComponent(query)
         let url = `Users/${this.userId}/Items?searchTerm=${encodedQuery}`
@@ -134,10 +145,26 @@ class EmbyApiClient {
         url += `&EnableTotalRecordCount=false&ImageTypeLimit=1`
         return url
     }
+
+    itemsInProgress() {
+        const url = `emby/Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
+        return this.httpClient.get(url).then(progressResponse => {
+            return progressResponse.data.Items.map(item => {
+                let searchResultType = 'Movie'
+                if (item.SeriesName) {
+                    searchResultType = item.SeriesName
+                }
+                console.log({ item })
+                return new EmbyItem(item, {
+                    searchResultType,
+                })
+            })
+        })
+    }
 }
 
-const instance = new EmbyApiClient()
+const instance = new EmbyClient()
 
 module.exports = {
-    apiClient: instance,
+    client: instance,
 }

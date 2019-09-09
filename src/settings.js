@@ -1,6 +1,7 @@
 module.exports = {
     debugEmbyApi: false,
     embyServerURL: 'http://9914.us:8096',
+    mpcServerURL: 'http://localhost:13579',
     fullScreen: true,
     landingLinks: [
         {
@@ -32,5 +33,6 @@ module.exports = {
     mediaLibraryCardHeight: '300',
     mediaLibraryCardWidth: '200',
     menuBarVisible: false,
+    resumeOffsetTicks: 10000 * 1000 * 5, // Five seconds in Emby ticks
     windowBackgroundColor: '#010101',
 }
