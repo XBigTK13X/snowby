@@ -5,12 +5,12 @@ const navbar = require('../component/navbar')
 
 navbar.render(false)
 
-const emby = require('../emby/api-client')
+const emby = require('../service/emby-client')
 
 const queryParams = queryString.parse(location.search)
 
 const executeQuery = debounce(queryText => {
-    emby.apiClient.search(queryText).then(results => {
+    emby.client.search(queryText).then(results => {
         let renderedItems = `<div class="grid-container">`
         results.forEach(embyItems => {
             embyItems.forEach(embyItem => {
@@ -23,7 +23,7 @@ const executeQuery = debounce(queryText => {
         $('.lazy').Lazy()
     })
 }, 200)
-emby.apiClient.connect().then(() => {
+emby.client.connect().then(() => {
     if (queryParams.query) {
         document.getElementById('query-input').value = queryParams.query
         executeQuery(queryParams.query)

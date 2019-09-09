@@ -1,15 +1,30 @@
-const emby = require('../emby/api-client')
+const emby = require('../service/emby-client')
 const settings = require('../settings')
 const EmbyItem = require('../component/emby-item')
 
-emby.apiClient
+emby.client
     .connect()
     .then(() => {
-        return emby.apiClient.landingPage()
+        return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
     })
-    .then(libraries => {
+    .then(responses => {
         let menuEntries = ''
-        libraries.forEach(library => {
+
+        const itemsInProgress = responses[1]
+        if (itemsInProgress.length > 0) {
+            menuEntries += new EmbyItem(
+                {
+                    Id: 'in-progress',
+                    Name: 'In Progress',
+                },
+                {
+                    image: '../asset/img/in-progress-items.png',
+                    horizontal: true,
+                }
+            ).render()
+        }
+
+        responses[0].forEach(library => {
             if (library.CollectionType === 'movies' || library.CollectionType === 'tvshows') {
                 menuEntries += library.render()
             }
