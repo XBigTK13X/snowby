@@ -28,6 +28,8 @@ emby.client
                 } else if (embyItem.CollectionType === 'tvshows') {
                     searchParams.IncludeItemTypes = 'Series'
                     searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
+                } else if (embyItem.CollectionType === 'playlists') {
+                    searchParams.ParentId = embyItem.Id
                 }
                 searchParams.SortBy = 'SortName'
                 searchParams.SortOrder = 'Ascending'
@@ -38,8 +40,10 @@ emby.client
                     query = emby.client.seasons(embyItem.Id)
                 } else if (embyItem.Type === 'Season') {
                     query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
+                } else if (embyItem.Type === 'Playlist') {
+                    query = emby.client.playlist(embyItem.Id)
                 } else {
-                    throw 'Unhandled emby item type'
+                    throw 'Unhandled emby item type ' + embyItem.Type
                 }
             }
             parentItem = embyItem
@@ -54,5 +58,16 @@ emby.client
         renderedItems += `</div>`
         document.getElementById('emby-items').innerHTML = renderedItems
         document.getElementById('header').innerHTML = parentItem.Name
+        if (embyItems.length > 12) {
+            document.getElementById('top').innerHTML = `
+                <div class='navbar'>
+                    <a onclick="window.scroll(0,0); return false" href="">
+                        <div class="navbar-button">                        
+                        Back to Top
+                        </div>
+                    </a>
+                </div>
+            `
+        }
         $('.lazy').Lazy()
     })

@@ -68,6 +68,24 @@ class MpcClient {
             return parseMpcStatus(statusResponse.data)
         })
     }
+
+    previousAudioTrack() {
+        const command = 'wm_command=953&null=0'
+    }
+
+    nextAudioTrack() {
+        const url = 'command.html'
+        const command = 'wm_command=952&null=0'
+    }
+
+    previousSubtitleTrack() {
+        const command = 'wm_command=955&null=0'
+    }
+
+    nextSubtitleTrack() {
+        const url = 'command.html'
+        const command = 'wm_command=954&null=0'
+    }
 }
 
 const instance = new MpcClient()

@@ -10,7 +10,8 @@ a {
     color: #b8b8b8;
 }
 
-h1 {
+h1,
+h2 {
     text-align: center;
 }
 
@@ -99,9 +100,12 @@ div.navbar > a {
     color: #0c0c0c;
 }
 
-.media-info {
-    text-align: center;
-    font-size: x-large;
+.media-info table,
+th,
+td {
+    border: 1px solid grey;
+    border-collapse: collapse;
+    padding: 5px;
 }
 
 .tile {

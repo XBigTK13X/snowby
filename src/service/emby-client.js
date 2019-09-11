@@ -64,9 +64,17 @@ class EmbyClient {
     }
 
     embyItem(itemId) {
+        const client = this
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient.get(url).then(itemResponse => {
-            return new EmbyItem(itemResponse.data)
+            const result = new EmbyItem(itemResponse.data)
+            if (result.Type !== 'Episode') {
+                return result
+            }
+            return client.embyItem(result.SeriesId).then(seriesItem => {
+                result.Series = seriesItem
+                return result
+            })
         })
     }
 
@@ -129,9 +137,9 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
-                responses[0].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Show' })),
+                responses[0].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Series' })),
                 responses[1].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Movie' })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Episode' })),
+                responses[2].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Episode - ' + item.SeriesName })),
             ]
         })
     }
@@ -140,7 +148,7 @@ class EmbyClient {
         const encodedQuery = encodeURIComponent(query)
         let url = `Users/${this.userId}/Items?searchTerm=${encodedQuery}`
         url += `&IncludePeople=false&IncludeMedia=true&IncludeGenres=false&IncludeStudios=false&IncludeArtists=false`
-        url += `&IncludeItemTypes=${itemType}&Limit=100`
+        url += `&IncludeItemTypes=${itemType}&Limit=10`
         url += `&Fields=PrimaryImageAspectRatio%2CCanDelete%2CBasicSyncInfo%2CProductionYear&Recursive=true`
         url += `&EnableTotalRecordCount=false&ImageTypeLimit=1`
         return url
@@ -154,9 +162,20 @@ class EmbyClient {
                 if (item.SeriesName) {
                     searchResultType = item.SeriesName
                 }
-                console.log({ item })
                 return new EmbyItem(item, {
                     searchResultType,
+                })
+            })
+        })
+    }
+
+    playlist(embyItemId) {
+        const fields = 'ProductionYear'
+        const url = `Playlists/${embyItemId}/Items?EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&UserId=${this.userId}&Fields=${fields}`
+        return this.httpClient.get(url).then(playlistResponse => {
+            return playlistResponse.data.Items.map(item => {
+                return new EmbyItem(item, {
+                    searchResultType: `(${item.ProductionYear})`,
                 })
             })
         })

@@ -4,34 +4,20 @@ const settings = require('../settings')
 
 module.exports = class EmbyItem {
     constructor(responseBody, options) {
+        Object.assign(this, responseBody)
+
         this.Orientation = options && options.horizontal ? 'horizontal' : 'vertical'
 
+        this.ForcedAction = options && options.action
         this.ForcedHref = options && options.externalLink
-        this.InternalLink = options && options.internalLink
         this.ForcedImage = options && options.image
         this.ForcedTitle = options && options.title
-        this.ForcedAction = options && options.action
+        this.InternalLink = options && options.internalLink
         this.NextUp = options && options.nextUp
-
         this.SearchResultType = options && options.searchResultType
 
-        this.CollectionType = responseBody.CollectionType
-        this.Id = responseBody.Id
-        this.ImageTags = responseBody.ImageTags
-        this.Name = responseBody.Name
-        this.ParentId = responseBody.ParentId
-        this.ParentThumbImageTag = responseBody.ParentThumbImageTag
-        this.ParentThumbItemId = responseBody.ParentThumbItemId
-        this.ResumeImage = false
-        this.Type = responseBody.Type
-        this.UserData = responseBody.UserData
-        this.IndexNumber = responseBody.IndexNumber
-        this.MediaStreams = responseBody.MediaStreams
         this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
-        this.Path = responseBody.Path
-        this.RunTimeTicks = responseBody.RunTimeTicks
-        this.SeasonName = responseBody.SeasonName
-        this.SeriesName = responseBody.SeriesName
+        this.ResumeImage = false
     }
 
     render() {
@@ -118,6 +104,12 @@ module.exports = class EmbyItem {
             var result = settings.embyServerURL + '/emby/Items/' + itemId + '/Images/' + imageType
             result += '?maxWidth=' + width + '&maxHeight=' + height
             result += '&tag=' + imageTag + '&quality=100'
+            return result
+        }
+        if (this.Type === 'Season') {
+            var result = settings.embyServerURL + '/emby/Items/' + this.SeriesId + '/Images/Primary'
+            result += '?maxWidth=' + width + '&maxHeight=' + height
+            result += '&tag=' + this.SeriesPrimaryImageTag + '&quality=100'
             return result
         }
         return this.NotFoundImage

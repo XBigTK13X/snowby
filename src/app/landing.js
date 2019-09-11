@@ -25,7 +25,7 @@ emby.client
         }
 
         responses[0].forEach(library => {
-            if (library.CollectionType === 'movies' || library.CollectionType === 'tvshows') {
+            if (library.CollectionType === 'movies' || library.CollectionType === 'tvshows' || library.CollectionType === 'playlists') {
                 menuEntries += library.render()
             }
         })
