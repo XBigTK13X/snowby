@@ -39,6 +39,50 @@ const embyTicksToRunTime = ticks => {
     return displayTime(ticks / 10000000)
 }
 
+const showStream = stream => {
+    if (stream.Type === 'Video') {
+        return true
+    }
+    if (stream.Type === 'Audio' || stream.Type === 'Subtitle') {
+        if (!stream.DisplayLanguage) {
+            return true
+        }
+        const displayLanguage = stream.DisplayLanguage.toLowerCase()
+        if (displayLanguage.includes('und') || displayLanguage.includes('eng') || displayLanguage.includes('jap')) {
+            return true
+        }
+    }
+    return false
+}
+
+const isAnime = embyItem => {
+    let japaneseAudio = false
+    let animeSubtitles = false
+    let animated = false
+
+    let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
+    if (genres.includes('Anime') || genres.includes('Animation')) {
+        animated = true
+    }
+
+    for (var ii = 0; ii < embyItem.MediaStreams.length; ii++) {
+        const stream = embyItem.MediaStreams[ii]
+        if (stream.Type === 'Audio') {
+            if ((stream.Language && stream.Language.toLowerCase().includes('jpn')) || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('jap'))) {
+                japaneseAudio = true
+            }
+        }
+        if (stream.Type === 'Subtitle') {
+            const codec = stream.Codec.toLowerCase()
+            if (codec.includes('ass') || codec.includes('ssa')) {
+                animeSubtitles = true
+            }
+        }
+    }
+    //console.log({animated,animeSubtitles,japaneseAudio})
+    return animated && animeSubtitles && japaneseAudio
+}
+
 emby.client
     .connect()
     .then(() => {
@@ -52,7 +96,9 @@ emby.client
                     mpc.client
                         .getStatus()
                         .then(mpcStatus => {
-                            emby.client.updateProgress(embyItem.Id, mpcStatus.Position * 10000)
+                            if (mpcStatus.Position > 0) {
+                                emby.client.updateProgress(embyItem.Id, mpcStatus.Position * 10000)
+                            }
                         })
                         .catch(swallow => {})
                 })
@@ -63,14 +109,43 @@ emby.client
         if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
             resumeTicks = embyTicksToRunTime(embyItem.UserData.PlaybackPositionTicks - settings.resumeOffsetTicks)
         }
+        let streams = `<table>
+        <tr>
+            <th>Index</th>
+            <th>Type</th>
+            <th>Display</th>
+            <th>Codec</th>
+            <th>DisplayLanguage</th>
+        </tr>`
+        let hiddenStreams = 0
+        streams += embyItem.MediaStreams.map((stream, ii) => {
+            if (!showStream(stream)) {
+                hiddenStreams++
+                return ''
+            }
+            return `
+            <tr>
+                <td>${ii === 0 ? 0 : ii || ''}</td>
+                <td>${stream.Type || ''}</td>
+                <td>${stream.DisplayTitle || ''}</td>
+                <td>${stream.Codec || ''}</td>
+                <td>${stream.DisplayLanguage || ''}</td>
+            </tr>
+            `
+        }).join('')
+        streams = `<p>Streams (${hiddenStreams} hidden)</p>` + streams
+        const japaneseAnimation = isAnime(embyItem)
+        streams += `</table>`
         document.getElementById('media-info').innerHTML = `
-            <h4>Run Time</h4>
-            <p>${runTime}</p>
+            <p>Run Time - ${runTime}</p>
+            ${streams}
+            <p>Path - ${embyItem.Path}</p>
+            <p>Snowby thinks this is ${japaneseAnimation ? '' : 'not'} anime.</p>
         `
-        document.getElementById('header').innerHTML = embyItem.getTitle(true)
-        document.getElementById('play-media-button').onclick = event => {
+        document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
+        document.getElementById('subheader').innerHTML = document.getElementById('play-media-button').onclick = event => {
             event.preventDefault()
-            emby.client.markPlayed(queryParams.embyItemId)
+            emby.client.markUnplayed(queryParams.embyItemId)
             let cleanPath = embyItem.Path.replace('smb:', '')
             cleanPath = cleanPath.replace(/\//g, '\\')
             shell.openItem(cleanPath)
@@ -80,7 +155,7 @@ emby.client
             document.getElementById('resume-media-content').innerHTML = 'Resume ' + resumeTicks
             document.getElementById('resume-media-button').onclick = event => {
                 event.preventDefault()
-                //emby.client.markPlayed(queryParams.embyItemId)
+                emby.client.markUnplayed(queryParams.embyItemId)
                 let cleanPath = embyItem.Path.replace('smb:', '')
                 cleanPath = cleanPath.replace(/\//g, '\\')
                 if (shell.openItem(cleanPath)) {
