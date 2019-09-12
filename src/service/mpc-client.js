@@ -1,3 +1,4 @@
+// Commands available https://github.com/mpc-hc/mpc-hc/blob/7f14b47cf225102b162d61c9cfa74186e1fe5e80/src/mpc-hc/resource.h
 // Modified from MPC web player's javascript.js
 const axios = require('axios')
 const settings = require('../settings')
@@ -70,21 +71,27 @@ class MpcClient {
     }
 
     previousAudioTrack() {
+        const url = 'command.html'
         const command = 'wm_command=953&null=0'
+        return this.httpClient.post(url, command)
     }
 
     nextAudioTrack() {
         const url = 'command.html'
         const command = 'wm_command=952&null=0'
+        return this.httpClient.post(url, command)
     }
 
     previousSubtitleTrack() {
+        const url = 'command.html'
         const command = 'wm_command=955&null=0'
+        return this.httpClient.post(url, command)
     }
 
     nextSubtitleTrack() {
         const url = 'command.html'
         const command = 'wm_command=954&null=0'
+        return this.httpClient.post(url, command)
     }
 }
 
