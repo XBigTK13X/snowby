@@ -145,7 +145,7 @@ module.exports = class EmbyItem {
             return this.SearchResultType
         }
         if (this.UserData && this.UserData.UnplayedItemCount > 0) {
-            return this.UserData.UnplayedItemCount + ' New Episodes'
+            return this.UserData.UnplayedItemCount + ' New Episode' + (this.UserData.UnplayedItemCount > 1 ? 's' : '')
         }
         if (this.MediaStreams) {
             let videoFidelity = ''
