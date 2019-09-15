@@ -1,7 +1,33 @@
 const emby = require('../service/emby-client')
 const settings = require('../settings')
 const EmbyItem = require('../component/emby-item')
-
+const landingLinks = [
+    {
+        link: 'https://youtube.com',
+        image: 'youtube-logo.png',
+        title: 'YouTube',
+    },
+    {
+        link: 'https://www.amazon.com/gp/video/storefront',
+        image: 'amazon-logo.png',
+        title: 'Amazon Prime',
+    },
+    {
+        link: 'http://overwatchleague.stream/nochat',
+        image: 'mlg-logo.png',
+        title: 'OWL (MLG)',
+    },
+    {
+        link: 'https://www.twitch.tv/overwatchleague',
+        image: 'twitch-logo.png',
+        title: 'OWL (Twitch)',
+    },
+    {
+        link: 'https://crunchyroll.com',
+        image: 'crunchyroll-logo.png',
+        title: 'Crunchyroll',
+    },
+]
 emby.client
     .connect()
     .then(() => {
@@ -40,7 +66,7 @@ emby.client
             }
         ).render()
 
-        settings.landingLinks.forEach(landingLink => {
+        landingLinks.forEach(landingLink => {
             menuEntries += new EmbyItem(
                 {},
                 {

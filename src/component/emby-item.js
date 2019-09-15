@@ -27,7 +27,7 @@ module.exports = class EmbyItem {
           ${anchor}
             <div class="grid-item grid-card-${this.Orientation} rounded">                      
             	<div class="poster-${this.Orientation}">          		
-            			<img class="lazy rounded tile" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+            			<img class="lazy rounded tile-${this.Orientation}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             	</div>          	          
               <div class="title">
                 ${this.getTitle()}      
