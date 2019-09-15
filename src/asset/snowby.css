@@ -133,3 +133,17 @@ td {
     border-style: solid;
     padding-left: 0.5vw;
 }
+
+.bottom-pin {
+    height: 40px;
+    position: fixed;
+    bottom: 0%;
+    background-color: #393838;
+    opacity: 1;
+    border-radius: 5px;
+    padding: 1vw;
+    font-size: larger;
+    text-align: right;
+    margin-left: 85%;
+    margin-bottom: 1vw;
+}
