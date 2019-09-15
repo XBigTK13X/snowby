@@ -45,7 +45,8 @@ h2 {
 
 .poster-vertical {
     height: 15vw;
-    margin: 0.2vw;
+    max-width: 15vw;
+    margin: auto;
 }
 
 .grid-card-horizontal {
@@ -56,7 +57,9 @@ h2 {
 
 .poster-horizontal {
     height: 7vw;
-    margin: 0.2vw;
+    width: 15vw;
+    text-align: center;
+    margin: auto;
 }
 
 .title {
@@ -108,9 +111,14 @@ td {
     padding: 5px;
 }
 
-.tile {
+.tile-vertical {
     max-width: 100%;
     max-height: 100%;
+}
+
+.tile-horizontal {
+    width: 200px;
+    height: 112px;
 }
 
 .query {

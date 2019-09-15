@@ -2,6 +2,7 @@
 // Modified from MPC web player's javascript.js
 const axios = require('axios')
 const settings = require('../settings')
+const httpLogger = require('./http-logger')
 
 class MpcStatus {
     constructor(title, status, position, positionStr, duration, durationStr, muted, volume) {
@@ -28,17 +29,7 @@ class MpcClient {
             timeout: 30000,
         }
         this.httpClient = axios.create(this.httpConfig)
-        if (settings.debugEmbyApi) {
-            this.httpClient.interceptors.request.use(request => {
-                console.log({ request })
-                return request
-            })
-
-            this.httpClient.interceptors.response.use(response => {
-                console.log({ response })
-                return response
-            })
-        }
+        httpLogger.register(this.httpClient)
     }
 
     connect() {
@@ -47,7 +38,7 @@ class MpcClient {
             const heartbeat = setInterval(() => {
                 api.getStatus()
                     .then(status => {
-                        if (status.Status === 'Playing') {
+                        if (status.Status !== 'N/A') {
                             clearInterval(heartbeat)
                             resolve()
                         }

@@ -1,8 +1,9 @@
 const axios = require('axios')
 const os = require('os')
-const settings = require('../settings')
 const queryString = require('query-string')
 
+const settings = require('../settings')
+const httpLogger = require('./http-logger')
 const EmbyItem = require('../component/emby-item')
 
 class EmbyClient {
@@ -16,20 +17,14 @@ class EmbyClient {
         }
     }
 
+    createHttpClient() {
+        this.httpClient = axios.create(this.httpConfig)
+        httpLogger.register(this.httpClient)
+    }
+
     connect() {
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
-        this.httpClient = axios.create(this.httpConfig)
-        if (settings.debugEmbyApi) {
-            this.httpClient.interceptors.request.use(request => {
-                console.log({ request })
-                return request
-            })
-
-            this.httpClient.interceptors.response.use(response => {
-                console.log({ response })
-                return response
-            })
-        }
+        this.createHttpClient(this.httpConfig)
 
         const usersURL = 'users/public'
         return this.httpClient
@@ -44,14 +39,14 @@ class EmbyClient {
                 this.httpConfig.headers = {
                     'X-Emby-Authorization': this.authHeader,
                 }
-                this.httpClient = axios.create(this.httpConfig)
+                this.createHttpClient()
                 const loginURL = 'users/authenticatebyname'
                 return this.httpClient.post(loginURL, loginPayload)
             })
             .then(loginResponse => {
                 const authenticatedUser = loginResponse.data
                 this.httpConfig.headers['X-Emby-Authorization'] = `${this.httpConfig.headers['X-Emby-Authorization']}, Token="${authenticatedUser.AccessToken}"`
-                this.httpClient = axios.create(this.httpConfig)
+                this.createHttpClient()
                 return true
             })
     }

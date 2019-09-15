@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+	<row>
+		<button text="Sleep" ontap="sleepComputer" />
+	</row>
+	<row>
+		<button text="Snowby Full Screen" ontap="toggleSnowbyFullScreen" />
+		<button text="Snowby Exit" ontap="exitSnowby" />
+		<button text="MPC Exit" ontap="exitMpc" />
+		<button text="MPC Full Screen" ontap="toggleMpcFullScreen" />
+	</row>
+	<row>
+		<button text="Jump Backward" ontap="jumpBackward" />
+		<button text="Next Audio" ontap="nextAudio" />
+		<button text="Next Subtitle" ontap="nextSubtitle" />
+		<button text="Jump Forward" ontap="jumpForward" />
+	</row>
+	<row>
+		<button text="Pause/Resume" ontap="toggleMedia" />
+		<button text="Toggle Subtitles" ontap="toggleSubtitles" />
+	</row>	
+</layout>
