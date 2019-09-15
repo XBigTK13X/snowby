@@ -1,6 +1,7 @@
 const emby = require('../service/emby-client')
 const settings = require('../settings')
 const EmbyItem = require('../component/emby-item')
+
 const landingLinks = [
     {
         link: 'https://youtube.com',
@@ -88,6 +89,7 @@ emby.client
             }
         ).render()
 
+        document.getElementById('version').innerHTML = `version ${require('electron').remote.app.getVersion()}`
         document.getElementById('media-libraries').innerHTML = menuEntries
         document.getElementById('header').innerHTML = 'Media Libraries'
         $('.lazy').Lazy()
