@@ -2,6 +2,7 @@
 <layout>
 	<row>
 		<button text="Sleep" ontap="sleepComputer" />
+		<button text="Wake" ontap="@wol" />
 	</row>
 	<row>
 		<button text="Snowby Full Screen" ontap="toggleSnowbyFullScreen" />
