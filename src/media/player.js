@@ -11,13 +11,13 @@ const openFile = (embyItemId, mediaPath, subtitleTrackSkips, audioTrackSkips, se
                 subtitleTrackSkips--
                 promises.push(mpc.client.nextSubtitleTrack())
             }
-            while (audioTrackSkips > 0) {
-                audioTrackSkips--
-                promises.push(mpc.client.nextAudioTrack())
-            }
             while (subtitleTrackSkips < 0) {
                 subtitleTrackSkips++
                 promises.push(mpc.client.previousSubtitleTrack())
+            }
+            while (audioTrackSkips > 0) {
+                audioTrackSkips--
+                promises.push(mpc.client.nextAudioTrack())
             }
             while (audioTrackSkips < 0) {
                 audioTrackSkips++

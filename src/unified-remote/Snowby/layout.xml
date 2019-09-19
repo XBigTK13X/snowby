@@ -2,22 +2,23 @@
 <layout>
 	<row>
 		<button text="Sleep" ontap="sleepComputer" />
-		<button text="Wake" ontap="@wol" />
+		<button text="Wake" ontap="@wol,MAC-REQUIRED" />
 	</row>
 	<row>
-		<button text="Snowby Full Screen" ontap="toggleSnowbyFullScreen" />
-		<button text="Snowby Exit" ontap="exitSnowby" />
-		<button text="MPC Exit" ontap="exitMpc" />
-		<button text="MPC Full Screen" ontap="toggleMpcFullScreen" />
+		<button text="Full\nScreen" ontap="toggleFullScreen" />
+		<button text="App\nExit" ontap="exitApp" />
 	</row>
 	<row>
-		<button text="Jump Backward" ontap="jumpBackward" />
-		<button text="Next Audio" ontap="nextAudio" />
-		<button text="Next Subtitle" ontap="nextSubtitle" />
-		<button text="Jump Forward" ontap="jumpForward" />
-	</row>
+		<button text="Snowby" ontap="focusSnowby" />
+		<button text="MPC" ontap="focusMPC" />
+		<button text="Chrome" ontap="focusChrome" />
+	</row>	
 	<row>
-		<button text="Pause/Resume" ontap="toggleMedia" />
-		<button text="Toggle Subtitles" ontap="toggleSubtitles" />
+		<button text="Backward" ontap="jumpBackward" />		
+		<button text="Forward" ontap="jumpForward" />				
+	</row>	
+	<row>
+		<button text="Pause\nResume" ontap="toggleMedia" />
+		<button text="Subtitle" ontap="nextSubtitle" />
 	</row>	
 </layout>

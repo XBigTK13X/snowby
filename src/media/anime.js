@@ -76,8 +76,11 @@ const inspect = embyItem => {
             subtitleSkips = subtitleIndex - defaultSubtitleIndex
         }
     }
+
+    const isAnime = animated && animeSubtitle && animeAudio
+
     const result = {
-        isAnime: animated && animeSubtitle && animeAudio,
+        isAnime,
         subtitleSkips,
         audioSkips,
         chosenSubtitleIndex,

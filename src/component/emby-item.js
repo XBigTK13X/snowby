@@ -50,7 +50,7 @@ module.exports = class EmbyItem {
                 if (enableSeriesName) {
                     result += this.SeriesName + ' - '
                 }
-                result += this.SeasonName.replace('Season ', 'S') + 'E' + this.IndexNumber
+                result += this.SeasonName.replace('Season ', 'S').replace('Specials','SP') + 'E' + this.IndexNumber
                 if (this.showSpoilers()) {
                     result = result + ' - ' + this.Name
                 } else {

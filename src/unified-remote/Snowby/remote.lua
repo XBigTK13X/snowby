@@ -10,24 +10,28 @@ local kb = libs.keyboard;
 -- Documentation
 -- http://www.unifiedremote.com/api
 
--- Keyboard Library
--- http://www.unifiedremote.com/api/libs/keyboard
+-- Supported Keys
+-- https://github.com/unifiedremote/Docs/blob/master/res/keys.md
 
 
 actions.toggleMedia = function ()
 	kb.stroke("mediaplaypause");
 end
 
-actions.toggleSubtitles = function()
-	kb.stroke('w')
-end
-
-actions.nextAudio = function()
-	kb.stroke('a')
-end
-
 actions.nextSubtitle = function()
 	kb.stroke('s')
+end
+
+actions.focusSnowby = function()
+	kb.stroke('windows','d2')
+end
+
+actions.focusMPC = function()
+	kb.stroke('windows','d3')
+end
+
+actions.focusChrome = function()
+	kb.stroke('windows','d4')
 end
 
 actions.jumpBackward = function()
@@ -38,24 +42,12 @@ actions.jumpForward = function()
 	kb.stroke('right')
 end
 
-actions.toggleSnowbyFullScreen = function()
+actions.toggleFullScreen = function()
 	kb.stroke('f11')
 end
 
-actions.toggleMpcFullScreen = function()
-	kb.stroke("alt",'enter')
-end
-
-actions.exitSnowby = function()
-	kb.stroke("alt",'f4')
-end
-
-actions.exitMpc = function()
-	kb.stroke("alt",'x')
-end
-
-actions.optionsMpc = function()
-   kc.stroke('o')
+actions.exitApp = function()
+	kb.stroke('alt','f4')
 end
 
 actions.sleepComputer = function ()
