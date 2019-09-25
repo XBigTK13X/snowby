@@ -66,7 +66,11 @@ emby.client
         })
         renderedItems += `</div>`
         document.getElementById('emby-items').innerHTML = renderedItems
-        document.getElementById('header').innerHTML = parentItem.Name
+        let title = parentItem.Name
+        if (embyItems.length > 0) {
+            title += ` (${embyItems.length} ${embyItems.length === 1 ? ' item' : ' items'})`
+        }
+        document.getElementById('header').innerHTML = title
         if (embyItems.length > 12) {
             document.getElementById('top').innerHTML = `
                 <div class='navbar'>
