@@ -45,22 +45,6 @@ emby.client
     .then(responses => {
         let menuEntries = []
 
-        const itemsInProgress = responses[1]
-        if (itemsInProgress.length > 0) {
-            menuEntries.push(
-                new EmbyItem(
-                    {
-                        Id: 'in-progress',
-                        Name: 'In Progress',
-                    },
-                    {
-                        image: '../asset/img/in-progress-items.png',
-                        horizontal: true,
-                    }
-                )
-            )
-        }
-
         responses[0].forEach(library => {
             if (showLibraries[library.CollectionType]) {
                 menuEntries.push(library)
@@ -93,6 +77,26 @@ emby.client
             )
         })
 
+        menuEntries.sort((a, b) => {
+            return a.getTitle() > b.getTitle() ? 1 : -1
+        })
+
+        const itemsInProgress = responses[1]
+        if (itemsInProgress.length > 0) {
+            menuEntries.unshift(
+                new EmbyItem(
+                    {
+                        Id: 'in-progress',
+                        Name: 'In Progress',
+                    },
+                    {
+                        image: '../asset/img/in-progress-items.png',
+                        horizontal: true,
+                    }
+                )
+            )
+        }
+
         menuEntries.push(
             new EmbyItem(
                 {},
@@ -104,10 +108,6 @@ emby.client
                 }
             )
         )
-
-        menuEntries.sort((a, b) => {
-            return a.getTitle() > b.getTitle() ? 1 : -1
-        })
 
         document.getElementById('version').innerHTML = `version ${require('electron').remote.app.getVersion()}`
         document.getElementById('media-libraries').innerHTML = menuEntries.map(entry => entry.render()).join('')
