@@ -150,7 +150,7 @@ class EmbyClient {
     }
 
     itemsInProgress() {
-        const url = `emby/Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
+        const url = `Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
         return this.httpClient.get(url).then(progressResponse => {
             return progressResponse.data.Items.map(item => {
                 let searchResultType = 'Movie'
@@ -172,6 +172,15 @@ class EmbyClient {
                 return new EmbyItem(item, {
                     searchResultType: `(${item.ProductionYear})`,
                 })
+            })
+        })
+    }
+
+    liveChannels() {
+        const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=250&Fields=PrimaryImageAspectRatio%2CChannelInfo%2CSortName`
+        return this.httpClient.get(url).then(channelsResponse => {
+            return channelsResponse.data.Items.map(item => {
+                return new EmbyItem(item, { horizontal: true })
             })
         })
     }

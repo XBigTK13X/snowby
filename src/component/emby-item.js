@@ -138,6 +138,9 @@ module.exports = class EmbyItem {
         if (this.InternalLink) {
             return `<a href="${this.InternalLink}">`
         }
+        if (this.Type === 'TvChannel') {
+            return `<a href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
+        }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a href="./play-media.html?embyItemId=${this.Id}">`
         }
@@ -147,6 +150,9 @@ module.exports = class EmbyItem {
     getFidelity() {
         if (this.SearchResultType) {
             return this.SearchResultType
+        }
+        if (this.ChannelNumber) {
+            return this.CurrentProgram.Name
         }
         if (this.UserData && this.UserData.UnplayedItemCount > 0) {
             return this.UserData.UnplayedItemCount + ' New Episode' + (this.UserData.UnplayedItemCount > 1 ? 's' : '')
@@ -185,5 +191,12 @@ module.exports = class EmbyItem {
             return contentType + videoFidelity.trim() + ' ' + audioFidelity.trim()
         }
         return ''
+    }
+
+    getStreamURL() {
+        if (this.ChannelNumber) {
+            return `${settings.homeRunURL}/v${this.ChannelNumber}`
+        }
+        return '#'
     }
 }
