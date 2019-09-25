@@ -30,7 +30,7 @@ module.exports = class EmbyItem {
             			<img class="lazy rounded tile-${this.Orientation}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             	</div>          	          
               <div class="title">
-                ${this.getTitle()}      
+                ${this.getTitle(false)}      
               </div>          
               <div class="fidelity">
                 ${this.getFidelity()}
@@ -50,7 +50,7 @@ module.exports = class EmbyItem {
                 if (enableSeriesName) {
                     result += this.SeriesName + ' - '
                 }
-                result += this.SeasonName.replace('Season ', 'S').replace('Specials','SP') + 'E' + this.IndexNumber
+                result += this.SeasonName.replace('Season ', 'S').replace('Specials', 'SP') + 'E' + this.IndexNumber
                 if (this.showSpoilers()) {
                     result = result + ' - ' + this.Name
                 } else {
@@ -59,14 +59,18 @@ module.exports = class EmbyItem {
                     }
                     return result + ' - [Hidden]'
                 }
+            } else {
+                result = this.Name
             }
-            result = this.Name
         }
         return result
     }
 
     showSpoilers() {
         if (this.Type === 'Episode') {
+            if (_.has(this.UserData, 'PlaybackPositionTicks') && this.UserData.PlaybackPositionTicks > 0) {
+                return true
+            }
             return _.has(this.UserData, 'Played') && this.UserData.Played
         }
         return true

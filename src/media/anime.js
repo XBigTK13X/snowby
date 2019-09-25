@@ -2,8 +2,11 @@ const isAnimeSubtitle = stream => {
     if (stream.Type !== 'Subtitle') {
         return false
     }
+    if (stream.Title && stream.Title.toLowerCase().includes('forced')) {
+        return false
+    }
     if (stream.DisplayTitle) {
-        if (stream.DisplayTitle.includes('Songs') || stream.DisplayTitle.includes('Signs')) {
+        if (stream.DisplayTitle.toLowerCase().includes('forced') || stream.DisplayTitle.toLowerCase().includes('songs') || stream.DisplayTitle.toLowerCase().includes('signs')) {
             return false
         }
     }
