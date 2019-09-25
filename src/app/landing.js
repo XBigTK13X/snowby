@@ -29,68 +29,88 @@ const landingLinks = [
         title: 'Crunchyroll',
     },
 ]
+
+const showLibraries = {
+    movies: true,
+    tvshows: true,
+    playlists: true,
+    livetv: true,
+}
+
 emby.client
     .connect()
     .then(() => {
         return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
     })
     .then(responses => {
-        let menuEntries = ''
+        let menuEntries = []
 
         const itemsInProgress = responses[1]
         if (itemsInProgress.length > 0) {
-            menuEntries += new EmbyItem(
-                {
-                    Id: 'in-progress',
-                    Name: 'In Progress',
-                },
-                {
-                    image: '../asset/img/in-progress-items.png',
-                    horizontal: true,
-                }
-            ).render()
+            menuEntries.push(
+                new EmbyItem(
+                    {
+                        Id: 'in-progress',
+                        Name: 'In Progress',
+                    },
+                    {
+                        image: '../asset/img/in-progress-items.png',
+                        horizontal: true,
+                    }
+                )
+            )
         }
 
         responses[0].forEach(library => {
-            if (library.CollectionType === 'movies' || library.CollectionType === 'tvshows' || library.CollectionType === 'playlists') {
-                menuEntries += library.render()
+            if (showLibraries[library.CollectionType]) {
+                menuEntries.push(library)
             }
         })
 
-        menuEntries += new EmbyItem(
-            {},
-            {
-                horizontal: true,
-                internalLink: './search.html',
-                image: '../asset/img/search.png',
-                title: 'Search',
-            }
-        ).render()
-
-        landingLinks.forEach(landingLink => {
-            menuEntries += new EmbyItem(
+        menuEntries.push(
+            new EmbyItem(
                 {},
                 {
                     horizontal: true,
-                    externalLink: landingLink.link,
-                    image: `../asset/img/${landingLink.image}`,
-                    title: landingLink.title,
+                    internalLink: './search.html',
+                    image: '../asset/img/search.png',
+                    title: 'Search',
                 }
-            ).render()
+            )
+        )
+
+        landingLinks.forEach(landingLink => {
+            menuEntries.push(
+                new EmbyItem(
+                    {},
+                    {
+                        horizontal: true,
+                        externalLink: landingLink.link,
+                        image: `../asset/img/${landingLink.image}`,
+                        title: landingLink.title,
+                    }
+                )
+            )
         })
 
-        menuEntries += new EmbyItem(
-            {},
-            {
-                horizontal: true,
-                action: "require('electron').ipcRenderer.send('snowby-exit'); return false;",
-                image: `../asset/img/exit.png`,
-                title: 'Exit',
-            }
-        ).render()
+        menuEntries.push(
+            new EmbyItem(
+                {},
+                {
+                    horizontal: true,
+                    action: "require('electron').ipcRenderer.send('snowby-exit'); return false;",
+                    image: `../asset/img/exit.png`,
+                    title: 'Exit',
+                }
+            )
+        )
+
+        menuEntries.sort((a, b) => {
+            return a.getTitle() > b.getTitle() ? 1 : -1
+        })
 
         document.getElementById('version').innerHTML = `version ${require('electron').remote.app.getVersion()}`
-        document.getElementById('media-libraries').innerHTML = menuEntries
+        document.getElementById('media-libraries').innerHTML = menuEntries.map(entry => entry.render()).join('')
         document.getElementById('header').innerHTML = 'Media Libraries'
         $('.lazy').Lazy()
     })

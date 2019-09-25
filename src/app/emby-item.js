@@ -22,7 +22,14 @@ emby.client
                 let searchParams = {
                     Recursive: true,
                 }
-                if (embyItem.CollectionType === 'movies') {
+                if (embyItem.CollectionType === 'livetv') {
+                    parentItem = { Name: 'Live TV' }
+                    return emby.client.liveChannels().then(channels => {
+                        return channels.sort((a, b) => {
+                            return a.Name > b.Name ? 1 : -1
+                        })
+                    })
+                } else if (embyItem.CollectionType === 'movies') {
                     searchParams.IncludeItemTypes = 'Movie'
                     searchParams.Fields = 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName'
                 } else if (embyItem.CollectionType === 'tvshows') {
@@ -30,6 +37,8 @@ emby.client
                     searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
                 } else if (embyItem.CollectionType === 'playlists') {
                     searchParams.ParentId = embyItem.Id
+                } else {
+                    throw 'Unhandled emby collection type ' + embyItem.CollectionType
                 }
                 searchParams.SortBy = 'SortName'
                 searchParams.SortOrder = 'Ascending'
