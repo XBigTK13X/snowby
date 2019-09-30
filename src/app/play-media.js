@@ -50,11 +50,15 @@ emby.client
                 hiddenStreams++
                 return ''
             }
+            let streamTitle = ''
+            if (stream.Title && !stream.Title.includes('.') && !stream.Title.includes('/')) {
+                streamTitle = stream.Title
+            }
             return `
             <tr>
                 <td>${ii === 0 ? 0 : ii || ''}</td>
                 <td>${stream.Type || ''}</td>
-                <td>${stream.Title || ''}</td>
+                <td>${streamTitle || ''}</td>
                 <td>${stream.DisplayTitle || ''}</td>
                 <td>${mediaStream.quality(stream)}</td>                
                 <td>${stream.Codec || ''}</td>
