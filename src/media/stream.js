@@ -20,7 +20,10 @@ const quality = stream => {
         result = `${stream.VideoRange} @ ${Math.round(stream.BitRate / 100000) / 10} Mbps`
     }
     if (stream.Type === 'Audio') {
-        result = `${Math.round(stream.SampleRate / 100) / 10} kHz @ ${stream.BitRate ? Math.round(stream.BitRate / 100) / 10 + 'kbps' : '???'} `
+        result = `${Math.round(stream.SampleRate / 100) / 10} kHz`
+        if (stream.BitRate) {
+            result += ` @ ${Math.round(stream.BitRate / 100) / 10 + 'kbps'} `
+        }
     }
     return result
 }
