@@ -139,7 +139,7 @@ module.exports = class EmbyItem {
             return `<a href="${this.InternalLink}">`
         }
         if (this.Type === 'TvChannel') {
-            return `<a href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
+            return `<a href='#' onclick="require('../media/player').useMpv().openStream('${this.getStreamURL()}'); return false;">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a href="./play-media.html?embyItemId=${this.Id}">`

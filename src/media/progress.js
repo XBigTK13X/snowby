@@ -8,31 +8,33 @@ const updateUI = (embyItem, embyTicks, animeReport, resumeButton, resumeContent)
     document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
     document.getElementById(resumeButton).onclick = event => {
         event.preventDefault()
-        player.openFile(embyItem.Id, embyItem.Path, animeReport.subtitleSkips, animeReport.audioSkips, resumeTimeStamp, embyTicks)
+        track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')
+        player.openFile(embyItem.Id, embyItem.Path, animeReport.audioRelativeIndex, animeReport.subtitleRelativeIndex, resumeTimeStamp, embyTicks)
     }
 }
 
-const updateProgress = (embyItem, animeReport, resumeButton, resumeContent) => {
-    setInterval(() => {
-        mpc.client
-            .connect()
+const track = (embyItem, animeReport, resumeButton, resumeContent) => {
+    const trackInterval = setInterval(() => {
+        player.connect()
             .then(() => {
-                mpc.client
-                    .getStatus()
-                    .then(mpcStatus => {
-                        if (mpcStatus.Position > 0) {
-                            const embyTicks = ticks.mpcToEmby(mpcStatus.Position)
+                player.getPositionInEmbyTicks()
+                    .then(embyTicks => {
+                        if (embyTicks > 0) {
                             emby.client.updateProgress(embyItem.Id, embyTicks)
                             updateUI(embyItem, embyTicks, animeReport, resumeButton, resumeContent)
                         }
                     })
                     .catch(swallow => {})
             })
-            .catch(swallow => {})
-    }, 10000)
+            .catch((err) => {
+                if(err === 'disconnected'){
+                    clearInterval(trackInterval)    
+                }                
+            })
+    }, settings.progressUpdateInterval)
 }
 
 module.exports = {
     updateUI: updateUI,
-    track: updateProgress,
+    track: track,
 }

@@ -1,58 +1,60 @@
 const ticks = require('./ticks')
 const emby = require('../service/emby-client')
 const settings = require('../settings')
-var spawn = require('child_process').spawn
+const mpc = require('../service/mpc-client')
+const mpv = require('../service/mpv-client')
 
-const spawnOptions = {
-    stdio: 'ignore',
-    detached: true,
-}
+class Player{
+    constructor(){
+        this.mediaHandler = mpc.client
+    }
 
-const mpcOpen = mediaPath => {
-    spawn(settings.mpcExePath, [mediaPath], spawnOptions)
-    return mpc.client.connect()
-}
+    connect(){
+        return this.mediaHandler.connect()
+    }
 
-const openFile = (embyItemId, mediaPath, subtitleTrackSkips, audioTrackSkips, seekTimeStamp, embyTicks) => {
-    emby.client.markUnplayed(queryParams.embyItemId)
-    let cleanPath = mediaPath.replace('smb:', '')
-    cleanPath = cleanPath.replace(/\//g, '\\')
-    return mpcOpen(cleanPath).then(() => {
-        let promises = []
-        while (subtitleTrackSkips > 0) {
-            subtitleTrackSkips--
-            promises.push(mpc.client.nextSubtitleTrack())
-        }
-        while (subtitleTrackSkips < 0) {
-            subtitleTrackSkips++
-            promises.push(mpc.client.previousSubtitleTrack())
-        }
-        while (audioTrackSkips > 0) {
-            audioTrackSkips--
-            promises.push(mpc.client.nextAudioTrack())
-        }
-        while (audioTrackSkips < 0) {
-            audioTrackSkips++
-            promises.push(mpc.client.previousAudioTrack())
-        }
-        return Promise.all(promises)
-            .then(() => {
-                mpc.client.seek(seekTimeStamp)
-            })
-            .then(() => {
-                if (embyTicks > 0) {
-                    return emby.client.updateProgress(embyItemId, embyTicks)
-                }
+    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTimeStamp, embyTicks){
+        emby.client.markUnplayed(queryParams.embyItemId)
+        let cleanPath = mediaPath.replace('smb:', '')
+        cleanPath = cleanPath.replace(/\//g, '\\')
+        return this.mediaHandler
+        .openPath(cleanPath, seekTimeStamp, audioIndex, subtitleIndex)
+        .then(() => {
+            if (!embyTicks) {
                 return Promise.resolve()
-            })
-    })
+            }
+            return emby.client.updateProgress(embyItemId, embyTicks)
+        })
+    }
+
+    openStream(streamURL){
+        return this.mediaHandler.openPath(streamURL)
+    }
+
+    getPositionInEmbyTicks(){
+        return this.mediaHandler.getPositionInEmbyTicks()
+    }
+
+    useMpc(){
+        this.mediaHandler = mpc.client
+        return this
+    }
+
+    useMpv(){
+        this.mediaHandler = mpv.client
+        return this
+    }
+
+    toggleVideoPlayer(){
+        if(this.mediaHandler.name()==="MPV"){
+            this.useMpc()
+        }
+        else{
+            this.useMpv()
+        }
+    }
 }
 
-const openStream = streamURL => {
-    return mpcOpen(streamURL)
-}
+let instance = new Player()
 
-module.exports = {
-    openFile: openFile,
-    openStream: openStream,
-}
+module.exports = instance

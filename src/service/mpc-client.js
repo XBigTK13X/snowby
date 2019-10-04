@@ -3,6 +3,8 @@
 const axios = require('axios')
 const settings = require('../settings')
 const httpLogger = require('./http-logger')
+var spawn = require('child_process').spawn
+const ticks = require('../media/ticks')
 
 class MpcStatus {
     constructor(title, status, position, positionStr, duration, durationStr, muted, volume) {
@@ -32,10 +34,20 @@ class MpcClient {
         httpLogger.register(this.httpClient)
     }
 
+    name(){
+        return "MPC"
+    }
+
     connect() {
         const api = this
+        let failThreshold = 2
         return new Promise((resolve, reject) => {
             const heartbeat = setInterval(() => {
+                if(failThreshold<=0){
+                    clearInterval(heartbeat)
+                    return reject("disconnected")
+                }
+                failThreshold--
                 api.getStatus()
                     .then(status => {
                         if (status.Status !== 'N/A') {
@@ -44,8 +56,19 @@ class MpcClient {
                         }
                     })
                     .catch(swallow => {})
-            }, 500)
+            }, settings.progressUpdateInterval/4)
         })
+    }
+
+    openPath(mediaPath, seekTimeStamp){
+        spawn(settings.mpcExePath, [mediaPath], settings.spawnOptions)
+        return this.connect()
+            .then(() => {
+                if(!seekTimeStamp){
+                    return Promise.resolve()
+                }
+                return this.seek(seekTimeStamp)
+            })
     }
 
     seek(timeString) {
@@ -61,28 +84,14 @@ class MpcClient {
         })
     }
 
-    previousAudioTrack() {
-        const url = 'command.html'
-        const command = 'wm_command=953&null=0'
-        return this.httpClient.post(url, command)
-    }
-
-    nextAudioTrack() {
-        const url = 'command.html'
-        const command = 'wm_command=952&null=0'
-        return this.httpClient.post(url, command)
-    }
-
-    previousSubtitleTrack() {
-        const url = 'command.html'
-        const command = 'wm_command=955&null=0'
-        return this.httpClient.post(url, command)
-    }
-
-    nextSubtitleTrack() {
-        const url = 'command.html'
-        const command = 'wm_command=954&null=0'
-        return this.httpClient.post(url, command)
+    getPositionInEmbyTicks(){
+        return this.getStatus()
+        .then(status=>{
+            if(!status.Position){
+                return 0
+            }
+            return ticks.mpcToEmby(status.Position)
+        })
     }
 }
 

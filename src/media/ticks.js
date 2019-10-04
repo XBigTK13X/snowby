@@ -24,8 +24,13 @@ const mpcToEmby = mpcTicks => {
     return mpcTicks * 10000
 }
 
+const mpvToEmby = mpvSeconds => {
+    return mpvSeconds * 10000000
+}
+
 module.exports = {
     toTimeStamp: embyTicksToRunTime,
-    embyToMpc: embyToMpc,
-    mpcToEmby: mpcToEmby,
+    embyToMpc,
+    mpcToEmby,
+    mpvToEmby
 }
