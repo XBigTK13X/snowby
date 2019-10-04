@@ -1,6 +1,6 @@
-'use strict';
+'use strict'
 
-const ErrorHandler = require('../error');
+const ErrorHandler = require('../error')
 
 // An object of this class is created for every message sent over the IPC socket
 // via the ipcInterface. It stores information about what high level mpv function
@@ -9,38 +9,37 @@ const ErrorHandler = require('../error');
 // Since every message is wrapped in a promise the resolve and reject functions
 // are also stored in this object, such that it they can later be called
 const ipcRequest = class {
+    // constructs the object
+    //
+    // @param resolve - the resolve function of the message's promise
+    // @param reject  - the reject  function of the message's promise
+    // @param args    - arguments for the mpv command
+    constructor(resolve, reject, args) {
+        this.messageResolve = resolve
+        this.messageReject = reject
+        this.args = args
 
-	// constructs the object
-	//
-	// @param resolve - the resolve function of the message's promise
-	// @param reject  - the reject  function of the message's promise
-	// @param args    - arguments for the mpv command
-	constructor (resolve, reject, args) {
-		this.messageResolve = resolve;
-		this.messageReject  = reject;
-		this.args = args;
+        // get the stack trace and look for the mpv function calls
+        const stackMatch = new Error().stack.match(/mpv.\w+\s/g)
+        // get the last mpv function as the relevant caller for error handling
+        this.caller = stackMatch ? stackMatch[stackMatch.length - 1].slice(4, -1) + '()' : null
+    }
 
-		// get the stack trace and look for the mpv function calls
-		const stackMatch  = new Error().stack.match(/mpv.\w+\s/g);
-		// get the last mpv function as the relevant caller for error handling
-		this.caller = stackMatch ? stackMatch[stackMatch.length-1].slice(4, -1) + "()" : null;
-	}
+    // resolves the promise with the passed resolveValue
+    //
+    // @param resolveValue - the value passed to the promise resolve
+    resolve(resolveValue) {
+        this.messageResolve(resolveValue)
+    }
 
-	// resolves the promise with the passed resolveValue
-	//
-	// @param resolveValue - the value passed to the promise resolve
-	resolve(resolveValue){
-		this.messageResolve(resolveValue);
-	}
-
-	// rejects the error with the passed rejectValue
-	//
-	// @param err - the error reason extracted from the IPC response
-	reject(err){
-		const errHandler = new ErrorHandler();
-		const errMessage = errHandler.errorMessage(3, this.caller, this.args, err);
-		this.messageReject(errMessage);
-	}
+    // rejects the error with the passed rejectValue
+    //
+    // @param err - the error reason extracted from the IPC response
+    reject(err) {
+        const errHandler = new ErrorHandler()
+        const errMessage = errHandler.errorMessage(3, this.caller, this.args, err)
+        this.messageReject(errMessage)
+    }
 }
 
-module.exports = ipcRequest;
+module.exports = ipcRequest

@@ -108,7 +108,7 @@ class EmbyClient {
     }
 
     updateProgress(embyItemId, embyTicks) {
-        if(!settings.embyTrackProgress){
+        if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
         const url = `Sessions/Playing/Progress`
@@ -120,7 +120,7 @@ class EmbyClient {
     }
 
     markPlayed(embyItemId) {
-        if(!settings.embyTrackProgress){
+        if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
         const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
@@ -128,7 +128,7 @@ class EmbyClient {
     }
 
     markUnplayed(embyItemId) {
-        if(!settings.embyTrackProgress){
+        if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
         const url = `Users/${this.userId}/PlayedItems/${embyItemId}`

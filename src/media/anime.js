@@ -20,6 +20,19 @@ const isAnimeAudio = stream => {
     return false
 }
 
+const isForced = stream => {
+    if (stream.Type !== 'Subtitle') {
+        return false
+    }
+    if (stream.DisplayTitle) {
+        const title = stream.DisplayTitle.toLowerCase()
+        if (title.includes('force')) {
+            return true
+        }
+    }
+    return false
+}
+
 const inspect = embyItem => {
     let animeAudio = false
     let animeSubtitle = false
@@ -38,6 +51,7 @@ const inspect = embyItem => {
 
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
         const stream = embyItem.MediaStreams[trackIndex]
+        const forced = isForced(stream)
         if (stream.Type === 'Audio') {
             audioIndex++
         }
@@ -50,9 +64,11 @@ const inspect = embyItem => {
             audioRelativeIndex = audioIndex
         }
         if (isAnimeSubtitle(stream)) {
-            animeSubtitle = true
-            subtitleAbsoluteIndex = trackIndex
-            subtitleRelativeIndex = subtitleIndex
+            if (!forced || (forced && !animeSubtitle)) {
+                animeSubtitle = true
+                subtitleAbsoluteIndex = trackIndex
+                subtitleRelativeIndex = subtitleIndex
+            }
         }
     }
 

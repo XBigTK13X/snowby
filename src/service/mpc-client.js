@@ -34,8 +34,8 @@ class MpcClient {
         httpLogger.register(this.httpClient)
     }
 
-    name(){
-        return "MPC"
+    name() {
+        return 'MPC'
     }
 
     connect() {
@@ -43,9 +43,9 @@ class MpcClient {
         let failThreshold = 2
         return new Promise((resolve, reject) => {
             const heartbeat = setInterval(() => {
-                if(failThreshold<=0){
+                if (failThreshold <= 0) {
                     clearInterval(heartbeat)
-                    return reject("disconnected")
+                    return reject('disconnected')
                 }
                 failThreshold--
                 api.getStatus()
@@ -56,19 +56,18 @@ class MpcClient {
                         }
                     })
                     .catch(swallow => {})
-            }, settings.progressUpdateInterval/4)
+            }, settings.progressUpdateInterval / 4)
         })
     }
 
-    openPath(mediaPath, seekTimeStamp){
+    openPath(mediaPath, seekTimeStamp) {
         spawn(settings.mpcExePath, [mediaPath], settings.spawnOptions)
-        return this.connect()
-            .then(() => {
-                if(!seekTimeStamp){
-                    return Promise.resolve()
-                }
-                return this.seek(seekTimeStamp)
-            })
+        return this.connect().then(() => {
+            if (!seekTimeStamp) {
+                return Promise.resolve()
+            }
+            return this.seek(seekTimeStamp)
+        })
     }
 
     seek(timeString) {
@@ -84,10 +83,9 @@ class MpcClient {
         })
     }
 
-    getPositionInEmbyTicks(){
-        return this.getStatus()
-        .then(status=>{
-            if(!status.Position){
+    getPositionInEmbyTicks() {
+        return this.getStatus().then(status => {
+            if (!status.Position) {
                 return 0
             }
             return ticks.mpcToEmby(status.Position)
