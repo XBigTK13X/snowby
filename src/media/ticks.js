@@ -32,5 +32,5 @@ module.exports = {
     toTimeStamp: embyTicksToRunTime,
     embyToMpc,
     mpcToEmby,
-    mpvToEmby
+    mpvToEmby,
 }

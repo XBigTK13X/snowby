@@ -15,5 +15,5 @@ module.exports = {
         stdio: 'ignore',
         detached: true,
     },
-    windowBackgroundColor: '#010101'
+    windowBackgroundColor: '#010101',
 }

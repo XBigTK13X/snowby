@@ -15,9 +15,11 @@ const updateUI = (embyItem, embyTicks, animeReport, resumeButton, resumeContent)
 
 const track = (embyItem, animeReport, resumeButton, resumeContent) => {
     const trackInterval = setInterval(() => {
-        player.connect()
+        player
+            .connect()
             .then(() => {
-                player.getPositionInEmbyTicks()
+                player
+                    .getPositionInEmbyTicks()
                     .then(embyTicks => {
                         if (embyTicks > 0) {
                             emby.client.updateProgress(embyItem.Id, embyTicks)
@@ -26,10 +28,10 @@ const track = (embyItem, animeReport, resumeButton, resumeContent) => {
                     })
                     .catch(swallow => {})
             })
-            .catch((err) => {
-                if(err === 'disconnected'){
-                    clearInterval(trackInterval)    
-                }                
+            .catch(err => {
+                if (err === 'disconnected') {
+                    clearInterval(trackInterval)
+                }
             })
     }, settings.progressUpdateInterval)
 }

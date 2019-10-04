@@ -4,22 +4,20 @@ const settings = require('../settings')
 const mpc = require('../service/mpc-client')
 const mpv = require('../service/mpv-client')
 
-class Player{
-    constructor(){
+class Player {
+    constructor() {
         this.mediaHandler = mpc.client
     }
 
-    connect(){
+    connect() {
         return this.mediaHandler.connect()
     }
 
-    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTimeStamp, embyTicks){
+    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTimeStamp, embyTicks) {
         emby.client.markUnplayed(queryParams.embyItemId)
         let cleanPath = mediaPath.replace('smb:', '')
         cleanPath = cleanPath.replace(/\//g, '\\')
-        return this.mediaHandler
-        .openPath(cleanPath, seekTimeStamp, audioIndex, subtitleIndex)
-        .then(() => {
+        return this.mediaHandler.openPath(cleanPath, seekTimeStamp, audioIndex, subtitleIndex).then(() => {
             if (!embyTicks) {
                 return Promise.resolve()
             }
@@ -27,29 +25,28 @@ class Player{
         })
     }
 
-    openStream(streamURL){
+    openStream(streamURL) {
         return this.mediaHandler.openPath(streamURL)
     }
 
-    getPositionInEmbyTicks(){
+    getPositionInEmbyTicks() {
         return this.mediaHandler.getPositionInEmbyTicks()
     }
 
-    useMpc(){
+    useMpc() {
         this.mediaHandler = mpc.client
         return this
     }
 
-    useMpv(){
+    useMpv() {
         this.mediaHandler = mpv.client
         return this
     }
 
-    toggleVideoPlayer(){
-        if(this.mediaHandler.name()==="MPV"){
+    toggleVideoPlayer() {
+        if (this.mediaHandler.name() === 'MPV') {
             this.useMpc()
-        }
-        else{
+        } else {
             this.useMpv()
         }
     }

@@ -31,11 +31,10 @@ document.getElementById('toggle-player-button').onclick = event => {
     player.toggleVideoPlayer()
     let mediaInfo = document.getElementById('media-info')
     let mediaInfoContent = mediaInfo.innerHTML
-    if(mediaInfoContent.includes("opened in MPC")){
-        mediaInfoContent = mediaInfoContent.replace("opened in MPC","opened in MPV")    
-    }
-    else {
-        mediaInfoContent = mediaInfoContent.replace("opened in MPV","opened in MPC")
+    if (mediaInfoContent.includes('opened in MPC')) {
+        mediaInfoContent = mediaInfoContent.replace('opened in MPC', 'opened in MPV')
+    } else {
+        mediaInfoContent = mediaInfoContent.replace('opened in MPV', 'opened in MPC')
     }
     mediaInfo.innerHTML = mediaInfoContent
     return false
@@ -70,8 +69,8 @@ emby.client
             if (stream.Title && !stream.Title.includes('.') && !stream.Title.includes('/')) {
                 streamTitle = stream.Title
             }
-            const rowClass = '';
-            if(animeReport.isAnime && (ii==animeReport.audioAbsoluteIndex || ii==animeReport.subtitleAbsoluteIndex)){
+            let rowClass = ''
+            if (animeReport.isAnime && (ii == animeReport.audioAbsoluteIndex || ii == animeReport.subtitleAbsoluteIndex)) {
                 rowClass = 'class="highlighted-row"'
             }
             return `
@@ -87,7 +86,7 @@ emby.client
             </tr>
             `
         }).join('')
-        streams = `<p>Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</p>` + streams                
+        streams = `<p>Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</p>` + streams
         streams += `</table>`
 
         let mediaInfo = `
@@ -118,8 +117,8 @@ emby.client
         document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
         document.getElementById('media-info').innerHTML = mediaInfo
         document.getElementById('play-media-button').onclick = event => {
-            event.preventDefault()      
-            progress.track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')      
+            event.preventDefault()
+            progress.track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')
             player.openFile(embyItem.Id, embyItem.Path, animeReport.audioRelativeIndex, animeReport.subtitleRelativeIndex)
         }
     })

@@ -1,5 +1,4 @@
-'use strict';
-
+'use strict'
 
 // Error Handler class
 // This class is able to generate the proper error messages and deliver a JSON Object of the form
@@ -13,69 +12,65 @@
 // }
 //
 const ErrorHandler = class {
+    // creates the error code table
+    constructor() {
+        this.messageDict = {
+            0: 'Unable to load file or stream',
+            1: 'Invalid argument',
+            2: 'Binary not found',
+            3: 'ipcCommand invalid',
+            4: 'Unable to bind IPC socket',
+            5: 'Timeout',
+            6: 'MPV is already running',
+            7: 'Could not send IPC message',
+        }
+    }
 
-	// creates the error code table
-	constructor () {
-		this.messageDict = {
-			0: 'Unable to load file or stream',
-			1: 'Invalid argument',
-			2: 'Binary not found',
-			3: 'ipcCommand invalid',
-			4: 'Unable to bind IPC socket',
-			5: 'Timeout',
-			6: 'MPV is already running',
-			7: 'Could not send IPC message',
-		}
-	}
+    // creates the error message JSON object
+    //
+    // @param errorCode - the errorCode for the error
+    // @param method - method this error is created/raised from
+    // @param args (optional) - arguments that method was called with
+    // @param errorMessage (optional) - specific error message
+    // @param options (options) - valid arguments for the method that raised the error
+    // 	ofthe form
+    // {
+    // 	'argument1': 'foo',
+    // 	'argument2': 'bar'
+    // }
+    //
+    // @return - JSON error object
+    errorMessage(errorCode, method, args, errorMessage, options) {
+        // basic error object
+        let errorObject = {
+            errcode: errorCode,
+            verbose: this.messageDict[errorCode],
+            method: method,
+        }
 
-	// creates the error message JSON object
-	//
-	// @param errorCode - the errorCode for the error
-	// @param method - method this error is created/raised from
-	// @param args (optional) - arguments that method was called with
-	// @param errorMessage (optional) - specific error message
-	// @param options (options) - valid arguments for the method that raised the error
-	// 	ofthe form
-	// {
-	// 	'argument1': 'foo',
-	// 	'argument2': 'bar'
-	// }
-	//
-	// @return - JSON error object
-	errorMessage(errorCode, method, args, errorMessage, options){
+        // add arguments if available
+        if (args) {
+            errorObject = Object.assign(errorObject, {
+                arguments: args,
+            })
+        }
 
-		// basic error object
-		let errorObject = {
-			'errcode': errorCode,
-			'verbose': this.messageDict[errorCode],
-			'method': method,
-		};
+        // add error Message if available
+        if (errorMessage) {
+            errorObject = Object.assign(errorObject, {
+                errmessage: errorMessage,
+            })
+        }
 
-		// add arguments if available
-		if(args){
-			errorObject = Object.assign(errorObject, {
-				'arguments': args
-			});
-		}
+        // add argument options if available
+        if (options) {
+            errorObject = Object.assign(errorObject, {
+                options: options,
+            })
+        }
 
-		// add error Message if available
-		if(errorMessage){
-			errorObject = Object.assign(errorObject, {
-				'errmessage': errorMessage
-			});
-		}
-
-		// add argument options if available
-		if(options){
-			errorObject = Object.assign(errorObject, {
-				'options': options
-			});
-		}
-
-		return errorObject;
-
-	}
-
+        return errorObject
+    }
 }
 
-module.exports = ErrorHandler;
+module.exports = ErrorHandler
