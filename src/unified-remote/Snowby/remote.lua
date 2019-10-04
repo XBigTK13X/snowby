@@ -18,8 +18,8 @@ actions.toggleMedia = function ()
 	kb.stroke("mediaplaypause");
 end
 
-actions.nextSubtitle = function()
-	kb.stroke('s')
+actions.toggleSubtitle = function()
+	kb.stroke('w')
 end
 
 actions.focusSnowby = function()
@@ -30,8 +30,12 @@ actions.focusMPC = function()
 	kb.stroke('windows','d3')
 end
 
-actions.focusChrome = function()
+actions.focusMPC = function()
 	kb.stroke('windows','d4')
+end
+
+actions.focusChrome = function()
+	kb.stroke('windows','d5')
 end
 
 actions.jumpBackward = function()

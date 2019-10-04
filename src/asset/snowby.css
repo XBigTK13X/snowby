@@ -94,7 +94,6 @@ h2 {
     padding: 0.2vw;
     margin: 0.2vw;
     width: 16vw;
-    height: 3vw;
     text-align: center;
     line-height: 3vw;
 }
@@ -147,4 +146,8 @@ td {
     text-align: right;
     margin-left: 5px;
     margin-bottom: 10px;
+}
+
+.highlighted-row {
+    background-color: #0d3c0d;
 }
