@@ -6,7 +6,7 @@ const mpv = require('../service/mpv-client')
 
 class Player {
     constructor() {
-        this.mediaHandler = mpc.client
+        this.useMpv()
     }
 
     connect() {
@@ -15,9 +15,7 @@ class Player {
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTimeStamp, embyTicks) {
         emby.client.markUnplayed(queryParams.embyItemId)
-        let cleanPath = mediaPath.replace('smb:', '')
-        cleanPath = cleanPath.replace(/\//g, '\\')
-        return this.mediaHandler.openPath(cleanPath, seekTimeStamp, audioIndex, subtitleIndex).then(() => {
+        return this.mediaHandler.openPath(mediaPath, seekTimeStamp, audioIndex, subtitleIndex).then(() => {
             if (!embyTicks) {
                 return Promise.resolve()
             }
@@ -41,14 +39,6 @@ class Player {
     useMpv() {
         this.mediaHandler = mpv.client
         return this
-    }
-
-    toggleVideoPlayer() {
-        if (this.mediaHandler.name() === 'MPV') {
-            this.useMpc()
-        } else {
-            this.useMpv()
-        }
     }
 }
 

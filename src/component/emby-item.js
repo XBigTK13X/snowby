@@ -16,6 +16,10 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
 
+        if (this.Path) {
+            this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
+        }
+
         this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
         this.ResumeImage = false
     }
@@ -139,7 +143,7 @@ module.exports = class EmbyItem {
             return `<a href="${this.InternalLink}">`
         }
         if (this.Type === 'TvChannel') {
-            return `<a href='#' onclick="require('../media/player').useMpv().openStream('${this.getStreamURL()}'); return false;">`
+            return `<a href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a href="./play-media.html?embyItemId=${this.Id}">`

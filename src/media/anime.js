@@ -20,6 +20,16 @@ const isAnimeAudio = stream => {
     return false
 }
 
+const isEnlishAudio = stream => {
+    if (stream.Type !== 'Audio') {
+        return false
+    }
+    if (!stream.Language || (stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng')))) {
+        return true
+    }
+    return false
+}
+
 const isForced = stream => {
     if (stream.Type !== 'Subtitle') {
         return false
@@ -43,6 +53,8 @@ const inspect = embyItem => {
     let audioAbsoluteIndex = 0
     let subtitleRelativeIndex = 0
     let audioRelativeIndex = 0
+    let englishAudioAbsoluteIndex = -1
+    let englishAudioRelativeIndex = -1
 
     let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
     if (genres.includes('Anime') || genres.includes('Animation')) {
@@ -63,6 +75,10 @@ const inspect = embyItem => {
             audioAbsoluteIndex = trackIndex
             audioRelativeIndex = audioIndex
         }
+        if (isEnlishAudio(stream) && englishAudioRelativeIndex === -1) {
+            englishAudioRelativeIndex = audioIndex
+            englishAudioAbsoluteIndex = trackIndex
+        }
         if (isAnimeSubtitle(stream)) {
             if (!forced || (forced && !animeSubtitle)) {
                 animeSubtitle = true
@@ -77,9 +93,9 @@ const inspect = embyItem => {
     const result = {
         isAnime,
         subtitleAbsoluteIndex,
-        audioAbsoluteIndex,
-        subtitleRelativeIndex,
-        audioRelativeIndex,
+        audioAbsoluteIndex: isAnime ? audioAbsoluteIndex : englishAudioAbsoluteIndex,
+        subtitleRelativeIndex: isAnime ? subtitleRelativeIndex : 0,
+        audioRelativeIndex: isAnime ? audioRelativeIndex : englishAudioRelativeIndex,
     }
     return result
 }

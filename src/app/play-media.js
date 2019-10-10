@@ -8,6 +8,7 @@ const ticks = require('../media/ticks')
 const progress = require('../media/progress')
 const player = require('../media/player')
 const mediaStream = require('../media/stream')
+const size = require('../media/size')
 
 const queryString = require('query-string')
 const queryParams = queryString.parse(location.search)
@@ -26,20 +27,6 @@ document.getElementById('mark-unwatched-button').onclick = event => {
     return false
 }
 
-document.getElementById('toggle-player-button').onclick = event => {
-    event.preventDefault()
-    player.toggleVideoPlayer()
-    let mediaInfo = document.getElementById('media-info')
-    let mediaInfoContent = mediaInfo.innerHTML
-    if (mediaInfoContent.includes('opened in MPC')) {
-        mediaInfoContent = mediaInfoContent.replace('opened in MPC', 'opened in MPV')
-    } else {
-        mediaInfoContent = mediaInfoContent.replace('opened in MPV', 'opened in MPC')
-    }
-    mediaInfo.innerHTML = mediaInfoContent
-    return false
-}
-
 emby.client
     .connect()
     .then(() => {
@@ -47,7 +34,6 @@ emby.client
     })
     .then(embyItem => {
         const animeReport = anime.inspect(embyItem)
-        const runTime = ticks.toTimeStamp(embyItem.RunTimeTicks)
         let streams = `<table>
         <tr>
             <th>Index</th>
@@ -70,7 +56,7 @@ emby.client
                 streamTitle = stream.Title
             }
             let rowClass = ''
-            if (animeReport.isAnime && (ii == animeReport.audioAbsoluteIndex || ii == animeReport.subtitleAbsoluteIndex)) {
+            if (ii == animeReport.audioAbsoluteIndex || (animeReport.isAnime && ii == animeReport.subtitleAbsoluteIndex)) {
                 rowClass = 'class="highlighted-row"'
             }
             return `
@@ -89,24 +75,31 @@ emby.client
         streams = `<p>Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</p>` + streams
         streams += `</table>`
 
-        let mediaInfo = `
-            <p>Run Time - ${runTime}</p>
-            ${streams}
-            <p>Path - ${embyItem.Path}</p>            
+        let mediaInfo = ``
+        if (embyItem.RunTimeTicks) {
+            const runTime = ticks.toTimeStamp(embyItem.RunTimeTicks)
+            mediaInfo += `<p>Run Time - ${runTime}</p>`
+        }
+
+        const fileSize = size.getDisplay(embyItem.CleanPath)
+
+        mediaInfo += `${streams}
+            <p>Path - ${embyItem.Path}</p>
+            <p>Size - ${fileSize}</p>           
         `
         if (animeReport.isAnime) {
-            player.useMpv()
             mediaInfo += `
-            <p>Snowby thinks this is anime.</p>
-            <p>It will try playing audio track ${animeReport.audioAbsoluteIndex} and subtitle track ${animeReport.subtitleAbsoluteIndex}.</p>
-            <p>The media will be opened in MPV.</p>
+            <p>
+            Snowby thinks this is anime.
+            It will try to play audio track ${animeReport.audioAbsoluteIndex} and subtitle track ${animeReport.subtitleAbsoluteIndex}.
+            </p>
             `
         } else {
-            player.useMpc()
             mediaInfo += `
-            <p>Snowby doesn't think this is anime.</p>
-            <p>No special audio nor subtitle track selection will be used.</p>
-            <p>The media will be opened in MPC.</p>
+            <p>
+            Snowby doesn't think this is anime.
+            It will try to play audio track ${animeReport.audioAbsoluteIndex} and disable subtitles.
+            </p>
             `
         }
 
@@ -119,6 +112,6 @@ emby.client
         document.getElementById('play-media-button').onclick = event => {
             event.preventDefault()
             progress.track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')
-            player.openFile(embyItem.Id, embyItem.Path, animeReport.audioRelativeIndex, animeReport.subtitleRelativeIndex)
+            player.openFile(embyItem.Id, embyItem.CleanPath, animeReport.audioRelativeIndex, animeReport.subtitleRelativeIndex)
         }
     })

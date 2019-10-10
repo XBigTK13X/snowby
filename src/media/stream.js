@@ -17,7 +17,10 @@ const isShown = stream => {
 const quality = stream => {
     let result = ``
     if (stream.Type === 'Video') {
-        result = `${stream.VideoRange} @ ${Math.round(stream.BitRate / 100000) / 10} Mbps`
+        result = `${stream.VideoRange}`
+        if (stream.BitRate) {
+            result += `@ ${Math.round(stream.BitRate / 100000) / 10} Mbps`
+        }
     }
     if (stream.Type === 'Audio') {
         result = `${Math.round(stream.SampleRate / 100) / 10} kHz`
