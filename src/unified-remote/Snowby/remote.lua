@@ -26,16 +26,12 @@ actions.focusSnowby = function()
 	kb.stroke('windows','d2')
 end
 
-actions.focusMPC = function()
+actions.focusMPV = function()
 	kb.stroke('windows','d3')
 end
 
-actions.focusMPC = function()
-	kb.stroke('windows','d4')
-end
-
 actions.focusChrome = function()
-	kb.stroke('windows','d5')
+	kb.stroke('windows','d4')
 end
 
 actions.jumpBackward = function()

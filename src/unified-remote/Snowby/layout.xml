@@ -10,7 +10,6 @@
 	</row>
 	<row>
 		<button text="Snowby" ontap="focusSnowby" />
-		<button text="MPC" ontap="focusMPC" />
 		<button text="MPV" ontap="focusMPV" />
 		<button text="Chrome" ontap="focusChrome" />
 	</row>	
@@ -20,6 +19,6 @@
 	</row>	
 	<row>
 		<button text="Pause\nResume" ontap="toggleMedia" />
-		<button text="Subtitles" ontap="toggleSubtitle" />
+		<button text="Toggle\nSubtitles" ontap="toggleSubtitle" />
 	</row>	
 </layout>
