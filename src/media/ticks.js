@@ -1,3 +1,8 @@
+const settings = require('../settings')
+
+const TEN_THOUSAND = 10000
+const TEN_MILLION = 10000000
+
 const pad = (n, width) => {
     var n = n + ''
     return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n
@@ -12,25 +17,40 @@ const displayTime = ticksInSecs => {
     return pad(hh, 2) + ':' + pad(mm, 2) + ':' + pad(ss, 2)
 }
 
-const embyTicksToRunTime = ticks => {
-    return displayTime(ticks / 10000000)
+const toTimeStamp = ticks => {
+    return displayTime(ticks / TEN_MILLION)
 }
 
 const embyToMpc = embyTicks => {
-    return embyTicks / 10000
+    return embyTicks / TEN_THOUSAND
 }
 
 const mpcToEmby = mpcTicks => {
-    return mpcTicks * 10000
+    return mpcTicks * TEN_THOUSAND
 }
 
 const mpvToEmby = mpvSeconds => {
-    return mpvSeconds * 10000000
+    return mpvSeconds * TEN_MILLION
+}
+
+const stepBack = embyTicks => {
+    const adjustment = TEN_MILLION * settings.stepBackSeconds
+    if (embyTicks < adjustment) {
+        return 0
+    } else {
+        return embyTicks - adjustment
+    }
+}
+
+const embyToSeconds = embyTicks => {
+    return embyTicks / TEN_MILLION
 }
 
 module.exports = {
-    toTimeStamp: embyTicksToRunTime,
+    toTimeStamp,
     embyToMpc,
     mpcToEmby,
     mpvToEmby,
+    stepBack,
+    embyToSeconds,
 }

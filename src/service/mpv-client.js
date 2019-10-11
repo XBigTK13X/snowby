@@ -34,7 +34,7 @@ class MpvClient {
         })
     }
 
-    openPath(mediaPath, seekTimeStamp, audioIndex, subtitleIndex) {
+    openPath(mediaPath, audioIndex, subtitleIndex, seekTicks) {
         let start = Promise.resolve()
         if (!this.mpv.isRunning()) {
             start = this.mpv.start()
@@ -50,15 +50,16 @@ class MpvClient {
                 return this.mpv.selectSubtitle(subtitleIndex)
             })
             .then(() => {
-                if (!seekTimeStamp) {
+                if (!seekTicks) {
                     return Promise.resolve()
                 }
-                return this.seekTimeStamp(seekTimeStamp)
+                return this.seek(seekTicks)
             })
     }
 
-    seekTimeStamp(seekTimeStamp) {
-        return this.mpv.seek(seekTimeStamp)
+    seek(seekTicks) {
+        let adjustment = ticks.stepBack(seekTicks)
+        return this.mpv.goToPosition(ticks.embyToSeconds(adjustment))
     }
 
     getPositionInEmbyTicks() {
