@@ -15,5 +15,6 @@ module.exports = {
         stdio: 'ignore',
         detached: true,
     },
+    stepBackSeconds: 4,
     windowBackgroundColor: '#010101',
 }

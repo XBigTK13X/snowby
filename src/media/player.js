@@ -13,13 +13,13 @@ class Player {
         return this.mediaHandler.connect()
     }
 
-    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTimeStamp, embyTicks) {
+    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks) {
         emby.client.markUnplayed(queryParams.embyItemId)
-        return this.mediaHandler.openPath(mediaPath, seekTimeStamp, audioIndex, subtitleIndex).then(() => {
-            if (!embyTicks) {
+        return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks).then(() => {
+            if (!seekTicks) {
                 return Promise.resolve()
             }
-            return emby.client.updateProgress(embyItemId, embyTicks)
+            return emby.client.updateProgress(embyItemId, seekTicks)
         })
     }
 
