@@ -1,24 +1,25 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const settings = require('./settings')
+const util = require('./util')
 
 let mainWindow = null
 
-if(!app.requestSingleInstanceLock()){
-    console.log("An instance of Snowby is already running. Exiting the duplicate app.")
+if (!app.requestSingleInstanceLock()) {
+    console.log('An instance of Snowby is already running. Exiting the duplicate app.')
     app.quit()
     return
-}
-else
-{
+} else {
     if (mainWindow) {
-      if (mainWindow.isMinimized()){
-        mainWindow.restore()
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore()
         }
-      mainWindow.focus()
+        mainWindow.focus()
     }
 }
 
-function createWindow() {
+async function createWindow() {
+    await util.swapConfig()
+    console.log('Opening main window')
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
     mainWindow = new BrowserWindow({
         width: windowWidth,
@@ -29,7 +30,7 @@ function createWindow() {
         fullscreen: settings.fullScreen,
         backgroundColor: settings.windowBackgroundColor,
         autoHideMenuBar: !settings.menuBarVisible,
-        icon: __dirname + '/asset/img/snowflake.ico',
+        icon: util.appPath('asset/img/snowflake.ico'),
     })
     mainWindow.maximize()
 
@@ -56,4 +57,8 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('snowby-exit', (evt, arg) => {
     app.quit(0)
+})
+
+ipcMain.on('snowby-get-media-profiles', (evt, arg) => {
+    evt.returnValue = util.getMediaProfiles()
 })
