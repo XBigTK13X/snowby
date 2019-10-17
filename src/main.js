@@ -1,11 +1,26 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const settings = require('./settings')
 
-let win
+let mainWindow = null
+
+if(!app.requestSingleInstanceLock()){
+    console.log("An instance of Snowby is already running. Exiting the duplicate app.")
+    app.quit()
+    return
+}
+else
+{
+    if (mainWindow) {
+      if (mainWindow.isMinimized()){
+        mainWindow.restore()
+        }
+      mainWindow.focus()
+    }
+}
 
 function createWindow() {
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
-    win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: windowWidth,
         height: windowHeight,
         webPreferences: {
@@ -16,26 +31,26 @@ function createWindow() {
         autoHideMenuBar: !settings.menuBarVisible,
         icon: __dirname + '/asset/img/snowflake.ico',
     })
-    win.maximize()
+    mainWindow.maximize()
 
-    win.loadFile('src/page/landing.html')
+    mainWindow.loadFile('src/page/landing.html')
 
-    win.on('closed', () => {
-        win = null
+    mainWindow.on('closed', () => {
+        mainWindow = null
     })
 }
 
 app.on('ready', createWindow)
 
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit()
+app.on('activate', () => {
+    if (mainWindow === null) {
+        createWindow()
     }
 })
 
-app.on('activate', () => {
-    if (win === null) {
-        createWindow()
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
     }
 })
 
