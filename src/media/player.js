@@ -7,6 +7,7 @@ const mpv = require('../service/mpv-client')
 class Player {
     constructor() {
         this.useMpv()
+        this.profiles = []
     }
 
     connect() {
@@ -24,6 +25,7 @@ class Player {
     }
 
     openStream(streamURL) {
+        this.mediaHandler.setProfile('default')
         return this.mediaHandler.openPath(streamURL)
     }
 
@@ -39,6 +41,10 @@ class Player {
     useMpv() {
         this.mediaHandler = mpv.client
         return this
+    }
+
+    setProfile(profile) {
+        this.mediaHandler.setProfile(profile)
     }
 }
 

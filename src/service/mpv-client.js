@@ -11,6 +11,7 @@ class MpvClient {
         this.mpv = new mpvApi({
             binary: settings.mpvExePath,
         })
+        this.profile = null
     }
 
     name() {
@@ -66,6 +67,23 @@ class MpvClient {
         return this.mpv.getTimePosition().then(position => {
             return ticks.mpvToEmby(position)
         })
+    }
+
+    setProfile(profile) {
+        if (this.mpv.isRunning()) {
+            this.mpv.quit()
+        }
+        this.profile = profile
+        let options = []
+        if (profile && profile !== 'default') {
+            options.push(`--profile=${this.profile}`)
+        }
+        this.mpv = new mpvApi(
+            {
+                binary: settings.mpvExePath,
+            },
+            options
+        )
     }
 }
 

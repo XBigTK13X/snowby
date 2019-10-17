@@ -9,9 +9,12 @@ const progress = require('../media/progress')
 const player = require('../media/player')
 const mediaStream = require('../media/stream')
 const size = require('../media/size')
+const util = require('../util')
 
 const queryString = require('query-string')
 const queryParams = queryString.parse(location.search)
+
+player.setProfile('default')
 
 navbar.render(false)
 
@@ -25,6 +28,10 @@ document.getElementById('mark-unwatched-button').onclick = event => {
     event.preventDefault()
     emby.client.markUnplayed(queryParams.embyItemId)
     return false
+}
+
+function changeProfile(target) {
+    player.setProfile(target.value)
 }
 
 emby.client
@@ -102,13 +109,31 @@ emby.client
             </p>
             `
         }
+        mediaInfo += `
+            <div>
+            <p>Select an MPV profile to use.</p>
+                <select onChange="changeProfile(this)">
+                ${util
+                    .browserGetMediaProfiles()
+                    .map((profile, ii) => {
+                        return `
+                        <option value="${profile}" />                        
+                        ${profile}
+                        </option>
+                    `
+                    })
+                    .join('')}
+                </select>
+            </div>
+        `
+
+        document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
+        document.getElementById('media-info').innerHTML = mediaInfo
 
         if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
             progress.updateUI(embyItem, embyItem.UserData.PlaybackPositionTicks, animeReport, 'resume-media-button', 'resume-media-content')
         }
 
-        document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
-        document.getElementById('media-info').innerHTML = mediaInfo
         document.getElementById('play-media-button').onclick = event => {
             event.preventDefault()
             progress.track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')
