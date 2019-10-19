@@ -25,7 +25,7 @@ class Player {
     }
 
     openStream(streamURL) {
-        this.mediaHandler.setProfile('default')
+        this.mediaHandler.setProfile('livetv')
         return this.mediaHandler.openPath(streamURL)
     }
 
