@@ -6,6 +6,8 @@ const spawn = require('child_process').spawn
 const mpvApi = require('../vendor/node-mpv')
 const ticks = require('../media/ticks')
 
+let instance
+
 class MpvClient {
     constructor() {
         this.mpv = new mpvApi({
@@ -45,10 +47,14 @@ class MpvClient {
                 return this.mpv.load(mediaPath)
             })
             .then(() => {
-                return this.mpv.selectAudioTrack(audioIndex)
+                if (audioIndex !== null) {
+                    return this.mpv.selectAudioTrack(audioIndex)
+                }
             })
             .then(() => {
-                return this.mpv.selectSubtitle(subtitleIndex)
+                if (subtitleIndex !== null) {
+                    return this.mpv.selectSubtitle(subtitleIndex)
+                }
             })
             .then(() => {
                 if (!seekTicks) {
@@ -87,7 +93,9 @@ class MpvClient {
     }
 }
 
-const instance = new MpvClient()
+if (!instance) {
+    instance = new MpvClient()
+}
 
 module.exports = {
     client: instance,

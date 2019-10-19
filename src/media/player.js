@@ -4,6 +4,8 @@ const settings = require('../settings')
 const mpc = require('../service/mpc-client')
 const mpv = require('../service/mpv-client')
 
+let instance
+
 class Player {
     constructor() {
         this.useMpv()
@@ -26,7 +28,7 @@ class Player {
 
     openStream(streamURL) {
         this.mediaHandler.setProfile('livetv')
-        return this.mediaHandler.openPath(streamURL)
+        return this.mediaHandler.openPath(streamURL, null, null, null)
     }
 
     getPositionInEmbyTicks() {
@@ -48,6 +50,8 @@ class Player {
     }
 }
 
-let instance = new Player()
+if (!instance) {
+    instance = new Player()
+}
 
 module.exports = instance
