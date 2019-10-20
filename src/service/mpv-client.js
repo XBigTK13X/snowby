@@ -71,7 +71,8 @@ class MpvClient {
 
     getPositionInEmbyTicks() {
         return this.mpv.getTimePosition().then(position => {
-            return ticks.mpvToEmby(position)
+            const embyTicks = ticks.mpvToEmby(position)
+            return embyTicks
         })
     }
 

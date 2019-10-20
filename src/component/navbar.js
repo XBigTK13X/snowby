@@ -24,6 +24,11 @@ module.exports = {
 		          Toggle Watched
 		        </div>    
 		      </a>
+		      <a href="./search.html">
+		        <div class="navbar-button">
+		          Search
+		        </div>    
+		      </a>
 			`
         }
         navbarContent += '</div>'

@@ -42,9 +42,20 @@ const browserGetMediaProfiles = () => {
     return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
 }
 
+const getScrollPosition = () => {
+    var doc = document.documentElement
+    var left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0)
+    var top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
+    return {
+        y: top,
+        x: left,
+    }
+}
+
 module.exports = {
     appPath,
     swapConfig,
     getMediaProfiles,
     browserGetMediaProfiles,
+    getScrollPosition,
 }
