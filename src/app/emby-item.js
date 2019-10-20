@@ -2,10 +2,17 @@ const queryString = require('query-string')
 const _ = require('lodash')
 const emby = require('../service/emby-client')
 const navbar = require('../component/navbar')
+const util = require('../util')
 
 const queryParams = queryString.parse(location.search)
 
 let parentItem
+
+const storageKey = `emby-item-${queryParams.embyItemId}-scroll`
+
+window.addEventListener('scroll', () => {
+    window.localStorage.setItem(storageKey, util.getScrollPosition().y)
+})
 
 emby.client
     .connect()
@@ -83,4 +90,8 @@ emby.client
             `
         }
         $('.lazy').Lazy()
+    })
+    .then(() => {
+        const scrollY = window.localStorage.getItem(storageKey)
+        window.scrollTo(0, scrollY)
     })

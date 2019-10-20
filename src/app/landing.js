@@ -2,6 +2,8 @@ const emby = require('../service/emby-client')
 const settings = require('../settings')
 const EmbyItem = require('../component/emby-item')
 
+window.localStorage.clear()
+
 const landingLinks = [
     {
         link: 'https://youtube.com',
