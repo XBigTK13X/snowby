@@ -2,6 +2,7 @@ const util = require('./util')
 
 module.exports = {
     debugApiCalls: false,
+    edgeExePath: 'C:\\Windows\\SystemApps\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\MicrosoftEdge.exe',
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     fullScreen: true,
@@ -20,6 +21,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'October 20, 2019',
+    versionDate: 'October 22, 2019',
     windowBackgroundColor: '#010101',
 }
