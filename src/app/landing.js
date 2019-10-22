@@ -16,11 +16,6 @@ const landingLinks = [
         title: 'Amazon Prime',
     },
     {
-        link: 'http://overwatchleague.stream/nochat',
-        image: 'mlg-logo.png',
-        title: 'OWL (MLG)',
-    },
-    {
         link: 'https://www.twitch.tv/overwatchleague',
         image: 'twitch-logo.png',
         title: 'OWL (Twitch)',
@@ -78,6 +73,18 @@ emby.client
                 )
             )
         })
+
+        menuEntries.push(
+            new EmbyItem(
+                {},
+                {
+                    horizontal: true,
+                    image: '../asset/img/netflix-logo.png',
+                    title: 'Netflix',
+                    action: "require('electron').ipcRenderer.send('snowby-launch-netflix'); return false;",
+                }
+            )
+        )
 
         menuEntries.sort((a, b) => {
             return a.getTitle() > b.getTitle() ? 1 : -1

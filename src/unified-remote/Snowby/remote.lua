@@ -34,6 +34,10 @@ actions.focusChrome = function()
 	kb.stroke('windows','d4')
 end
 
+actions.focusEdge = function()
+	kb.stroke('windows','d5')
+end
+
 actions.jumpBackward = function()
 	kb.stroke('left')
 end

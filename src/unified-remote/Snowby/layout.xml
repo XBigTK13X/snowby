@@ -12,6 +12,7 @@
 		<button text="Snowby" ontap="focusSnowby" />
 		<button text="MPV" ontap="focusMPV" />
 		<button text="Chrome" ontap="focusChrome" />
+		<button text="Edge" ontap="focusEdge" />
 	</row>	
 	<row>
 		<button text="Backward" ontap="jumpBackward" />		

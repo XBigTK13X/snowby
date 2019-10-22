@@ -2,7 +2,6 @@
 const axios = require('axios')
 const settings = require('../settings')
 const httpLogger = require('./http-logger')
-const spawn = require('child_process').spawn
 const mpvApi = require('../vendor/node-mpv')
 const ticks = require('../media/ticks')
 
