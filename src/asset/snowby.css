@@ -73,6 +73,19 @@ h2 {
     padding-right: 1vw;
 }
 
+.big-title {
+    font-weight: bold;
+    font-size: 35px;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    text-align: center;
+    line-height: 11vw;
+}
+
 .fidelity {
     text-decoration: none;
     font-size: smaller;
@@ -124,8 +137,8 @@ td {
 
 .query {
     width: 95%;
-    height: 2vw;
-    font-size: xx-large;
+    height: 4vw;
+    font-size: 26px;
     border-radius: 10px;
     background-color: #424242;
     color: #e8e0e0;

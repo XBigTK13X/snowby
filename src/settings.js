@@ -7,7 +7,8 @@ module.exports = {
     embyTrackProgress: true,
     fullScreen: true,
     homeRunURL: 'http://192.168.1.248:5004/auto',
-    inaudibleToneHertz: 30000,
+    inaudibleToneHertz: 35000,
+    inaudibleToneInterval: 500,
     keepAudioDeviceAwake: true,
     mediaLibraryCardHeight: '300',
     mediaLibraryCardWidth: '200',
@@ -21,6 +22,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'October 22, 2019',
+    versionDate: 'October 26, 2019',
     windowBackgroundColor: '#010101',
 }

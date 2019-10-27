@@ -15,6 +15,7 @@ module.exports = class EmbyItem {
         this.InternalLink = options && options.internalLink
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
+        this.DisableImage = options && options.disablePoster
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -27,13 +28,17 @@ module.exports = class EmbyItem {
     render() {
         const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth, settings.mediaLibraryCardHeight)
         let anchor = this.getAnchor()
+        let poster = this.DisableImage
+            ? ``
+            : `
+            <div class="poster-${this.Orientation}">                
+                    <img class="lazy rounded tile-${this.Orientation}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+            </div>`
         return `      
           ${anchor}
             <div class="grid-item grid-card-${this.Orientation} rounded">                      
-            	<div class="poster-${this.Orientation}">          		
-            			<img class="lazy rounded tile-${this.Orientation}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
-            	</div>          	          
-              <div class="title">
+              ${poster}
+              <div class="${this.DisableImage ? 'big-title' : 'title'}">
                 ${this.getTitle(false)}      
               </div>          
               <div class="fidelity">

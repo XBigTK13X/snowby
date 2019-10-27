@@ -1,85 +1,87 @@
-const queryString = require('query-string')
-const _ = require('lodash')
-const emby = require('../service/emby-client')
-const navbar = require('../component/navbar')
-const util = require('../util')
+module.exports = () => {
+    return new Promise(resolve => {
+        const queryString = require('query-string')
+        const _ = require('lodash')
+        const emby = require('../service/emby-client')
+        const navbar = require('../component/navbar')
+        const util = require('../util')
 
-const queryParams = queryString.parse(location.search)
+        const queryParams = queryString.parse(location.search)
 
-let parentItem
+        let parentItem
 
-const storageKey = `emby-item-${queryParams.embyItemId}-scroll`
+        const storageKey = `emby-item-${queryParams.embyItemId}-scroll`
 
-window.addEventListener('scroll', () => {
-    window.localStorage.setItem(storageKey, util.getScrollPosition().y)
-})
-
-emby.client
-    .connect()
-    .then(() => {
-        if (queryParams.embyItemId === 'in-progress') {
-            parentItem = { Name: 'In Progress' }
-            navbar.render(false)
-            return emby.client.itemsInProgress()
-        }
-        return emby.client.embyItem(queryParams.embyItemId).then(embyItem => {
-            navbar.render(embyItem.isCollection())
-            let query = Promise.resolve()
-            if (!_.isNil(embyItem.CollectionType)) {
-                let searchParams = {
-                    Recursive: true,
-                }
-                if (embyItem.CollectionType === 'livetv') {
-                    parentItem = { Name: 'Live TV' }
-                    return emby.client.liveChannels().then(channels => {
-                        return channels.sort((a, b) => {
-                            return a.Name > b.Name ? 1 : -1
-                        })
-                    })
-                } else if (embyItem.CollectionType === 'movies') {
-                    searchParams.IncludeItemTypes = 'Movie'
-                    searchParams.Fields = 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName'
-                } else if (embyItem.CollectionType === 'tvshows') {
-                    searchParams.IncludeItemTypes = 'Series'
-                    searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
-                } else if (embyItem.CollectionType === 'playlists') {
-                    searchParams.ParentId = embyItem.Id
-                } else {
-                    throw 'Unhandled emby collection type ' + embyItem.CollectionType
-                }
-                searchParams.SortBy = 'SortName'
-                searchParams.SortOrder = 'Ascending'
-                searchParams.Filters = !queryParams.watched ? 'IsUnplayed' : ''
-                query = emby.client.embyItems(embyItem.Id, searchParams)
-            } else {
-                if (embyItem.Type === 'Series') {
-                    query = emby.client.seasons(embyItem.Id)
-                } else if (embyItem.Type === 'Season') {
-                    query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
-                } else if (embyItem.Type === 'Playlist') {
-                    query = emby.client.playlist(embyItem.Id)
-                } else {
-                    throw 'Unhandled emby item type ' + embyItem.Type
-                }
-            }
-            parentItem = embyItem
-            return query
+        window.addEventListener('scroll', () => {
+            window.localStorage.setItem(storageKey, util.getScrollPosition().y)
         })
-    })
-    .then(embyItems => {
-        let renderedItems = `<div class="grid-container">`
-        embyItems.forEach(embyItem => {
-            renderedItems += embyItem.render()
-        })
-        renderedItems += `</div>`
-        document.getElementById('emby-items').innerHTML = renderedItems
-        let title = parentItem.Name
-        if (embyItems.length > 0) {
-            title += ` (${embyItems.length} ${embyItems.length === 1 ? ' item' : ' items'})`
-        }
-        document.getElementById('header').innerHTML = title
-        if (embyItems.length > 12) {
-            document.getElementById('top').innerHTML = `
+
+        emby.client
+            .connect()
+            .then(() => {
+                if (queryParams.embyItemId === 'in-progress') {
+                    parentItem = { Name: 'In Progress' }
+                    navbar.render(false)
+                    return emby.client.itemsInProgress()
+                }
+                return emby.client.embyItem(queryParams.embyItemId).then(embyItem => {
+                    navbar.render(embyItem.isCollection())
+                    let query = Promise.resolve()
+                    if (!_.isNil(embyItem.CollectionType)) {
+                        let searchParams = {
+                            Recursive: true,
+                        }
+                        if (embyItem.CollectionType === 'livetv') {
+                            parentItem = { Name: 'Live TV' }
+                            return emby.client.liveChannels().then(channels => {
+                                return channels.sort((a, b) => {
+                                    return a.Name > b.Name ? 1 : -1
+                                })
+                            })
+                        } else if (embyItem.CollectionType === 'movies') {
+                            searchParams.IncludeItemTypes = 'Movie'
+                            searchParams.Fields = 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName'
+                        } else if (embyItem.CollectionType === 'tvshows') {
+                            searchParams.IncludeItemTypes = 'Series'
+                            searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
+                        } else if (embyItem.CollectionType === 'playlists') {
+                            searchParams.ParentId = embyItem.Id
+                        } else {
+                            throw 'Unhandled emby collection type ' + embyItem.CollectionType
+                        }
+                        searchParams.SortBy = 'SortName'
+                        searchParams.SortOrder = 'Ascending'
+                        searchParams.Filters = !queryParams.watched ? 'IsUnplayed' : ''
+                        query = emby.client.embyItems(embyItem.Id, searchParams)
+                    } else {
+                        if (embyItem.Type === 'Series') {
+                            query = emby.client.seasons(embyItem.Id)
+                        } else if (embyItem.Type === 'Season') {
+                            query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
+                        } else if (embyItem.Type === 'Playlist') {
+                            query = emby.client.playlist(embyItem.Id)
+                        } else {
+                            throw 'Unhandled emby item type ' + embyItem.Type
+                        }
+                    }
+                    parentItem = embyItem
+                    return query
+                })
+            })
+            .then(embyItems => {
+                let renderedItems = `<div class="grid-container">`
+                embyItems.forEach(embyItem => {
+                    renderedItems += embyItem.render()
+                })
+                renderedItems += `</div>`
+                document.getElementById('emby-items').innerHTML = renderedItems
+                let title = parentItem.Name
+                if (embyItems.length > 0) {
+                    title += ` (${embyItems.length} ${embyItems.length === 1 ? ' item' : ' items'})`
+                }
+                document.getElementById('header').innerHTML = title
+                if (embyItems.length > 12) {
+                    document.getElementById('top').innerHTML = `
                 <div class='navbar'>
                     <a onclick="window.scroll(0,0); return false" href="">
                         <div class="navbar-button">                        
@@ -88,10 +90,13 @@ emby.client
                     </a>
                 </div>
             `
-        }
-        $('.lazy').Lazy()
+                }
+                $('.lazy').Lazy()
+            })
+            .then(() => {
+                const scrollY = window.localStorage.getItem(storageKey)
+                window.scrollTo(0, scrollY)
+                resolve()
+            })
     })
-    .then(() => {
-        const scrollY = window.localStorage.getItem(storageKey)
-        window.scrollTo(0, scrollY)
-    })
+}

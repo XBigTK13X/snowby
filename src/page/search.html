@@ -4,15 +4,6 @@
         <meta charset="UTF-8" />
         <title>Snowby</title>
         <link rel="stylesheet" type="text/css" href="../asset/snowby.css" />
-        <script>
-            window.$ = window.jQuery = require('jquery')
-        </script>
-        <script>
-            require('jquery-lazy')
-        </script>
-        <script>
-            window.$aud = require('../service/audio')
-        </script>
     </head>
     <body>
         <div id="navbar"></div>
@@ -21,6 +12,8 @@
             <input autofocus type="text" id="query-input" class="query" />
         </div>
         <div id="emby-items"></div>
-        <script src="../app/search.js"></script>
+        <script>
+            require('../asset/shared')('search')
+        </script>
     </body>
 </html>
