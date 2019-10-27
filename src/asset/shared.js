@@ -1,17 +1,21 @@
+const audio = require('../service/audio')
 module.exports = pageScript => {
     window.$ = window.jQuery = require('jquery')
     require('jquery-lazy')
-    window.$aud = require('../service/audio')
+    audio.keepAwake()
     $('body').keydown(e => {
-        if (e.keyCode == 37) {
-            // left
+        if (e.key == 'ArrowLeft') {
             history.back()
-        } else if (e.keyCode == 39) {
-            // right
+        } else if (e.key === 'ArrowRight') {
             history.forward()
+        } else if (e.key === 'MediaPlayPause') {
+            audio.keepAwake()
         }
     })
     require(`../app/${pageScript}`)().then(() => {
-        $('.lazy').Lazy()
+        window.$lazyLoad = () => {
+            $('.lazy').Lazy()
+        }
+        window.$lazyLoad()
     })
 }
