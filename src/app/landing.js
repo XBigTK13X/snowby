@@ -96,13 +96,17 @@ module.exports = () => {
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
                     menuEntries.unshift(
-                        new EmbyItem({
-                            Id: 'in-progress',
-                            Name: 'In Progress',
-                            image: '../asset/img/in-progress-items.png',
-                            horizontal: true,
-                            disablePoster: true,
-                        })
+                        new EmbyItem(
+                            {
+                                Id: 'in-progress',
+                                Name: 'In Progress',
+                            },
+                            {
+                                image: '../asset/img/in-progress-items.png',
+                                horizontal: true,
+                                disablePoster: true,
+                            }
+                        )
                     )
                 }
 
