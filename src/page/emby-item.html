@@ -4,15 +4,6 @@
         <meta charset="UTF-8" />
         <title>Snowby</title>
         <link rel="stylesheet" type="text/css" href="../asset/snowby.css" />
-        <script>
-            window.$ = window.jQuery = require('jquery')
-        </script>
-        <script>
-            require('jquery-lazy')
-        </script>
-        <script>
-            window.$aud = require('../service/audio')
-        </script>
     </head>
     <body>
         <input type="text" autofocus style="display: none" id="search-redirect" />
@@ -20,6 +11,8 @@
         <h1 id="header">Loading...</h1>
         <div id="emby-items"></div>
         <div id="top"></div>
-        <script src="../app/emby-item.js"></script>
+        <script>
+            require('../asset/shared')('emby-item')
+        </script>
     </body>
 </html>

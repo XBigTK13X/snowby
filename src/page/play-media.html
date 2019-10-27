@@ -4,9 +4,6 @@
         <meta charset="UTF-8" />
         <title>Snowby</title>
         <link rel="stylesheet" type="text/css" href="../asset/snowby.css" />
-        <script>
-            window.$aud = require('../service/audio')
-        </script>
     </head>
     <body>
         <div id="navbar"></div>
@@ -35,6 +32,8 @@
         </div>
         <div id="media-info" class="media-info"></div>
         <div id="connection-status"></div>
-        <script src="../app/play-media.js"></script>
+        <script>
+            require('../asset/shared')('play-media')
+        </script>
     </body>
 </html>

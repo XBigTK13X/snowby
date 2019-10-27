@@ -4,20 +4,13 @@
         <meta charset="UTF-8" />
         <title>Snowby</title>
         <link rel="stylesheet" type="text/css" href="../asset/snowby.css" />
-        <script>
-            window.$ = window.jQuery = require('jquery')
-        </script>
-        <script>
-            require('jquery-lazy')
-        </script>
-        <script>
-            window.$aud = require('../service/audio')
-        </script>
     </head>
     <body>
         <h1 id="header">Loading...</h1>
         <div id="media-libraries" class="grid-container"></div>
         <div class="bottom-pin" id="version"></div>
-        <script src="../app/landing.js"></script>
+        <script>
+            require('../asset/shared')('landing')
+        </script>
     </body>
 </html>

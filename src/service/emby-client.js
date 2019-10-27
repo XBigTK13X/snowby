@@ -54,7 +54,7 @@ class EmbyClient {
     libraryViews() {
         const url = `Users/${this.userId}/Views`
         return this.httpClient.get(url).then(viewsResponse => {
-            return viewsResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true }))
+            return viewsResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true, disablePoster: true }))
         })
     }
 

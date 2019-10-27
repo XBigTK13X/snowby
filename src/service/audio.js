@@ -22,7 +22,7 @@ const keepAwake = () => {
             synth.volume = 10
             synth.triggerAttackRelease(settings.inaudibleToneHertz, '8n')
         }
-    }, 1000)
+    }, settings.inaudibleToneInterval)
 }
 
 keepAwake()
