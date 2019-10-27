@@ -91,7 +91,6 @@ module.exports = () => {
                 </div>
             `
                 }
-                $('.lazy').Lazy()
             })
             .then(() => {
                 const scrollY = window.sessionStorage.getItem(storageKey)

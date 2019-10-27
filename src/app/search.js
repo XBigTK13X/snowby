@@ -23,7 +23,7 @@ module.exports = () => {
                     renderedItems += `</div>`
                     document.getElementById('emby-items').innerHTML = renderedItems
                     window.history.replaceState(null, null, `./search.html?${queryString.stringify({ query: queryText })}`)
-                    $('.lazy').Lazy()
+                    window.$lazyLoad()
                 })
             }
         }, 200)

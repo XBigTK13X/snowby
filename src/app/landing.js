@@ -121,7 +121,7 @@ module.exports = () => {
 
                 document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
                 document.getElementById('media-libraries').innerHTML = menuEntries.map(entry => entry.render()).join('')
-                document.getElementById('header').innerHTML = 'Media Libraries'
+                document.getElementById('header').innerHTML = 'Snowby'
                 resolve()
             })
     })
