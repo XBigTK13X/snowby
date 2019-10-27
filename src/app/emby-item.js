@@ -13,7 +13,7 @@ module.exports = () => {
         const storageKey = `emby-item-${queryParams.embyItemId}-scroll`
 
         window.addEventListener('scroll', () => {
-            window.localStorage.setItem(storageKey, util.getScrollPosition().y)
+            window.sessionStorage.setItem(storageKey, util.getScrollPosition().y)
         })
 
         emby.client
@@ -94,7 +94,7 @@ module.exports = () => {
                 $('.lazy').Lazy()
             })
             .then(() => {
-                const scrollY = window.localStorage.getItem(storageKey)
+                const scrollY = window.sessionStorage.getItem(storageKey)
                 window.scrollTo(0, scrollY)
                 resolve()
             })
