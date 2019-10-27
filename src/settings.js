@@ -22,6 +22,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'October 26, 2019',
+    versionDate: 'October 27, 2019',
     windowBackgroundColor: '#010101',
 }
