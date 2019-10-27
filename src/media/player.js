@@ -17,7 +17,7 @@ class Player {
     }
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks) {
-        emby.client.markUnplayed(queryParams.embyItemId)
+        emby.client.markUnplayed(embyItemId)
         return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks).then(() => {
             if (!seekTicks) {
                 return Promise.resolve()
