@@ -26,7 +26,7 @@ module.exports = class EmbyItem {
     }
 
     render() {
-        const imageUrl = this.getImageUrl(settings.mediaLibraryCardWidth, settings.mediaLibraryCardHeight)
+        const imageUrl = this.DisableImage ? null : this.getImageUrl(settings.mediaLibraryCardWidth, settings.mediaLibraryCardHeight)
         let anchor = this.getAnchor()
         let poster = this.DisableImage
             ? ``

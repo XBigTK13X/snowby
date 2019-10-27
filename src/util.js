@@ -5,7 +5,6 @@ const readLine = require('readline')
 let profiles = null
 
 const appPath = relativePath => {
-    //console.log({path:path.join(__dirname,relativePath),rel:relativePath})
     return path.join(__dirname, relativePath)
 }
 
