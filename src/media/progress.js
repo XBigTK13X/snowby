@@ -12,19 +12,19 @@ const setConnectionStatus = connected => {
     document.getElementById('connection-status').innerHTML = `<p>${status}</p>`
 }
 
-const updateUI = (embyItem, embyTicks, animeReport, resumeButton, resumeContent) => {
+const updateUI = (embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent) => {
     setConnectionStatus(true)
     const resumeTimeStamp = ticks.toTimeStamp(embyTicks)
     document.getElementById(resumeButton).style = null
     document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
     document.getElementById(resumeButton).onclick = event => {
         event.preventDefault()
-        track(embyItem, animeReport, 'resume-media-button', 'resume-media-content')
-        player.openFile(embyItem.Id, embyItem.CleanPath, animeReport.audioRelativeIndex, animeReport.subtitleRelativeIndex, embyTicks)
+        track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content')
+        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks)
     }
 }
 
-const track = (embyItem, animeReport, resumeButton, resumeContent) => {
+const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent) => {
     let lastTicks = -1
     const trackInterval = setInterval(() => {
         player
@@ -38,7 +38,7 @@ const track = (embyItem, animeReport, resumeButton, resumeContent) => {
                             setConnectionStatus(true)
                             if (embyTicks > 0) {
                                 emby.client.updateProgress(embyItem.Id, embyTicks)
-                                updateUI(embyItem, embyTicks, animeReport, resumeButton, resumeContent)
+                                updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent)
                             }
                         }
                     })

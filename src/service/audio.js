@@ -1,22 +1,28 @@
 global.TONE_SILENCE_LOGGING = true
 const settings = require('../settings')
-const tone = require('tone')
-const synth = new tone.Synth().toMaster()
-
+const spawn = require('child_process').spawn
 let wakeInterval = null
 
-const keepAwake = () => {
-    if (wakeInterval) {
-        synth.volume = 0
-        clearInterval(wakeInterval)
+let audioProcess
+
+const cleanup = () => {
+    if (audioProcess) {
+        console.log(`Cleaning up audio keep awake process`)
+        audioProcess.kill()
     }
-    wakeInterval = setInterval(() => {
-        if (settings.keepAudioDeviceAwake) {
-            synth.volume = 10
-            synth.triggerAttackRelease(settings.inaudibleToneHertz, '8n')
-        }
-    }, settings.inaudibleToneInterval)
 }
+
+const keepAwake = () => {
+    cleanup()
+    if (settings.keepAudioDeviceAwake) {
+        console.log(`Waking audio device by looping ${settings.inaudibleWavPath}`)
+        audioProcess = spawn(`powershell`, [`-c`, `while($true){(New-Object Media.SoundPlayer "${settings.inaudibleWavPath}").PlaySync();}`])
+    }
+}
+
+process.on('exit', function() {
+    cleanup()
+})
 
 module.exports = {
     keepAwake,

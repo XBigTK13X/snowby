@@ -92,7 +92,7 @@ const inspect = embyItem => {
 
     const result = {
         isAnime,
-        subtitleAbsoluteIndex,
+        subtitleAbsoluteIndex: isAnime ? subtitleAbsoluteIndex : 0,
         audioAbsoluteIndex: isAnime ? audioAbsoluteIndex : englishAudioAbsoluteIndex,
         subtitleRelativeIndex: isAnime ? subtitleRelativeIndex : 0,
         audioRelativeIndex: isAnime ? audioRelativeIndex : englishAudioRelativeIndex,

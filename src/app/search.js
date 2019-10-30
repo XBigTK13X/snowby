@@ -14,14 +14,19 @@ module.exports = () => {
         const executeQuery = debounce(queryText => {
             if (queryText.length > 1) {
                 emby.client.search(queryText).then(results => {
-                    let renderedItems = `<div class="grid-container">`
-                    results.forEach(embyItems => {
-                        embyItems.forEach(embyItem => {
-                            renderedItems += embyItem.render()
+                    if (results[0].length || results[1].length || results[2].length) {
+                        let renderedItems = `<div class="grid-container">`
+                        results.forEach(embyItems => {
+                            embyItems.forEach(embyItem => {
+                                renderedItems += embyItem.render()
+                            })
                         })
-                    })
-                    renderedItems += `</div>`
-                    document.getElementById('emby-items').innerHTML = renderedItems
+                        renderedItems += `</div>`
+                        document.getElementById('emby-items').innerHTML = renderedItems
+                    } else {
+                        document.getElementById('emby-items').innerHTML = '<p class="empty-results">No results found. Try a different search.</p>'
+                    }
+
                     window.history.replaceState(null, null, `./search.html?${queryString.stringify({ query: queryText })}`)
                     window.$lazyLoad()
                 })

@@ -23,6 +23,24 @@ module.exports = class EmbyItem {
 
         this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
         this.ResumeImage = false
+
+        let relativeAudioIndex = 1
+        let relativeSubtitleIndex = 1
+        if (this.MediaStreams) {
+            for (let ii = 0; ii < this.MediaStreams.length; ii++) {
+                let stream = this.MediaStreams[ii]
+                if (stream.Type === 'Audio') {
+                    stream.RelativeIndex = relativeAudioIndex
+                    relativeAudioIndex++
+                }
+                if (stream.Type === 'Subtitle') {
+                    stream.RelativeIndex = relativeSubtitleIndex
+                    relativeSubtitleIndex++
+                }
+                stream.AbsoluteIndex = ii
+                this.MediaStreams[ii] = stream
+            }
+        }
     }
 
     render() {

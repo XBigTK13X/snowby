@@ -69,12 +69,17 @@ module.exports = () => {
                 })
             })
             .then(embyItems => {
-                let renderedItems = `<div class="grid-container">`
-                embyItems.forEach(embyItem => {
-                    renderedItems += embyItem.render()
-                })
-                renderedItems += `</div>`
-                document.getElementById('emby-items').innerHTML = renderedItems
+                if (embyItems.length) {
+                    let renderedItems = `<div class="grid-container">`
+                    embyItems.forEach(embyItem => {
+                        renderedItems += embyItem.render()
+                    })
+                    renderedItems += `</div>`
+                    document.getElementById('emby-items').innerHTML = renderedItems
+                } else {
+                    document.getElementById('emby-items').innerHTML = '<p class="empty-results">No items found. Try toggling watched.</p>'
+                }
+
                 let title = parentItem.Name
                 if (embyItems.length > 0) {
                     title += ` (${embyItems.length} ${embyItems.length === 1 ? ' item' : ' items'})`
