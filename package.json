@@ -1,11 +1,11 @@
 {
   "name": "snowby",
-  "version": "1.8.2",
+  "version": "1.9.0",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package": "npm run format-all && electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --ignore pdn/ --ignore mpv.log",
+    "package": "npm run format-all && electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --ignore pdn/ --ignore mpv.log --ignore kttp-alive_data/",
     "format-all": "prettier --write \"src/**/*.{js,html,css}\""
   },
   "author": "",
@@ -22,7 +22,6 @@
     "jquery": "^3.4.1",
     "jquery-lazy": "^1.7.10",
     "lodash": "^4.17.15",
-    "query-string": "^6.8.3",
-    "tone": "^13.8.25"
+    "query-string": "^6.8.3"
   }
 }

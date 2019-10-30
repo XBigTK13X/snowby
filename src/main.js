@@ -2,8 +2,12 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const settings = require('./settings')
 const util = require('./util')
 const spawn = require('child_process').spawn
+const audio = require('./service/audio')
 
 let mainWindow = null
+
+// Remove unexpected space in first log
+console.log('')
 
 if (!app.requestSingleInstanceLock()) {
     console.log('An instance of Snowby is already running. Exiting the duplicate app.')
@@ -19,6 +23,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow() {
+    audio.keepAwake()
     await util.swapConfig()
     console.log('Opening main window')
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
@@ -66,4 +71,8 @@ ipcMain.on('snowby-get-media-profiles', (evt, arg) => {
 
 ipcMain.on('snowby-launch-netflix', (evt, arg) => {
     spawn('c:\\windows\\system32\\cmd.exe', ['/c start microsoft-edge:http://flixable.com'], settings.spawnOptions)
+})
+
+ipcMain.on('snowby-wake-audio', (evt, arg) => {
+    audio.keepAwake()
 })

@@ -13,7 +13,7 @@ module.exports = () => {
             {
                 link: 'https://www.amazon.com/gp/video/storefront',
                 image: 'amazon-logo.png',
-                title: 'Amazon Prime',
+                title: 'Amazon',
             },
             {
                 link: 'https://www.twitch.tv/overwatchleague',

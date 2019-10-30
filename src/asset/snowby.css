@@ -170,3 +170,8 @@ select {
     color: #0c0c0c;
     background: #c3c3c3;
 }
+
+.empty-results {
+    text-align: center;
+    font-size: 36px;
+}
