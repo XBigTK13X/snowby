@@ -2,10 +2,9 @@ const util = require('./util')
 
 module.exports = {
     debugApiCalls: false,
-    edgeExePath: 'C:\\Windows\\SystemApps\\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\\MicrosoftEdge.exe',
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
-    fullScreen: true,
+    fullScreen: false,
     homeRunURL: 'http://192.168.1.248:5004/auto',
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.wav'),
     keepAudioDeviceAwake: true,
@@ -21,6 +20,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'October 30, 2019',
+    versionDate: 'November 1, 2019',
     windowBackgroundColor: '#010101',
 }

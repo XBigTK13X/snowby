@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const settings = require('./settings')
 const util = require('./util')
 const spawn = require('child_process').spawn
@@ -70,7 +70,7 @@ ipcMain.on('snowby-get-media-profiles', (evt, arg) => {
 })
 
 ipcMain.on('snowby-launch-netflix', (evt, arg) => {
-    spawn('c:\\windows\\system32\\cmd.exe', ['/c start microsoft-edge:http://flixable.com'], settings.spawnOptions)
+    spawn('c:\\windows\\system32\\cmd.exe', ['/c start microsoft-edge:http://www.netflix.com'], settings.spawnOptions)
 })
 
 ipcMain.on('snowby-wake-audio', (evt, arg) => {
