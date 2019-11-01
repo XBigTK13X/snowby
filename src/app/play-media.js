@@ -2,7 +2,6 @@ module.exports = () => {
     return new Promise(resolve => {
         const { shell } = require('electron')
         const emby = require('../service/emby-client')
-        const mpc = require('../service/mpc-client')
         const navbar = require('../component/navbar')
         const settings = require('../settings')
         const anime = require('../media/anime')

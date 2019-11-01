@@ -11,8 +11,6 @@ module.exports = {
     mediaLibraryCardHeight: '300',
     mediaLibraryCardWidth: '200',
     menuBarVisible: false,
-    mpcExePath: 'C:\\Program Files\\MPC-HC\\mpc-hc64.exe',
-    mpcServerURL: 'http://localhost:13579',
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
     progressUpdateInterval: 3000,
     spawnOptions: {
