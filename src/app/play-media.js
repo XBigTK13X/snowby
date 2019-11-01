@@ -43,7 +43,7 @@ module.exports = () => {
                 event.preventDefault()
                 window.history.replaceState(null, null, `./play-media.html?embyItemId=${queryParams.embyItemId}`)
                 reloadPage()
-            }            
+            }
 
             window.toggleAllStreams = () => {
                 let newParams = { ...queryParams }
@@ -188,7 +188,7 @@ module.exports = () => {
                     }
                     resolve({
                         enableProfilePicker: true,
-                        defaultMediaProfile: 'default'
+                        defaultMediaProfile: 'default',
                     })
                 })
         }

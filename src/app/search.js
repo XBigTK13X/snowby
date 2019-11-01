@@ -43,7 +43,9 @@ module.exports = () => {
                 executeQuery(event.target.value)
             })
 
-            resolve()
+            resolve({
+                enableRandomChoice: true,
+            })
         })
     })
 }

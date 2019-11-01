@@ -189,21 +189,25 @@ class EmbyClient {
         const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=250&Fields=PrimaryImageAspectRatio%2CChannelInfo%2CSortName`
         return this.httpClient.get(url).then(channelsResponse => {
             return channelsResponse.data.Items.sort((a, b) => {
-                                    return a.Name > b.Name ? 1 : -1
-                                }).map(item => {
+                return a.Name > b.Name ? 1 : -1
+            }).map(item => {
                 return new EmbyItem(item, { horizontal: true })
             })
         })
     }
 
-    genres(){
+    genres() {
         const url = `Genres?SortBy=SortName&SortOrder=Ascending&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&IncludeItemTypes=Series%2CMovie`
-        return this.httpClient.get(url).then(genresResponse=>{
-            return genresResponse.data.Items
-                .sort((a,b)=>{return a.Name > b.Name ? 1 : -1})
-                .map(x=>{x.Name=x.Name.replace('/',' ').replace('.',' '); return x;})
-                .map(x=>{
-                    return new EmbyItem(x,{horizontal: true, disablePoster: true})
+        return this.httpClient.get(url).then(genresResponse => {
+            return genresResponse.data.Items.sort((a, b) => {
+                return a.Name > b.Name ? 1 : -1
+            })
+                .map(x => {
+                    x.Name = x.Name.replace('/', ' ').replace('.', ' ')
+                    return x
+                })
+                .map(x => {
+                    return new EmbyItem(x, { horizontal: true, disablePoster: true })
                 })
         })
     }

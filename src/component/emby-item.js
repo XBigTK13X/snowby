@@ -16,7 +16,7 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
         this.DisableImage = options && options.disablePoster
-        
+
         this.EnableProfilePicker = this.CollectionType && this.CollectionType === 'livetv'
         this.LightTile = this.Type && this.Type === 'TvChannel'
 
@@ -53,7 +53,7 @@ module.exports = class EmbyItem {
             ? ``
             : `
             <div class="poster-${this.Orientation}">                
-                    <img class="lazy rounded tile-${this.Orientation}${this.LightTile?'-light':''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+                    <img class="lazy rounded tile-${this.Orientation}${this.LightTile ? '-light' : ''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             </div>`
         return `      
           ${anchor}
@@ -160,21 +160,21 @@ module.exports = class EmbyItem {
 
     getAnchor() {
         if (this.ForcedHref) {
-            return `<a href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
+            return `<a data-target="action" href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
         }
         if (this.ForcedAction) {
-            return `<a href="#" onclick="${this.ForcedAction}">`
+            return `<a data-target="action" href="#" onclick="${this.ForcedAction}">`
         }
         if (this.InternalLink) {
-            return `<a href="${this.InternalLink}">`
+            return `<a data-target="action" href="${this.InternalLink}">`
         }
         if (this.Type === 'TvChannel') {
-            return `<a href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
+            return `<a data-target="action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
-            return `<a href="./play-media.html?embyItemId=${this.Id}">`
+            return `<a data-target="action" href="./play-media.html?embyItemId=${this.Id}">`
         }
-        return `<a href="./emby-item.html?embyItemId=${this.Id}">`
+        return `<a data-target="action" href="./emby-item.html?embyItemId=${this.Id}">`
     }
 
     getFidelity() {
