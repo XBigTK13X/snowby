@@ -57,7 +57,7 @@ module.exports = () => {
                             image: '../asset/img/search.png',
                             title: 'Search',
                             disablePoster: true,
-                        },
+                        }
                     )
                 )
 
@@ -88,16 +88,16 @@ module.exports = () => {
                         }
                     ),
                     new EmbyItem(
-                            {
-                                Id: 'genres',
-                                Name: 'Genres',
-                            },
-                            {
-                                image: '../asset/img/in-progress-items.png',
-                                horizontal: true,
-                                disablePoster: true,
-                            }
-                        )
+                        {
+                            Id: 'genres',
+                            Name: 'Genres',
+                        },
+                        {
+                            image: '../asset/img/in-progress-items.png',
+                            horizontal: true,
+                            disablePoster: true,
+                        }
+                    )
                 )
 
                 menuEntries.sort((a, b) => {
@@ -117,11 +117,11 @@ module.exports = () => {
                                 horizontal: true,
                                 disablePoster: true,
                             }
-                        )                        
+                        )
                     )
                 }
 
-                document.getElementById('exit-button').setAttribute('onclick',"require('electron').ipcRenderer.send('snowby-exit'); return false;")
+                document.getElementById('exit-button').setAttribute('onclick', "require('electron').ipcRenderer.send('snowby-exit'); return false;")
                 document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
                 document.getElementById('media-libraries').innerHTML = menuEntries.map(entry => entry.render()).join('')
                 document.getElementById('header').innerHTML = 'Snowby'

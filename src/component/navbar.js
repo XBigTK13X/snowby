@@ -31,7 +31,11 @@ module.exports = {
 		      </a>
 			`
         }
-        navbarContent += '</div>'
+        navbarContent += `<a id="random-choice-button" style="visibility:hidden;" href="" onclick="window.randomChoice();return false">
+                <div class="navbar-button">
+                    Random
+                </div>  
+            </a></div>`
         document.getElementById('navbar').innerHTML = navbarContent
     },
 }

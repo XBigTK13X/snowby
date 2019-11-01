@@ -1,5 +1,5 @@
 module.exports = () => {
-    let embyItem;
+    let embyItem
     return new Promise(resolve => {
         const queryString = require('query-string')
         const _ = require('lodash')
@@ -25,8 +25,8 @@ module.exports = () => {
                     navbar.render(false)
                     return emby.client.itemsInProgress()
                 }
-                if(queryParams.embyItemId === 'genres'){
-                    paremtItem = { Name: 'Genres' }
+                if (queryParams.embyItemId === 'genres') {
+                    parentItem = { Name: 'Genres' }
                     navbar.render(false)
                     return emby.client.genres()
                 }
@@ -38,7 +38,7 @@ module.exports = () => {
                         let searchParams = {
                             Recursive: true,
                         }
-                        if(embyItem.CollectionType){
+                        if (embyItem.CollectionType) {
                             if (embyItem.CollectionType === 'livetv') {
                                 parentItem = { Name: 'Live TV' }
                                 return emby.client.liveChannels()
@@ -53,8 +53,7 @@ module.exports = () => {
                             } else {
                                 throw 'Unhandled emby collection type ' + embyItem.CollectionType
                             }
-                        }
-                        else {
+                        } else {
                             //Genre handler
                             searchParams.IncludeItemTypes = 'Series,Movie'
                             searchParams.GenreIds = embyItem.Id
@@ -71,8 +70,7 @@ module.exports = () => {
                             query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
                         } else if (embyItem.Type === 'Playlist') {
                             query = emby.client.playlist(embyItem.Id)
-                        }
-                        else {
+                        } else {
                             throw 'Unhandled emby item type ' + embyItem.Type
                         }
                     }
@@ -112,10 +110,18 @@ module.exports = () => {
             .then(() => {
                 const scrollY = window.sessionStorage.getItem(storageKey)
                 window.scrollTo(0, scrollY)
-                resolve(embyItem && embyItem.EnableProfilePicker?{
-                    enableProfilePicker: true,
-                    defaultMediaProfile: 'livetv'
-                }:null)
+                let result =
+                    embyItem && embyItem.EnableProfilePicker
+                        ? {
+                              enableProfilePicker: true,
+                              defaultMediaProfile: 'livetv',
+                          }
+                        : {}
+                result = {
+                    ...result,
+                    enableRandomChoice: true,
+                }
+                resolve(result)
             })
     })
 }
