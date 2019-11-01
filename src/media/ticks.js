@@ -21,14 +21,6 @@ const toTimeStamp = ticks => {
     return displayTime(ticks / TEN_MILLION)
 }
 
-const embyToMpc = embyTicks => {
-    return embyTicks / TEN_THOUSAND
-}
-
-const mpcToEmby = mpcTicks => {
-    return mpcTicks * TEN_THOUSAND
-}
-
 const mpvToEmby = mpvSeconds => {
     return mpvSeconds * TEN_MILLION
 }
@@ -48,8 +40,6 @@ const embyToSeconds = embyTicks => {
 
 module.exports = {
     toTimeStamp,
-    embyToMpc,
-    mpcToEmby,
     mpvToEmby,
     stepBack,
     embyToSeconds,

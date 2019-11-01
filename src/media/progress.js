@@ -2,7 +2,6 @@ const settings = require('../settings')
 const ticks = require('./ticks')
 const player = require('../media/player')
 const emby = require('../service/emby-client')
-const mpc = require('../service/mpc-client')
 
 const setConnectionStatus = connected => {
     let status = 'Snowby is connected to the media player and monitoring progress.'

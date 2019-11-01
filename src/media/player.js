@@ -1,14 +1,13 @@
 const ticks = require('./ticks')
 const emby = require('../service/emby-client')
 const settings = require('../settings')
-const mpc = require('../service/mpc-client')
 const mpv = require('../service/mpv-client')
 
 let instance
 
 class Player {
     constructor() {
-        this.useMpv()
+        this.mediaHandler = mpv.client
         this.profiles = []
     }
 
@@ -33,16 +32,6 @@ class Player {
 
     getPositionInEmbyTicks() {
         return this.mediaHandler.getPositionInEmbyTicks()
-    }
-
-    useMpc() {
-        this.mediaHandler = mpc.client
-        return this
-    }
-
-    useMpv() {
-        this.mediaHandler = mpv.client
-        return this
     }
 
     setProfile(profile) {
