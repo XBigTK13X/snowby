@@ -1,4 +1,5 @@
 module.exports = () => {
+    let embyItem;
     return new Promise(resolve => {
         const queryString = require('query-string')
         const _ = require('lodash')
@@ -24,7 +25,8 @@ module.exports = () => {
                     navbar.render(false)
                     return emby.client.itemsInProgress()
                 }
-                return emby.client.embyItem(queryParams.embyItemId).then(embyItem => {
+                return emby.client.embyItem(queryParams.embyItemId).then(result => {
+                    embyItem = result
                     navbar.render(embyItem.isCollection())
                     let query = Promise.resolve()
                     if (!_.isNil(embyItem.CollectionType)) {
@@ -100,7 +102,10 @@ module.exports = () => {
             .then(() => {
                 const scrollY = window.sessionStorage.getItem(storageKey)
                 window.scrollTo(0, scrollY)
-                resolve()
+                resolve(embyItem && embyItem.EnableProfilePicker?{
+                    enableProfilePicker: true,
+                    defaultMediaProfile: 'livetv'
+                }:null)
             })
     })
 }
