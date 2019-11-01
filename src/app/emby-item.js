@@ -25,31 +25,40 @@ module.exports = () => {
                     navbar.render(false)
                     return emby.client.itemsInProgress()
                 }
+                if(queryParams.embyItemId === 'genres'){
+                    paremtItem = { Name: 'Genres' }
+                    navbar.render(false)
+                    return emby.client.genres()
+                }
                 return emby.client.embyItem(queryParams.embyItemId).then(result => {
                     embyItem = result
                     navbar.render(embyItem.isCollection())
                     let query = Promise.resolve()
-                    if (!_.isNil(embyItem.CollectionType)) {
+                    if (!_.isNil(embyItem.CollectionType) || embyItem.Type === 'Genre') {
                         let searchParams = {
                             Recursive: true,
                         }
-                        if (embyItem.CollectionType === 'livetv') {
-                            parentItem = { Name: 'Live TV' }
-                            return emby.client.liveChannels().then(channels => {
-                                return channels.sort((a, b) => {
-                                    return a.Name > b.Name ? 1 : -1
-                                })
-                            })
-                        } else if (embyItem.CollectionType === 'movies') {
-                            searchParams.IncludeItemTypes = 'Movie'
-                            searchParams.Fields = 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName'
-                        } else if (embyItem.CollectionType === 'tvshows') {
-                            searchParams.IncludeItemTypes = 'Series'
-                            searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
-                        } else if (embyItem.CollectionType === 'playlists') {
-                            searchParams.ParentId = embyItem.Id
-                        } else {
-                            throw 'Unhandled emby collection type ' + embyItem.CollectionType
+                        if(embyItem.CollectionType){
+                            if (embyItem.CollectionType === 'livetv') {
+                                parentItem = { Name: 'Live TV' }
+                                return emby.client.liveChannels()
+                            } else if (embyItem.CollectionType === 'movies') {
+                                searchParams.IncludeItemTypes = 'Movie'
+                                searchParams.Fields = 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName'
+                            } else if (embyItem.CollectionType === 'tvshows') {
+                                searchParams.IncludeItemTypes = 'Series'
+                                searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
+                            } else if (embyItem.CollectionType === 'playlists') {
+                                searchParams.ParentId = embyItem.Id
+                            } else {
+                                throw 'Unhandled emby collection type ' + embyItem.CollectionType
+                            }
+                        }
+                        else {
+                            //Genre handler
+                            searchParams.IncludeItemTypes = 'Series,Movie'
+                            searchParams.GenreIds = embyItem.Id
+                            queryParams.watched = true
                         }
                         searchParams.SortBy = 'SortName'
                         searchParams.SortOrder = 'Ascending'
@@ -62,7 +71,8 @@ module.exports = () => {
                             query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
                         } else if (embyItem.Type === 'Playlist') {
                             query = emby.client.playlist(embyItem.Id)
-                        } else {
+                        }
+                        else {
                             throw 'Unhandled emby item type ' + embyItem.Type
                         }
                     }

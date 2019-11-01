@@ -111,7 +111,8 @@ h2 {
     line-height: 3vw;
 }
 
-div.navbar > a {
+div.navbar > a,
+div.bottom-pin-right > a {
     color: #0c0c0c;
 }
 
@@ -154,7 +155,7 @@ td {
     padding-left: 0.5vw;
 }
 
-.bottom-pin {
+.bottom-pin-left {
     position: fixed;
     bottom: 0%;
     background-color: #393838;
@@ -165,6 +166,19 @@ td {
     text-align: right;
     margin-left: 5px;
     margin-bottom: 10px;
+}
+
+.bottom-pin-right {
+    position: absolute;    
+    bottom: 0;
+    right: 0;
+    opacity: 1;
+    border-radius: 5px;
+    padding: 1vw;
+    font-size: larger;
+    text-align: right;
+    margin-left: 40vw;
+    display: inline;
 }
 
 .highlighted-row {
