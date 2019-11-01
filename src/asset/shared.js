@@ -10,7 +10,47 @@ module.exports = pageScript => {
             require('electron').ipcRenderer.send('snowby-wake-audio')
         }
     })
-    require(`../app/${pageScript}`)().then(() => {
+    require(`../app/${pageScript}`)().then((result) => {        
+        
+        if(result && result.enableProfilePicker){
+            let profilePicker = document.getElementById('profile-picker')
+            const queryString = require('query-string')
+            const queryParams = queryString.parse(location.search)
+            const util = require('../util')
+            const player = require('../media/player')
+            if (queryParams.mediaProfile) {
+                player.setProfile(queryParams.mediaProfile)
+            } else {
+                player.setProfile(result.defaultMediaProfile)
+                queryParams.mediaProfile = result.defaultMediaProfile
+            }
+            window.changeProfile = target => {
+                player.setProfile(target.value)
+                const newParams = { ...queryParams }
+                newParams.mediaProfile = target.value        
+                const url = `${window.location.pathname.split('/').slice(-1)[0]}?${queryString.stringify(newParams)}`
+                console.log({location:window.location,url})
+                window.history.replaceState(null, null, url)
+            }
+            const pickerMarkup = `
+                <div>
+                    <p>Select an media profile to use.</p>
+                    <select onChange="window.changeProfile(this)">
+                    ${util
+                        .browserGetMediaProfiles()
+                        .map((profile, ii) => {
+                            return `
+                            <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>                        
+                            ${profile}
+                            </option>
+                        `
+                        })
+                        .join('')}
+                    </select>
+                </div>
+            `
+            profilePicker.innerHTML = pickerMarkup
+        }
         window.$lazyLoad = () => {
             $('.lazy').Lazy()
         }

@@ -135,6 +135,12 @@ td {
     background-color: #272727;
 }
 
+.tile-horizontal-light {
+    width: 13vw;
+    height: 7vw;
+    background-color: #dedede;
+}
+
 .query {
     width: 95%;
     height: 4vw;

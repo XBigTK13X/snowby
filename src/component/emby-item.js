@@ -16,6 +16,9 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
         this.DisableImage = options && options.disablePoster
+        
+        this.EnableProfilePicker = this.CollectionType && this.CollectionType === 'livetv'
+        this.LightTile = this.Type && this.Type === 'TvChannel'
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -50,7 +53,7 @@ module.exports = class EmbyItem {
             ? ``
             : `
             <div class="poster-${this.Orientation}">                
-                    <img class="lazy rounded tile-${this.Orientation}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
+                    <img class="lazy rounded tile-${this.Orientation}${this.LightTile?'-light':''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             </div>`
         return `      
           ${anchor}

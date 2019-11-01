@@ -43,14 +43,7 @@ module.exports = () => {
                 event.preventDefault()
                 window.history.replaceState(null, null, `./play-media.html?embyItemId=${queryParams.embyItemId}`)
                 reloadPage()
-            }
-
-            window.changeProfile = target => {
-                player.setProfile(target.value)
-                const newParams = { ...queryParams }
-                newParams.mediaProfile = target.value
-                window.history.replaceState(null, null, `./play-media.html?${queryString.stringify(newParams)}`)
-            }
+            }            
 
             window.toggleAllStreams = () => {
                 let newParams = { ...queryParams }
@@ -180,23 +173,6 @@ module.exports = () => {
                     } else {
                         mediaInfo += ' and disable subtitles</p>'
                     }
-                    mediaInfo += `
-            <div>
-            <p>Select an MPV profile to use.</p>
-                <select onChange="window.changeProfile(this)">
-                ${util
-                    .browserGetMediaProfiles()
-                    .map((profile, ii) => {
-                        return `
-                        <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>                        
-                        ${profile}
-                        </option>
-                    `
-                    })
-                    .join('')}
-                </select>
-            </div>
-        `
 
                     document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
                     document.getElementById('media-info').innerHTML = mediaInfo
@@ -210,7 +186,10 @@ module.exports = () => {
                         progress.track(embyItem, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content')
                         player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative)
                     }
-                    resolve()
+                    resolve({
+                        enableProfilePicker: true,
+                        defaultMediaProfile: 'default'
+                    })
                 })
         }
         reloadPage()
