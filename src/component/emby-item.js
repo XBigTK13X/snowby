@@ -16,6 +16,7 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
         this.DisableImage = options && options.disablePoster
+        this.ForceShowSpoilers = options && options.forceShowSpoilers
         
         this.EnableProfilePicker = this.CollectionType && this.CollectionType === 'livetv'
         this.LightTile = this.Type && this.Type === 'TvChannel'
@@ -55,16 +56,19 @@ module.exports = class EmbyItem {
             <div class="poster-${this.Orientation}">                
                     <img class="lazy rounded tile-${this.Orientation}${this.LightTile?'-light':''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             </div>`
-        return `      
-          ${anchor}
-            <div class="grid-item grid-card-${this.Orientation} rounded">                      
-              ${poster}
-              <div class="${this.DisableImage ? 'big-title' : 'title'}">
+        let tileText = this.Orientation === 'horizontal'?`
+                <div class="${this.DisableImage ? 'big-title' : 'title'}">
                 ${this.getTitle(false)}      
               </div>          
               <div class="fidelity">
                 ${this.getFidelity()}
               </div>
+        `: ''
+        return `      
+          ${anchor}
+            <div class="grid-item grid-card-${this.Orientation} rounded">                      
+              ${poster}
+              ${tileText}
             </div>
           </a>
         `
@@ -97,6 +101,9 @@ module.exports = class EmbyItem {
     }
 
     showSpoilers() {
+        if(this.ForceShowSpoilers){
+            return true
+        }
         if (this.Type === 'Episode') {
             if (_.has(this.UserData, 'PlaybackPositionTicks') && this.UserData.PlaybackPositionTicks > 0) {
                 return true

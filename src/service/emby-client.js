@@ -141,9 +141,9 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
-                responses[0].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Series' })),
-                responses[1].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Movie' })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Episode - ' + item.SeriesName })),
+                responses[0].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Series',forceShowSpoilers: true})),
+                responses[1].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Movie', forceShowSpoilers: true })),
+                responses[2].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Episode - ' + item.SeriesName, forceShowSpoilers: true })),
             ]
         })
     }

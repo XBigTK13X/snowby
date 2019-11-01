@@ -15,7 +15,7 @@ module.exports = () => {
             if (queryText.length > 1) {
                 emby.client.search(queryText).then(results => {
                     if (results[0].length || results[1].length || results[2].length) {
-                        let renderedItems = `<div class="grid-container">`
+                        let renderedItems = `<div class="grid-container-vertical">`
                         results.forEach(embyItems => {
                             embyItems.forEach(embyItem => {
                                 renderedItems += embyItem.render()

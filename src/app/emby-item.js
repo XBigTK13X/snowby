@@ -71,8 +71,9 @@ module.exports = () => {
                 })
             })
             .then(embyItems => {
+                const orientation = embyItems && embyItems[0] && embyItems[0].Orientation                
                 if (embyItems.length) {
-                    let renderedItems = `<div class="grid-container">`
+                    let renderedItems = `<div class="grid-container-${orientation}">`
                     embyItems.forEach(embyItem => {
                         renderedItems += embyItem.render()
                     })

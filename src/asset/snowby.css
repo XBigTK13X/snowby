@@ -15,15 +15,7 @@ h2 {
     text-align: center;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 16vw);
-    grid-column-gap: 0.2vw;
-    grid-row-gap: 0.2vw;
-}
-
 .grid-item {
-    padding-top: 0.5vw;
     text-align: center;
 }
 
@@ -37,20 +29,35 @@ h2 {
     color: #77c777;
 }
 
-.grid-card-vertical {
-    background: #272727;
-    height: 19vw;
-    margin: 0.1vw;
+.grid-container-horizontal {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 16vw);
+    grid-column-gap: 0.2vw;
+    grid-row-gap: 0.2vw;
+}
+
+.grid-container-vertical {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 10vw);
+    grid-column-gap: 0.5vw;
+    grid-row-gap: 0.2vw;
 }
 
 .poster-vertical {
-    height: 15vw;
     max-width: 15vw;
+    text-align: center;
     margin: auto;
 }
 
+.tile-vertical {
+    width: 100%;
+    height: 14vw;
+    background-color: #272727;
+    border: 2px solid grey;
+}
+
 .grid-card-horizontal {
-    height: 11vw;
+    height: 10vw;
     background: #272727;
     margin: 0.2vw;
 }
@@ -60,6 +67,18 @@ h2 {
     width: 15vw;
     text-align: center;
     margin: auto;
+}
+
+.tile-horizontal {
+    width: 13vw;
+    height: 7vw;
+    background-color: #272727;
+}
+
+.tile-horizontal-light {
+    width: 13vw;
+    height: 7vw;
+    background-color: #dedede;
 }
 
 .title {
@@ -83,7 +102,7 @@ h2 {
     padding-left: 1vw;
     padding-right: 1vw;
     text-align: center;
-    line-height: 11vw;
+    line-height: 9vw;
 }
 
 .fidelity {
@@ -121,24 +140,6 @@ td {
     border: 1px solid grey;
     border-collapse: collapse;
     padding: 5px;
-}
-
-.tile-vertical {
-    max-width: 100%;
-    max-height: 100%;
-    background-color: #272727;
-}
-
-.tile-horizontal {
-    width: 13vw;
-    height: 7vw;
-    background-color: #272727;
-}
-
-.tile-horizontal-light {
-    width: 13vw;
-    height: 7vw;
-    background-color: #dedede;
 }
 
 .query {
