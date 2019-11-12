@@ -1,6 +1,6 @@
 {
   "name": "snowby",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
