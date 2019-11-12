@@ -16,6 +16,7 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
         this.DisableImage = options && options.disablePoster
+        this.SearchParams = options ? (options.searchParams ? options.searchParams : {}) : {}
 
         this.EnableProfilePicker = this.CollectionType && this.CollectionType === 'livetv'
         this.LightTile = this.Type && this.Type === 'TvChannel'
@@ -174,7 +175,11 @@ module.exports = class EmbyItem {
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a data-target="action" href="./play-media.html?embyItemId=${this.Id}">`
         }
-        return `<a data-target="action" href="./emby-item.html?embyItemId=${this.Id}">`
+        let url = `./emby-item.html?embyItemId=${this.Id}`
+        if (this.SearchParams.IncludeItemTypes) {
+            url += `&includeItemTypes=${this.SearchParams.IncludeItemTypes}`
+        }
+        return `<a data-target="action" href="${url}">`
     }
 
     getFidelity() {

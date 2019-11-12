@@ -27,8 +27,13 @@ module.exports = () => {
                 }
                 if (queryParams.embyItemId === 'genres') {
                     parentItem = { Name: 'Genres' }
+                    if (queryParams.genreFilter === 'Movie') {
+                        parentItem = { Name: 'Movie Genres' }
+                    } else if (queryParams.genreFilter === 'Series') {
+                        parentItem = { Name: 'TV Show Genres' }
+                    }
                     navbar.render(false)
-                    return emby.client.genres()
+                    return emby.client.genres(queryParams.genreFilter)
                 }
                 return emby.client.embyItem(queryParams.embyItemId).then(result => {
                     embyItem = result
@@ -56,12 +61,16 @@ module.exports = () => {
                         } else {
                             //Genre handler
                             searchParams.IncludeItemTypes = 'Series,Movie'
+                            searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
                             searchParams.GenreIds = embyItem.Id
                             queryParams.watched = true
                         }
                         searchParams.SortBy = 'SortName'
                         searchParams.SortOrder = 'Ascending'
                         searchParams.Filters = !queryParams.watched ? 'IsUnplayed' : ''
+                        if (queryParams.includeItemTypes) {
+                            searchParams.IncludeItemTypes = queryParams.includeItemTypes
+                        }
                         query = emby.client.embyItems(embyItem.Id, searchParams)
                     } else {
                         if (embyItem.Type === 'Series') {

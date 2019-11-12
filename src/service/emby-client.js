@@ -196,8 +196,12 @@ class EmbyClient {
         })
     }
 
-    genres() {
-        const url = `Genres?SortBy=SortName&SortOrder=Ascending&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&IncludeItemTypes=Series%2CMovie`
+    genres(filter) {
+        let genreFilter = `Series%2CMovie`
+        if (filter) {
+            genreFilter = filter
+        }
+        let url = `Genres?SortBy=SortName&SortOrder=Ascending&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&IncludeItemTypes=${genreFilter}`
         return this.httpClient.get(url).then(genresResponse => {
             return genresResponse.data.Items.sort((a, b) => {
                 return a.Name > b.Name ? 1 : -1
@@ -207,7 +211,7 @@ class EmbyClient {
                     return x
                 })
                 .map(x => {
-                    return new EmbyItem(x, { horizontal: true, disablePoster: true })
+                    return new EmbyItem(x, { horizontal: true, disablePoster: true, searchParams: { IncludeItemTypes: genreFilter } })
                 })
         })
     }
