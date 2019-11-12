@@ -25,6 +25,10 @@ module.exports = () => {
                 image: 'crunchyroll-logo.png',
                 title: 'Crunchyroll',
             },
+            {
+                link: 'https://disneyplus.com',
+                title: 'Disney+',
+            },
         ]
 
         const showLibraries = {
