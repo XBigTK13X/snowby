@@ -31,7 +31,7 @@ module.exports = {
 		      </a>
 			`
         }
-        navbarContent += `<a id="random-choice-button" style="visibility:hidden;" href="" onclick="window.randomChoice();return false">
+        navbarContent += `<a id="random-choice-button" style="display:none;" href="" onclick="window.randomChoice();return false">
                 <div class="navbar-button">
                     Random
                 </div>  

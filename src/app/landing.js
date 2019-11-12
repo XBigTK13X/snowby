@@ -40,29 +40,38 @@ module.exports = () => {
                 return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
             })
             .then(responses => {
-                let menuEntries = []
+                let mediaLibraryNodes = []
+                let streamingSiteNodes = []
 
                 responses[0].forEach(library => {
                     if (showLibraries[library.CollectionType]) {
-                        menuEntries.push(library)
+                        mediaLibraryNodes.push(library)
                     }
                 })
 
-                menuEntries.push(
+                mediaLibraryNodes.push(
                     new EmbyItem(
                         {},
                         {
                             horizontal: true,
                             internalLink: './search.html',
-                            image: '../asset/img/search.png',
                             title: 'Search',
                             disablePoster: true,
+                        }
+                    ),
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './genres.html',
+                            disablePoster: true,
+                            title: 'Genres',
                         }
                     )
                 )
 
                 landingLinks.forEach(landingLink => {
-                    menuEntries.push(
+                    streamingSiteNodes.push(
                         new EmbyItem(
                             {},
                             {
@@ -76,7 +85,7 @@ module.exports = () => {
                     )
                 })
 
-                menuEntries.push(
+                streamingSiteNodes.push(
                     new EmbyItem(
                         {},
                         {
@@ -86,27 +95,22 @@ module.exports = () => {
                             action: "require('electron').ipcRenderer.send('snowby-launch-netflix'); return false;",
                             disablePoster: true,
                         }
-                    ),
-                    new EmbyItem(
-                        {
-                            Id: 'genres',
-                            Name: 'Genres',
-                        },
-                        {
-                            image: '../asset/img/in-progress-items.png',
-                            horizontal: true,
-                            disablePoster: true,
-                        }
                     )
                 )
 
-                menuEntries.sort((a, b) => {
+                mediaLibraryNodes.sort((a, b) => {
                     return a.getTitle() > b.getTitle() ? 1 : -1
                 })
 
+                streamingSiteNodes.sort((a, b) => {
+                    return a.getTitle() > b.getTitle() ? 1 : -1
+                })
+
+                let inProgressMarkup = ''
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
-                    menuEntries.unshift(
+                    inProgressMarkup =
+                        `<div class="grid-container">` +
                         new EmbyItem(
                             {
                                 Id: 'in-progress',
@@ -117,14 +121,19 @@ module.exports = () => {
                                 horizontal: true,
                                 disablePoster: true,
                             }
-                        )
-                    )
+                        ).render() +
+                        '</div>'
                 }
 
-                document.getElementById('exit-button').setAttribute('onclick', "require('electron').ipcRenderer.send('snowby-exit'); return false;")
+                let mediaLibrariesMarkup = `<h2 class="grid-subheader">Media Libraries</h2><div class="grid-container">${mediaLibraryNodes.map(entry => entry.render()).join('')}</div>`
+
+                let streamingSitesMarkup = `<h2 class="grid-subheader">Streaming Sites</h2><div class="grid-container">${streamingSiteNodes.map(entry => entry.render()).join('')}</div>`
+
                 document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
-                document.getElementById('media-libraries').innerHTML = menuEntries.map(entry => entry.render()).join('')
-                document.getElementById('header').innerHTML = 'Snowby'
+                document.getElementById('in-progress').innerHTML = inProgressMarkup
+                document.getElementById('media-libraries').innerHTML = mediaLibrariesMarkup
+                document.getElementById('streaming-sites').innerHTML = streamingSitesMarkup
+                document.getElementById('header').setAttribute('style', 'display:none')
                 resolve()
             })
     })

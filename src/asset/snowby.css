@@ -13,6 +13,8 @@ a {
 h1,
 h2 {
     text-align: center;
+    margin-block-end: 0;
+    margin-block-start: 0;
 }
 
 .grid-container {
@@ -35,6 +37,12 @@ h2 {
 .grid-item:active,
 .navbar-button:active {
     color: #77c777;
+}
+
+.grid-subheader {
+    text-align: left;
+    font-size: 34px;
+    margin-left: 10px;
 }
 
 .grid-card-vertical {
@@ -166,19 +174,6 @@ td {
     text-align: right;
     margin-left: 5px;
     margin-bottom: 10px;
-}
-
-.bottom-pin-right {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    opacity: 1;
-    border-radius: 5px;
-    padding: 1vw;
-    font-size: larger;
-    text-align: right;
-    margin-left: 40vw;
-    display: inline;
 }
 
 .highlighted-row {

@@ -38,7 +38,6 @@ module.exports = pageScript => {
                     const newParams = { ...queryParams }
                     newParams.mediaProfile = target.value
                     const url = `${window.location.pathname.split('/').slice(-1)[0]}?${queryString.stringify(newParams)}`
-                    console.log({ location: window.location, url })
                     window.history.replaceState(null, null, url)
                 }
                 const pickerMarkup = `
