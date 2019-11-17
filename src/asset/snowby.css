@@ -119,14 +119,14 @@ h2 {
     line-height: 3vw;
 }
 
-div.navbar > a,
-div.bottom-pin-right > a {
+div.navbar > a {
     color: #0c0c0c;
 }
 
-.media-info table,
+table,
 th,
-td {
+td,
+tr {
     border: 1px solid grey;
     border-collapse: collapse;
     padding: 5px;
@@ -163,7 +163,7 @@ td {
     padding-left: 0.5vw;
 }
 
-.bottom-pin-left {
+.bottom-pin-right {
     position: fixed;
     bottom: 0%;
     background-color: #393838;
@@ -172,8 +172,8 @@ td {
     padding: 1vw;
     font-size: larger;
     text-align: right;
-    margin-left: 5px;
-    margin-bottom: 10px;
+    right: 10px;
+    bottom: 10px;
 }
 
 .highlighted-row {

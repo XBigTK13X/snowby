@@ -42,7 +42,7 @@ module.exports = pageScript => {
                 }
                 const pickerMarkup = `
                 <div>
-                    <p>Select an media profile to use.</p>
+                    <p>Select a media profile to use.</p>
                     <select onChange="window.changeProfile(this)">
                     ${util
                         .browserGetMediaProfiles()
