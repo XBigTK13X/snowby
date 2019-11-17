@@ -107,22 +107,18 @@ module.exports = () => {
         <tr>
             <th>Index</th>
             <th>Type</th>
-            <th>Title</th>
             <th>Name</th>
             <th>Quality</th>
             <th>Codec</th>
             <th>Language</th>
-            <th>Default</th>
+            <th>Default</th>            
+            <th>Title</th>
         </tr>`
                     let hiddenStreams = 0
                     streams += embyItem.MediaStreams.map((stream, streamIndex) => {
                         if (!queryParams.showAllStreams && !mediaStream.isShown(stream)) {
                             hiddenStreams++
                             return ''
-                        }
-                        let streamTitle = ''
-                        if (stream.Title && !stream.Title.includes('.') && !stream.Title.includes('/')) {
-                            streamTitle = stream.Title
                         }
                         let rowClass = ''
                         if (stream.Type === 'Subtitle' || stream.Type === 'Audio') {
@@ -134,12 +130,12 @@ module.exports = () => {
             <tr ${rowClass} onClick="window.selectTrack(${streamIndex})">
                 <td>${(streamIndex === 0 ? 0 : streamIndex) || ''}</td>
                 <td>${stream.Type || ''}</td>
-                <td>${streamTitle || ''}</td>
                 <td>${stream.DisplayTitle || ''}</td>
                 <td>${mediaStream.quality(stream)}</td>                
                 <td>${stream.Codec || ''}</td>
                 <td>${stream.DisplayLanguage || ''}</td>
                 <td>${stream.IsDefault || ''}</td>
+                <td>${stream.Title || ''}</td>
             </tr>
             `
                     }).join('')

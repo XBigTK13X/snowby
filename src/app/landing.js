@@ -114,7 +114,7 @@ module.exports = () => {
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
                     inProgressMarkup =
-                        `<div class="grid-container">` +
+                        `<h2 class="grid-subheader">Resume</h2><div class="grid-container">` +
                         new EmbyItem(
                             {
                                 Id: 'in-progress',
