@@ -5,7 +5,7 @@ module.exports = {
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     fullScreen: true,
-    homeRunURL: 'http://192.168.1.248:5004/auto',
+    homeRunURL: 'http://192.168.1.6:5004/auto',
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
     mediaLibraryCardHeight: '300',
@@ -18,6 +18,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'November 17, 2019',
+    versionDate: 'November 22, 2019',
     windowBackgroundColor: '#010101',
 }
