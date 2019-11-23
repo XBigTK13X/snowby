@@ -53,7 +53,7 @@ module.exports = () => {
                             } else if (embyItem.CollectionType === 'tvshows') {
                                 searchParams.IncludeItemTypes = 'Series'
                                 searchParams.Fields = 'BasicSyncInfo,MediaSourceCount,SortName'
-                            } else if (embyItem.CollectionType === 'playlists') {
+                            } else if (embyItem.CollectionType === 'playlists' || embyItem.CollectionType === 'boxsets') {
                                 searchParams.ParentId = embyItem.Id
                             } else {
                                 throw 'Unhandled emby collection type ' + embyItem.CollectionType
@@ -79,6 +79,11 @@ module.exports = () => {
                             query = emby.client.episodes(embyItem.ParentId, embyItem.Id)
                         } else if (embyItem.Type === 'Playlist') {
                             query = emby.client.playlist(embyItem.Id)
+                        } else if (embyItem.Type === 'BoxSet') {
+                            const searchParams = {
+                                ParentId: embyItem.Id,
+                            }
+                            query = emby.client.embyItems(embyItem.Id, searchParams)
                         } else {
                             throw 'Unhandled emby item type ' + embyItem.Type
                         }
@@ -88,6 +93,11 @@ module.exports = () => {
                 })
             })
             .then(embyItems => {
+                if (embyItem && embyItem.CollectionType === 'boxsets') {
+                    embyItems.forEach(item => {
+                        item.Name = item.Name.replace('Collection', '')
+                    })
+                }
                 if (embyItems.length) {
                     let renderedItems = `<div class="grid-container">`
                     embyItems.forEach(embyItem => {

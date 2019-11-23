@@ -36,6 +36,7 @@ module.exports = () => {
             tvshows: true,
             playlists: true,
             livetv: true,
+            boxsets: true,
         }
 
         emby.client
@@ -103,6 +104,12 @@ module.exports = () => {
                 )
 
                 mediaLibraryNodes.sort((a, b) => {
+                    if (a.getTitle() === 'TV Shows' || a.getTitle() === 'Movies') {
+                        return -1
+                    }
+                    if (b.getTitle() === 'TV Shows' || b.getTitle() === 'Movies') {
+                        return 1
+                    }
                     return a.getTitle() > b.getTitle() ? 1 : -1
                 })
 
@@ -110,11 +117,10 @@ module.exports = () => {
                     return a.getTitle() > b.getTitle() ? 1 : -1
                 })
 
-                let inProgressMarkup = ''
+                let menuEntries = mediaLibraryNodes.concat(streamingSiteNodes)
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
-                    inProgressMarkup =
-                        `<h2 class="grid-subheader">Resume</h2><div class="grid-container">` +
+                    menuEntries.push(
                         new EmbyItem(
                             {
                                 Id: 'in-progress',
@@ -125,18 +131,18 @@ module.exports = () => {
                                 horizontal: true,
                                 disablePoster: true,
                             }
-                        ).render() +
-                        '</div>'
+                        )
+                    )
                 }
 
-                let mediaLibrariesMarkup = `<h2 class="grid-subheader">Media Libraries</h2><div class="grid-container">${mediaLibraryNodes.map(entry => entry.render()).join('')}</div>`
-
-                let streamingSitesMarkup = `<h2 class="grid-subheader">Streaming Sites</h2><div class="grid-container">${streamingSiteNodes.map(entry => entry.render()).join('')}</div>`
+                let menuEntriesMarkup = `<div class="grid-container">${menuEntries
+                    .map(entry => {
+                        return entry.render()
+                    })
+                    .join('')}</div>`
 
                 document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
-                document.getElementById('in-progress').innerHTML = inProgressMarkup
-                document.getElementById('media-libraries').innerHTML = mediaLibrariesMarkup
-                document.getElementById('streaming-sites').innerHTML = streamingSitesMarkup
+                document.getElementById('menu-entries').innerHTML = menuEntriesMarkup
                 document.getElementById('header').setAttribute('style', 'display:none')
                 resolve()
             })
