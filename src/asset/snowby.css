@@ -166,7 +166,6 @@ tr {
 .bottom-pin-right {
     position: fixed;
     bottom: 0%;
-    background-color: #393838;
     opacity: 1;
     border-radius: 5px;
     padding: 1vw;

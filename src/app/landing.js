@@ -29,6 +29,10 @@ module.exports = () => {
                 link: 'https://disneyplus.com',
                 title: 'Disney+',
             },
+            {
+                link: 'https://netflix.com',
+                title: 'Netflix',
+            },
         ]
 
         const showLibraries = {
@@ -89,19 +93,6 @@ module.exports = () => {
                         )
                     )
                 })
-
-                streamingSiteNodes.push(
-                    new EmbyItem(
-                        {},
-                        {
-                            horizontal: true,
-                            image: '../asset/img/netflix-logo.png',
-                            title: 'Netflix',
-                            action: "require('electron').ipcRenderer.send('snowby-launch-netflix'); return false;",
-                            disablePoster: true,
-                        }
-                    )
-                )
 
                 mediaLibraryNodes.sort((a, b) => {
                     if (a.getTitle() === 'TV Shows' || a.getTitle() === 'Movies') {

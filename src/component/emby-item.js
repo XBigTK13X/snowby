@@ -91,7 +91,11 @@ module.exports = class EmbyItem {
                     return result + ' - [Hidden]'
                 }
             } else {
-                result = this.Name
+                if (this.ChannelNumber) {
+                    result = `${this.Name} (${this.ChannelNumber})`
+                } else {
+                    result = this.Name
+                }
             }
         }
         return result
@@ -170,7 +174,7 @@ module.exports = class EmbyItem {
             return `<a data-target="action" href="${this.InternalLink}">`
         }
         if (this.Type === 'TvChannel') {
-            return `<a data-target="action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}'); return false;">`
+            return `<a data-target="action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}',false); return false;">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a data-target="action" href="./play-media.html?embyItemId=${this.Id}">`

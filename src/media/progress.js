@@ -11,19 +11,19 @@ const setConnectionStatus = connected => {
     document.getElementById('connection-status').innerHTML = `<p>${status}</p>`
 }
 
-const updateUI = (embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent) => {
+const updateUI = (embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
     setConnectionStatus(true)
     const resumeTimeStamp = ticks.toTimeStamp(embyTicks)
     document.getElementById(resumeButton).style = null
     document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
     document.getElementById(resumeButton).onclick = event => {
         event.preventDefault()
-        track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content')
-        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks)
+        track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content', isHdr)
+        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks, isHdr)
     }
 }
 
-const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent) => {
+const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
     let lastTicks = -1
     const trackInterval = setInterval(() => {
         player
@@ -37,7 +37,7 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             setConnectionStatus(true)
                             if (embyTicks > 0) {
                                 emby.client.updateProgress(embyItem.Id, embyTicks)
-                                updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent)
+                                updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
                             }
                         }
                     })

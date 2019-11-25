@@ -4,7 +4,7 @@ module.exports = () => {
         const emby = require('../service/emby-client')
         const navbar = require('../component/navbar')
         const settings = require('../settings')
-        const anime = require('../media/anime')
+        const inspector = require('../media/inspector')
         const ticks = require('../media/ticks')
         const progress = require('../media/progress')
         const player = require('../media/player')
@@ -92,15 +92,15 @@ module.exports = () => {
                         window.history.replaceState(null, null, url)
                         reloadPage()
                     }
-                    const animeReport = anime.inspect(embyItem)
+                    const inspection = inspector.inspect(embyItem)
                     let selectedIndices = {
                         audio: {
-                            absolute: queryParams.audioAbsoluteIndex ? parseInt(queryParams.audioAbsoluteIndex) : animeReport.audioAbsoluteIndex,
-                            relative: queryParams.audioRelativeIndex ? parseInt(queryParams.audioRelativeIndex) : animeReport.audioRelativeIndex,
+                            absolute: queryParams.audioAbsoluteIndex ? parseInt(queryParams.audioAbsoluteIndex) : inspection.audioAbsoluteIndex,
+                            relative: queryParams.audioRelativeIndex ? parseInt(queryParams.audioRelativeIndex) : inspection.audioRelativeIndex,
                         },
                         subtitle: {
-                            absolute: queryParams.subtitleAbsoluteIndex ? parseInt(queryParams.subtitleAbsoluteIndex) : animeReport.subtitleAbsoluteIndex,
-                            relative: queryParams.subtitleRelativeIndex ? parseInt(queryParams.subtitleRelativeIndex) : animeReport.subtitleRelativeIndex,
+                            absolute: queryParams.subtitleAbsoluteIndex ? parseInt(queryParams.subtitleAbsoluteIndex) : inspection.subtitleAbsoluteIndex,
+                            relative: queryParams.subtitleRelativeIndex ? parseInt(queryParams.subtitleRelativeIndex) : inspection.subtitleRelativeIndex,
                         },
                     }
                     let streams = `<table>
@@ -111,7 +111,6 @@ module.exports = () => {
             <th>Quality</th>
             <th>Codec</th>
             <th>Language</th>
-            <th>Default</th>            
             <th>Title</th>
         </tr>`
                     let hiddenStreams = 0
@@ -134,7 +133,6 @@ module.exports = () => {
                 <td>${mediaStream.quality(stream)}</td>                
                 <td>${stream.Codec || ''}</td>
                 <td>${stream.DisplayLanguage || ''}</td>
-                <td>${stream.IsDefault || ''}</td>
                 <td>${stream.Title || ''}</td>
             </tr>
             `
@@ -154,7 +152,7 @@ module.exports = () => {
             <p>Path - ${embyItem.Path}</p>
             <p>Size - ${fileSize}</p>           
         `
-                    if (animeReport.isAnime) {
+                    if (inspection.isAnime) {
                         mediaInfo += `<p>Snowby thinks this is anime.`
                     } else {
                         mediaInfo += `<p>Snowby doesn't think this is anime.`
@@ -169,18 +167,23 @@ module.exports = () => {
                     } else {
                         mediaInfo += ' and disable subtitles</p>'
                     }
+                    if (inspection.isHdr) {
+                        mediaInfo += `<p>Snowby thinks this uses an HDR color space. It will enable enhanced video output before playing.<p>`
+                    } else {
+                        mediaInfo += `<p>Snowby thinks this uses an SDR color space. It will only use standard video output when playing.<p>`
+                    }
 
                     document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
                     document.getElementById('media-info').innerHTML = mediaInfo
 
                     if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
-                        progress.updateUI(embyItem, embyItem.UserData.PlaybackPositionTicks, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content')
+                        progress.updateUI(embyItem, embyItem.UserData.PlaybackPositionTicks, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content', inspection.isHdr)
                     }
 
                     document.getElementById('play-media-button').onclick = event => {
                         event.preventDefault()
-                        progress.track(embyItem, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content')
-                        player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative)
+                        progress.track(embyItem, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content', inspection.isHdr)
+                        player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative, inspection.isHdr)
                     }
                     resolve({
                         enableProfilePicker: true,
