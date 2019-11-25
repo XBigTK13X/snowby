@@ -61,14 +61,18 @@ app.on('window-all-closed', () => {
     }
 })
 
-ipcMain.on('snowby-exit', (evt, arg) => {
+ipcMain.on('snowby-exit', () => {
     app.quit(0)
 })
 
-ipcMain.on('snowby-get-media-profiles', (evt, arg) => {
-    evt.returnValue = util.getMediaProfiles()
+ipcMain.on('snowby-get-media-profiles', event => {
+    event.returnValue = util.getMediaProfiles()
 })
 
-ipcMain.on('snowby-wake-audio', (evt, arg) => {
+ipcMain.on('snowby-wake-audio', () => {
     audio.keepAwake()
+})
+
+ipcMain.on('snowby-open-website', (event, url) => {
+    spawn('cmd.exe', [`/c start microsoft-edge:${url}`], settings.spawnOptions)
 })
