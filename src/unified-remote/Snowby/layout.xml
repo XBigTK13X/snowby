@@ -2,17 +2,16 @@
 <layout>
 	<row>
 		<button text="Sleep" ontap="sleepComputer" />
-		<button text="Wake" ontap="@wol,MAC-REQUIRED" />
+		<button text="Wake" ontap="@wol,MAC" />
 	</row>
 	<row>
 		<button text="Full\nScreen" ontap="toggleFullScreen" />
-		<button text="Toggle\nHDR" ontap="focusHdrSwitch" />
+		<button text="Toggle\nHDR" ontap="toggleHdr" />
 		<button text="App\nExit" ontap="exitApp" />
 	</row>
 	<row>
 		<button text="Snowby" ontap="focusSnowby" />
 		<button text="MPV" ontap="focusMPV" />
-		<button text="Chrome" ontap="focusChrome" />
 		<button text="Edge" ontap="focusEdge" />
 	</row>	
 	<row>

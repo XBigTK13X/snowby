@@ -30,16 +30,12 @@ actions.focusMPV = function()
 	kb.stroke('windows','d3')
 end
 
-actions.focusChrome = function()
+actions.focusEdge = function()
 	kb.stroke('windows','d4')
 end
 
-actions.focusEdge = function()
+actions.toggleHdr = function()
 	kb.stroke('windows','d5')
-end
-
-actions.focusHdrSwitch = function()
-	kb.stroke('windows','d6')
 end
 
 actions.jumpBackward = function()

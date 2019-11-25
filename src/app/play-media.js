@@ -183,7 +183,7 @@ module.exports = () => {
                     document.getElementById('play-media-button').onclick = event => {
                         event.preventDefault()
                         progress.track(embyItem, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content', inspection.isHdr)
-                        player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative, inspection.isHdr)
+                        player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 0, inspection.isHdr)
                     }
                     resolve({
                         enableProfilePicker: true,

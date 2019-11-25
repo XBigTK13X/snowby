@@ -165,7 +165,7 @@ module.exports = class EmbyItem {
 
     getAnchor() {
         if (this.ForcedHref) {
-            return `<a data-target="action" href='#' onclick="require('electron').shell.openExternal('${this.ForcedHref}'); return false;">`
+            return `<a data-target="action" href='#' onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.ForcedHref}'); return false;">`
         }
         if (this.ForcedAction) {
             return `<a data-target="action" href="#" onclick="${this.ForcedAction}">`

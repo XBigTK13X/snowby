@@ -26,7 +26,7 @@ class Hdr {
                 return Promise.resolve()
             }
             return new Promise(resolve => {
-                const toggleProcess = spawn(settings.hdrTogglePath)
+                const toggleProcess = spawn('cscript.exe', [settings.hdrTogglePath])
                 toggleProcess.on('close', function(code) {
                     resolve()
                 })
