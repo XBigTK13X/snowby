@@ -38,6 +38,10 @@ actions.focusEdge = function()
 	kb.stroke('windows','d5')
 end
 
+actions.focusHdrSwitch = function()
+	kb.stroke('windows','d6')
+end
+
 actions.jumpBackward = function()
 	kb.stroke('left')
 end

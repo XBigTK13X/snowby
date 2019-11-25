@@ -5,6 +5,9 @@ module.exports = {
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     fullScreen: true,
+    enableHdrToggle: true,
+    hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
+    hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     homeRunURL: 'http://192.168.1.6:5004/auto',
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
@@ -18,6 +21,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'November 22, 2019',
+    versionDate: 'November 25, 2019',
     windowBackgroundColor: '#010101',
 }

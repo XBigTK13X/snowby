@@ -10,7 +10,7 @@ const isAnimeSubtitle = stream => {
     return !stream.Language || (stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng')))
 }
 
-const isAnimeAudio = stream => {
+const isJapaneseAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
@@ -20,7 +20,7 @@ const isAnimeAudio = stream => {
     return false
 }
 
-const isEnlishAudio = stream => {
+const isEnglishAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
@@ -55,6 +55,7 @@ const inspect = embyItem => {
     let audioRelativeIndex = 0
     let englishAudioAbsoluteIndex = -1
     let englishAudioRelativeIndex = -1
+    let isHdr = false
 
     let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
     if (genres.includes('Anime') || genres.includes('Animation')) {
@@ -64,18 +65,23 @@ const inspect = embyItem => {
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
         const stream = embyItem.MediaStreams[trackIndex]
         const forced = isForced(stream)
+        if (stream.Type === 'Video') {
+            if ((stream.VideoRange && stream.VideoRange.includes('HDR')) || (stream.ColorSpace && stream.ColorSpace.includes('2020'))) {
+                isHdr = true
+            }
+        }
         if (stream.Type === 'Audio') {
             audioIndex++
         }
         if (stream.Type === 'Subtitle') {
             subtitleIndex++
         }
-        if (isAnimeAudio(stream)) {
+        if (isJapaneseAudio(stream)) {
             animeAudio = true
             audioAbsoluteIndex = trackIndex
             audioRelativeIndex = audioIndex
         }
-        if (isEnlishAudio(stream) && englishAudioRelativeIndex === -1) {
+        if (isEnglishAudio(stream) && englishAudioRelativeIndex === -1) {
             englishAudioRelativeIndex = audioIndex
             englishAudioAbsoluteIndex = trackIndex
         }
@@ -91,11 +97,18 @@ const inspect = embyItem => {
     const isAnime = animated && animeSubtitle && animeAudio
 
     const result = {
+        audioAbsoluteIndex,
+        audioRelativeIndex,
         isAnime,
-        subtitleAbsoluteIndex: isAnime ? subtitleAbsoluteIndex : 0,
-        audioAbsoluteIndex: isAnime ? audioAbsoluteIndex : englishAudioAbsoluteIndex,
-        subtitleRelativeIndex: isAnime ? subtitleRelativeIndex : 0,
-        audioRelativeIndex: isAnime ? audioRelativeIndex : englishAudioRelativeIndex,
+        isHdr,
+        subtitleAbsoluteIndex,
+        subtitleRelativeIndex,
+    }
+    if (!isAnime) {
+        result.audioAbsoluteIndex = englishAudioAbsoluteIndex
+        result.audioRelativeIndex = englishAudioRelativeIndex
+        result.subtitleAbsoluteIndex = 0
+        result.subtitleRelativeIndex = 0
     }
     return result
 }

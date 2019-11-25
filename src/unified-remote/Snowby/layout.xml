@@ -6,6 +6,7 @@
 	</row>
 	<row>
 		<button text="Full\nScreen" ontap="toggleFullScreen" />
+		<button text="Toggle\nHDR" ontap="focusHdrSwitch" />
 		<button text="App\nExit" ontap="exitApp" />
 	</row>
 	<row>
