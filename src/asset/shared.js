@@ -11,7 +11,7 @@ module.exports = pageName => {
             require('electron').ipcRenderer.send('snowby-wake-audio')
         }
     })
-    require(`../app/${pageName}`)().then(result => {
+    require(`../page/${pageName}`)().then(result => {
         const pageOptions = require('./page-options')
         let navbarAll = false
         let options = {}
@@ -24,7 +24,7 @@ module.exports = pageName => {
         if (result) {
             if (result.enableRandomChoice) {
                 window.randomChoice = () => {
-                    const choices = document.querySelectorAll('[data-target="action"]')
+                    const choices = document.querySelectorAll('[data-target="random-action"]')
                     if (choices && choices.length > 0) {
                         choices[Math.floor(Math.random() * choices.length)].click()
                     }

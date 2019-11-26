@@ -10,61 +10,41 @@ module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
         const EmbyItem = require('../component/emby-item')        
+        const EmbyItemLink = require('../component/emby-item-link')
+        const InternalLink = require('../component/internal-link')
 
         emby.client
             .connect()
             .then(() => {
                 return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
             })
-            .then(responses => {
+            .then(responses => {                
                 let menuEntries = []
 
                 responses[0].forEach(library => {
                     if (ENABLED_LIBRARIES[library.CollectionType]) {
-                        menuEntries.push(library)
+                        menuEntries.push(new EmbyItemLink(library.Name, library.Id))
                     }
                 })
 
-                menuEntries.push(
-                    new EmbyItem(
-                        {},
-                        {
-                            horizontal: true,
-                            internalLink: './genres.html',
-                            disablePoster: true,
-                            title: 'Genres',
-                        }
-                    )
-                )                
+                menuEntries.push(new InternalLink('Genres','genres.html'))
 
                 menuEntries.sort((a, b) => {
-                    if (a.getTitle() === 'TV Shows' || a.getTitle() === 'Movies') {
+                    if (a.name === 'TV Shows' || a.name === 'Movies') {
                         return -1
                     }
-                    if (b.getTitle() === 'TV Shows' || b.getTitle() === 'Movies') {
+                    if (b.name === 'TV Shows' || b.name === 'Movies') {
                         return 1
                     }
-                    return a.getTitle() > b.getTitle() ? 1 : -1
+                    return a.name > b.name ? 1 : -1
                 })
 
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
-                    menuEntries.push(
-                        new EmbyItem(
-                            {
-                                Id: 'in-progress',
-                                Name: 'In Progress',
-                            },
-                            {
-                                image: '../asset/img/in-progress-items.png',
-                                horizontal: true,
-                                disablePoster: true,
-                            }
-                        )
-                    )
+                    menuEntries.push(new EmbyItemLink('In Progress','in-progress'))
                 }
 
-                let menuEntriesMarkup = `<div class="grid-container">${menuEntries
+                let menuEntriesMarkup = `<div class="center-grid-container">${menuEntries
                     .map(entry => {
                         return entry.render()
                     })

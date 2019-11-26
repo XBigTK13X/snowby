@@ -165,25 +165,25 @@ module.exports = class EmbyItem {
 
     getAnchor() {
         if (this.ForcedHref) {
-            return `<a data-target="action" href='#' onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.ForcedHref}'); return false;">`
+            return `<a data-target="random-action" href='#' onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.ForcedHref}'); return false;">`
         }
         if (this.ForcedAction) {
-            return `<a data-target="action" href="#" onclick="${this.ForcedAction}">`
+            return `<a data-target="random-action" href="#" onclick="${this.ForcedAction}">`
         }
         if (this.InternalLink) {
-            return `<a data-target="action" href="${this.InternalLink}">`
+            return `<a data-target="random-action" href="${this.InternalLink}">`
         }
         if (this.Type === 'TvChannel') {
-            return `<a data-target="action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}',false); return false;">`
+            return `<a data-target="random-action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}',false); return false;">`
         }
         if (this.Type === 'Movie' || this.Type === 'Episode') {
-            return `<a data-target="action" href="./play-media.html?embyItemId=${this.Id}">`
+            return `<a data-target="random-action" href="./play-media.html?embyItemId=${this.Id}">`
         }
         let url = `./emby-item.html?embyItemId=${this.Id}`
         if (this.SearchParams.IncludeItemTypes) {
             url += `&includeItemTypes=${this.SearchParams.IncludeItemTypes}`
         }
-        return `<a data-target="action" href="${url}">`
+        return `<a data-target="random-action" href="${url}">`
     }
 
     getFidelity() {
