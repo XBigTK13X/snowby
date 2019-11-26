@@ -1,17 +1,16 @@
 module.exports = () => {
     return new Promise(resolve => {
-        const { shell } = require('electron')
         const emby = require('../service/emby-client')
-        const navbar = require('../component/navbar')
-        const settings = require('../settings')
         const inspector = require('../media/inspector')
-        const ticks = require('../media/ticks')
-        const progress = require('../media/progress')
-        const player = require('../media/player')
         const mediaStream = require('../media/stream')
-        const size = require('../media/size')
-        const util = require('../util')
+        const player = require('../media/player')
+        const progress = require('../media/progress')
         const queryString = require('query-string')
+        const settings = require('../settings')
+        const size = require('../media/size')
+        const ticks = require('../media/ticks')
+        const util = require('../util')
+        const { shell } = require('electron')
 
         const reloadPage = () => {
             const queryParams = queryString.parse(location.search)
@@ -24,8 +23,6 @@ module.exports = () => {
             if (!queryParams.embyItemId) {
                 throw new Error('An embyItemId is required to play media', { queryParams })
             }
-
-            navbar.render(false)
 
             document.getElementById('mark-watched-button').onclick = event => {
                 event.preventDefault()

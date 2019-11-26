@@ -11,16 +11,15 @@ module.exports = pageName => {
             require('electron').ipcRenderer.send('snowby-wake-audio')
         }
     })
-    require(`../page/${pageName}`)().then(result => {
-        const pageOptions = require('./page-options')
-        let navbarAll = false
-        let options = {}
-        if(_.has(pageOptions, pageName)){
-            options = pageOptions[pageName]
-        }
-        if(!options.hideNavbar){
-            require('../component/navbar').render(options.showToggleButton)    
-        }
+    const pageOptions = require('./page-options')
+    let options = {}
+    if(_.has(pageOptions, pageName)){
+        options = pageOptions[pageName]
+    }
+    if(!options.hideNavbar){
+        require('../component/navbar').render(options.showToggleButton)    
+    }
+    require(`../page/${pageName}`)().then(result => {        
         if (result) {
             if (result.enableRandomChoice) {
                 window.randomChoice = () => {

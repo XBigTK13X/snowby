@@ -1,13 +1,8 @@
 module.exports = () => {
     return new Promise(resolve => {
         const debounce = require('debounce')
-        const queryString = require('query-string')
-
-        const navbar = require('../component/navbar')
-
-        navbar.render(false)
-
         const emby = require('../service/emby-client')
+        const queryString = require('query-string')
 
         const queryParams = queryString.parse(location.search)
 

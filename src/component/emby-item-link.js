@@ -1,9 +1,13 @@
 
 class EmbyItemLink {
-	constructor(name, embyItemId){
+	constructor(name, embyItemId, options){
 		this.name = name
 		this.embyItemId = embyItemId
-		console.log({this:this})
+		
+		this.href = `./emby-item.html?embyItemId=${this.embyItemId}`
+		if(options && options.genreFilter){
+			this.href = `${this.href}&genreFilter=${options.genreFilter}`
+		}
 	}
 
 	render(){
@@ -11,7 +15,7 @@ class EmbyItemLink {
 			<a 
 				data-target="random-action"
 				class="center-grid-item"
-				href="./emby-item.html?embyItemId=${this.embyItemId}"
+				href="${this.href}"
 			>
 				${this.name}
 			</a>
