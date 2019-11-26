@@ -31,28 +31,20 @@ const STREAMING_LINKS = [
 
 module.exports = () => {
     return new Promise((resolve, reject) => {
-        const EmbyItem = require('../component/emby-item')
+        const ExternalLink = require('../component/external-link')
         let menuEntries = []
+
+        STREAMING_LINKS.sort((a, b) => {
+            return a.title > b.title ? 1 : -1
+        })
+
         STREAMING_LINKS.forEach(link => {
             menuEntries.push(
-                new EmbyItem(
-                    {},
-                    {
-                        horizontal: true,
-                        externalLink: link.link,
-                        image: `../asset/img/${link.image}`,
-                        title: link.title,
-                        disablePoster: true,
-                    }
-                )
+                new ExternalLink(link.title, link.link)
             )
         })
-
-        menuEntries.sort((a, b) => {
-            return a.getTitle() > b.getTitle() ? 1 : -1
-        })
-
-        let menuEntriesMarkup = `<div class="grid-container">${menuEntries
+        
+        let menuEntriesMarkup = `<div class="center-grid-container">${menuEntries
             .map(entry => {
                 return entry.render()
             })
