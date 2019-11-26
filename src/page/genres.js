@@ -1,40 +1,12 @@
 module.exports = () => {
     return new Promise(resolve => {
-        const navbar = require('../component/navbar')
-
-        navbar.render(false)
-        const EmbyItem = require('../component/emby-item')
-        let categoriesMarkup = ``
-        let categories = [
-            new EmbyItem(
-                {},
-                {
-                    horizontal: true,
-                    title: 'Movies',
-                    disablePoster: true,
-                    internalLink: './emby-item.html?embyItemId=genres&genreFilter=Movie',
-                }
-            ),
-            new EmbyItem(
-                {},
-                {
-                    horizontal: true,
-                    title: 'TV Shows',
-                    disablePoster: true,
-                    internalLink: './emby-item.html?embyItemId=genres&genreFilter=Series',
-                }
-            ),
-            new EmbyItem(
-                {},
-                {
-                    horizontal: true,
-                    title: 'Both',
-                    disablePoster: true,
-                    internalLink: './emby-item.html?embyItemId=genres',
-                }
-            ),
+        const EmbyItemLink = require('../component/emby-item-link')    
+        const categories = [
+            new EmbyItemLink('Movies', 'genres', {genreFilter: 'Movie'}),
+            new EmbyItemLink('TV Shows', 'genres', {genreFilter: 'Series'}),
+            new EmbyItemLink('Both', 'genres'),            
         ]
-        categoriesMarkup = `<div class="grid-container">${categories
+        const categoriesMarkup = `<div class="center-grid-container">${categories
             .map(x => {
                 return x.render()
             })

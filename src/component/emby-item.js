@@ -164,15 +164,6 @@ module.exports = class EmbyItem {
     }
 
     getAnchor() {
-        if (this.ForcedHref) {
-            return `<a data-target="random-action" href='#' onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.ForcedHref}'); return false;">`
-        }
-        if (this.ForcedAction) {
-            return `<a data-target="random-action" href="#" onclick="${this.ForcedAction}">`
-        }
-        if (this.InternalLink) {
-            return `<a data-target="random-action" href="${this.InternalLink}">`
-        }
         if (this.Type === 'TvChannel') {
             return `<a data-target="random-action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}',false); return false;">`
         }
