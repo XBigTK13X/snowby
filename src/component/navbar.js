@@ -1,7 +1,7 @@
 const queryString = require('query-string')
 
 module.exports = {
-    render: showAllOptions => {
+    render: showToggleButton => {
         let navbarContent = `
 			<div class="navbar">
 		      <a href="./landing.html" >
@@ -15,7 +15,7 @@ module.exports = {
 		        </div>    
 		      </a>		      		    
 		`
-        if (showAllOptions) {
+        if (showToggleButton) {
             const queryParams = queryString.parse(location.search)
             const toggleUrl = `./emby-item.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? '' : '&watched=true')
             navbarContent += `
@@ -36,6 +36,10 @@ module.exports = {
                     Random
                 </div>  
             </a></div>`
+        const element = document.getElementById('navbar')
+        if(!element){
+        	throw new Error("Unable to find an element with ID 'navbar'")
+        }
         document.getElementById('navbar').innerHTML = navbarContent
     },
 }
