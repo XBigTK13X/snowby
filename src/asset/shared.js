@@ -1,4 +1,5 @@
-module.exports = pageScript => {
+module.exports = pageName => {
+    const _ = require('lodash')
     window.$ = window.jQuery = require('jquery')
     require('jquery-lazy')
     $('body').keydown(e => {
@@ -10,7 +11,16 @@ module.exports = pageScript => {
             require('electron').ipcRenderer.send('snowby-wake-audio')
         }
     })
-    require(`../app/${pageScript}`)().then(result => {
+    require(`../app/${pageName}`)().then(result => {
+        const pageOptions = require('./page-options')
+        let navbarAll = false
+        let options = {}
+        if(_.has(pageOptions, pageName)){
+            options = pageOptions[pageName]
+        }
+        if(!options.hideNavbar){
+            require('../component/navbar').render(options.showToggleButton)    
+        }
         if (result) {
             if (result.enableRandomChoice) {
                 window.randomChoice = () => {

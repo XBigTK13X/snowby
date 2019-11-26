@@ -76,8 +76,28 @@ module.exports = () => {
                             disablePoster: true,
                             title: 'Genres',
                         }
+                    ),
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './library.html',
+                            disablePoster: true,
+                            title: 'Library',
+                        }
+                    ),
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './library.html',
+                            disablePoster: true,
+                            title: 'Streaming',
+                        }
                     )
                 )
+
+
 
                 landingLinks.forEach(landingLink => {
                     streamingSiteNodes.push(
@@ -125,6 +145,38 @@ module.exports = () => {
                         )
                     )
                 }
+
+                //TODO Move things above to children pages
+                menuEntries = [                    
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './library.html',
+                            disablePoster: true,
+                            title: 'Library',
+                        }
+                    ),
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './streaming.html',
+                            disablePoster: true,
+                            title: 'Streaming',
+                        }
+                    ),
+                    new EmbyItem(
+                        {},
+                        {
+                            horizontal: true,
+                            internalLink: './search.html',
+                            title: 'Search',
+                            disablePoster: true,
+                        }
+                    )
+                ]
+
 
                 let menuEntriesMarkup = `<div class="grid-container">${menuEntries
                     .map(entry => {

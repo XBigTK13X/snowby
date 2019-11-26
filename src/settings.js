@@ -4,7 +4,7 @@ module.exports = {
     debugApiCalls: false,
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
-    fullScreen: true,
+    fullScreen: false,
     enableHdrToggle: true,
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
