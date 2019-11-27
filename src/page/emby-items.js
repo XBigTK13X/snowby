@@ -28,7 +28,7 @@ module.exports = () => {
                 return handler.getChildren(emby.client, parent)
             })
             .then( children => {
-                const renderedHtml = handler.render(parent,children) || handlers.defaultRenderer(parent, children)
+                const renderedHtml = handler.render(parent,children)
                 if (children.length) {
                     document.getElementById('emby-items').innerHTML = renderedHtml
                 } else {

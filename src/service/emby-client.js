@@ -62,7 +62,6 @@ class EmbyClient {
         const client = this
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient.get(url).then(itemResponse => {
-            console.log({itemResponse})
             const result = new EmbyItem(itemResponse.data)
             if (result.Type !== 'Episode') {
                 return result
@@ -77,7 +76,6 @@ class EmbyClient {
     embyItems(parentId, searchParams) {
         const query = queryString.stringify(searchParams)
         const url = `Users/${this.userId}/Items?${query}`
-        console.log({url})
         return this.httpClient.get(url).then(itemsResponse => {
             return itemsResponse.data.Items.map(item => new EmbyItem(item))
         })

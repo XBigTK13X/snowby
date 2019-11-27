@@ -218,7 +218,7 @@ select {
     width: 20%;
 }
 
-.fill-grid-container {
+.tall-grid-container {
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -226,7 +226,7 @@ select {
     justify-content: center;
 }
 
-.fill-grid-item {
+.tall-grid-item {
     background: rgb(110,110,110);
     background: linear-gradient(135deg, rgba(110,110,110,1) 0%, rgba(50,50,50,1) 100%);
     border-radius: 10px;
@@ -243,12 +243,12 @@ select {
     width: 135px;
 }
 
-.poster-image {
+.tall-image {
     width: 135px;
     height: 202px;
 }
 
-.mixed-grid-container {
+.wide-grid-container {
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -256,13 +256,13 @@ select {
     justify-content: center;
 }
 
-.mixed-grid-item {
+.wide-grid-item {
     background: rgb(110,110,110);
     background: linear-gradient(135deg, rgba(110,110,110,1) 0%, rgba(50,50,50,1) 100%);
     border-radius: 10px;
     font-size: 26px;
     font-weight: bold;
-    height: 300px;
+    height: 150px;
     margin: 5px 5px 5px 5px;
     overflow: hidden;
     padding: 2px 2px 2px 2px;
@@ -270,10 +270,66 @@ select {
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 300px;
+    width: 225px;
 }
 
-.mixed-image {
-    width: 300px;
-    height: 300px;
+.wide-image {
+    width: 225px;
+    height: 150px;
+}
+
+.square-grid-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.square-grid-item {
+    background: rgb(110,110,110);
+    background: linear-gradient(135deg, rgba(110,110,110,1) 0%, rgba(50,50,50,1) 100%);
+    border-radius: 10px;
+    font-size: 26px;
+    font-weight: bold;
+    height: 200px;
+    margin: 5px 5px 5px 5px;
+    overflow: hidden;
+    padding: 2px 2px 2px 2px;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+}
+
+.square-image {
+    width: 200px;
+    height: 200px;
+}
+
+.text-grid-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.text-grid-item {
+    background-color: #a7a7a7;
+    border-radius: 10px;
+    color: #1c1c1c;
+    font-size: 26px;
+    font-weight: bold;
+    height: 150px;
+    line-height: 150px;
+    margin: 5px 5px 5px 5px;
+    overflow: hidden;
+    padding: 2px 2px 2px 2px;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 225px;
 }
