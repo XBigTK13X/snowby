@@ -4,7 +4,8 @@ NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
 class EmbyPoster {
 	constructor(embyItem){
 		this.imageUrl = embyItem.getImageUrl(135,202)
-		if(embyItem.isPlayable){
+		console.log({embyItem})
+		if(embyItem.IsPlayable){
 			this.href = `./play-media.html?embyItemId=${embyItem.Id}`
 		} else {
 			this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
@@ -15,9 +16,9 @@ class EmbyPoster {
 		return `
 		<a
 			data-target="random-action"
-			class="fill-grid-item"
+			class="tall-grid-item"
 			href="${this.href}">
-			<img class="lazy rounded poster-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+			<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 		</a>
 		`
 	}
