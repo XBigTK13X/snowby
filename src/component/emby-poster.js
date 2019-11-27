@@ -10,9 +10,11 @@ class EmbyPoster {
         } else {
             this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
         }
+        this.unwatchedCount = embyItem.getUnwatchedCount()
     }
 
     render() {
+        let unwatchedBadge = this.unwatchedCount ? `<span class="bottom-right-badge">${this.unwatchedCount}</span>` : ''
         return `
 		<a
 			data-target="random-action"
@@ -22,7 +24,7 @@ class EmbyPoster {
 			onmouseout="window.hideMediaSummary(${this.embyItemId})"
 			>
 			<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}" />
-			<!--<span class="lower-right-badge">100</span>-->
+			${unwatchedBadge}
 		</a>
 		`
     }
