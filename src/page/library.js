@@ -26,7 +26,7 @@ module.exports = () => {
                     }
                 })
 
-                menuEntries.push(new InternalLink('Genres','genres.html'))
+                menuEntries.push(new InternalLink('Genres', 'genres.html'))
 
                 menuEntries.sort((a, b) => {
                     if (a.name === 'TV Shows' || a.name === 'Movies') {
@@ -40,7 +40,7 @@ module.exports = () => {
 
                 const itemsInProgress = responses[1]
                 if (itemsInProgress.length > 0) {
-                    menuEntries.push(new EmbyItemLink('In Progress','in-progress'))
+                    menuEntries.push(new EmbyItemLink('In Progress', 'in-progress'))
                 }
 
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
@@ -50,7 +50,7 @@ module.exports = () => {
                     .join('')}</div>`
 
                 document.getElementById('menu-entries').innerHTML = menuEntriesMarkup
-                document.getElementById('header').innerHTML = "Media Library"
+                document.getElementById('header').innerHTML = 'Media Library'
                 resolve()
             })
     })

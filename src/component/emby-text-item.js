@@ -1,12 +1,11 @@
-
 class EmbyTextItem {
-	constructor(embyItem){
-		this.content = embyItem.Name
-		this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
-	}
+    constructor(embyItem) {
+        this.content = embyItem.Name
+        this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
+    }
 
-	render(){
-		return `
+    render() {
+        return `
 		<a
 			data-target="random-action"
 			class="grid-item text-grid-item"
@@ -14,7 +13,7 @@ class EmbyTextItem {
 			<span>${this.content}</span>
 		</a>
 		`
-	}
+    }
 }
 
 module.exports = EmbyTextItem

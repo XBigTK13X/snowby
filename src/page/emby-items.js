@@ -14,21 +14,21 @@ module.exports = () => {
         windowPosition.saveOnChange(queryParams.embyItemId)
 
         let handlers = require('../component/emby-item-handlers')
-        let handler;
-        let parent;
+        let handler
+        let parent
 
         emby.client
             .connect()
             .then(() => {
                 return handlers.getHandler(emby.client, queryParams.embyItemId)
             })
-            .then( result => {
+            .then(result => {
                 handler = result.handler
                 parent = result.item
                 return handler.getChildren(emby.client, parent)
             })
-            .then( children => {
-                const renderedHtml = handler.render(parent,children)
+            .then(children => {
+                const renderedHtml = handler.render(parent, children)
                 if (children.length) {
                     document.getElementById('emby-items').innerHTML = renderedHtml
                 } else {
@@ -54,7 +54,7 @@ module.exports = () => {
             })
             .then(() => {
                 windowPosition.restore(queryParams.embyItemId)
-                const pageOptions = handler.pageOptions ? handler.pageOptions: {}
+                const pageOptions = handler.pageOptions ? handler.pageOptions : {}
                 resolve({
                     ...pageOptions,
                     enableRandomChoice: true,
