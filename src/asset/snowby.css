@@ -245,3 +245,31 @@ select {
     white-space: nowrap;
     width: 20%;
 }
+
+.fill-grid-container {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 50vw;
+    justify-content: center;
+}
+
+.fill-grid-item {
+    background: #272727;
+    border-radius: 10px;
+    font-size: 26px;
+    font-weight: bold;
+    height: 11vw;
+    line-height: 11vw;
+    margin: 1vw;
+    overflow: hidden;
+    padding-left: 1vw;
+    padding-right: 1vw;
+    padding-top: 1vw;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 20%;
+}
