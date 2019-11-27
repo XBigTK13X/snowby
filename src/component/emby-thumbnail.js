@@ -14,7 +14,7 @@ class EmbyThumbnail {
 		return `
 		<a
 			data-target="random-action"
-			class="wide-grid-item"
+			class="grid-item wide-grid-item"
 			href="${this.href}">
 			<img class="lazy rounded wide-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 		</a>

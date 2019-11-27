@@ -8,7 +8,7 @@ class EmbyTvChannel {
 		return `
 		<a
 			data-target="random-action"
-			class="wide-grid-item"
+			class="grid-item wide-grid-item"
 			href='#'
 			onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;"
 			>

@@ -10,7 +10,7 @@ class EmbyMixedItem {
 		return `
 		<a
 			data-target="random-action"
-			class="square-grid-item"
+			class="grid-item square-grid-item"
 			href="${this.href}">
 			<img class="lazy rounded square-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 		</a>
