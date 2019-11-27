@@ -6,18 +6,8 @@ module.exports = class EmbyItem {
     constructor(responseBody, options) {
         Object.assign(this, responseBody)
 
-        this.ForcedAction = options && options.action
-        this.ForcedHref = options && options.externalLink
-        this.ForcedImage = options && options.image
-        this.ForcedTitle = options && options.title
-        this.InternalLink = options && options.internalLink
         this.NextUp = options && options.nextUp
         this.SearchResultType = options && options.searchResultType
-        this.DisableImage = options && options.disablePoster
-        this.SearchParams = options ? (options.searchParams ? options.searchParams : {}) : {}
-
-        this.EnableProfilePicker = this.CollectionType && this.CollectionType === 'livetv'
-        this.LightTile = this.Type && this.Type === 'TvChannel'
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -195,5 +185,25 @@ module.exports = class EmbyItem {
             return `${settings.homeRunURL}/v${this.ChannelNumber}`
         }
         return '#'
+    }
+
+    getSummary() {
+        if(this.Type === 'Movie' || this.Type === 'Episode'){
+            return `
+            <div>
+                <h3>${this.getTitle()}</h3>
+                <p>Fidelity - ${this.getFidelity()}</p>
+                <p>Release Year - ${this.ProductionYear}</p>
+            </div>
+            `
+        }
+        if(this.Type === 'Season'){
+            return `
+            <div>
+                <h3>${this.getTitle()}</h3>
+            </div>
+            `
+        }
+        return null
     }
 }

@@ -12,7 +12,6 @@ const queryParams = ()=>{
 }
 
 const renderMixed = (parent,children) => {
-	console.log("Using mixed renderer")
 	let html = `<div class="grid square-grid">`
 	html += children.map(child=>{
 		return new EmbyMixedItem(child).render()
@@ -22,7 +21,6 @@ const renderMixed = (parent,children) => {
 }
 
 const renderPosters = (parent, children) => {
-	console.log("Using poster renderer")
 	let html = `<div class="grid tall-grid">`
 	html += children.map(child=>{
 		return new EmbyPoster(child).render()
@@ -32,7 +30,6 @@ const renderPosters = (parent, children) => {
 }
 
 const renderText = (parent, children) => {
-	console.log("Using text renderer")
 	let html = `<div class="grid text-grid">`
 	html += children.map(child=>{
 		return new EmbyTextItem(child).render()
@@ -42,7 +39,6 @@ const renderText = (parent, children) => {
 }
 
 const renderThumbnails = (parent, children) => {
-	console.log("Using the thumbnail renderer")
 	let html = `<div class="grid wide-grid">`
 	html += children.map(child=>{
 		return new EmbyThumbnail(child).render()
@@ -52,7 +48,6 @@ const renderThumbnails = (parent, children) => {
 }
 
 const renderTvChannels = (parent, children) => {
-	console.log("Using the tv channel renderer")
 	let html = `<div class="grid wide-grid">`
 	html += children.map(child=>{
 		return new EmbyTvChannel(child).render()
@@ -223,7 +218,6 @@ const getHandler = (emby, itemId)=>{
 		.then((embyItem)=>{
 			navbar.render(embyItem.isCollection())
 			if(embyItem.Type === 'Genre'){
-				console.log("Using genre handler")
 				return resolve({handler: genre, item:embyItem})
 			}
             if (!_.isNil(embyItem.CollectionType)) {
