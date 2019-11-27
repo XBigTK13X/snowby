@@ -14,7 +14,7 @@ module.exports = () => {
             })
             .join('')}</div>`
 
-        document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
+        document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} built ${settings.versionDate}`
         document.getElementById('menu-entries').innerHTML = markup
         document.getElementById('header').innerHTML = "Snowby"
         resolve()

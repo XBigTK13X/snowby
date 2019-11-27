@@ -1,4 +1,5 @@
 module.exports = pageName => {
+    const settings = require('../settings')
     const _ = require('lodash')
     window.$ = window.jQuery = require('jquery')
     require('jquery-lazy')
@@ -17,9 +18,72 @@ module.exports = pageName => {
         options = pageOptions[pageName]
     }
     if(!options.hideNavbar){
-        require('../component/navbar').render(options.showToggleButton)    
+        require('../component/navbar').render(options.showToggleButton)
     }
-    require(`../page/${pageName}`)().then(result => {        
+    window.SnowbyMouseScreenHalf = 'left'
+    require(`../page/${pageName}`)().then(result => {
+        window.toggleMediaOverlay = () => {
+            if(!settings.enableMediaOverlay){
+                return
+            }
+            if(window.SnowbyMouseScreenHalf === 'left'){
+                window.SnowbyMouseScreenHalf = 'right'
+            } else {
+                window.SnowbyMouseScreenHalf = 'left'
+            }
+            const overlay = document.getElementById('media-summary-overlay')
+            overlay.style.left = window.SnowbyMouseScreenHalf === 'left'? '70%': 0
+        }
+        window.showMediaSummary = (embyItemId)=>{
+            if(!settings.enableMediaOverlay){
+                return
+            }
+            if(window.SnowbySummaryEmbyItemId === embyItemId){
+                return
+            }
+            window.SnowbySummaryEmbyItemId = embyItemId
+            if(window.SnowbyMediaSummaryHideTimeout){
+                clearTimeout(window.SnowbyMediaSummaryHideTimeout)
+            }
+            const emby = require('../service/emby-client').client;
+            emby.embyItem(embyItemId)
+            .then((embyItem)=>{
+                const overlay = document.getElementById('media-summary-overlay')
+                const updateSummary = ()=>{
+                    const summary = embyItem.getSummary();
+                    if(summary){
+                        overlay.innerHTML = summary
+                        overlay.style.visibility = ''
+                    }
+                }
+                if(overlay.style.visibility === 'hidden'){
+                    if(window.SnowbyMediaSummaryTimeout){
+                        clearTimeout(window.SnowbyMediaSummaryTimeout)
+                    }
+                    window.SnowbyMediaSummaryTimeout = setTimeout(updateSummary, settings.mediaOverlayHoverDelay)
+                }
+                else {
+                    updateSummary()
+                }
+                if(window.SnowbyMediaSummaryHideTimeout){
+                    clearTimeout(window.SnowbyMediaSummaryHideTimeout)
+                }
+            })
+        }
+
+        window.hideMediaSummary = ()=>{
+            if(!settings.enableMediaOverlay){
+                return
+            }
+            if(window.SnowbyMediaSummaryHideTimeout){
+                clearTimeout(window.SnowbyMediaSummaryHideTimeout)
+            }
+            window.SnowbyMediaSummaryHideTimeout = setTimeout(()=>{
+                document.getElementById('media-summary-overlay').style.visibility = 'hidden'
+                window.SnowbySummaryEmbyItemId = null
+            }, settings.mediaOverlayHoverDelay * 3)
+        }
+
         if (result) {
             if (result.enableRandomChoice) {
                 window.randomChoice = () => {
@@ -57,7 +121,7 @@ module.exports = pageName => {
                         .browserGetMediaProfiles()
                         .map((profile, ii) => {
                             return `
-                            <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>                        
+                            <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>
                             ${profile}
                             </option>
                         `

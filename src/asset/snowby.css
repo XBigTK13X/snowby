@@ -17,6 +17,21 @@ h2 {
     margin-block-start: 0;
 }
 
+table,
+th,
+td,
+tr {
+    border: 1px solid grey;
+    border-collapse: collapse;
+    padding: 5px;
+}
+
+select {
+    font-size: xx-large;
+    color: #0c0c0c;
+    background: #c3c3c3;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 16vw);
@@ -46,17 +61,13 @@ h2 {
     line-height: 3vw;
 }
 
-div.navbar > a {
-    color: #0c0c0c;
+.navbar-button:hover {
+    background: #d7d717;
+    color: #171717;
 }
 
-table,
-th,
-td,
-tr {
-    border: 1px solid grey;
-    border-collapse: collapse;
-    padding: 5px;
+div.navbar > a {
+    color: #0c0c0c;
 }
 
 .highlighted-row {
@@ -88,12 +99,6 @@ tr {
     bottom: 10px;
 }
 
-select {
-    font-size: xx-large;
-    color: #0c0c0c;
-    background: #c3c3c3;
-}
-
 .empty-results {
     text-align: center;
     font-size: 36px;
@@ -113,13 +118,19 @@ select {
     border-radius: 10px;
     font-size: 26px;
     font-weight: bold;
-    margin: 5px 5px 5px 5px;
+    margin: 5px;
     overflow: hidden;
-    padding: 2px 2px 2px 2px;
+    padding: 2px;
     text-align: center;
     text-decoration: none;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.grid-item:hover {
+    background: rgb(157,158,0);
+    background: linear-gradient(135deg, rgba(157,158,0,1) 0%, rgba(117,110,0,1) 100%);
+    color: #171717;
 }
 
 .center-grid {
@@ -194,4 +205,28 @@ select {
     line-height: 150px;
     height: 150px;
     width: 225px;
+}
+
+.lower-right-badge {
+    position: absolute;
+    right:-20px;
+    top:10px;
+    background:red;
+    text-align: center;
+    border-radius: 30px;
+    color:white;
+    padding:5px 10px;
+    font-size:20px;
+}
+
+.info-overlay {
+    position: fixed;
+    opacity: 0.9;
+    top: 0;
+    left: 0;
+    width: 30%;
+    background-color: #0f0f0f;
+    height: 100%;
+    z-index: 1000;
+    padding: 30px;
 }
