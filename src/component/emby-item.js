@@ -53,16 +53,16 @@ module.exports = class EmbyItem {
         let poster = this.DisableImage
             ? ``
             : `
-            <div class="poster-${this.Orientation}">                
+            <div class="poster-${this.Orientation}">
                     <img class="lazy rounded tile-${this.Orientation}${this.LightTile ? '-light' : ''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
             </div>`
-        return `      
+        return `
           ${anchor}
-            <div class="grid-item grid-card-${this.Orientation} rounded">                      
+            <div class="grid-item grid-card-${this.Orientation} rounded">
               ${poster}
               <div class="${this.DisableImage ? 'big-title' : 'title'}">
-                ${this.getTitle(false)}      
-              </div>          
+                ${this.getTitle(false)}
+              </div>
               <div class="fidelity">
                 ${this.getFidelity()}
               </div>
@@ -112,6 +112,12 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
+        if(!width){
+            width = settings.mediaLibraryCardWidth
+        }
+        if(!height){
+            height = settings.mediaLibraryCardHeight
+        }
         if (this.ForcedImage) {
             return this.ForcedImage
         }
@@ -170,7 +176,7 @@ module.exports = class EmbyItem {
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `<a data-target="random-action" href="./play-media.html?embyItemId=${this.Id}">`
         }
-        let url = `./emby-item.html?embyItemId=${this.Id}`
+        let url = `./emby-items.html?embyItemId=${this.Id}`
         if (this.SearchParams.IncludeItemTypes) {
             url += `&includeItemTypes=${this.SearchParams.IncludeItemTypes}`
         }

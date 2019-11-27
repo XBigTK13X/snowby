@@ -3,8 +3,8 @@ class EmbyItemLink {
 	constructor(name, embyItemId, options){
 		this.name = name
 		this.embyItemId = embyItemId
-		
-		this.href = `./emby-item.html?embyItemId=${this.embyItemId}`
+
+		this.href = `./emby-items.html?embyItemId=${this.embyItemId}`
 		if(options && options.genreFilter){
 			this.href = `${this.href}&genreFilter=${options.genreFilter}`
 		}
@@ -12,7 +12,7 @@ class EmbyItemLink {
 
 	render(){
 		return `
-			<a 
+			<a
 				data-target="random-action"
 				class="center-grid-item"
 				href="${this.href}"
