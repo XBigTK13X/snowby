@@ -6,8 +6,8 @@ class ExternalLink {
 
 	render(){
 		return `
-		<a 
-			class="center-grid-item"
+		<a
+			class="grid-item center-grid-item"
 			data-target="random-action"
 			href='#'
 			onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.href}'); return false;"

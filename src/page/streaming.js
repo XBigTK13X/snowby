@@ -43,8 +43,8 @@ module.exports = () => {
                 new ExternalLink(link.title, link.link)
             )
         })
-        
-        let menuEntriesMarkup = `<div class="center-grid-container">${menuEntries
+
+        let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
             .map(entry => {
                 return entry.render()
             })

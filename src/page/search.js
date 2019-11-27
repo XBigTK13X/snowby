@@ -11,7 +11,7 @@ module.exports = () => {
             if (queryText.length > 1) {
                 emby.client.search(queryText).then(results => {
                     if (results[0].length || results[1].length || results[2].length) {
-                        let renderedItems = `<div class="square-grid-container">`
+                        let renderedItems = `<div class="grid square-grid">`
                         results.forEach(embyItems => {
                             embyItems.forEach(embyItem => {
                                 renderedItems += new EmbyMixedItem(embyItem).render()

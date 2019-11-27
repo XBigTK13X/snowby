@@ -9,7 +9,7 @@ class EmbyTextItem {
 		return `
 		<a
 			data-target="random-action"
-			class="text-grid-item"
+			class="grid-item text-grid-item"
 			href="${this.href}">
 			<span>${this.content}</span>
 		</a>

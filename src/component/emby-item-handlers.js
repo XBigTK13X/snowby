@@ -11,19 +11,9 @@ const queryParams = ()=>{
 	return queryString.parse(location.search)
 }
 
-const renderText = (parent, children) => {
-	console.log("Using text renderer")
-	let html = `<div class="text-grid-container">`
-	html += children.map(child=>{
-		return new EmbyTextItem(child).render()
-	}).join('')
-	html += `</div>`
-	return html
-}
-
 const renderMixed = (parent,children) => {
 	console.log("Using mixed renderer")
-	let html = `<div class="square-grid-container">`
+	let html = `<div class="grid square-grid">`
 	html += children.map(child=>{
 		return new EmbyMixedItem(child).render()
 	}).join('')
@@ -33,7 +23,7 @@ const renderMixed = (parent,children) => {
 
 const renderPosters = (parent, children) => {
 	console.log("Using poster renderer")
-	let html = `<div class="tall-grid-container">`
+	let html = `<div class="grid tall-grid">`
 	html += children.map(child=>{
 		return new EmbyPoster(child).render()
 	}).join('')
@@ -41,9 +31,19 @@ const renderPosters = (parent, children) => {
 	return html
 }
 
+const renderText = (parent, children) => {
+	console.log("Using text renderer")
+	let html = `<div class="grid text-grid">`
+	html += children.map(child=>{
+		return new EmbyTextItem(child).render()
+	}).join('')
+	html += `</div>`
+	return html
+}
+
 const renderThumbnails = (parent, children) => {
 	console.log("Using the thumbnail renderer")
-	let html = `<div class="wide-grid-container">`
+	let html = `<div class="grid wide-grid">`
 	html += children.map(child=>{
 		return new EmbyThumbnail(child).render()
 	}).join('')
@@ -53,7 +53,7 @@ const renderThumbnails = (parent, children) => {
 
 const renderTvChannels = (parent, children) => {
 	console.log("Using the tv channel renderer")
-	let html = `<div class="wide-grid-container">`
+	let html = `<div class="grid wide-grid">`
 	html += children.map(child=>{
 		return new EmbyTvChannel(child).render()
 	}).join('')
@@ -73,7 +73,7 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams)=>{
 		...additionalSearchParams
 	}
 	const showOnlyUnwatched = queryParams().watched
-	if(showOnlyUnwatched){
+	if(!showOnlyUnwatched){
 		if(!params.Filters){
 			params.Filters = 'IsUnplayed'
 		} else {
@@ -241,6 +241,5 @@ const getHandler = (emby, itemId)=>{
 }
 
 module.exports = {
-	getHandler,
-	defaultRenderer: renderDefault
+	getHandler
 }

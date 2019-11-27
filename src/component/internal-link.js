@@ -6,8 +6,8 @@ class InternalLink {
 
 	render(){
 		return `
-			<a 
-				class="center-grid-item"
+			<a
+				class="grid-item center-grid-item"
 				data-target="random-action"
 				href="${this.href}"
 			>

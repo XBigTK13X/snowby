@@ -14,7 +14,7 @@ class EmbyItemLink {
 		return `
 			<a
 				data-target="random-action"
-				class="center-grid-item"
+				class="grid-item center-grid-item"
 				href="${this.href}"
 			>
 				${this.name}

@@ -6,8 +6,6 @@ module.exports = class EmbyItem {
     constructor(responseBody, options) {
         Object.assign(this, responseBody)
 
-        this.Orientation = options && options.horizontal ? 'horizontal' : 'vertical'
-
         this.ForcedAction = options && options.action
         this.ForcedHref = options && options.externalLink
         this.ForcedImage = options && options.image
@@ -25,7 +23,7 @@ module.exports = class EmbyItem {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
         }
 
-        this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
+        this.NotFoundImage = `../asset/img/404.png`
         this.ResumeImage = false
         this.IsPlayable = this.Type === 'Movie' || this.Type === "Episode"
 
@@ -46,30 +44,6 @@ module.exports = class EmbyItem {
                 this.MediaStreams[ii] = stream
             }
         }
-    }
-
-    render() {
-        const imageUrl = this.DisableImage ? null : this.getImageUrl(settings.mediaLibraryCardWidth, settings.mediaLibraryCardHeight)
-        let anchor = this.getAnchor()
-        let poster = this.DisableImage
-            ? ``
-            : `
-            <div class="poster-${this.Orientation}">
-                    <img class="lazy rounded tile-${this.Orientation}${this.LightTile ? '-light' : ''}" src="${this.NotFoundImage}" data-src="${imageUrl}"/>
-            </div>`
-        return `
-          ${anchor}
-            <div class="grid-item grid-card-${this.Orientation} rounded">
-              ${poster}
-              <div class="${this.DisableImage ? 'big-title' : 'title'}">
-                ${this.getTitle(false)}
-              </div>
-              <div class="fidelity">
-                ${this.getFidelity()}
-              </div>
-            </div>
-          </a>
-        `
     }
 
     getTitle(enableSeriesName) {
@@ -168,20 +142,6 @@ module.exports = class EmbyItem {
             }
         }
         return false
-    }
-
-    getAnchor() {
-        if (this.Type === 'TvChannel') {
-            return `<a data-target="random-action" href='#' onclick="require('../media/player').openStream('${this.getStreamURL()}',false); return false;">`
-        }
-        if (this.Type === 'Movie' || this.Type === 'Episode') {
-            return `<a data-target="random-action" href="./play-media.html?embyItemId=${this.Id}">`
-        }
-        let url = `./emby-items.html?embyItemId=${this.Id}`
-        if (this.SearchParams.IncludeItemTypes) {
-            url += `&includeItemTypes=${this.SearchParams.IncludeItemTypes}`
-        }
-        return `<a data-target="random-action" href="${url}">`
     }
 
     getFidelity() {

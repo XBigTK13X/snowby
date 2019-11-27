@@ -4,7 +4,7 @@ const queryString = require('query-string')
 
 const settings = require('../settings')
 const httpLogger = require('./http-logger')
-const EmbyItem = require('../component/emby-item')
+const EmbyItem = require('./emby-item')
 
 class EmbyClient {
     constructor() {
@@ -54,7 +54,7 @@ class EmbyClient {
     libraryViews() {
         const url = `Users/${this.userId}/Views`
         return this.httpClient.get(url).then(viewsResponse => {
-            return viewsResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true, disablePoster: true }))
+            return viewsResponse.data.Items.map(item => new EmbyItem(item))
         })
     }
 
@@ -103,7 +103,7 @@ class EmbyClient {
         })
         const url = `Shows/${seriesId}/Episodes?${query}`
         return this.httpClient.get(url).then(episodesResponse => {
-            return episodesResponse.data.Items.map(item => new EmbyItem(item, { horizontal: true }))
+            return episodesResponse.data.Items.map(item => new EmbyItem(item))
         })
     }
 
@@ -191,7 +191,7 @@ class EmbyClient {
             return channelsResponse.data.Items.sort((a, b) => {
                 return a.Name > b.Name ? 1 : -1
             }).map(item => {
-                return new EmbyItem(item, { horizontal: true })
+                return new EmbyItem(item)
             })
         })
     }
@@ -211,7 +211,7 @@ class EmbyClient {
                     return x
                 })
                 .map(x => {
-                    return new EmbyItem(x, { horizontal: true, disablePoster: true, searchParams: { IncludeItemTypes: genreFilter } })
+                    return new EmbyItem(x)
                 })
         })
     }

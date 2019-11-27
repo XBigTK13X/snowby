@@ -8,7 +8,7 @@ module.exports = () => {
             new InternalLink('Search', './search.html')
         ]
 
-        let markup = `<div class="center-grid-container">${links
+        let markup = `<div class="grid center-grid">${links
             .map(link => {
                 return link.render()
             })

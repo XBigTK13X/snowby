@@ -9,7 +9,6 @@ const ENABLED_LIBRARIES = {
 module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
-        const EmbyItem = require('../component/emby-item')        
         const EmbyItemLink = require('../component/emby-item-link')
         const InternalLink = require('../component/internal-link')
 
@@ -18,7 +17,7 @@ module.exports = () => {
             .then(() => {
                 return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
             })
-            .then(responses => {                
+            .then(responses => {
                 let menuEntries = []
 
                 responses[0].forEach(library => {
@@ -44,7 +43,7 @@ module.exports = () => {
                     menuEntries.push(new EmbyItemLink('In Progress','in-progress'))
                 }
 
-                let menuEntriesMarkup = `<div class="center-grid-container">${menuEntries
+                let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
                     .map(entry => {
                         return entry.render()
                     })
