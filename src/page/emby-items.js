@@ -42,14 +42,14 @@ module.exports = () => {
                 document.getElementById('header').innerHTML = title
                 if (children.length > 12) {
                     document.getElementById('top').innerHTML = `
-                <div class='navbar'>
-                    <a onclick="window.scroll(0,0); return false" href="">
-                        <div class="navbar-button">
-                        Back to Top
-                        </div>
-                    </a>
-                </div>
-            `
+                    <div class='navbar'>
+                        <a onclick="window.scroll(0,0); return false" href="">
+                            <div class="navbar-button">
+                            Back to Top
+                            </div>
+                        </a>
+                    </div>
+                `
                 }
             })
             .then(() => {

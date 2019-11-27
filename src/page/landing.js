@@ -16,7 +16,7 @@ module.exports = () => {
 
         document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} - ${settings.versionDate}`
         document.getElementById('menu-entries').innerHTML = markup
-        document.getElementById('header').setAttribute('style', 'display:none')
+        document.getElementById('header').innerHTML = "Snowby"
         resolve()
     })
 }

@@ -27,6 +27,7 @@ module.exports = class EmbyItem {
 
         this.NotFoundImage = `../asset/img/media-not-found-${this.Orientation}.png`
         this.ResumeImage = false
+        this.IsPlayable = this.Type === 'Movie' || this.Type === "Episode"
 
         let relativeAudioIndex = 1
         let relativeSubtitleIndex = 1
