@@ -3,6 +3,7 @@ module.exports = () => {
         const debounce = require('debounce')
         const emby = require('../service/emby-client')
         const queryString = require('query-string')
+        const EmbyMixedItem = require('../component/emby-mixed-item')
 
         const queryParams = queryString.parse(location.search)
 
@@ -10,10 +11,10 @@ module.exports = () => {
             if (queryText.length > 1) {
                 emby.client.search(queryText).then(results => {
                     if (results[0].length || results[1].length || results[2].length) {
-                        let renderedItems = `<div class="grid-container">`
+                        let renderedItems = `<div class="mixed-grid-container">`
                         results.forEach(embyItems => {
                             embyItems.forEach(embyItem => {
-                                renderedItems += embyItem.render()
+                                renderedItems += new EmbyMixedItem(embyItem).render()
                             })
                         })
                         renderedItems += `</div>`

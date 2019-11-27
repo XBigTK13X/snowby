@@ -1,7 +1,8 @@
 const navbar = require('../component/navbar')
 const _ = require('lodash')
-const EmbyPoster = require('../component/emby-poster')
 const queryString = require('query-string')
+const EmbyPoster = require('../component/emby-poster')
+const EmbyMixedItem = require('../component/emby-mixed-item')
 
 const queryParams = ()=>{
 	return queryString.parse(location.search)
@@ -21,7 +22,17 @@ const renderPosters = (parent, children) => {
 	console.log("Using poster renderer")
 	let html = `<div class="fill-grid-container">`
 	html += children.map(child=>{
-		return new EmbyPoster(child.getImageUrl()).render()
+		return new EmbyPoster(child).render()
+	}).join('')
+	html += `</div>`
+	return html
+}
+
+const renderMixed = (parent,children) => {
+	console.log("Using mixed renderer")
+	let html = `<div class="mixed-grid-container">`
+	html += children.map(child=>{
+		return new EmbyMixedItem(child).render()
 	}).join('')
 	html += `</div>`
 	return html
@@ -31,10 +42,6 @@ let SearchParams = {
 	Recursive: true,
 	SortBy: 'SortName',
 	SortOrder: 'Ascending',
-}
-
-if(queryParams().includeItemTypes){
-	SearchParams.IncludeItemTypes = queryParams().includeItemTypes
 }
 
 const embyItemsSearch = (emby, embyItemId, additionalSearchParams)=>{
@@ -55,18 +62,28 @@ const boxSet = {
 	title: queryParams().genreFilter === 'Movie' ? 'Movie Genres':(queryParams().genreFilter === 'Series' ? 'TV Show Genres' : 'Genres')
 }
 
+const collections = {
+	getChildren: (emby, embyItem)=>{
+		return embyItemsSearch(emby, embyItem.Id, {
+			ParentId: embyItem.Id
+		})
+	},
+	render: renderPosters
+}
+
 const genre = {
 	getChildren: (emby, embyItem)=>{
+		let includeItemTypes = 'Series,Movie'
+		if(queryParams().includeItemTypes){
+			includeItemTypes = queryParams().includeItemTypes
+		}
         return embyItemsSearch(emby, embyItem.Id, {
-			IncludeItemTypes: 'Series,Movie',
+			IncludeItemTypes: includeItemTypes,
 	        Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
-	        Filters: 'IsUnwatched',
-	        GenreIds: embyItem.Id,
+	        Genres: embyItem.Name,
         })
 	},
-	render: ()=>{
-
-	}
+	render: renderPosters
 }
 
 const genreList = {
@@ -81,17 +98,15 @@ const genreList = {
 
 const inProgress = {
 	getChildren: (emby)=>{
-		return emby.client.itemsInProgress()
+		return emby.itemsInProgress()
 	},
-	render: ()=>{
-		navbar.render(false)
-	},
+	render: renderMixed,
 	title: 'In Progress'
 }
 
 const liveTv = {
 	getChildren: ()=>{
-		return emby.client.liveChannels()
+		return emby.liveChannels()
 	},
 	render: ()=>{
 
@@ -113,24 +128,23 @@ const movieList = {
 	render: renderPosters
 }
 
-const parent = {
+const playlists = {
 	getChildren: (emby, embyItem)=>{
 		return embyItemsSearch(emby, embyItem.Id, {
 			ParentId: embyItem.Id
 		})
+		.then(children=>{
+			return children.filter(x=>x.Name !== 'Hype Game Tracks')
+		})
 	},
-	render: ()=>{
-
-	}
+	render: renderPosters
 }
 
 const playlist = {
 	getChildren: (emby, embyItem)=>{
 		return emby.playlist(embyItem.Id)
 	},
-	render: ()=>{
-
-	}
+	render: renderPosters
 }
 
 const tvSeries = {
@@ -152,24 +166,22 @@ const tvSeason = {
 }
 
 const tvShowList = {
-	getChildren: (emby)=>{
+	getChildren: (emby, embyItem)=>{
 		return embyItemsSearch(emby, embyItem.Id, {
 			IncludeItemTypes: 'Series',
         	Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
 		})
 
 	},
-	render: ()=>{
-
-	}
+	render: renderPosters
 }
 
 const collectionHandlers = {
 	livetv: liveTv,
 	movies: movieList,
 	tvshows: tvShowList,
-	playlists: parent,
-	boxsets: parent
+	playlists: playlists,
+	boxsets: collections
 }
 
 const typeHandlers = {

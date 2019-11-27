@@ -2,15 +2,23 @@
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
 
 class EmbyPoster {
-	constructor(imageUrl){
-		this.imageUrl = imageUrl
+	constructor(embyItem){
+		this.imageUrl = embyItem.getImageUrl(135,202)
+		if(embyItem.isPlayable){
+			this.href = `./play-media.html?embyItemId=${embyItem.Id}`
+		} else {
+			this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
+		}
 	}
 
 	render(){
 		return `
-		<div class="fill-grid-item">
-			<img class="lazy" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
-		</div>
+		<a
+			data-target="random-action"
+			class="fill-grid-item"
+			href="${this.href}">
+			<img class="lazy rounded poster-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+		</a>
 		`
 	}
 }
