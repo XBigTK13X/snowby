@@ -117,8 +117,8 @@ div.navbar > a {
 }
 
 .grid-item {
-    background: rgb(110,110,110);
-    background: linear-gradient(135deg, rgba(110,110,110,1) 0%, rgba(50,50,50,1) 100%);
+    background: rgb(110, 110, 110);
+    background: linear-gradient(135deg, rgba(110, 110, 110, 1) 0%, rgba(50, 50, 50, 1) 100%);
     border-radius: 10px;
     font-size: 26px;
     font-weight: bold;
@@ -132,8 +132,8 @@ div.navbar > a {
 }
 
 .grid-item:hover {
-    background: rgb(157,158,0);
-    background: linear-gradient(135deg, rgba(157,158,0,1) 0%, rgba(117,110,0,1) 100%);
+    background: rgb(157, 158, 0);
+    background: linear-gradient(135deg, rgba(157, 158, 0, 1) 0%, rgba(117, 110, 0, 1) 100%);
     color: #171717;
 }
 
@@ -211,18 +211,6 @@ div.navbar > a {
     width: 225px;
 }
 
-.lower-right-badge {
-    position: absolute;
-    right:-20px;
-    top:10px;
-    background:red;
-    text-align: center;
-    border-radius: 30px;
-    color:white;
-    padding:5px 10px;
-    font-size:20px;
-}
-
 .info-overlay {
     position: fixed;
     opacity: 0.9;
@@ -233,4 +221,14 @@ div.navbar > a {
     height: 100%;
     z-index: 1000;
     padding: 30px;
+}
+
+.lower-right-badge {
+    background: red;
+    text-align: center;
+    border-radius: 30px;
+    color: white;
+    padding: 5px 10px;
+    font-size: 20px;
+    z-index: 500;
 }

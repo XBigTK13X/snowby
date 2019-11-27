@@ -37,8 +37,8 @@ module.exports = {
                 </div>
             </a></div>`
         const element = document.getElementById('navbar')
-        if(!element){
-        	throw new Error("Unable to find an element with ID 'navbar'")
+        if (!element) {
+            throw new Error("Unable to find an element with ID 'navbar'")
         }
         document.getElementById('navbar').innerHTML = navbarContent
     },

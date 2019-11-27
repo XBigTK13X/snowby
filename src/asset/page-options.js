@@ -1,5 +1,5 @@
 module.exports = {
-	'landing':{
-		hideNavbar: true
-	}
+    landing: {
+        hideNavbar: true,
+    },
 }

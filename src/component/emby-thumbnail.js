@@ -1,18 +1,18 @@
-NOT_FOUND_IMAGE_HREF=`../asset/img/media-not-found-horizontal.png`
+NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-horizontal.png`
 
 class EmbyThumbnail {
-	constructor(embyItem){
-		this.embyItemId = embyItem.Id
-		this.imageUrl = embyItem.getImageUrl(225, 150)
-		if(embyItem.IsPlayable){
-			this.href = `./play-media.html?embyItemId=${embyItem.Id}`
-		} else {
-			this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
-		}
-	}
+    constructor(embyItem) {
+        this.embyItemId = embyItem.Id
+        this.imageUrl = embyItem.getImageUrl(225, 150)
+        if (embyItem.IsPlayable) {
+            this.href = `./play-media.html?embyItemId=${embyItem.Id}`
+        } else {
+            this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
+        }
+    }
 
-	render(){
-		return `
+    render() {
+        return `
 		<a
 			data-target="random-action"
 			class="grid-item wide-grid-item"
@@ -23,7 +23,7 @@ class EmbyThumbnail {
 			<img class="lazy rounded wide-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 		</a>
 		`
-	}
+    }
 }
 
 module.exports = EmbyThumbnail

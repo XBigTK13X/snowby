@@ -15,7 +15,7 @@ module.exports = class EmbyItem {
 
         this.NotFoundImage = `../asset/img/404.png`
         this.ResumeImage = false
-        this.IsPlayable = this.Type === 'Movie' || this.Type === "Episode"
+        this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
         let relativeAudioIndex = 1
         let relativeSubtitleIndex = 1
@@ -77,10 +77,10 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
-        if(!width){
+        if (!width) {
             width = settings.mediaLibraryCardWidth
         }
-        if(!height){
+        if (!height) {
             height = settings.mediaLibraryCardHeight
         }
         if (this.ForcedImage) {
@@ -188,38 +188,38 @@ module.exports = class EmbyItem {
     }
 
     getSummary() {
-        let studio = (this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name)) || null
+        let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
-        let overview = this.showSpoilers()?this.Overview || null:'[Hidden]'
+        let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
         let seriesName = this.SeriesName || null
-        if(this.Type === 'Movie' || this.Type === 'Episode'){
+        if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `
             <div>
-                <h3 class="centered">${seriesName?seriesName+' - ':''}${this.getTitle()}</h3>
-                ${tagline? `<h4 class="centered">${tagline}</h4>`:''}
-                ${overview?`<p class="centered">${overview}</p>`:''}
-                ${rating?`<p>Rating - ${rating}</p>`:''}
+                <h3 class="centered">${seriesName ? seriesName + ' - ' : ''}${this.getTitle()}</h3>
+                ${tagline ? `<h4 class="centered">${tagline}</h4>` : ''}
+                ${overview ? `<p class="centered">${overview}</p>` : ''}
+                ${rating ? `<p>Rating - ${rating}</p>` : ''}
                 <p>Release Year - ${this.ProductionYear}</p>
-                ${studio?`<p>Studio - ${studio}</p>`:''}
+                ${studio ? `<p>Studio - ${studio}</p>` : ''}
                 <p>Fidelity - ${this.getFidelity()}</p>
                 <p>Kind - ${this.Type}</p>
             </div>
             `
         }
-        if(this.Type === 'Season'){
+        if (this.Type === 'Season') {
             return `
             <div>
                 <h3 class="centered">${this.getTitle()}</h3>
             </div>
             `
         }
-        if(this.Type === 'Series'){
+        if (this.Type === 'Series') {
             return `
             <div>
                 <h3 class="centered">${this.getTitle()}</h3>
-                ${tagline? `<h4 class="centered">${tagline}</h4>`:''}
-                ${overview?`<p class="centered">${overview}</p>`:''}
+                ${tagline ? `<h4 class="centered">${tagline}</h4>` : ''}
+                ${overview ? `<p class="centered">${overview}</p>` : ''}
                 <p>Kind - ${this.Type}</p>
             </div>
             `

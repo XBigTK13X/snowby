@@ -1,17 +1,16 @@
-
 class EmbyItemLink {
-	constructor(name, embyItemId, options){
-		this.name = name
-		this.embyItemId = embyItemId
+    constructor(name, embyItemId, options) {
+        this.name = name
+        this.embyItemId = embyItemId
 
-		this.href = `./emby-items.html?embyItemId=${this.embyItemId}`
-		if(options && options.genreFilter){
-			this.href = `${this.href}&genreFilter=${options.genreFilter}`
-		}
-	}
+        this.href = `./emby-items.html?embyItemId=${this.embyItemId}`
+        if (options && options.genreFilter) {
+            this.href = `${this.href}&genreFilter=${options.genreFilter}`
+        }
+    }
 
-	render(){
-		return `
+    render() {
+        return `
 			<a
 				data-target="random-action"
 				class="grid-item center-grid-item"
@@ -20,7 +19,7 @@ class EmbyItemLink {
 				${this.name}
 			</a>
 		`
-	}
+    }
 }
 
 module.exports = EmbyItemLink

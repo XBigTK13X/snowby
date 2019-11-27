@@ -8,27 +8,27 @@ const getScrollPosition = () => {
     }
 }
 
-const restore = (pageId) => {
-	const scrollY = window.sessionStorage.getItem(storageKey(pageId))
+const restore = pageId => {
+    const scrollY = window.sessionStorage.getItem(storageKey(pageId))
     window.scrollTo(0, scrollY)
 }
 
-const save = (pageId) => {
-	window.sessionStorage.setItem(storageKey(pageId), getScrollPosition().y)
+const save = pageId => {
+    window.sessionStorage.setItem(storageKey(pageId), getScrollPosition().y)
 }
 
-const saveOnChange = (pageId) => {
-	window.addEventListener('scroll', () => {
+const saveOnChange = pageId => {
+    window.addEventListener('scroll', () => {
         save(pageId)
     })
 }
 
-const storageKey = (pageId) => {
-	return `emby-item-${pageId}-scroll`
+const storageKey = pageId => {
+    return `emby-item-${pageId}-scroll`
 }
 
 module.exports = {
-	restore,
-	save,
-    saveOnChange
+    restore,
+    save,
+    saveOnChange,
 }

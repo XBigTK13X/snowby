@@ -45,5 +45,5 @@ module.exports = {
     appPath,
     swapConfig,
     getMediaProfiles,
-    browserGetMediaProfiles
+    browserGetMediaProfiles,
 }

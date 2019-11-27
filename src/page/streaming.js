@@ -39,9 +39,7 @@ module.exports = () => {
         })
 
         STREAMING_LINKS.forEach(link => {
-            menuEntries.push(
-                new ExternalLink(link.title, link.link)
-            )
+            menuEntries.push(new ExternalLink(link.title, link.link))
         })
 
         let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
@@ -51,7 +49,7 @@ module.exports = () => {
             .join('')}</div>`
 
         document.getElementById('menu-entries').innerHTML = menuEntriesMarkup
-        document.getElementById('header').innerHTML = "Streaming Services"
+        document.getElementById('header').innerHTML = 'Streaming Services'
         resolve()
     })
 }
