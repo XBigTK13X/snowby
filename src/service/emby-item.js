@@ -187,12 +187,20 @@ module.exports = class EmbyItem {
         return '#'
     }
 
+    getUnwatchedCount() {
+        if (this.UserData && this.UserData.UnplayedItemCount > 0) {
+            return this.UserData.UnplayedItemCount
+        }
+        return 0
+    }
+
     getSummary() {
         let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
         let seriesName = this.SeriesName || null
+        let releaseYear = this.ProductionYear || null
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `
             <div>
@@ -200,7 +208,7 @@ module.exports = class EmbyItem {
                 ${tagline ? `<h4 class="centered">${tagline}</h4>` : ''}
                 ${overview ? `<p class="centered">${overview}</p>` : ''}
                 ${rating ? `<p>Rating - ${rating}</p>` : ''}
-                <p>Release Year - ${this.ProductionYear}</p>
+                ${releaseYear ? `<p>Release Year - ${this.ProductionYear}</p>` : ''}
                 ${studio ? `<p>Studio - ${studio}</p>` : ''}
                 <p>Fidelity - ${this.getFidelity()}</p>
                 <p>Kind - ${this.Type}</p>
@@ -215,11 +223,13 @@ module.exports = class EmbyItem {
             `
         }
         if (this.Type === 'Series') {
+            let unplayedCount = this.getUnwatchedCount()
             return `
             <div>
                 <h3 class="centered">${this.getTitle()}</h3>
                 ${tagline ? `<h4 class="centered">${tagline}</h4>` : ''}
                 ${overview ? `<p class="centered">${overview}</p>` : ''}
+                ${unplayedCount ? unplayedCount + ' New Episode' + (unplayedCount > 1 ? 's' : '') : ''}
                 <p>Kind - ${this.Type}</p>
             </div>
             `

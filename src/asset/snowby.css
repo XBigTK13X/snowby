@@ -166,6 +166,7 @@ div.navbar > a {
 .tall-grid-item {
     height: 202px;
     width: 135px;
+    position: relative;
 }
 
 .tall-image {
@@ -223,12 +224,15 @@ div.navbar > a {
     padding: 30px;
 }
 
-.lower-right-badge {
-    background: red;
-    text-align: center;
-    border-radius: 30px;
-    color: white;
-    padding: 5px 10px;
-    font-size: 20px;
+.bottom-right-badge {
+    background-color: #037303;
+    color: #070707;
+    position: absolute;
     z-index: 500;
+    top: 5px;
+    right: 5px;
+    border-radius: 5px;
+    opacity: 0.9;
+    font-size: 20px;
+    min-width: 20px;
 }
