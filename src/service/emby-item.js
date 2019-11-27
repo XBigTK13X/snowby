@@ -188,19 +188,39 @@ module.exports = class EmbyItem {
     }
 
     getSummary() {
+        let studio = (this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name)) || null
+        let rating = this.OfficialRating || null
+        let overview = this.showSpoilers()?this.Overview || null:'[Hidden]'
+        let tagline = this.Taglines && this.Taglines[0]
+        let seriesName = this.SeriesName || null
         if(this.Type === 'Movie' || this.Type === 'Episode'){
             return `
             <div>
-                <h3>${this.getTitle()}</h3>
-                <p>Fidelity - ${this.getFidelity()}</p>
+                <h3 class="centered">${seriesName?seriesName+' - ':''}${this.getTitle()}</h3>
+                ${tagline? `<h4 class="centered">${tagline}</h4>`:''}
+                ${overview?`<p class="centered">${overview}</p>`:''}
+                ${rating?`<p>Rating - ${rating}</p>`:''}
                 <p>Release Year - ${this.ProductionYear}</p>
+                ${studio?`<p>Studio - ${studio}</p>`:''}
+                <p>Fidelity - ${this.getFidelity()}</p>
+                <p>Kind - ${this.Type}</p>
             </div>
             `
         }
         if(this.Type === 'Season'){
             return `
             <div>
-                <h3>${this.getTitle()}</h3>
+                <h3 class="centered">${this.getTitle()}</h3>
+            </div>
+            `
+        }
+        if(this.Type === 'Series'){
+            return `
+            <div>
+                <h3 class="centered">${this.getTitle()}</h3>
+                ${tagline? `<h4 class="centered">${tagline}</h4>`:''}
+                ${overview?`<p class="centered">${overview}</p>`:''}
+                <p>Kind - ${this.Type}</p>
             </div>
             `
         }
