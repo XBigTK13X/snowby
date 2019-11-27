@@ -32,6 +32,10 @@ select {
     background: #c3c3c3;
 }
 
+.centered {
+    text-align: center;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 16vw);
@@ -134,7 +138,7 @@ div.navbar > a {
 }
 
 .center-grid {
-    height: 50vw;
+    height: 30vw;
 }
 
 .center-grid-item {
@@ -223,7 +227,7 @@ div.navbar > a {
     position: fixed;
     opacity: 0.9;
     top: 0;
-    left: 0;
+    left: 65%;
     width: 30%;
     background-color: #0f0f0f;
     height: 100%;

@@ -20,8 +20,9 @@ module.exports = pageName => {
     if(!options.hideNavbar){
         require('../component/navbar').render(options.showToggleButton)
     }
-    window.SnowbyMouseScreenHalf = 'left'
+
     require(`../page/${pageName}`)().then(result => {
+        window.SnowbyMouseScreenHalf = 'right'
         window.toggleMediaOverlay = () => {
             if(!settings.enableMediaOverlay){
                 return
@@ -32,7 +33,7 @@ module.exports = pageName => {
                 window.SnowbyMouseScreenHalf = 'left'
             }
             const overlay = document.getElementById('media-summary-overlay')
-            overlay.style.left = window.SnowbyMouseScreenHalf === 'left'? '70%': 0
+            overlay.style.left = window.SnowbyMouseScreenHalf === 'left'? '65%': '5%'
         }
         window.showMediaSummary = (embyItemId)=>{
             if(!settings.enableMediaOverlay){
