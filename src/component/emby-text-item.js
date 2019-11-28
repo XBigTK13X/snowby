@@ -1,6 +1,6 @@
 class EmbyTextItem {
     constructor(embyItem) {
-        this.content = embyItem.Name
+        this.content = embyItem.getTitle()
         this.href = embyItem.Href
     }
 

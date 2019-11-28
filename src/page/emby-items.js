@@ -13,14 +13,15 @@ module.exports = () => {
 
         windowPosition.saveOnChange(queryParams.embyItemId)
 
-        let handlers = require('../component/emby-item-handlers')
+        let handlerMap = require('../component/handler-map')
         let handler
         let parent
+        let enableRandom = true
 
         emby.client
             .connect()
             .then(() => {
-                return handlers.getHandler(emby.client, queryParams.embyItemId)
+                return handlerMap.getHandler(emby.client, queryParams.embyItemId)
             })
             .then(result => {
                 handler = result.handler
@@ -38,6 +39,9 @@ module.exports = () => {
                 let title = handler.title || parent.Name
                 if (children.length > 0) {
                     title += ` (${children.length} ${children.length === 1 ? ' item' : ' items'})`
+                    if(children[0].ChannelNumber){
+                        enableRandom = false
+                    }
                 }
                 document.getElementById('header').innerHTML = title
                 if (children.length > 12) {
@@ -57,7 +61,7 @@ module.exports = () => {
                 const pageOptions = handler.pageOptions ? handler.pageOptions : {}
                 resolve({
                     ...pageOptions,
-                    enableRandomChoice: true,
+                    enableRandomChoice: enableRandom,
                 })
             })
     })
