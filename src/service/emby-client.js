@@ -189,7 +189,7 @@ class EmbyClient {
         const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=250&Fields=PrimaryImageAspectRatio%2CChannelInfo%2CSortName`
         return this.httpClient.get(url).then(channelsResponse => {
             return channelsResponse.data.Items.sort((a, b) => {
-                return a.Name > b.Name ? 1 : -1
+                return parseFloat(a.ChannelNumber) > parseFloat(b.ChannelNumber) ? 1 : -1
             }).map(item => {
                 return new EmbyItem(item)
             })

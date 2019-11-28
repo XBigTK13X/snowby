@@ -43,6 +43,7 @@ module.exports = class EmbyItem {
     }
 
     getTitle(enableSeriesName) {
+        console.log({this:this})
         let result = ''
         if (this.ForcedTitle) {
             result = this.ForcedTitle
@@ -54,16 +55,16 @@ module.exports = class EmbyItem {
                 }
                 result += this.SeasonName.replace('Season ', 'S').replace('Specials', 'SP') + 'E' + this.IndexNumber
                 if (this.showSpoilers()) {
-                    result = result + ' - ' + this.Name
+                    result = result
                 } else {
                     if (this.NextUp) {
                         return 'Next Up - ' + result
                     }
-                    return result + ' - [Hidden]'
+                    return result
                 }
             } else {
                 if (this.ChannelNumber) {
-                    result = `${this.Name} (${this.ChannelNumber})`
+                    result = `${this.CurrentProgram.Name} (${this.ChannelNumber})`
                 } else {
                     result = this.Name
                 }

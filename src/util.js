@@ -41,9 +41,19 @@ const browserGetMediaProfiles = () => {
     return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
 }
 
+const isClass = (target) => {
+  try {
+    new target();
+  } catch (err) {
+    return false;
+  }
+  return true;
+}
+
 module.exports = {
     appPath,
-    swapConfig,
-    getMediaProfiles,
     browserGetMediaProfiles,
+    getMediaProfiles,
+    isClass,
+    swapConfig,
 }
