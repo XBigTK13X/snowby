@@ -127,7 +127,7 @@ module.exports = () => {
                 <td>${(streamIndex === 0 ? 0 : streamIndex) || ''}</td>
                 <td>${stream.Type || ''}</td>
                 <td>${stream.DisplayTitle || ''}</td>
-                <td>${mediaStream.quality(stream)}</td>                
+                <td>${mediaStream.quality(stream)}</td>
                 <td>${stream.Codec || ''}</td>
                 <td>${stream.DisplayLanguage || ''}</td>
                 <td>${stream.Title || ''}</td>
@@ -147,7 +147,7 @@ module.exports = () => {
 
                     mediaInfo += `${streams}
             <p>Path - ${embyItem.Path}</p>
-            <p>Size - ${fileSize}</p>           
+            <p>Size - ${fileSize}</p>
         `
                     if (inspection.isAnime) {
                         mediaInfo += `<p>Snowby thinks this is anime.`
@@ -170,7 +170,10 @@ module.exports = () => {
                         mediaInfo += `<p>Snowby thinks this uses an SDR color space. It will only use standard video output when playing.<p>`
                     }
 
+                    mediaInfo += embyItem.getPlayMediaSummary()
+
                     document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
+                    document.getElementById('tagline').innerHTML = embyItem.getTagline()
                     document.getElementById('media-info').innerHTML = mediaInfo
 
                     if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {

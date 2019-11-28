@@ -1,6 +1,7 @@
 module.exports = pageName => {
     const settings = require('../settings')
     const _ = require('lodash')
+    const util = require('../util')
     window.$ = window.jQuery = require('jquery')
     require('jquery-lazy')
     $('body').keydown(e => {
@@ -22,66 +23,7 @@ module.exports = pageName => {
     }
 
     require(`../page/${pageName}`)().then(result => {
-        window.SnowbyMouseScreenHalf = 'right'
-        window.toggleMediaOverlay = () => {
-            if (!settings.enableMediaOverlay) {
-                return
-            }
-            if (window.SnowbyMouseScreenHalf === 'left') {
-                window.SnowbyMouseScreenHalf = 'right'
-            } else {
-                window.SnowbyMouseScreenHalf = 'left'
-            }
-            const overlay = document.getElementById('media-summary-overlay')
-            overlay.style.left = window.SnowbyMouseScreenHalf === 'left' ? '65%' : '5%'
-        }
-        window.showMediaSummary = embyItemId => {
-            if (!settings.enableMediaOverlay) {
-                return
-            }
-            if (window.SnowbySummaryEmbyItemId === embyItemId) {
-                return
-            }
-            window.SnowbySummaryEmbyItemId = embyItemId
-            if (window.SnowbyMediaSummaryHideTimeout) {
-                clearTimeout(window.SnowbyMediaSummaryHideTimeout)
-            }
-            const emby = require('../service/emby-client').client
-            emby.embyItem(embyItemId).then(embyItem => {
-                const overlay = document.getElementById('media-summary-overlay')
-                const updateSummary = () => {
-                    const summary = embyItem.getSummary()
-                    if (summary) {
-                        overlay.innerHTML = summary
-                        overlay.style.visibility = ''
-                    }
-                }
-                if (overlay.style.visibility === 'hidden') {
-                    if (window.SnowbyMediaSummaryTimeout) {
-                        clearTimeout(window.SnowbyMediaSummaryTimeout)
-                    }
-                    window.SnowbyMediaSummaryTimeout = setTimeout(updateSummary, settings.mediaOverlayHoverDelay)
-                } else {
-                    updateSummary()
-                }
-                if (window.SnowbyMediaSummaryHideTimeout) {
-                    clearTimeout(window.SnowbyMediaSummaryHideTimeout)
-                }
-            })
-        }
-
-        window.hideMediaSummary = () => {
-            if (!settings.enableMediaOverlay) {
-                return
-            }
-            if (window.SnowbyMediaSummaryHideTimeout) {
-                clearTimeout(window.SnowbyMediaSummaryHideTimeout)
-            }
-            window.SnowbyMediaSummaryHideTimeout = setTimeout(() => {
-                document.getElementById('media-summary-overlay').style.visibility = 'hidden'
-                window.SnowbySummaryEmbyItemId = null
-            }, settings.mediaOverlayHoverDelay * 3)
-        }
+        util.loadTooltips()
 
         if (result) {
             if (result.enableRandomChoice) {

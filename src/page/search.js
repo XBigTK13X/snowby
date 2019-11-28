@@ -4,6 +4,7 @@ module.exports = () => {
         const emby = require('../service/emby-client')
         const queryString = require('query-string')
         const EmbyMixedItem = require('../component/emby-mixed-item')
+        const util = require('../util')
 
         const queryParams = queryString.parse(location.search)
 
@@ -25,6 +26,7 @@ module.exports = () => {
 
                     window.history.replaceState(null, null, `./search.html?${queryString.stringify({ query: queryText })}`)
                     window.$lazyLoad()
+                    util.loadTooltips()
                 })
             }
         }, 200)

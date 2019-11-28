@@ -5,19 +5,20 @@ class EmbyMixedItem {
         this.href = embyItem.Href
         this.imageUrl = embyItem.getImageUrl(200, 200)
         this.embyItemId = embyItem.Id
+        this.embyItem = embyItem
     }
 
     render() {
+        let tooltipMarkup = `data-tippy-content="<div class='snowby-tooltip'>${this.embyItem.getSummary()}</div>"`
         return `
-		<a
-			data-target="random-action"
-			class="grid-item square-grid-item"
-			href="${this.href}"
-			onmouseover="window.showMediaSummary(${this.embyItemId})"
-			onmouseout="window.hideMediaSummary(${this.embyItemId})"
-			>
-			<img class="lazy rounded square-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
-		</a>
+        <div ${tooltipMarkup} class="grid-item square-grid-item">
+			<a
+				data-target="random-action"
+				href="${this.href}"
+				>
+				<img class="lazy rounded square-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+			</a>
+		</div>
 		`
     }
 }
