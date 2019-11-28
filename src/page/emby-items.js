@@ -39,7 +39,7 @@ module.exports = () => {
                 let title = handler.title || parent.Name
                 if (children.length > 0) {
                     title += ` (${children.length} ${children.length === 1 ? ' item' : ' items'})`
-                    if(children[0].ChannelNumber){
+                    if (children[0].ChannelNumber) {
                         enableRandom = false
                     }
                 }

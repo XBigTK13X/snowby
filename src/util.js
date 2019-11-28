@@ -41,13 +41,20 @@ const browserGetMediaProfiles = () => {
     return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
 }
 
-const isClass = (target) => {
-  try {
-    new target();
-  } catch (err) {
-    return false;
-  }
-  return true;
+const isClass = target => {
+    try {
+        new target()
+    } catch (err) {
+        return false
+    }
+    return true
+}
+
+const loadTooltips = () => {
+    require('tippy.js').default('[data-tippy-content]', {
+        placement: 'bottom',
+        delay: 300,
+    })
 }
 
 module.exports = {
@@ -56,4 +63,5 @@ module.exports = {
     getMediaProfiles,
     isClass,
     swapConfig,
+    loadTooltips,
 }

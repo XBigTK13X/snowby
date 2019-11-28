@@ -1,18 +1,14 @@
 class EmbyTvChannel {
     constructor(embyItem) {
-    	this.embyItem = embyItem
+        this.embyItem = embyItem
         this.imageUrl = embyItem.getImageUrl(225, 150)
         this.streamUrl = embyItem.getStreamURL()
     }
 
-    enableTitle(){
-    	this.title = this.embyItem.getTitle()
-    }
-
     render() {
-    	let titleMarkup = this.title ? `<div class="grid-item-title">${this.title}</div>` : ''
+        let tooltipMarkup = `data-tippy-content="<p class='snowby-tooltip centered'>${this.embyItem.CurrentProgram.Name}</p>"`
         return `
-        <div>
+        <div ${tooltipMarkup}>
 	        <div class="grid-item wide-grid-item">
 				<a
 					data-target="random-action"
@@ -22,7 +18,6 @@ class EmbyTvChannel {
 					<img class="lazy rounded wide-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 				</a>
 			</div>
-			${titleMarkup}
 		</div>
 		`
     }

@@ -9,15 +9,16 @@ class EmbyPoster {
         this.unwatchedCount = embyItem.getUnwatchedCount()
     }
 
-    enableTitle(){
-    	this.title = this.embyItem.getTitle()
+    enableTitle() {
+        this.title = this.embyItem.getTitle()
     }
 
     render() {
         let unwatchedBadge = this.unwatchedCount ? `<span class="top-right-badge">${this.unwatchedCount}</span>` : ''
         let titleMarkup = this.title ? `<div class="grid-item-title">${this.title}</div>` : ''
+        let tooltipMarkup = `data-tippy-content="<div class='snowby-tooltip'>${this.embyItem.getSummary()}</div>"`
         return `
-        <div>
+        <div ${tooltipMarkup}>
 	        <div class="grid-item tall-grid-item badge-container">
 				<a
 					data-target="random-action"
