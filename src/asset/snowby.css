@@ -214,18 +214,6 @@ div.navbar > a {
     width: 225px;
 }
 
-.info-overlay {
-    position: fixed;
-    opacity: 0.9;
-    top: 0;
-    left: 65%;
-    width: 30%;
-    background-color: #0f0f0f;
-    height: 100%;
-    z-index: 1000;
-    padding: 30px;
-}
-
 .top-right-badge {
     background-color: #239323;
     padding: 5px;
@@ -234,20 +222,6 @@ div.navbar > a {
     z-index: 500;
     top: 5px;
     right: 5px;
-    border-radius: 5px;
-    opacity: 0.9;
-    font-size: 20px;
-    min-width: 20px;
-}
-
-.bottom-left-badge {
-    background-color: #939393;
-    color: #070707;
-    padding: 5px;
-    position: absolute;
-    z-index: 500;
-    bottom: 5px;
-    left: 25px;
     border-radius: 5px;
     opacity: 0.9;
     font-size: 20px;
