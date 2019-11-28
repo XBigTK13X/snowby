@@ -1,7 +1,7 @@
 class EmbyTextItem {
     constructor(embyItem) {
         this.content = embyItem.Name
-        this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
+        this.href = embyItem.Href
     }
 
     render() {

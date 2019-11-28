@@ -5,11 +5,7 @@ class EmbyPoster {
         this.title = embyItem.getTitle()
         this.embyItemId = embyItem.Id
         this.imageUrl = embyItem.getImageUrl(135, 202)
-        if (embyItem.IsPlayable) {
-            this.href = `./play-media.html?embyItemId=${embyItem.Id}`
-        } else {
-            this.href = `./emby-items.html?embyItemId=${embyItem.Id}`
-        }
+        this.href = embyItem.Href
         this.unwatchedCount = embyItem.getUnwatchedCount()
     }
 

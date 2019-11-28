@@ -17,6 +17,12 @@ module.exports = class EmbyItem {
         this.ResumeImage = false
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
+        if (this.IsPlayable) {
+            this.Href = `./play-media.html?embyItemId=${this.Id}`
+        } else {
+            this.Href = `./emby-items.html?embyItemId=${this.Id}`
+        }
+
         let relativeAudioIndex = 1
         let relativeSubtitleIndex = 1
         if (this.MediaStreams) {

@@ -2,7 +2,7 @@ NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 
 class EmbyMixedItem {
     constructor(embyItem) {
-        this.href = `./play-media.html?embyItemId=${embyItem.Id}`
+        this.href = embyItem.Href
         this.imageUrl = embyItem.getImageUrl(200, 200)
         this.embyItemId = embyItem.Id
     }
