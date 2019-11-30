@@ -1,12 +1,15 @@
+const settings = require('../settings')
+
 class EmbyTvChannel {
     constructor(embyItem) {
         this.embyItem = embyItem
-        this.imageUrl = embyItem.getImageUrl(225, 150)
+        this.imageUrl = embyItem.getImageUrl(settings.imageDimensionTall, settings.imageDimensionShort)
         this.streamUrl = embyItem.getStreamURL()
     }
 
     render() {
-        let tooltipMarkup = `data-tippy-content="<p class='snowby-tooltip centered'>${this.embyItem.CurrentProgram.Name}</p>"`
+        let summary = this.embyItem.CurrentProgram.Name
+        let tooltipMarkup = summary ? `data-tippy-content="<div class='snowby-tooltip'>${summary}</div>"` : ''
         return `
         <div ${tooltipMarkup}>
 	        <div class="grid-item wide-grid-item">

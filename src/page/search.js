@@ -11,11 +11,14 @@ module.exports = () => {
         const executeQuery = debounce(queryText => {
             if (queryText.length > 1) {
                 emby.client.search(queryText).then(results => {
-                    if (results[0].length || results[1].length || results[2].length) {
+                    const foundResults = results[0].length || results[1].length || results[2].length
+                    let resultsCount = 0
+                    if (foundResults) {
                         let renderedItems = `<div class="grid square-grid">`
                         results.forEach(embyItems => {
                             embyItems.forEach(embyItem => {
                                 renderedItems += new EmbyMixedItem(embyItem).render()
+                                resultsCount++
                             })
                         })
                         renderedItems += `</div>`
@@ -27,6 +30,11 @@ module.exports = () => {
                     window.history.replaceState(null, null, `./search.html?${queryString.stringify({ query: queryText })}`)
                     window.$lazyLoad()
                     util.loadTooltips()
+                    if (foundResults) {
+                        document.getElementById('header').innerHTML = `Search (${resultsCount} results)`
+                    } else {
+                        document.getElementById('header').innerHTML = `Search`
+                    }
                 })
             }
         }, 200)

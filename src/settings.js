@@ -13,6 +13,8 @@ module.exports = {
     keepAudioDeviceAwake: true,
     mediaLibraryCardHeight: '300',
     mediaLibraryCardWidth: '200',
+    imageDimensionTall: 150,
+    imageDimensionShort: 100,
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
     progressUpdateInterval: 3000,
@@ -21,6 +23,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'November 28, 2019',
+    versionDate: 'November 30, 2019',
     windowBackgroundColor: '#010101',
 }

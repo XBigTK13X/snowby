@@ -20,10 +20,10 @@ const typeHandlers = {
 const getHandler = (emby, itemId) => {
     return new Promise(resolve => {
         if (itemId === 'in-progress') {
-            return resolve({ handler: inProgress })
+            return resolve({ handler: handlers.inProgress })
         }
         if (itemId === 'genres') {
-            return resolve({ handler: genreList })
+            return resolve({ handler: handlers.genreList })
         }
         return emby.embyItem(itemId).then(embyItem => {
             navbar.render(embyItem.isCollection())
