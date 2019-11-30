@@ -1,15 +1,18 @@
+const settings = require('../settings')
+
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 
 class EmbyMixedItem {
     constructor(embyItem) {
         this.href = embyItem.Href
-        this.imageUrl = embyItem.getImageUrl(200, 200)
+        this.imageUrl = embyItem.getImageUrl(settings.imageDimensionTall * 1.5, settings.imageDimensionTall * 1.5)
         this.embyItemId = embyItem.Id
         this.embyItem = embyItem
     }
 
     render() {
-        let tooltipMarkup = `data-tippy-content="<div class='snowby-tooltip'>${this.embyItem.getSummary()}</div>"`
+        let summary = this.embyItem.getSummary()
+        let tooltipMarkup = summary ? `data-tippy-content="<div class='snowby-tooltip'>${summary}</div>"` : ''
         return `
         <div ${tooltipMarkup} class="grid-item square-grid-item">
 			<a

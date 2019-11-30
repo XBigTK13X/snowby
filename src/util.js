@@ -51,7 +51,9 @@ const isClass = target => {
 }
 
 const loadTooltips = () => {
-    require('tippy.js').default('[data-tippy-content]', {
+    document.querySelectorAll('.tippy-popper').forEach(e => e.parentNode.removeChild(e))
+    const tippy = require('tippy.js').default
+    tippy('[data-tippy-content]', {
         placement: 'bottom',
         delay: 300,
     })

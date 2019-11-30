@@ -141,15 +141,6 @@ module.exports = class EmbyItem {
     }
 
     getFidelity() {
-        if (this.SearchResultType) {
-            return this.SearchResultType
-        }
-        if (this.ChannelNumber) {
-            return this.CurrentProgram.Name
-        }
-        if (this.UserData && this.UserData.UnplayedItemCount > 0) {
-            return this.UserData.UnplayedItemCount + ' New Episode' + (this.UserData.UnplayedItemCount > 1 ? 's' : '')
-        }
         if (this.MediaStreams) {
             let videoFidelity = ''
             let audioFidelity = ''
@@ -223,6 +214,7 @@ module.exports = class EmbyItem {
     }
 
     getSummary() {
+        let fidelity = this.getFidelity() || null
         let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
@@ -234,7 +226,7 @@ module.exports = class EmbyItem {
             <div>
                 <h3 class='centered'>${seriesName ? seriesName + ' - ' : ''}${this.getTitle()}</h3>
                 ${releaseYear ? `<p>Release Year - ${this.ProductionYear}</p>` : ''}
-                <p>Fidelity - ${this.getFidelity()}</p>
+                ${fidelity ? `<p>Fidelity - ${fidelity}</p>` : ''}
                 <p>Kind - ${this.Type}</p>
             </div>
             `
