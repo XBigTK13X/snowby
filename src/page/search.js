@@ -17,7 +17,9 @@ module.exports = () => {
                         let renderedItems = `<div class="grid square-grid">`
                         results.forEach(embyItems => {
                             embyItems.forEach(embyItem => {
-                                renderedItems += new EmbyMixedItem(embyItem).render()
+                                let mixed = new EmbyMixedItem(embyItem)
+                                mixed.enableKindBadge()
+                                renderedItems += mixed.render()
                                 resultsCount++
                             })
                         })

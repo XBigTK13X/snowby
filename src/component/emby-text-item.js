@@ -4,6 +4,10 @@ class EmbyTextItem {
         this.href = embyItem.Href
     }
 
+    setHref(href) {
+        this.href = href
+    }
+
     render() {
         return `
 		<a

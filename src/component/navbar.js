@@ -6,22 +6,41 @@ module.exports = {
 			<div class="navbar">
 		      <a href="./landing.html" >
 		        <div class="navbar-button">
-		          Start Over
+		          Home
 		        </div>
 		      </a>
 		      <a href="javascript:history.back()">
 		        <div class="navbar-button">
-		          Previous Screen
+		          Previous
 		        </div>
 		      </a>
 		`
         if (showToggleButton) {
-            const queryParams = queryString.parse(location.search)
-            const toggleUrl = `./emby-items.html?embyItemId=${queryParams.embyItemId}` + (queryParams.watched ? '' : '&watched=true')
+            let watchedParams = queryString.parse(location.search)
+            if (!watchedParams.showWatched) {
+                watchedParams.showWatched = true
+            } else {
+                delete watchedParams.showWatched
+            }
+            const watchedUrl = `./emby-items.html?${queryString.stringify(watchedParams)}`
+
+            let badgeParams = queryString.parse(location.search)
+            if (!badgeParams.hideBadges) {
+                badgeParams.hideBadges = true
+            } else {
+                delete badgeParams.hideBadges
+            }
+            const badgeUrl = `./emby-items.html?${queryString.stringify(badgeParams)}`
+
             navbarContent += `
-			  <a href="${toggleUrl}" id="watched-toggle">
+			  <a href="${watchedUrl}" id="watched-toggle">
 		        <div class="navbar-button">
-		          Toggle Watched
+		          Watched
+		        </div>
+		      </a>
+		      <a href="${badgeUrl}" id="badge-toggle">
+		        <div class="navbar-button">
+		          Badges
 		        </div>
 		      </a>
 		      <a href="./search.html">

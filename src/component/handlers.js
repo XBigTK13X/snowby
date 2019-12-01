@@ -1,9 +1,5 @@
 const renderers = require('./renderers')
-const queryString = require('query-string')
-
-const queryParams = () => {
-    return queryString.parse(location.search)
-}
+const util = require('../util')
 
 const SearchParams = {
     Recursive: true,
@@ -16,7 +12,7 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
         ...SearchParams,
         ...additionalSearchParams,
     }
-    const showOnlyUnwatched = queryParams().watched
+    const showOnlyUnwatched = util.queryParams().showWatched
     if (!showOnlyUnwatched) {
         if (!params.Filters) {
             params.Filters = 'IsUnplayed'
@@ -45,8 +41,8 @@ module.exports = {
     genre: {
         getChildren: (emby, embyItem) => {
             let includeItemTypes = 'Series,Movie'
-            if (queryParams().includeItemTypes) {
-                includeItemTypes = queryParams().includeItemTypes
+            if (util.queryParams().includeItemTypes) {
+                includeItemTypes = util.queryParams().includeItemTypes
             }
             return embyItemsSearch(emby, embyItem.Id, {
                 IncludeItemTypes: includeItemTypes,
@@ -58,10 +54,10 @@ module.exports = {
     },
     genreList: {
         getChildren: emby => {
-            return emby.genres(queryParams().genreFilter)
+            return emby.genres(util.queryParams().genreFilter)
         },
-        render: renderers.text,
-        title: queryParams().genreFilter === 'Movie' ? 'Movie Genres' : queryParams().genreFilter === 'Series' ? 'TV Show Genres' : 'All Genres',
+        render: renderers.genreList,
+        title: util.queryParams().genreFilter === 'Movie' ? 'Movie Genres' : util.queryParams().genreFilter === 'Series' ? 'TV Show Genres' : 'All Genres',
     },
     inProgress: {
         getChildren: emby => {
@@ -88,7 +84,7 @@ module.exports = {
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
             })
         },
-        render: renderers.posters,
+        render: renderers.movieList,
     },
     playlistList: {
         getChildren: (emby, embyItem) => {
@@ -104,7 +100,7 @@ module.exports = {
         getChildren: (emby, embyItem) => {
             return emby.playlist(embyItem.Id)
         },
-        render: renderers.posters,
+        render: renderers.playlist,
     },
     tvSeries: {
         getChildren: (emby, embyItem) => {
@@ -127,6 +123,6 @@ module.exports = {
                 return results
             })
         },
-        render: renderers.posters,
+        render: renderers.tvShowList,
     },
 }
