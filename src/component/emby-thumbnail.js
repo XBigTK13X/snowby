@@ -16,7 +16,7 @@ class EmbyThumbnail {
 
     render() {
         let titleMarkup = this.title ? `<div class="grid-item-title">${this.title}</div>` : ''
-        let summary = this.embyItem.getSummary()
+        let summary = this.embyItem.getTooltipContent()
         let tooltipMarkup = summary ? `data-tippy-content="<div class='snowby-tooltip'>${summary}</div>"` : ''
         return `
         <div ${tooltipMarkup}>

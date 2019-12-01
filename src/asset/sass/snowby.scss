@@ -17,13 +17,25 @@ $snowby-tile-dimension-tall: 150px;
 $snowby-roundness: 10px;
 $snowby-buffer: 4px;
 
-$snowby-highlight-success-back: #239323;
-$snowby-highlight-success-front: #070707;
+$snowby-color-best: #50c100;
+$snowby-color-better: #50c1c1;
+$snowby-color-good: #5050c1;
+$snowby-color-neutral: #a1a1a1;
+$snowby-color-bad: #c1c150;
+$snowby-color-worse: #d18150;
+$snowby-color-worst: #c15050;
 
 html {
     font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, system-ui, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Open Sans', sans-serif;
     background: $snowby-window-color;
     color: $snowby-text-front;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
 
 /* Remove styling on tile text */
@@ -87,7 +99,7 @@ select {
     margin: $snowby-buffer;
     padding: $snowby-buffer;
     text-align: center;
-    width: 16vw;
+    width: 10%;
 }
 
 .navbar-button:hover {
@@ -242,28 +254,74 @@ select {
     background-color: $snowby-text-back;
     background: $snowby-text-back;
     color: $snowby-text-front;
-    line-height: 150px;
-    height: $snowby-tile-dimension-short;
-    width: $snowby-tile-dimension-tall;
+    line-height: 150px * 1.5;
+    height: $snowby-tile-dimension-short * 2;
+    width: $snowby-tile-dimension-tall * 2;
 }
 
 .badge-container {
     position: relative;
+    z-index: 500;
 }
 
-.top-right-badge {
-    background-color: $snowby-highlight-success-back;
+.badge {
     border-radius: 5px;
-    color: $snowby-highlight-success-front;
-    font-size: 20px;
+    font-size: 14px;
     margin: 2px;
-    min-width: 20px;
+    min-width: 14px;
     opacity: 0.9;
     padding: 2px;
     position: absolute;
+}
+
+.badge-top-right {
     right: 5px;
     top: 5px;
-    z-index: 500;
+}
+
+.badge-bottom-left {
+    left: 5px;
+    bottom: 5px;
+}
+
+.badge-bottom-right {
+    right: 5px;
+    bottom: 5px;
+}
+
+.badge-worst {
+    background-color: $snowby-color-worst;
+    color: darken($snowby-color-worst, 40%);
+}
+
+.badge-worse {
+    background-color: $snowby-color-worse;
+    color: darken($snowby-color-worse, 40%);
+}
+
+.badge-bad {
+    background-color: $snowby-color-bad;
+    color: darken($snowby-color-bad, 40%);
+}
+
+.badge-neutral {
+    background-color: $snowby-color-neutral;
+    color: darken($snowby-color-neutral, 40%);
+}
+
+.badge-good {
+    background-color: $snowby-color-good;
+    color: darken($snowby-color-good, 40%);
+}
+
+.badge-better {
+    background-color: $snowby-color-better;
+    color: darken($snowby-color-better, 40%);
+}
+
+.badge-best {
+    background-color: $snowby-color-best;
+    color: darken($snowby-color-best, 40%);
 }
 
 .snowby-tooltip {

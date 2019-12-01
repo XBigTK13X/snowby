@@ -141,9 +141,9 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
-                responses[0].data.Items.map(item => new EmbyItem(item, { searchResultType: 'TV Series' })),
-                responses[1].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Movie' })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { searchResultType: 'Episode - ' + item.SeriesName })),
+                responses[0].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
+                responses[1].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
+                responses[2].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
             ]
         })
     }
@@ -162,25 +162,17 @@ class EmbyClient {
         const url = `Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
         return this.httpClient.get(url).then(progressResponse => {
             return progressResponse.data.Items.map(item => {
-                let searchResultType = 'Movie'
-                if (item.SeriesName) {
-                    searchResultType = item.SeriesName
-                }
-                return new EmbyItem(item, {
-                    searchResultType,
-                })
+                return new EmbyItem(item, { isSearchResult: true })
             })
         })
     }
 
     playlist(embyItemId) {
-        const fields = 'ProductionYear'
+        const fields = 'ProductionYear,MediaStreams,Path'
         const url = `Playlists/${embyItemId}/Items?EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&UserId=${this.userId}&Fields=${fields}`
         return this.httpClient.get(url).then(playlistResponse => {
             return playlistResponse.data.Items.map(item => {
-                return new EmbyItem(item, {
-                    searchResultType: `(${item.ProductionYear})`,
-                })
+                return new EmbyItem(item)
             })
         })
     }

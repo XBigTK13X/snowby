@@ -28,7 +28,7 @@ const getHandler = (emby, itemId) => {
         return emby.embyItem(itemId).then(embyItem => {
             navbar.render(embyItem.isCollection())
             if (embyItem.Type === 'Genre') {
-                return resolve({ handler: genre, item: embyItem })
+                return resolve({ handler: handlers.genre, item: embyItem })
             }
             if (!_.isNil(embyItem.CollectionType)) {
                 if (_.has(collectionHandlers, embyItem.CollectionType)) {

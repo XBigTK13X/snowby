@@ -7,7 +7,7 @@ module.exports = class EmbyItem {
         Object.assign(this, responseBody)
 
         this.NextUp = options && options.nextUp
-        this.SearchResultType = options && options.searchResultType
+        this.IsSearchResult = options && options.isSearchResult
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -73,6 +73,9 @@ module.exports = class EmbyItem {
     }
 
     showSpoilers() {
+        if (this.IsSearchResult) {
+            return true
+        }
         if (this.Type === 'Episode') {
             if (_.has(this.UserData, 'PlaybackPositionTicks') && this.UserData.PlaybackPositionTicks > 0) {
                 return true
@@ -137,7 +140,50 @@ module.exports = class EmbyItem {
                 return true
             }
         }
+        if (this.Type === 'Playlist') {
+            return true
+        }
         return false
+    }
+
+    getFidelityBadge() {
+        if (!this.MediaStreams) {
+            return null
+        }
+        let videoFidelity = ''
+        for (let ii = 0; ii < this.MediaStreams.length; ii++) {
+            let stream = this.MediaStreams[ii]
+            if (stream.Type === 'Video' && (stream.IsDefault || videoFidelity === '')) {
+                videoFidelity = stream.DisplayTitle
+                if (!videoFidelity.toLowerCase().includes(stream.Codec.toLowerCase())) {
+                    videoFidelity += stream.Codec
+                }
+            }
+        }
+        let contentType = ''
+        if (this.Path) {
+            if (this.Path.includes('Remux')) {
+                contentType = 'remux'
+            } else {
+                contentType = 'transcode'
+            }
+        }
+        let result = {
+            source: contentType,
+        }
+        if (videoFidelity.toLowerCase().includes('4k') || videoFidelity.toLowerCase().includes('2160p')) {
+            result.resolution = 2160
+        } else if (videoFidelity.toLowerCase().includes('1080')) {
+            result.resolution = 1080
+        } else if (videoFidelity.toLowerCase().includes('720')) {
+            result.resolution = 720
+        } else if (videoFidelity.toLowerCase().includes('480')) {
+            result.resolution = 480
+        } else {
+            result.resolution = '???'
+        }
+
+        return result
     }
 
     getFidelity() {
@@ -213,7 +259,7 @@ module.exports = class EmbyItem {
         `
     }
 
-    getSummary() {
+    getTooltipContent() {
         let fidelity = this.getFidelity() || null
         let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
@@ -221,23 +267,25 @@ module.exports = class EmbyItem {
         let tagline = this.Taglines && this.Taglines[0]
         let seriesName = this.SeriesName || null
         let releaseYear = this.ProductionYear || null
+
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             return `
             <div>
                 <h3 class='centered'>${seriesName ? seriesName + ' - ' : ''}${this.getTitle()}</h3>
                 ${releaseYear ? `<p>Release Year - ${this.ProductionYear}</p>` : ''}
                 ${fidelity ? `<p>Fidelity - ${fidelity}</p>` : ''}
-                <p>Kind - ${this.Type}</p>
             </div>
             `
         }
-        if (this.Type === 'Season') {
+
+        if (this.Type === 'BoxSet') {
             return `
             <div>
                 <h3 class='centered'>${this.getTitle()}</h3>
             </div>
             `
         }
+
         if (this.Type === 'Series') {
             let unplayedCount = this.getUnwatchedCount()
             return `
@@ -246,7 +294,6 @@ module.exports = class EmbyItem {
                 ${tagline ? `<h4 class='centered'>${tagline}</h4>` : ''}
                 ${overview ? `<p class='centered'>${overview}</p>` : ''}
                 ${unplayedCount ? unplayedCount + ' New Episode' + (unplayedCount > 1 ? 's' : '') : ''}
-                <p>Kind - ${this.Type}</p>
             </div>
             `
         }
