@@ -11,6 +11,7 @@ module.exports = () => {
         const ticks = require('../media/ticks')
         const util = require('../util')
         const { shell } = require('electron')
+        const moment = require('moment')
 
         const reloadPage = () => {
             const queryParams = queryString.parse(location.search)
@@ -128,7 +129,7 @@ module.exports = () => {
                 <td>${stream.Type || ''}</td>
                 <td>${stream.DisplayTitle || ''}</td>
                 <td>${mediaStream.quality(stream)}</td>
-                <td>${stream.Codec || ''}</td>
+                <td>${stream.Codec.toLowerCase() || ''}</td>
                 <td>${stream.DisplayLanguage || ''}</td>
                 <td>${stream.Title || ''}</td>
             </tr>
@@ -142,7 +143,18 @@ module.exports = () => {
                         const runTime = ticks.toTimeStamp(embyItem.RunTimeTicks)
                         mediaInfo += `<p>Run Time - ${runTime}</p>`
                     }
+                    let runTimeBreakdown = ticks.breakdown(ticks.embyToSeconds(embyItem.RunTimeTicks))
+                    if (embyItem.UserData.PlaybackPositionTicks) {
+                        const remaining = ticks.toTimeStamp(embyItem.RunTimeTicks - embyItem.UserData.PlaybackPositionTicks)
+                        runTimeBreakdown = ticks.breakdown(ticks.embyToSeconds(embyItem.RunTimeTicks - embyItem.UserData.PlaybackPositionTicks))
+                        mediaInfo += `<p>Remaining - ${remaining}</p>`
+                    }
 
+                    let finishAt = moment()
+                        .add(runTimeBreakdown.hours, 'hours')
+                        .add(runTimeBreakdown.minutes, 'minutes')
+                        .add(runTimeBreakdown.seconds, 'seconds')
+                    mediaInfo += `<p>Finish At - ${finishAt.format('hh:mm a')}</p>`
                     const fileSize = size.getDisplay(embyItem.CleanPath)
 
                     mediaInfo += `${streams}

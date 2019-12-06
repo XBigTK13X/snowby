@@ -3,26 +3,36 @@ const settings = require('../settings')
 const TEN_THOUSAND = 10000
 const TEN_MILLION = 10000000
 
-const pad = (n, width) => {
-    var n = n + ''
-    return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n
+const breakdown = ticksInSecs => {
+    let ticks = ticksInSecs
+    let hh = Math.floor(ticks / 3600)
+    let mm = Math.floor((ticks % 3600) / 60)
+    let ss = Math.floor(ticks % 60)
+    return {
+        hours: hh,
+        minutes: mm,
+        seconds: ss,
+    }
 }
 
-const displayTime = ticksInSecs => {
-    var ticks = ticksInSecs
-    var hh = Math.floor(ticks / 3600)
-    var mm = Math.floor((ticks % 3600) / 60)
-    var ss = Math.floor(ticks % 60)
-
-    return pad(hh, 2) + ':' + pad(mm, 2) + ':' + pad(ss, 2)
-}
-
-const toTimeStamp = ticks => {
-    return displayTime(ticks / TEN_MILLION)
+const toTimeStamp = embyTicks => {
+    const b = breakdown(embyTicks / TEN_MILLION)
+    let timestamp = `${b.seconds}s`
+    if (b.minutes || b.hours) {
+        timestamp = `${b.minutes}m ${timestamp}`
+    }
+    if (b.hours) {
+        timestamp = `${b.hours}h ${timestamp}`
+    }
+    return timestamp
 }
 
 const mpvToEmby = mpvSeconds => {
     return mpvSeconds * TEN_MILLION
+}
+
+const embyToSeconds = embyTicks => {
+    return embyTicks / TEN_MILLION
 }
 
 const stepBack = embyTicks => {
@@ -34,13 +44,10 @@ const stepBack = embyTicks => {
     }
 }
 
-const embyToSeconds = embyTicks => {
-    return embyTicks / TEN_MILLION
-}
-
 module.exports = {
-    toTimeStamp,
+    embyToSeconds,
+    breakdown,
     mpvToEmby,
     stepBack,
-    embyToSeconds,
+    toTimeStamp,
 }

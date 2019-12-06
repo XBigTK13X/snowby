@@ -3,7 +3,7 @@ const settings = require('../settings')
 class EmbyTvChannel {
     constructor(embyItem) {
         this.embyItem = embyItem
-        this.imageUrl = embyItem.getImageUrl(settings.imageDimensionTall, settings.imageDimensionShort)
+        this.imageUrl = embyItem.getImageUrl(settings.tileDimension.wide.x, settings.tileDimension.wide.y)
         this.streamUrl = embyItem.getStreamURL()
     }
 

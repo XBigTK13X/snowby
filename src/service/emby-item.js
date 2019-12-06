@@ -13,7 +13,6 @@ module.exports = class EmbyItem {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
         }
 
-        this.NotFoundImage = `../asset/img/404.png`
         this.ResumeImage = false
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
@@ -86,18 +85,14 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
-        if (!width) {
-            width = settings.mediaLibraryCardWidth
-        }
-        if (!height) {
-            height = settings.mediaLibraryCardHeight
-        }
+        width *= 2
+        height *= 2
         if (this.ForcedImage) {
             return this.ForcedImage
         }
         // Don't show thumbnails for episodes you haven't seen yet
         if (!this.showSpoilers()) {
-            return this.NotFoundImage
+            return null
         }
         if (Object.keys(this.ImageTags).length > 0) {
             let itemId = this.Id
@@ -131,7 +126,7 @@ module.exports = class EmbyItem {
             result += '&tag=' + this.SeriesPrimaryImageTag + '&quality=100'
             return result
         }
-        return this.NotFoundImage
+        return null
     }
 
     isCollection() {
@@ -146,7 +141,7 @@ module.exports = class EmbyItem {
         return false
     }
 
-    getFidelityBadge() {
+    getFidelity() {
         if (!this.MediaStreams) {
             return null
         }
@@ -167,6 +162,8 @@ module.exports = class EmbyItem {
             } else {
                 contentType = 'transcode'
             }
+        } else {
+            contentType = 'transcode'
         }
         let result = {
             source: contentType,
@@ -186,7 +183,7 @@ module.exports = class EmbyItem {
         return result
     }
 
-    getFidelity() {
+    getFidelityTooltip() {
         if (this.MediaStreams) {
             let videoFidelity = ''
             let audioFidelity = ''
@@ -260,7 +257,7 @@ module.exports = class EmbyItem {
     }
 
     getTooltipContent() {
-        let fidelity = this.getFidelity() || null
+        let fidelity = this.getFidelityTooltip() || null
         let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
@@ -269,11 +266,15 @@ module.exports = class EmbyItem {
         let releaseYear = this.ProductionYear || null
 
         if (this.Type === 'Movie' || this.Type === 'Episode') {
+            let episodeTitle = this.Type === 'Episode' ? (this.showSpoilers() ? this.Name : '[Hidden]') : null
             return `
             <div>
                 <h3 class='centered'>${seriesName ? seriesName + ' - ' : ''}${this.getTitle()}</h3>
-                ${releaseYear ? `<p>Release Year - ${this.ProductionYear}</p>` : ''}
-                ${fidelity ? `<p>Fidelity - ${fidelity}</p>` : ''}
+                ${episodeTitle ? `<h4>Episode Title</h4><p>${episodeTitle}</p>` : ''}
+                ${fidelity ? `<h4>Fidelity</h4><p>${fidelity}</p>` : ''}
+                ${releaseYear ? `<h4>Release Year</h4><p>${this.ProductionYear}</p>` : ''}
+
+
             </div>
             `
         }

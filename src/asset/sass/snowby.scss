@@ -6,16 +6,28 @@ $snowby-highlight-front: lighten($snowby-text-front, $snowby-highlight-intensity
 $snowby-highlight-back: lighten($snowby-text-back, $snowby-highlight-intensity);
 
 $snowby-tile-text-size: 26px;
-$snowby-tile-line-height: 11vw;
+$snowby-tile-line-height: 200px;
 $snowby-highlight-intensity: 30%;
 $snowby-tile-frame: linear-gradient(135deg, $snowby-text-back, lighten($snowby-text-back, $snowby-highlight-intensity));
 $snowby-tile-frame-highlight: linear-gradient(135deg, lighten($snowby-text-back, $snowby-highlight-intensity), lighten($snowby-text-back, $snowby-highlight-intensity * 2));
 
-$snowby-tile-dimension-short: 100px;
-$snowby-tile-dimension-tall: 150px;
+$snowby-center-grid-row-height: 600px;
+
+$snowby-navbar-button-width: 10%;
+$snowby-navbar-button-height: 100px;
+
+$snowby-tall-dimension-x: 120px;
+$snowby-tall-dimension-y: 181px;
+$snowby-wide-dimension-x: 181px;
+$snowby-wide-dimension-y: 120px;
+$snowby-text-dimension-x: 300px;
+$snowby-text-dimension-y: 200px;
+$snowby-square-dimension: 181px;
 
 $snowby-roundness: 10px;
 $snowby-buffer: 4px;
+
+$snowby-badge-space: 5px;
 
 $snowby-color-best: #50c100;
 $snowby-color-better: #50c1c1;
@@ -80,7 +92,7 @@ select {
 }
 
 .grid-item {
-    padding-top: 0.5vw;
+    padding-top: 10px;
     text-align: center;
 }
 
@@ -95,11 +107,11 @@ select {
     display: inline-block;
     font-size: x-large;
     font-weight: bold;
-    line-height: 3vw;
+    line-height: $snowby-navbar-button-height;
     margin: $snowby-buffer;
     padding: $snowby-buffer;
     text-align: center;
-    width: 10%;
+    width: $snowby-navbar-button-width;
 }
 
 .navbar-button:hover {
@@ -135,7 +147,7 @@ select {
     bottom: 0%;
     opacity: 1;
     border-radius: 5px;
-    padding: 1vw;
+    padding: 10px;
     font-size: larger;
     text-align: right;
     right: 10px;
@@ -145,6 +157,10 @@ select {
 .empty-results {
     text-align: center;
     font-size: 36px;
+}
+
+.top-spacer {
+    margin-top: 30px;
 }
 
 .grid {
@@ -186,7 +202,7 @@ select {
 }
 
 .center-grid {
-    height: 30vw;
+    height: $snowby-center-grid-row-height;
 }
 
 .center-grid-item {
@@ -208,55 +224,43 @@ select {
     width: 20%;
 }
 
-.tall-grid {
-}
-
 .tall-grid-item {
-    height: $snowby-tile-dimension-tall;
-    width: $snowby-tile-dimension-short;
+    height: $snowby-tall-dimension-y;
+    width: $snowby-tall-dimension-x;
 }
 
 .tall-image {
-    height: $snowby-tile-dimension-tall;
-    width: $snowby-tile-dimension-short;
-}
-
-.wide-grid {
+    height: $snowby-tall-dimension-y;
+    width: $snowby-tall-dimension-x;
 }
 
 .wide-grid-item {
-    height: $snowby-tile-dimension-short;
-    width: $snowby-tile-dimension-tall;
+    height: $snowby-wide-dimension-y;
+    width: $snowby-wide-dimension-x;
 }
 
 .wide-image {
-    width: $snowby-tile-dimension-tall;
-    height: $snowby-tile-dimension-short;
-}
-
-.square-grid {
+    height: $snowby-wide-dimension-y;
+    width: $snowby-wide-dimension-x;
 }
 
 .square-grid-item {
-    height: $snowby-tile-dimension-tall * 1.5;
-    width: $snowby-tile-dimension-tall * 1.5;
+    height: $snowby-square-dimension;
+    width: $snowby-square-dimension;
 }
 
 .square-image {
-    width: $snowby-tile-dimension-tall * 1.5;
-    height: $snowby-tile-dimension-tall * 1.5;
-}
-
-.text-grid {
+    width: $snowby-square-dimension;
+    height: $snowby-square-dimension;
 }
 
 .text-grid-item {
     background-color: $snowby-text-back;
     background: $snowby-text-back;
     color: $snowby-text-front;
-    line-height: 150px * 1.5;
-    height: $snowby-tile-dimension-short * 2;
-    width: $snowby-tile-dimension-tall * 2;
+    line-height: $snowby-text-dimension-y;
+    height: $snowby-text-dimension-y;
+    width: $snowby-text-dimension-x;
 }
 
 .badge-container {
@@ -264,10 +268,15 @@ select {
     z-index: 500;
 }
 
+.badge-legend {
+    font-weight: bold;
+    font-size: 26px;
+}
+
 .badge {
     border-radius: 5px;
     font-size: 14px;
-    margin: 2px;
+    margin: 3px;
     min-width: 14px;
     opacity: 0.9;
     padding: 2px;
@@ -275,18 +284,23 @@ select {
 }
 
 .badge-top-right {
-    right: 5px;
-    top: 5px;
+    right: $snowby-badge-space;
+    top: $snowby-badge-space;
 }
 
 .badge-bottom-left {
-    left: 5px;
-    bottom: 5px;
+    left: $snowby-badge-space;
+    bottom: $snowby-badge-space;
 }
 
 .badge-bottom-right {
-    right: 5px;
-    bottom: 5px;
+    right: $snowby-badge-space;
+    bottom: $snowby-badge-space;
+}
+
+.badge-top-left {
+    left: $snowby-badge-space;
+    top: $snowby-badge-space;
 }
 
 .badge-worst {

@@ -28,7 +28,7 @@ const render = embyItem => {
     if (util.queryParams().hideBadges) {
         return ''
     }
-    const fidelity = embyItem.getFidelityBadge()
+    const fidelity = embyItem.getFidelity()
     if (!_.has(FIDELITY_BADGE_COLORS, fidelity.resolution) || !_.has(FIDELITY_BADGE_COLORS[fidelity.resolution], fidelity.source)) {
         throw new Error(`No badge color defined for ${fidelity.resolution}->${fidelity.source}`)
     }
@@ -36,6 +36,29 @@ const render = embyItem => {
     return `<span class="badge badge-bottom-left badge-${badgeColor}">${fidelity.resolution}</span>`
 }
 
+const legend = () => {
+    const resolutions = ['2160', '1080', '720', '480', '???']
+    const sources = ['remux', 'transcode']
+    return (
+        "<div class='badge-legend'>" +
+        resolutions
+            .map(resolution => {
+                return sources
+                    .map(source => {
+                        return `
+                <p>
+                    <span class='badge-${FIDELITY_BADGE_COLORS[resolution][source]}'>${resolution} ${source}</span>
+                </p>
+            `
+                    })
+                    .join('')
+            })
+            .join('') +
+        '</div>'
+    )
+}
+
 module.exports = {
     render,
+    legend,
 }

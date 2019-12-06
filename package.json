@@ -1,6 +1,6 @@
 {
   "name": "snowby",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
@@ -27,6 +27,7 @@
     "jquery": "^3.4.1",
     "jquery-lazy": "^1.7.10",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "query-string": "^6.8.3",
     "tippy.js": "^5.1.2"
   }
