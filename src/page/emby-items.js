@@ -37,7 +37,8 @@ module.exports = () => {
                 }
 
                 let title = handler.title || parent.Name
-                if (children.length > 0 && (parent && (parent.Type !== 'Series' && parent.Type !== 'BoxSet'))) {
+                console.log(parent)
+                if (children.length > 0 && (parent && (parent.Type !== 'Series' && parent.Type !== 'BoxSet' && parent.CollectionType !== 'livetv'))) {
                     title += ` (${children.length} ${children.length === 1 ? ' item' : ' items'})`
                     if (children[0].ChannelNumber) {
                         enableRandom = false

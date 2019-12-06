@@ -35,12 +35,12 @@ module.exports = {
             const badgeUrl = `./emby-items.html?${queryString.stringify(badgeParams)}`
 
             navbarContent += `
-			  <a href="${watchedUrl}" id="watched-toggle">
+			  <a onclick="window.reloadPage('${watchedUrl}'); return false;" href="#" id="watched-toggle">
 		        <div class="navbar-button">
 		          Watched
 		        </div>
 		      </a>
-		      <a data-tippy-content="${fidelityBadge.legend()}" href="${badgeUrl}" id="badge-toggle">
+		      <a data-tippy-content="${fidelityBadge.legend()}" onclick="window.reloadPage('${badgeUrl}'); return false;" href="#" id="badge-toggle">
 		        <div class="navbar-button">
 		          Badges
 		        </div>
