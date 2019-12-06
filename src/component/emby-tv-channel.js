@@ -9,7 +9,6 @@ class EmbyTvChannel {
     }
 
     render() {
-        console.log({ item: this.embyItem })
         return `
         <tr class="clickable" data-target="random-action" onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;">
 	        <td class="channel-logo">
