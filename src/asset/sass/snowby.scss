@@ -23,6 +23,8 @@ $snowby-wide-dimension-y: 120px;
 $snowby-text-dimension-x: 300px;
 $snowby-text-dimension-y: 200px;
 $snowby-square-dimension: 181px;
+$snowby-channel-logo-width: 75px;
+$snowby-channel-logo-height: 50px;
 
 $snowby-roundness: 10px;
 $snowby-buffer: 4px;
@@ -78,6 +80,32 @@ select {
     background: $snowby-text-back;
 }
 
+table.channel-guide,
+th.channel-guide,
+td.channel-guide,
+tr.channel-guide {
+    font-size: $snowby-tile-text-size;
+    font-weight: bold;
+    margin: $snowby-buffer;
+    overflow: hidden;
+    padding: $snowby-buffer;
+    text-decoration: none;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:hover {
+    background-color: $snowby-highlight-back;
+}
+
+.channel-logo {
+    background: $snowby-tile-frame;
+    width: $snowby-channel-logo-width;
+    height: $snowby-channel-logo-height;
+}
+
 .noselect {
     -khtml-user-select: none;
     -moz-user-select: none;
@@ -88,11 +116,6 @@ select {
 }
 
 .centered {
-    text-align: center;
-}
-
-.grid-item {
-    padding-top: 10px;
     text-align: center;
 }
 

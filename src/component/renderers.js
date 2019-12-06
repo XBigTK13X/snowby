@@ -84,7 +84,28 @@ module.exports = {
         return renderGrid(EmbyThumbnail, parent, children)
     },
     tvChannels: (parent, children) => {
-        return renderGrid(EmbyTvChannel, parent, children)
+        let html = `
+        <table class="channel-guide">
+        <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Current Program</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Channel Number</th>
+            <th>Channel Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        `
+        html += children
+            .map(child => {
+                const embyChannel = new EmbyTvChannel(child)
+                return embyChannel.render()
+            })
+            .join('')
+        html += `</tbody></table>`
+        return html
     },
     tvSeason: (parent, children) => {
         const generator = child => {

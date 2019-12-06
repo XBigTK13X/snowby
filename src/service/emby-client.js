@@ -108,6 +108,9 @@ class EmbyClient {
     }
 
     updateProgress(embyItemId, embyTicks) {
+        if (settings.enableTimestampDebugLog) {
+            console.trace({ embyTicks, timestamp: require('../media/ticks').toTimeStamp(embyTicks) })
+        }
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
