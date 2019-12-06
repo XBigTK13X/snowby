@@ -27,6 +27,10 @@ const STREAMING_LINKS = [
         link: 'https://netflix.com',
         title: 'Netflix',
     },
+    {
+        link: 'https://play.google.com/movies',
+        title: 'Google Play',
+    },
 ]
 
 module.exports = () => {

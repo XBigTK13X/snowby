@@ -10,7 +10,8 @@ class EmbyPoster {
         this.embyItem = embyItem
         this.embyItemId = embyItem.Id
         this.href = embyItem.Href
-        this.imageUrl = embyItem.getImageUrl(settings.imageDimensionShort, settings.imageDimensionTall)
+        this.imageUrl = embyItem.getImageUrl(settings.tileDimension.tall.x, settings.tileDimension.tall.y)
+        this.imageDataSource = this.imageUrl ? `data-src="${this.imageUrl}"` : ''
     }
 
     enableTitle() {
@@ -43,7 +44,7 @@ class EmbyPoster {
 					data-target="random-action"
 					href="${this.href}"
 					>
-					<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}" />
+					<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource} />
 				</a>
 				${unwatchedBadgeMarkup}
                 ${fidelityBadgeMarkup}

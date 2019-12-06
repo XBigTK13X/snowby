@@ -1,21 +1,33 @@
+const fidelityBadge = require('./fidelity-badge')
+
 class EmbyTextItem {
     constructor(embyItem) {
         this.content = embyItem.getTitle()
         this.href = embyItem.Href
+        this.embyItem = embyItem
     }
 
     setHref(href) {
         this.href = href
     }
 
+    enableFidelityBadge() {
+        this.fidelityBadge = fidelityBadge.render(this.embyItem)
+    }
+
     render() {
+        let fidelityBadgeMarkup = this.fidelityBadge ? this.fidelityBadge : ''
         return `
-		<a
-			data-target="random-action"
-			class="grid-item text-grid-item"
-			href="${this.href}">
-			<span>${this.content}</span>
-		</a>
+        <div class="badge-container">
+            <div class="grid-item text-grid-item">
+        		<a
+        			data-target="random-action"
+        			href="${this.href}">
+        			${this.content}
+        		</a>
+            </div>
+            ${fidelityBadgeMarkup}
+        </div>
 		`
     }
 }

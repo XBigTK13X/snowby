@@ -83,7 +83,7 @@ class EmbyClient {
 
     seasons(seriesId) {
         const seasonsUrl = `Shows/${seriesId}/Seasons?UserId=${this.userId}`
-        const nextUpUrl = `Shows/NextUp?SeriesId=${seriesId}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio&Limit=1&EnableTotalRecordCount=false`
+        const nextUpUrl = `Shows/NextUp?SeriesId=${seriesId}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
         return Promise.all([this.httpClient.get(seasonsUrl), this.httpClient.get(nextUpUrl)]).then(responses => {
             let results = []
             let nextUp = responses[1].data.Items[0]
@@ -99,7 +99,7 @@ class EmbyClient {
         const query = queryString.stringify({
             seasonId,
             userId: this.userId,
-            Fields: 'MediaStreams',
+            Fields: 'MediaStreams,Path',
         })
         const url = `Shows/${seriesId}/Episodes?${query}`
         return this.httpClient.get(url).then(episodesResponse => {
@@ -141,8 +141,8 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
-                responses[0].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
                 responses[1].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
+                responses[0].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
                 responses[2].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
             ]
         })

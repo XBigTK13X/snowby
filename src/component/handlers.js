@@ -63,7 +63,7 @@ module.exports = {
         getChildren: emby => {
             return emby.itemsInProgress()
         },
-        render: renderers.mixed,
+        render: renderers.inProgress,
         title: 'In Progress',
     },
     liveTv: {

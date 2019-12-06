@@ -1,5 +1,7 @@
 const queryString = require('query-string')
 
+const fidelityBadge = require('./fidelity-badge')
+
 module.exports = {
     render: showToggleButton => {
         let navbarContent = `
@@ -38,7 +40,7 @@ module.exports = {
 		          Watched
 		        </div>
 		      </a>
-		      <a href="${badgeUrl}" id="badge-toggle">
+		      <a data-tippy-content="${fidelityBadge.legend()}" href="${badgeUrl}" id="badge-toggle">
 		        <div class="navbar-button">
 		          Badges
 		        </div>
