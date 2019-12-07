@@ -31,6 +31,9 @@ module.exports = {
     posters: (parent, children) => {
         return renderGrid(EmbyPoster, parent, children)
     },
+    thumbnails: (parent, children) => {
+        return renderGrid(EmbyThumbnail, parent, children)
+    },
     playlist: (parent, children) => {
         const generator = child => {
             let poster = new EmbyPoster(child)
@@ -79,9 +82,6 @@ module.exports = {
             return mixed.render()
         }
         return renderGeneratedGrid(generator, parent, children)
-    },
-    thumbnails: (parent, children) => {
-        return renderGrid(EmbyThumbnail, parent, children)
     },
     tvChannels: (parent, children) => {
         let html = `
@@ -134,7 +134,7 @@ module.exports = {
             let seasons = renderGeneratedGrid(seasonGenerator, parent, children)
             return upNext + seasons
         }
-        return renderGeneratedGrid(generator, parent, children)
+        return renderGeneratedGrid(seasonGenerator, parent, children)
     },
     tvShowList: (parent, children) => {
         const generator = child => {
