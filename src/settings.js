@@ -14,22 +14,22 @@ module.exports = {
     keepAudioDeviceAwake: true,
     tileDimension: {
         channelLogo: {
-            x: 75,
-            y: 50,
+            x: 50,
+            y: 30,
         },
         tall: {
-            x: 120,
-            y: 181,
+            x: 108,
+            y: 160,
         },
         wide: {
-            x: 181,
-            y: 120,
+            x: 160,
+            y: 108,
         },
         text: {
-            x: 150,
-            y: 300,
+            x: 170,
+            y: 108,
         },
-        square: 181,
+        square: 160,
     },
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
@@ -39,6 +39,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'December 06, 2019',
+    versionDate: 'December 07, 2019',
     windowBackgroundColor: '#010101',
 }

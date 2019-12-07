@@ -50,10 +50,14 @@ const isClass = target => {
     return true
 }
 
+let tippyInstances = []
+
 const loadTooltips = () => {
-    document.querySelectorAll('.tippy-popper').forEach(e => e.parentNode.removeChild(e))
+    tippyInstances.forEach(instance => {
+        instance.destroy()
+    })
     const tippy = require('tippy.js').default
-    tippy('[data-tippy-content]', {
+    tippyInstances = tippy('[data-tippy-content]', {
         placement: 'bottom',
         delay: 300,
     })
