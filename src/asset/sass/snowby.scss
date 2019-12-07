@@ -6,25 +6,26 @@ $snowby-highlight-front: lighten($snowby-text-front, $snowby-highlight-intensity
 $snowby-highlight-back: lighten($snowby-text-back, $snowby-highlight-intensity);
 
 $snowby-tile-text-size: 26px;
-$snowby-tile-line-height: 200px;
 $snowby-highlight-intensity: 30%;
 $snowby-tile-frame: linear-gradient(135deg, $snowby-text-back, lighten($snowby-text-back, $snowby-highlight-intensity));
 $snowby-tile-frame-highlight: linear-gradient(135deg, lighten($snowby-text-back, $snowby-highlight-intensity), lighten($snowby-text-back, $snowby-highlight-intensity * 2));
 
-$snowby-center-grid-row-height: 600px;
+$snowby-center-grid-row-height: 350px;
 
-$snowby-navbar-button-width: 10%;
-$snowby-navbar-button-height: 100px;
+$snowby-navbar-button-width: 200px;
+$snowby-navbar-button-height: 40px;
 
-$snowby-tall-dimension-x: 120px;
-$snowby-tall-dimension-y: 181px;
-$snowby-wide-dimension-x: 181px;
-$snowby-wide-dimension-y: 120px;
-$snowby-text-dimension-x: 300px;
-$snowby-text-dimension-y: 200px;
-$snowby-square-dimension: 181px;
-$snowby-channel-logo-width: 75px;
-$snowby-channel-logo-height: 50px;
+$snowby-center-dimension-y: 200px;
+$snowby-tall-dimension-x: 108px;
+$snowby-tall-dimension-y: 160px;
+$snowby-wide-dimension-x: 160px;
+$snowby-wide-dimension-y: 108px;
+$snowby-square-dimension: 160px;
+$snowby-text-dimension-x: 170px;
+$snowby-text-dimension-y: 108px;
+
+$snowby-channel-logo-width: 50px;
+$snowby-channel-logo-height: 30px;
 
 $snowby-roundness: 10px;
 $snowby-buffer: 4px;
@@ -84,11 +85,11 @@ table.channel-guide,
 th.channel-guide,
 td.channel-guide,
 tr.channel-guide {
-    font-size: $snowby-tile-text-size;
+    font-size: 18px;
     font-weight: bold;
-    margin: $snowby-buffer;
+    margin: 2px;
     overflow: hidden;
-    padding: $snowby-buffer;
+    padding: 2px;
     text-decoration: none;
 }
 
@@ -128,7 +129,7 @@ tr.channel-guide {
     border-radius: $snowby-roundness;
     color: $snowby-text-front;
     display: inline-block;
-    font-size: x-large;
+    font-size: 20px;
     font-weight: bold;
     line-height: $snowby-navbar-button-height;
     margin: $snowby-buffer;
@@ -154,8 +155,8 @@ tr.channel-guide {
 .query {
     text-align: center;
     width: 100%;
-    height: $snowby-tile-line-height;
-    font-size: $snowby-tile-line-height * 0.75;
+    height: 100px;
+    font-size: 75px;
     border-radius: $snowby-roundness;
     background-color: $snowby-text-back;
     color: $snowby-text-front;
@@ -183,7 +184,7 @@ tr.channel-guide {
 }
 
 .top-spacer {
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 .grid {
@@ -233,8 +234,8 @@ tr.channel-guide {
     border-radius: $snowby-roundness;
     font-size: $snowby-tile-text-size;
     font-weight: bold;
-    height: $snowby-tile-line-height;
-    line-height: $snowby-tile-line-height;
+    height: $snowby-center-dimension-y;
+    line-height: $snowby-center-dimension-y;
     margin: $snowby-buffer;
     overflow: hidden;
     padding-left: $snowby-buffer;
@@ -284,6 +285,7 @@ tr.channel-guide {
     line-height: $snowby-text-dimension-y;
     height: $snowby-text-dimension-y;
     width: $snowby-text-dimension-x;
+    font-size: 20px;
 }
 
 .badge-container {
