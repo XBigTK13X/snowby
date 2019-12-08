@@ -18,8 +18,9 @@ const updateUI = (embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex
     document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
     document.getElementById(resumeButton).onclick = event => {
         event.preventDefault()
-        track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content', isHdr)
-        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks, isHdr)
+        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks, isHdr).then(() => {
+            track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content', isHdr)
+        })
     }
 }
 
@@ -36,8 +37,9 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             lastTicks = embyTicks
                             setConnectionStatus(true)
                             if (embyTicks > 0) {
-                                emby.client.updateProgress(embyItem.Id, embyTicks)
-                                updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
+                                emby.client.updateProgress(embyItem.Id, embyTicks).then(() => {
+                                    updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
+                                })
                             }
                         }
                     })

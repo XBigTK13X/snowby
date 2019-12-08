@@ -5,7 +5,6 @@ module.exports = {
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     enableHdrToggle: true,
-    enableTimestampDebugLog: true,
     fullScreen: true,
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
@@ -39,6 +38,6 @@ module.exports = {
         detached: true,
     },
     stepBackSeconds: 4,
-    versionDate: 'December 07, 2019',
+    versionDate: 'December 08, 2019',
     windowBackgroundColor: '#010101',
 }
