@@ -89,11 +89,12 @@ module.exports = {
         <thead>
         <tr>
             <th>Logo</th>
+            <th>Channel Name</th>
             <th>Current Program</th>
             <th>Start</th>
             <th>End</th>
             <th>Channel Number</th>
-            <th>Channel Name</th>
+            <th>Broadcast Name</th>
         </tr>
         </thead>
         <tbody>

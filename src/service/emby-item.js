@@ -1,6 +1,7 @@
 const { shell } = require('electron')
 const _ = require('lodash')
 const settings = require('../settings')
+const CHANNEL_MAP = require('../media/channel-map')
 
 module.exports = class EmbyItem {
     constructor(responseBody, options) {
@@ -39,6 +40,10 @@ module.exports = class EmbyItem {
                 this.MediaStreams[ii] = stream
             }
         }
+    }
+
+    getDisplayName() {
+        return CHANNEL_MAP[this.Name] || this.Name
     }
 
     getTitle(enableSeriesName) {
