@@ -108,16 +108,12 @@ class EmbyClient {
     }
 
     updateProgress(embyItemId, embyTicks) {
-        if (settings.enableTimestampDebugLog) {
-            console.trace({ embyTicks, timestamp: require('../media/ticks').toTimeStamp(embyTicks) })
-        }
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        const url = `Sessions/Playing/Progress`
+        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
         const payload = {
-            ItemId: embyItemId,
-            PositionTicks: embyTicks,
+            PlaybackPositionTicks: embyTicks,
         }
         return this.httpClient.post(url, payload)
     }
@@ -126,16 +122,22 @@ class EmbyClient {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
-        return this.httpClient.post(url)
+        const payload = {
+            Played: true,
+        }
+        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
+        return this.httpClient.post(url, payload)
     }
 
     markUnplayed(embyItemId) {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
-        return this.httpClient.delete(url)
+        const payload = {
+            Played: false,
+        }
+        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
+        return this.httpClient.post(url, payload)
     }
 
     search(query) {

@@ -16,15 +16,20 @@ class Player {
     }
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
-        emby.client.markUnplayed(embyItemId)
-        return hdr.configure(isHdr).then(() => {
-            return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks).then(() => {
+        return emby.client
+            .markUnplayed(embyItemId)
+            .then(() => {
+                return hdr.configure(isHdr)
+            })
+            .then(() => {
+                return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
+            })
+            .then(() => {
                 if (!seekTicks) {
                     return Promise.resolve()
                 }
                 return emby.client.updateProgress(embyItemId, seekTicks)
             })
-        })
     }
 
     openStream(streamURL, isHdr) {
