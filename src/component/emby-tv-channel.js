@@ -15,6 +15,9 @@ class EmbyTvChannel {
 				<img class="lazy channel-logo" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 			</td>
 			<td>
+				${this.embyItem.getDisplayName()}
+			</td>
+			<td>
 				${this.embyItem.CurrentProgram.Name}
 			</td>
 			<td>
