@@ -11,14 +11,14 @@ const setConnectionStatus = connected => {
     document.getElementById('connection-status').innerHTML = `<p>${status}</p>`
 }
 
-const updateUI = (embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
+const updateUI = (embyItem, playbackPositionTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
     setConnectionStatus(true)
-    const resumeTimeStamp = ticks.toTimeStamp(embyTicks)
+    const resumeTimeStamp = ticks.toTimeStamp(playbackPositionTicks)
     document.getElementById(resumeButton).style = null
     document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
     document.getElementById(resumeButton).onclick = event => {
         event.preventDefault()
-        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, embyTicks, isHdr).then(() => {
+        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, playbackPositionTicks, isHdr).then(() => {
             track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content', isHdr)
         })
     }
@@ -32,13 +32,13 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
             .then(() => {
                 player
                     .getPositionInEmbyTicks()
-                    .then(embyTicks => {
-                        if (embyTicks != lastTicks) {
-                            lastTicks = embyTicks
+                    .then(playbackPositionTicks => {
+                        if (playbackPositionTicks != lastTicks) {
+                            lastTicks = playbackPositionTicks
                             setConnectionStatus(true)
-                            if (embyTicks > 0) {
-                                emby.client.updateProgress(embyItem.Id, embyTicks).then(() => {
-                                    updateUI(embyItem, embyTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
+                            if (playbackPositionTicks > 0) {
+                                emby.client.updateProgress(embyItem.Id, playbackPositionTicks, embyItem.RunTimeTicks).then(() => {
+                                    updateUI(embyItem, playbackPositionTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
                                 })
                             }
                         }

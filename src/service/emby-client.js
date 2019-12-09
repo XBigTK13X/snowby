@@ -107,13 +107,21 @@ class EmbyClient {
         })
     }
 
-    updateProgress(embyItemId, embyTicks) {
+    updateProgress(embyItemId, playbackPositionTicks, runTimeTicks) {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
         const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
         const payload = {
-            PlaybackPositionTicks: embyTicks,
+            PlaybackPositionTicks: playbackPositionTicks,
+        }
+        const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
+        if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
+            payload.PlaybackPositionTicks = 0
+            payload.Played = false
+        } else if (positionPercent >= settings.progressWatchedThreshold.maxPercent) {
+            payload.PlaybackPositionTicks = 0
+            payload.Played = true
         }
         return this.httpClient.post(url, payload)
     }
@@ -123,6 +131,7 @@ class EmbyClient {
             return Promise.resolve()
         }
         const payload = {
+            PlaybackPositionTicks: 0,
             Played: true,
         }
         const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
@@ -134,6 +143,7 @@ class EmbyClient {
             return Promise.resolve()
         }
         const payload = {
+            PlaybackPositionTicks: 0,
             Played: false,
         }
         const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
