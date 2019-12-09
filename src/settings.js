@@ -11,6 +11,20 @@ module.exports = {
     homeRunURL: 'http://192.168.1.6:5004/auto',
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
+    menuBarVisible: false,
+    mpvExePath: util.appPath('bin/mpv/mpv.exe'),
+    progressUpdateInterval: 3000,
+    stepBackSeconds: 4,
+    versionDate: 'December 09, 2019',
+    windowBackgroundColor: '#010101',
+    progressWatchedThreshold: {
+        minPercent: 5,
+        maxPercent: 95,
+    },
+    spawnOptions: {
+        stdio: 'ignore',
+        detached: true,
+    },
     tileDimension: {
         channelLogo: {
             x: 50,
@@ -30,14 +44,4 @@ module.exports = {
         },
         square: 160,
     },
-    menuBarVisible: false,
-    mpvExePath: util.appPath('bin/mpv/mpv.exe'),
-    progressUpdateInterval: 3000,
-    spawnOptions: {
-        stdio: 'ignore',
-        detached: true,
-    },
-    stepBackSeconds: 4,
-    versionDate: 'December 08, 2019',
-    windowBackgroundColor: '#010101',
 }
