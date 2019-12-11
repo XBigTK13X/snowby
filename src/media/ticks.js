@@ -15,32 +15,39 @@ const breakdown = ticksInSecs => {
     }
 }
 
+const pad = num => {
+    if (num < 10) {
+        return '0' + num
+    }
+    return num
+}
+
 const toTimeStamp = embyTicks => {
-    const b = breakdown(embyTicks / TEN_MILLION)
-    let timestamp = `${b.seconds}s`
+    const b = breakdown(Math.floor(embyTicks / TEN_MILLION))
+    let timestamp = `${pad(b.seconds)}s`
     if (b.minutes || b.hours) {
-        timestamp = `${b.minutes}m ${timestamp}`
+        timestamp = `${pad(b.minutes)}m ${timestamp}`
     }
     if (b.hours) {
-        timestamp = `${b.hours}h ${timestamp}`
+        timestamp = `${pad(b.hours)}h ${timestamp}`
     }
     return timestamp
 }
 
 const mpvToEmby = mpvSeconds => {
-    return mpvSeconds * TEN_MILLION
+    return Math.floor(mpvSeconds * TEN_MILLION)
 }
 
 const embyToSeconds = embyTicks => {
-    return embyTicks / TEN_MILLION
+    return Math.floor(embyTicks / TEN_MILLION)
 }
 
 const stepBack = embyTicks => {
-    const adjustment = TEN_MILLION * settings.stepBackSeconds
+    const adjustment = Math.floor(TEN_MILLION * settings.stepBackSeconds)
     if (embyTicks < adjustment) {
         return 0
     } else {
-        return embyTicks - adjustment
+        return Math.floor(embyTicks - adjustment)
     }
 }
 

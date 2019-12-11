@@ -65,13 +65,18 @@ const loadTooltips = () => {
 
 let lastLocation = ''
 let lastParams = {}
-const queryParams = () => {
-    if (lastLocation === location.search) {
-        return lastParams
+const queryParams = target => {
+    target = target || location.search
+    if (lastLocation === target) {
+        return { ...lastParams }
     }
-    lastLocation = location.search
-    lastParams = require('query-string').parse(location.search)
+    lastLocation = target
+    lastParams = require('query-string').parse(target)
     return lastParams
+}
+
+const queryString = target => {
+    return require('query-string').stringify(target)
 }
 
 module.exports = {
@@ -79,7 +84,8 @@ module.exports = {
     browserGetMediaProfiles,
     getMediaProfiles,
     isClass,
-    swapConfig,
     loadTooltips,
     queryParams,
+    queryString,
+    swapConfig,
 }

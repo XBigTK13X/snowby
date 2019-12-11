@@ -12,6 +12,7 @@ class MpvClient {
         this.mpv = new mpvApi({
             binary: settings.mpvExePath,
         })
+        this.lastProfile = null
         this.profile = null
     }
 
@@ -76,6 +77,10 @@ class MpvClient {
     }
 
     setProfile(profile) {
+        if (profile === this.lastProfile) {
+            return
+        }
+        this.lastProfile = profile
         if (this.mpv.isRunning()) {
             this.mpv.quit()
         }

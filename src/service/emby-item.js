@@ -18,9 +18,9 @@ module.exports = class EmbyItem {
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
         if (this.IsPlayable) {
-            this.Href = `./play-media.html?embyItemId=${this.Id}`
+            this.Href = `play-media.html?embyItemId=${this.Id}`
         } else {
-            this.Href = `./emby-items.html?embyItemId=${this.Id}`
+            this.Href = `emby-items.html?embyItemId=${this.Id}`
         }
 
         let relativeAudioIndex = 1
@@ -250,7 +250,7 @@ module.exports = class EmbyItem {
     getPlayMediaSummary() {
         let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
-        let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
+        let overview = this.Overview
         let seriesName = this.SeriesName || null
         let releaseYear = this.ProductionYear || null
         return `<div>

@@ -1,4 +1,4 @@
-const queryString = require('query-string')
+const util = require('../util')
 
 const fidelityBadge = require('./fidelity-badge')
 
@@ -6,7 +6,7 @@ module.exports = {
     render: showToggleButton => {
         let navbarContent = `
 			<div class="navbar">
-		      <a href="./landing.html" >
+		      <a href="landing.html" >
 		        <div class="navbar-button">
 		          Home
 		        </div>
@@ -18,21 +18,21 @@ module.exports = {
 		      </a>
 		`
         if (showToggleButton) {
-            let watchedParams = queryString.parse(location.search)
+            let watchedParams = util.queryParams()
             if (!watchedParams.showWatched) {
                 watchedParams.showWatched = true
             } else {
                 delete watchedParams.showWatched
             }
-            const watchedUrl = `./emby-items.html?${queryString.stringify(watchedParams)}`
+            const watchedUrl = `emby-items.html?${util.queryString(watchedParams)}`
 
-            let badgeParams = queryString.parse(location.search)
+            let badgeParams = util.queryParams()
             if (!badgeParams.hideBadges) {
                 badgeParams.hideBadges = true
             } else {
                 delete badgeParams.hideBadges
             }
-            const badgeUrl = `./emby-items.html?${queryString.stringify(badgeParams)}`
+            const badgeUrl = `emby-items.html?${util.queryString(badgeParams)}`
 
             navbarContent += `
 			  <a onclick="window.reloadPage('${watchedUrl}'); return false;" href="#" id="watched-toggle">
@@ -45,7 +45,7 @@ module.exports = {
 		          Badges
 		        </div>
 		      </a>
-		      <a href="./search.html">
+		      <a href="search.html">
 		        <div class="navbar-button">
 		          Search
 		        </div>
