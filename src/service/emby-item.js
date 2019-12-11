@@ -248,22 +248,31 @@ module.exports = class EmbyItem {
     }
 
     getPlayMediaSummary() {
-        let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
+        let studio = ''
+        if (this.Studio) {
+            studio = `<p>Studio - ${this.Studio}</p>`
+        }
+        if (this.Studios) {
+            if (this.Studios.length) {
+                studio = `<p>Studios</p><ul>${this.Studios.map(x => {
+                    return `<li>${x.Name}</li>`
+                }).join('')}</ul>`
+            }
+        }
         let rating = this.OfficialRating || null
         let overview = this.Overview
         let seriesName = this.SeriesName || null
         let releaseYear = this.ProductionYear || null
         return `<div>
             ${overview ? `<h4>Summary</h4><p>${overview}</p>` : ''}
-            ${rating ? `<p>Rating - ${rating}</p>` : ''}
-            ${studio ? `<p>Studio - ${studio}</p>` : ''}
+            ${rating ? `<p>MPAA Rating - ${rating}</p>` : ''}
+            ${studio}
         </div>
         `
     }
 
     getTooltipContent() {
         let fidelity = this.getFidelityTooltip() || null
-        let studio = this.Studio || (this.Studios && this.Studios[0] && this.Studios[0].Name) || null
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
@@ -278,8 +287,6 @@ module.exports = class EmbyItem {
                 ${episodeTitle ? `<h4>Episode Title</h4><p>${episodeTitle}</p>` : ''}
                 ${fidelity ? `<h4>Fidelity</h4><p>${fidelity}</p>` : ''}
                 ${releaseYear ? `<h4>Release Year</h4><p>${this.ProductionYear}</p>` : ''}
-
-
             </div>
             `
         }
