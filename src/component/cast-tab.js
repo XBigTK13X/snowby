@@ -17,11 +17,11 @@ class CastTab {
 						class="rounded cast-photo"
 						data-tippy-content="<div class='centered snowby-tooltip'>
 						<p>
-							${x.Name}
+							${x.Name.split('"').join("'")}
 						</p>
 						<p>as</p>
 						<p>
-							${x.Role ? x.Role : x.Type}
+							${x.Role ? x.Role.split('"').join("'") : x.Type.split('"').join("'")}
 						</p>
 					</div>"
 					src="
