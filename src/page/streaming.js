@@ -31,6 +31,10 @@ const STREAMING_LINKS = [
         link: 'https://play.google.com/movies',
         title: 'Google Play',
     },
+    {
+        link: 'http://9914.us',
+        title: 'Intranet',
+    },
 ]
 
 module.exports = () => {

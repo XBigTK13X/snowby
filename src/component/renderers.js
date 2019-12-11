@@ -54,7 +54,7 @@ module.exports = {
     genreList: (parent, children) => {
         const generator = child => {
             let text = new EmbyTextItem(child)
-            let href = `./emby-items.html?embyItemId=${child.Id}&showWatched=true`
+            let href = `emby-items.html?embyItemId=${child.Id}&showWatched=true`
             const queryParams = util.queryParams()
             if (queryParams.genreFilter) {
                 href += `&includeItemTypes=${queryParams.genreFilter}`

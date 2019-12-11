@@ -3,7 +3,9 @@ module.exports = pageName => {
         if (targetUrl) {
             window.history.replaceState(null, null, targetUrl)
         }
-        document.getElementById('header').innerHTML = 'Loading...'
+        if (targetUrl && !targetUrl.includes('play-media')) {
+            document.getElementById('header').innerHTML = 'Loading...'
+        }
         const settings = require('../settings')
         const _ = require('lodash')
         const util = require('../util')
@@ -42,9 +44,7 @@ module.exports = pageName => {
                 }
                 if (result.enableProfilePicker) {
                     let profilePicker = document.getElementById('profile-picker')
-                    const queryString = require('query-string')
-                    const queryParams = queryString.parse(location.search)
-                    const util = require('../util')
+                    const queryParams = util.queryParams()
                     const player = require('../media/player')
                     if (queryParams.mediaProfile) {
                         player.setProfile(queryParams.mediaProfile)
@@ -54,10 +54,10 @@ module.exports = pageName => {
                     }
                     window.changeProfile = target => {
                         player.setProfile(target.value)
-                        const newParams = { ...queryParams }
+                        const newParams = util.queryParams()
                         newParams.mediaProfile = target.value
-                        const url = `${window.location.pathname.split('/').slice(-1)[0]}?${queryString.stringify(newParams)}`
-                        window.history.replaceState(null, null, url)
+                        const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
+                        window.reloadPage(url)
                     }
                     const pickerMarkup = `
                     <div>

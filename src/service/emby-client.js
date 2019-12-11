@@ -1,7 +1,7 @@
 const axios = require('axios')
 const os = require('os')
-const queryString = require('query-string')
 
+const util = require('../util')
 const settings = require('../settings')
 const httpLogger = require('./http-logger')
 const EmbyItem = require('./emby-item')
@@ -74,7 +74,7 @@ class EmbyClient {
     }
 
     embyItems(parentId, searchParams) {
-        const query = queryString.stringify(searchParams)
+        const query = util.queryString(searchParams)
         const url = `Users/${this.userId}/Items?${query}`
         return this.httpClient.get(url).then(itemsResponse => {
             return itemsResponse.data.Items.map(item => new EmbyItem(item))
@@ -96,7 +96,7 @@ class EmbyClient {
     }
 
     episodes(seriesId, seasonId) {
-        const query = queryString.stringify({
+        const query = util.queryString({
             seasonId,
             userId: this.userId,
             Fields: 'MediaStreams,Path',
@@ -113,7 +113,7 @@ class EmbyClient {
         }
         const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
         const payload = {
-            PlaybackPositionTicks: playbackPositionTicks,
+            PlaybackPositionTicks: Math.floor(playbackPositionTicks),
         }
         const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
         if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
@@ -221,6 +221,15 @@ class EmbyClient {
                     return new EmbyItem(x)
                 })
         })
+    }
+
+    buildImageURL(itemId, imageTag, width, height) {
+        width *= 2
+        height *= 2
+        let result = `${settings.embyServerURL}/emby/Items/${itemId}/Images/Primary`
+        result += '?maxWidth=' + width + '&maxHeight=' + height
+        result += '&tag=' + imageTag + '&quality=100'
+        return result
     }
 }
 

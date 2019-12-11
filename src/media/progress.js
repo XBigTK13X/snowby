@@ -2,6 +2,7 @@ const settings = require('../settings')
 const ticks = require('./ticks')
 const player = require('../media/player')
 const emby = require('../service/emby-client')
+const util = require('../util')
 
 const setConnectionStatus = connected => {
     let status = 'Snowby is connected to the media player and monitoring progress.'
@@ -11,22 +12,14 @@ const setConnectionStatus = connected => {
     document.getElementById('connection-status').innerHTML = `<p>${status}</p>`
 }
 
-const updateUI = (embyItem, playbackPositionTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
-    setConnectionStatus(true)
-    const resumeTimeStamp = ticks.toTimeStamp(playbackPositionTicks)
-    document.getElementById(resumeButton).style = null
-    document.getElementById(resumeContent).innerHTML = 'Resume ' + resumeTimeStamp
-    document.getElementById(resumeButton).onclick = event => {
-        event.preventDefault()
-        player.openFile(embyItem.Id, embyItem.CleanPath, audioRelativeIndex, subtitleRelativeIndex, playbackPositionTicks, isHdr).then(() => {
-            track(embyItem, audioRelativeIndex, subtitleRelativeIndex, 'resume-media-button', 'resume-media-content', isHdr)
-        })
-    }
-}
+let trackInterval = null
 
 const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
     let lastTicks = -1
-    const trackInterval = setInterval(() => {
+    if (trackInterval) {
+        clearInterval(trackInterval)
+    }
+    trackInterval = setInterval(() => {
         player
             .connect()
             .then(() => {
@@ -38,7 +31,9 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             setConnectionStatus(true)
                             if (playbackPositionTicks > 0) {
                                 emby.client.updateProgress(embyItem.Id, playbackPositionTicks, embyItem.RunTimeTicks).then(() => {
-                                    updateUI(embyItem, playbackPositionTicks, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr)
+                                    let newParams = util.queryParams()
+                                    newParams.resumeTicks = playbackPositionTicks
+                                    window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
                                 })
                             }
                         }
@@ -55,6 +50,5 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
 }
 
 module.exports = {
-    updateUI: updateUI,
     track: track,
 }

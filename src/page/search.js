@@ -2,11 +2,10 @@ module.exports = () => {
     return new Promise(resolve => {
         const debounce = require('debounce')
         const emby = require('../service/emby-client')
-        const queryString = require('query-string')
         const EmbyMixedItem = require('../component/emby-mixed-item')
         const util = require('../util')
 
-        const queryParams = queryString.parse(location.search)
+        const queryParams = util.queryParams()
 
         const executeQuery = debounce(queryText => {
             if (queryText.length > 1) {
@@ -29,7 +28,7 @@ module.exports = () => {
                         document.getElementById('emby-items').innerHTML = '<p class="empty-results">No results found. Try a different search.</p>'
                     }
 
-                    window.history.replaceState(null, null, `./search.html?${queryString.stringify({ query: queryText })}`)
+                    window.history.replaceState(null, null, `search.html?${util.queryString({ query: queryText })}`)
                     window.$lazyLoad()
                     util.loadTooltips()
                     if (foundResults) {

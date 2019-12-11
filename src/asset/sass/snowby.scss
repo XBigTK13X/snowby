@@ -93,6 +93,12 @@ tr.channel-guide {
     text-decoration: none;
 }
 
+.clearfix::after {
+    content: '';
+    clear: both;
+    display: table;
+}
+
 .clickable {
     cursor: pointer;
 }
@@ -139,6 +145,39 @@ tr.channel-guide {
 }
 
 .navbar-button:hover {
+    background: $snowby-highlight-back;
+    color: $snowby-highlight-front;
+}
+
+.tab-container {
+    border: 1px solid darken($snowby-highlight-front, 50%);
+    border-collapse: collapse;
+    border-radius: $snowby-roundness;
+    padding: 5px;
+    width: 80%;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.tab-button {
+    background: $snowby-text-back;
+    color: $snowby-text-front;
+    font-weight: bold;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    float: left;
+    font-size: 20px;
+    outline: none;
+    padding: 14px 16px;
+}
+
+.tab-button:hover {
+    background: $snowby-highlight-back;
+    color: $snowby-highlight-front;
+}
+
+.tab-button-active {
     background: $snowby-highlight-back;
     color: $snowby-highlight-front;
 }
@@ -366,6 +405,12 @@ tr.channel-guide {
 .snowby-tooltip {
     font-size: $snowby-tile-text-size;
     padding: $snowby-buffer;
+}
+
+.cast-photo {
+    width: 100px;
+    height: 150px;
+    margin: 5px;
 }
 
 /*tippy.js */

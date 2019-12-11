@@ -3,7 +3,7 @@ class EmbyItemLink {
         this.name = name
         this.embyItemId = embyItemId
 
-        this.href = `./emby-items.html?embyItemId=${this.embyItemId}`
+        this.href = `emby-items.html?embyItemId=${this.embyItemId}`
         if (options && options.genreFilter) {
             this.href = `${this.href}&genreFilter=${options.genreFilter}`
         }

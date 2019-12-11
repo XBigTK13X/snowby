@@ -1,15 +1,13 @@
 module.exports = () => {
     let embyItem
     return new Promise(resolve => {
-        const queryString = require('query-string')
         const _ = require('lodash')
         const emby = require('../service/emby-client')
         const navbar = require('../component/navbar')
         const util = require('../util')
-        const EmbyPoster = require('../component/emby-poster')
         const windowPosition = require('../service/window-position')
 
-        const queryParams = queryString.parse(location.search)
+        const queryParams = util.queryParams()
 
         windowPosition.saveOnChange(queryParams.embyItemId)
 
