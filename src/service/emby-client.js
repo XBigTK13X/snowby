@@ -1,30 +1,22 @@
-const axios = require('axios')
 const os = require('os')
 
 const util = require('../util')
 const settings = require('../settings')
-const httpLogger = require('./http-logger')
+const HttpClient = require('./http-client')
+
 const EmbyItem = require('./emby-item')
+
+const EMBY_AUTH_HEADER = 'X-Emby-Authorization'
 
 class EmbyClient {
     constructor() {
-        this.httpClient = null
+        this.httpClient = new HttpClient(`${settings.embyServerURL}/emby/`)
         this.authHeader = null
         this.userId = null
-        this.httpConfig = {
-            baseURL: `${settings.embyServerURL}/emby/`,
-            timeout: 30000,
-        }
-    }
-
-    createHttpClient() {
-        this.httpClient = axios.create(this.httpConfig)
-        httpLogger.register(this.httpClient)
     }
 
     connect() {
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
-        this.createHttpClient(this.httpConfig)
 
         const usersURL = 'users/public'
         return this.httpClient
@@ -36,17 +28,14 @@ class EmbyClient {
                     Pw: '',
                 }
                 this.userId = user.Id
-                this.httpConfig.headers = {
-                    'X-Emby-Authorization': this.authHeader,
-                }
-                this.createHttpClient()
+                this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                 const loginURL = 'users/authenticatebyname'
                 return this.httpClient.post(loginURL, loginPayload)
             })
             .then(loginResponse => {
                 const authenticatedUser = loginResponse.data
-                this.httpConfig.headers['X-Emby-Authorization'] = `${this.httpConfig.headers['X-Emby-Authorization']}, Token="${authenticatedUser.AccessToken}"`
-                this.createHttpClient()
+                this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
+                this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                 return true
             })
     }
