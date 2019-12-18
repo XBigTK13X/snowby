@@ -31,25 +31,27 @@ class HttpClient {
         this.newAxios()
     }
 
-    get(url, data) {
-        return this.wrap('get', url, data)
+    get(url, data, options) {
+        return this.wrap('get', url, data, options)
     }
 
-    post(url, data) {
-        return this.wrap('post', url, data)
+    post(url, data, options) {
+        return this.wrap('post', url, data, options)
     }
 
-    wrap(method, url, data) {
+    wrap(method, url, data, options) {
         return new Promise(resolve => {
             return this.client[method](url, data)
                 .then(result => {
-                    if (settings.debugApiCalls) {
+                    if (settings.debugApiCalls && (options && !options.quiet)) {
                         console.log({ method, url, data, result, config: this.config })
                     }
                     return resolve(result)
                 })
                 .catch(err => {
-                    console.log({ place: 'http-client.wrap', err, method, url, data, config: this.config, time: new Date().toString() })
+                    if (options && !options.quiet) {
+                        console.log({ place: 'http-client.wrap', err, method, url, data, config: this.config, time: new Date().toString() })
+                    }
                     return resolve()
                 })
         })
