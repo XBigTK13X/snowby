@@ -15,9 +15,25 @@ class EmbyClient {
         this.userId = null
     }
 
-    connect() {
-        this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
+    heartBeat() {
+        return new Promise(resolve => {
+            if (!this.authHeader || !this.userId) {
+                return resolve(false)
+            }
+            const url = `System/Info`
+            this.httpClient
+                .get(url, null, { quiet: true })
+                .then(result => {
+                    resolve(!!result)
+                })
+                .catch(() => {
+                    resolve(false)
+                })
+        })
+    }
 
+    login() {
+        this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
         const usersURL = 'users/public'
         return this.httpClient
             .get(usersURL)
@@ -35,9 +51,42 @@ class EmbyClient {
             .then(loginResponse => {
                 const authenticatedUser = loginResponse.data
                 this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
+                window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
+                window.localStorage.setItem('SnowbyUserId', this.userId)
                 this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                 return true
             })
+    }
+
+    connect() {
+        return new Promise(resolve => {
+            this.heartBeat().then(heartBeatResult => {
+                if (heartBeatResult) {
+                    return resolve(true)
+                } else {
+                    let authToken = window.localStorage.getItem(EMBY_AUTH_HEADER)
+                    let userId = window.localStorage.getItem('SnowbyUserId')
+                    if (authToken) {
+                        this.authHeader = authToken
+                        this.userId = userId
+                        this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
+                        return this.heartBeat().then(heartBeatRetryResult => {
+                            if (heartBeatRetryResult) {
+                                return resolve(true)
+                            } else {
+                                return this.login().then(() => {
+                                    resolve(true)
+                                })
+                            }
+                        })
+                    } else {
+                        return this.login().then(() => {
+                            resolve(true)
+                        })
+                    }
+                }
+            })
+        })
     }
 
     libraryViews() {
@@ -100,9 +149,15 @@ class EmbyClient {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
+        playbackPositionTicks = Math.floor(playbackPositionTicks)
+        if (this.lastProgressUpdate) {
+            if (this.lastProgressUpdate.embyItemId === embyItemId && this.lastProgressUpdate.playbackPositionTicks === playbackPositionTicks && this.lastProgressUpdate.runTimeTicks === runTimeTicks) {
+                return Promise.resolve()
+            }
+        }
         const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
         const payload = {
-            PlaybackPositionTicks: Math.floor(playbackPositionTicks),
+            PlaybackPositionTicks: playbackPositionTicks,
         }
         const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
         if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
@@ -112,7 +167,14 @@ class EmbyClient {
             payload.PlaybackPositionTicks = 0
             payload.Played = true
         }
-        return this.httpClient.post(url, payload)
+        return this.httpClient.post(url, payload).then(() => {
+            this.lastProgressUpdate = {
+                embyItemId,
+                playbackPositionTicks,
+                runTimeTicks,
+            }
+            return Promise.resolve()
+        })
     }
 
     markPlayed(embyItemId) {
