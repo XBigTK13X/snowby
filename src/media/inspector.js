@@ -7,14 +7,14 @@ const isAnimeSubtitle = stream => {
             return false
         }
     }
-    return !stream.Language || (stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng')))
+    return !stream.Language || stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng'))
 }
 
 const isJapaneseAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
-    if (!stream.Language || (stream.Language.toLowerCase().includes('jpn') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('jap')))) {
+    if (!stream.Language || stream.Language.toLowerCase().includes('jpn') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('jap'))) {
         return true
     }
     return false
@@ -24,7 +24,7 @@ const isEnglishAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
-    if (!stream.Language || (stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng')))) {
+    if (!stream.Language || stream.Language.toLowerCase().includes('eng') || (stream.DisplayLanguage && stream.DisplayLanguage.toLowerCase().includes('eng'))) {
         return true
     }
     return false

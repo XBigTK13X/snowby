@@ -1,6 +1,11 @@
 module.exports = pageName => {
+    window.lastTargetUrl = null
     window.reloadPage = targetUrl => {
         if (targetUrl) {
+            if (targetUrl === window.lastTargetUrl) {
+                return
+            }
+            window.lastTargetUrl = targetUrl
             window.history.replaceState(null, null, targetUrl)
         }
         if (targetUrl && !targetUrl.includes('play-media')) {

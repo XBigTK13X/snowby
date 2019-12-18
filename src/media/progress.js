@@ -38,7 +38,10 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             }
                         }
                     })
-                    .catch(swallow => {})
+                    .catch(mediaFinished => {
+                        setConnectionStatus(false)
+                        clearInterval(trackInterval)
+                    })
             })
             .catch(err => {
                 if (err === 'disconnected') {
