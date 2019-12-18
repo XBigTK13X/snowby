@@ -43,7 +43,7 @@ class HttpClient {
         return new Promise(resolve => {
             return this.client[method](url, data)
                 .then(result => {
-                    if (settings.debugApiCalls && (options && !options.quiet)) {
+                    if (settings.debugApiCalls && options && !options.quiet) {
                         console.log({ method, url, data, result, config: this.config })
                     }
                     return resolve(result)

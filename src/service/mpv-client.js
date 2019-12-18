@@ -1,5 +1,4 @@
 //Modified from https://github.com/AxelTerizaki/Node-MPV/tree/FixIPCRequestID
-const axios = require('axios')
 const settings = require('../settings')
 const mpvApi = require('../vendor/node-mpv')
 const ticks = require('../media/ticks')
@@ -13,10 +12,6 @@ class MpvClient {
         })
         this.lastProfile = null
         this.profile = null
-    }
-
-    name() {
-        return 'MPV'
     }
 
     connect() {
@@ -69,15 +64,10 @@ class MpvClient {
     }
 
     getPositionInEmbyTicks() {
-        return this.mpv
-            .getTimePosition()
-            .then(position => {
-                const embyTicks = ticks.mpvToEmby(position)
-                return embyTicks
-            })
-            .catch(err => {
-                console.log({ place: 'mpv-client.getPositionInEmbyTicks', err, mpv: this.mpv, time: new Date().toString() })
-            })
+        return this.mpv.getTimePosition().then(position => {
+            const embyTicks = ticks.mpvToEmby(position)
+            return embyTicks
+        })
     }
 
     setProfile(profile) {
