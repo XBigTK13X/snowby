@@ -2,7 +2,8 @@ module.exports = () => {
     return new Promise((resolve, reject) => {
         const settings = require('../settings')
         const InternalLink = require('../component/internal-link')
-        const links = [new InternalLink('Library', 'library.html'), new InternalLink('Stream', 'streaming.html'), new InternalLink('Search', 'search.html')]
+        const EmbyItemLink = require('../component/emby-item-link')
+        const links = [new InternalLink('Library', 'library.html'), new EmbyItemLink('Next Up', 'next-up'), new InternalLink('Stream', 'streaming.html'), new InternalLink('Search', 'search.html')]
 
         let markup = `<div class="grid center-grid">${links
             .map(link => {

@@ -34,7 +34,7 @@ module.exports = () => {
                     document.getElementById('emby-items').innerHTML = '<p class="empty-results">No items found. Try toggling watched.</p>'
                 }
 
-                let title = handler.title || parent.Name
+                let title = handler.title || (parent && parent.Name)
                 if (children.length > 0 && parent && parent.Type !== 'Series' && parent.Type !== 'BoxSet' && parent.CollectionType !== 'livetv') {
                     title += ` (${children.length} ${children.length === 1 ? ' item' : ' items'})`
                     if (children[0].ChannelNumber) {

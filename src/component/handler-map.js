@@ -25,6 +25,9 @@ const getHandler = (emby, itemId) => {
         if (itemId === 'genres') {
             return resolve({ handler: handlers.genreList })
         }
+        if (itemId === 'next-up') {
+            return resolve({ handler: handlers.nextUp })
+        }
         return emby.embyItem(itemId).then(embyItem => {
             navbar.render(embyItem.isCollection())
             if (embyItem.Type === 'Genre') {

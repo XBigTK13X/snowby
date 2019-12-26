@@ -86,6 +86,13 @@ module.exports = {
         },
         render: renderers.movieList,
     },
+    nextUp: {
+        getChildren: emby => {
+            return emby.nextUp()
+        },
+        render: renderers.nextUp,
+        title: 'Next Up',
+    },
     playlistList: {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {

@@ -8,13 +8,13 @@ module.exports = class EmbyItem {
         Object.assign(this, responseBody)
 
         this.NextUp = options && options.nextUp
-        this.IsSearchResult = options && options.isSearchResult
+        this.ShowSpoilers = options && options.showSpoilers
+        this.ShowParentImage = options && options.showParentImage
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
         }
 
-        this.ResumeImage = false
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
         if (this.IsPlayable) {
@@ -77,7 +77,7 @@ module.exports = class EmbyItem {
     }
 
     showSpoilers() {
-        if (this.IsSearchResult) {
+        if (this.ShowSpoilers) {
             return true
         }
         if (this.Type === 'Episode') {
@@ -90,13 +90,14 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
+        console.log({ type: this.Type })
         width *= 2
         height *= 2
         if (this.ForcedImage) {
             return this.ForcedImage
         }
         // Don't show thumbnails for episodes you haven't seen yet
-        if (!this.showSpoilers()) {
+        if (!this.showSpoilers() && !this.ShowParentImage) {
             return null
         }
         if (Object.keys(this.ImageTags).length > 0) {
@@ -107,17 +108,10 @@ module.exports = class EmbyItem {
             }
             let imageTag = this.ImageTags[imageType]
 
-            if (this.ResumeImage) {
-                if (_.has(this.ImageTags, 'Thumb')) {
-                    imageType = 'Thumb'
-                    imageTag = ImageTags[imageType]
-                }
-            }
-
-            if (this.Type === 'Episode' && this.ResumeImage) {
-                itemId = this.ParentThumbItemId
-                imageType = 'Thumb'
-                imageTag = ParentThumbImageTag
+            if (this.ShowParentImage) {
+                itemId = this.SeriesId
+                imageType = 'Primary'
+                imageTag = this.SeriesPrimaryImageTag
             }
 
             var result = settings.embyServerURL + '/emby/Items/' + itemId + '/Images/' + imageType
@@ -272,7 +266,6 @@ module.exports = class EmbyItem {
     }
 
     getTooltipContent() {
-        let fidelity = this.getFidelityTooltip() || null
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
@@ -284,9 +277,7 @@ module.exports = class EmbyItem {
             return `
             <div>
                 <h3 class='centered'>${seriesName ? seriesName + ' - ' : ''}${this.getTitle()}</h3>
-                ${episodeTitle ? `<h4>Episode Title</h4><p>${episodeTitle}</p>` : ''}
-                ${fidelity ? `<h4>Fidelity</h4><p>${fidelity}</p>` : ''}
-                ${releaseYear ? `<h4>Release Year</h4><p>${this.ProductionYear}</p>` : ''}
+                ${episodeTitle && this.showSpoilers() ? `<h4>Episode Title</h4><p>${episodeTitle}</p>` : ''}
             </div>
             `
         }

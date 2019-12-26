@@ -207,9 +207,9 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
-                responses[1].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
-                responses[0].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { isSearchResult: true })),
+                responses[0].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
+                responses[2].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
+                responses[1].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
             ]
         })
     }
@@ -281,6 +281,17 @@ class EmbyClient {
         result += '?maxWidth=' + width + '&maxHeight=' + height
         result += '&tag=' + imageTag + '&quality=100'
         return result
+    }
+
+    nextUp() {
+        const url = `Shows/NextUp?Limit=200&Fields=PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
+        return this.httpClient.get(url).then(nextUpResponse => {
+            return nextUpResponse.data.Items.sort((a, b) => {
+                return a.SeriesName > b.SeriesName ? 1 : -1
+            }).map(x => {
+                return new EmbyItem(x, { showParentImage: true })
+            })
+        })
     }
 }
 

@@ -74,6 +74,13 @@ module.exports = {
         }
         return renderGeneratedGrid(generator, parent, children)
     },
+    nextUp: (parent, children) => {
+        const generator = child => {
+            let thumb = new EmbyPoster(child)
+            return thumb.render()
+        }
+        return renderGeneratedGrid(generator, parent, children)
+    },
     inProgress: (parent, children) => {
         const generator = child => {
             let mixed = new EmbyMixedItem(child)
