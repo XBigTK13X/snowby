@@ -15,12 +15,12 @@ module.exports = () => {
         emby.client
             .connect()
             .then(() => {
-                return Promise.all([emby.client.libraryViews(), emby.client.itemsInProgress()])
+                return emby.client.libraryViews()
             })
-            .then(responses => {
+            .then(libraries => {
                 let menuEntries = []
 
-                responses[0].forEach(library => {
+                libraries.forEach(library => {
                     if (ENABLED_LIBRARIES[library.CollectionType]) {
                         menuEntries.push(new EmbyItemLink(library.Name, library.Id))
                     }
@@ -37,11 +37,6 @@ module.exports = () => {
                     }
                     return a.name > b.name ? 1 : -1
                 })
-
-                const itemsInProgress = responses[1]
-                if (itemsInProgress.length > 0) {
-                    menuEntries.push(new EmbyItemLink('In Progress', 'in-progress'))
-                }
 
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
                     .map(entry => {

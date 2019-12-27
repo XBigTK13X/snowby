@@ -76,8 +76,10 @@ module.exports = {
     },
     nextUp: (parent, children) => {
         const generator = child => {
-            let thumb = new EmbyPoster(child)
-            return thumb.render()
+            let item = new EmbyPoster(child)
+            item.enableProgressBadge()
+            item.enableFidelityBadge()
+            return item.render()
         }
         return renderGeneratedGrid(generator, parent, children)
     },

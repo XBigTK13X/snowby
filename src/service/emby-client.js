@@ -284,7 +284,7 @@ class EmbyClient {
     }
 
     nextUp() {
-        const url = `Shows/NextUp?Limit=200&Fields=PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
+        const url = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
         return this.httpClient.get(url).then(nextUpResponse => {
             return nextUpResponse.data.Items.sort((a, b) => {
                 return a.SeriesName > b.SeriesName ? 1 : -1

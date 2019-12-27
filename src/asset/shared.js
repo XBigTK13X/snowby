@@ -8,9 +8,6 @@ module.exports = pageName => {
             window.lastTargetUrl = targetUrl
             window.history.replaceState(null, null, targetUrl)
         }
-        if (targetUrl && !targetUrl.includes('play-media')) {
-            document.getElementById('header').innerHTML = 'Loading...'
-        }
         const settings = require('../settings')
         const _ = require('lodash')
         const util = require('../util')
@@ -33,6 +30,25 @@ module.exports = pageName => {
         if (!options.hideNavbar) {
             require('../component/navbar').render(options.showToggleButton)
         }
+
+        let dots = ''
+        window.updateLoading = () => {
+            let indicator = document.getElementById('loading')
+            if (window.loadingCount) {
+                if (dots.length > 4) {
+                    dots = ''
+                }
+                dots = dots + '.'
+                indicator.setAttribute('style', '')
+                indicator.innerHTML = 'Loading' + dots
+            } else {
+                indicator.setAttribute('style', 'display:none')
+            }
+        }
+        if (window.loadingInterval) {
+            clearInterval(window.loadingInterval)
+        }
+        window.loadingInterval = setInterval(updateLoading, 200)
 
         require(`../page/${pageName}`)().then(result => {
             util.loadTooltips()
