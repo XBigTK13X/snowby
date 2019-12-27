@@ -40,18 +40,28 @@ class HttpClient {
     }
 
     wrap(method, url, data, options) {
+        if (!window.loadingCount) {
+            window.loadingCount = 1
+        } else {
+            window.loadingCount++
+        }
+        window.updateLoading()
         return new Promise(resolve => {
             return this.client[method](url, data)
                 .then(result => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         console.log({ method, url, data, result, config: this.config })
                     }
+                    window.loadingCount--
+                    window.updateLoading()
                     return resolve(result)
                 })
                 .catch(err => {
                     if (options && !options.quiet) {
                         console.log({ place: 'http-client.wrap', err, method, url, data, config: this.config, time: new Date().toString() })
                     }
+                    window.ladingCount--
+                    window.updateLoading()
                     return resolve()
                 })
         })

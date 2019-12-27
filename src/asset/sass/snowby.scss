@@ -206,15 +206,27 @@ tr.channel-guide {
 }
 
 .bottom-pin-right {
-    position: fixed;
-    bottom: 0%;
-    opacity: 1;
     border-radius: 5px;
-    padding: 10px;
-    font-size: larger;
-    text-align: right;
-    right: 10px;
     bottom: 10px;
+    font-size: larger;
+    opacity: 1;
+    padding: 10px;
+    position: fixed;
+    right: 10px;
+    text-align: right;
+}
+
+.bottom-left-pin {
+    border-radius: 5px;
+    bottom: 10px;
+    font-size: larger;
+    left: 10px;
+    opacity: 1;
+    padding: 10px;
+    position: fixed;
+    text-align: right;
+    z-index: 500;
+    background-color: $snowby-text-back;
 }
 
 .empty-results {

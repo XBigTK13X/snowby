@@ -2,6 +2,7 @@ const settings = require('../settings')
 const fidelityBadge = require('./fidelity-badge')
 const kindBadge = require('./kind-badge')
 const unwatchedBadge = require('./unwatched-badge')
+const progressBadge = require('./progress-badge')
 
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
 
@@ -30,6 +31,10 @@ class EmbyPoster {
         this.unwatchedBadge = unwatchedBadge.render(this.embyItem)
     }
 
+    enableProgressBadge() {
+        this.progressBadge = progressBadge.render(this.embyItem)
+    }
+
     render() {
         let titleMarkup = this.title ? `<div class="grid-item-title">${this.title}</div>` : ''
         let summary = this.embyItem.getTooltipContent()
@@ -37,6 +42,7 @@ class EmbyPoster {
         let fidelityBadgeMarkup = this.fidelityBadge ? this.fidelityBadge : ''
         let kindBadgeMarkup = this.kindBadge ? this.kindBadge : ''
         let unwatchedBadgeMarkup = this.unwatchedBadge ? this.unwatchedBadge : ''
+        let progressBadgeMarkup = this.progressBadge ? this.progressBadge : ''
         return `
         <div ${tooltipMarkup}>
 	        <div class="grid-item tall-grid-item badge-container">
@@ -49,6 +55,7 @@ class EmbyPoster {
 				${unwatchedBadgeMarkup}
                 ${fidelityBadgeMarkup}
                 ${kindBadgeMarkup}
+                ${progressBadgeMarkup}
 			</div>
 			${titleMarkup}
 		</div>

@@ -90,7 +90,6 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
-        console.log({ type: this.Type })
         width *= 2
         height *= 2
         if (this.ForcedImage) {
