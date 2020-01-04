@@ -1,5 +1,6 @@
 const renderers = require('./renderers')
 const util = require('../util')
+const navbar = require('../component/navbar')
 
 const SearchParams = {
     Recursive: true,
@@ -117,6 +118,10 @@ module.exports = {
     },
     tvSeason: {
         getChildren: (emby, embyItem) => {
+            navbar.render({
+                parentId: embyItem.SeriesId,
+                parentName: 'Series',
+            })
             return emby.episodes(embyItem.ParentId, embyItem.Id)
         },
         render: renderers.tvSeason,
