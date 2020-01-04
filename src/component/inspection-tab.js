@@ -13,10 +13,14 @@ class InspectionTab {
             <p>Path - ${this.embyItem.Path}</p>
             <p>Size - ${fileSize}</p>
         `
-        if (this.inspection.isAnime) {
-            html += `<p>Snowby thinks this is anime.`
+        if (this.inspection.preferDub) {
+            html += `<p>Snowby thinks this is dubbed anime.`
         } else {
-            html += `<p>Snowby doesn't think this is anime.`
+            if (this.inspection.isAnime) {
+                html += `<p>Snowby thinks this is subbed anime.`
+            } else {
+                html += `<p>Snowby doesn't think this is anime.`
+            }
         }
         if (this.selectedIndices.audio.relative) {
             html += ` It will attempt to select audio track ${this.selectedIndices.audio.absolute}`

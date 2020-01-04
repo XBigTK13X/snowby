@@ -1,13 +1,13 @@
 {
   "name": "snowby",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "develop": "concurrently 'yarn:develop-sass' 'yarn:start'",
     "develop-sass": "node-sass --watch ./src/asset/sass -o ./src/asset/css",
-    "package": "npm run format-all && electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --ignore pdn/ --ignore mpv.log --ignore kttp-alive_data/",
+    "package": "npm run format-all && electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --ignore pdn/ --ignore mpv.log --ignore keep-awake_data/",
     "format-all": "prettier --write \"src/**/*.{js,html,css,scss}\""
   },
   "author": "",

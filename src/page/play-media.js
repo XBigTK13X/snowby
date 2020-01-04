@@ -21,6 +21,8 @@ module.exports = () => {
 
         const queryParams = util.queryParams()
 
+        const navbar = require('../component/navbar')
+
         if (!queryParams.embyItemId) {
             throw new Error('An embyItemId is required to play media', { queryParams })
         }
@@ -31,6 +33,12 @@ module.exports = () => {
                 return emby.client.embyItem(queryParams.embyItemId)
             })
             .then(embyItem => {
+                if (embyItem.Type === 'Episode') {
+                    navbar.render({
+                        parentId: embyItem.SeasonId,
+                        parentName: 'Season',
+                    })
+                }
                 document.getElementById('mark-watched-button').onclick = event => {
                     event.preventDefault()
                     emby.client.markPlayed(queryParams.embyItemId)

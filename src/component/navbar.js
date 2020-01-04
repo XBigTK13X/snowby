@@ -3,7 +3,7 @@ const util = require('../util')
 const fidelityBadge = require('./fidelity-badge')
 
 module.exports = {
-    render: showToggleButton => {
+    render: options => {
         let navbarContent = `
 			<div class="navbar">
 		      <a href="landing.html" >
@@ -17,7 +17,7 @@ module.exports = {
 		        </div>
 		      </a>
 		`
-        if (showToggleButton) {
+        if (options.showToggleButton) {
             let watchedParams = util.queryParams()
             if (!watchedParams.showWatched) {
                 watchedParams.showWatched = true
@@ -51,6 +51,15 @@ module.exports = {
 		        </div>
 		      </a>
 			`
+        }
+        if (options.parentId) {
+            navbarContent += `
+              <a href="emby-items.html?embyItemId=${options.parentId}">
+                <div class="navbar-button">
+                  ${options.parentName ? options.parentName : 'Parent'}
+                </div>
+              </a>
+            `
         }
         navbarContent += `<a id="random-choice-button" style="display:none;" href="" onclick="window.randomChoice();return false">
                 <div class="navbar-button">

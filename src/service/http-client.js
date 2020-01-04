@@ -60,7 +60,7 @@ class HttpClient {
                     if (options && !options.quiet) {
                         console.log({ place: 'http-client.wrap', err, method, url, data, config: this.config, time: new Date().toString() })
                     }
-                    window.ladingCount--
+                    window.loadingCount--
                     window.updateLoading()
                     return resolve()
                 })

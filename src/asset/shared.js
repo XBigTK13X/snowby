@@ -28,7 +28,9 @@ module.exports = pageName => {
             options = pageOptions[pageName]
         }
         if (!options.hideNavbar) {
-            require('../component/navbar').render(options.showToggleButton)
+            require('../component/navbar').render({
+                showToggleButton: options.showToggleButton,
+            })
         }
 
         let dots = ''
