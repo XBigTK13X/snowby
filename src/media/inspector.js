@@ -38,7 +38,7 @@ const isJapaneseAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
-    if (streamIsLabeled(stream,['comment'])){
+    if (streamIsLabeled(stream, ['comment'])) {
         return false
     }
     if (streamIsLabeled(stream, ['jpn', 'jap'])) {
