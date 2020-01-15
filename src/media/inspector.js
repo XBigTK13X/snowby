@@ -38,7 +38,7 @@ const isJapaneseAudio = stream => {
     if (stream.Type !== 'Audio') {
         return false
     }
-    if (streamIsLabeled(stream, ['comment'])) {
+    if (streamIsLabeled(stream, ['comment', 'description'])) {
         return false
     }
     if (streamIsLabeled(stream, ['jpn', 'jap'])) {
@@ -81,8 +81,8 @@ const inspect = embyItem => {
     let audioAbsoluteIndex = 0
     let subtitleRelativeIndex = 0
     let audioRelativeIndex = 0
-    let englishAudioAbsoluteIndex = -1
-    let englishAudioRelativeIndex = -1
+    let englishAudioAbsoluteIndex = 1
+    let englishAudioRelativeIndex = 1
     let isHdr = false
 
     let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
@@ -125,7 +125,7 @@ const inspect = embyItem => {
             audioAbsoluteIndex = trackIndex
             audioRelativeIndex = audioIndex
         }
-        if (isEnglishAudio(stream) && englishAudioRelativeIndex === -1) {
+        if (isEnglishAudio(stream) && englishAudioRelativeIndex === 1) {
             englishAudioRelativeIndex = audioIndex
             englishAudioAbsoluteIndex = trackIndex
         }
