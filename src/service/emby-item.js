@@ -256,6 +256,9 @@ module.exports = class EmbyItem {
         let overview = this.Overview
         let seriesName = this.SeriesName || null
         let releaseYear = this.ProductionYear || null
+        if (!studio && !overview && !rating) {
+            return ''
+        }
         return `<div>
             ${overview ? `<h4>Summary</h4><p>${overview}</p>` : ''}
             ${rating ? `<p>MPAA Rating - ${rating}</p>` : ''}

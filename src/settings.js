@@ -15,11 +15,11 @@ module.exports = {
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'January 15, 2020',
+    versionDate: 'January 19, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
-        maxPercent: 95,
+        maxPercent: 90,
     },
     spawnOptions: {
         stdio: 'ignore',
