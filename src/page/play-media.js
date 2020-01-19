@@ -10,11 +10,10 @@ module.exports = () => {
         const settings = require('../settings')
         const util = require('../util')
 
-        const CastTab = require('../component/cast-tab')
-        const InformationTab = require('../component/information-tab')
         const InspectionTab = require('../component/inspection-tab')
-        const RunTimeTab = require('../component/run-time-tab')
         const StreamsTab = require('../component/streams-tab')
+        const InformationTab = require('../component/information-tab')
+        const CastTab = require('../component/cast-tab')
 
         const progress = require('../media/progress')
         const emby = require('../service/emby-client')
@@ -78,7 +77,7 @@ module.exports = () => {
                 document.getElementById('tagline').innerHTML = embyItem.getTagline()
 
                 const loadTab = (targetId, content) => {
-                    const active = queryParams.openTab === targetId || (!queryParams.openTab && targetId === 'run-time-button')
+                    const active = queryParams.openTab === targetId || (!queryParams.openTab && targetId === 'inspection-button')
                     const handler = event => {
                         if (event) {
                             event.preventDefault()
@@ -94,11 +93,18 @@ module.exports = () => {
                     return handler
                 }
 
-                const tabNames = ['Run Time', 'Streams', 'Inspection', 'Information', 'Cast & Crew']
-                const tabContents = [new RunTimeTab(embyItem), new StreamsTab(embyItem, selectedIndices), new InspectionTab(embyItem, inspection, selectedIndices), new InformationTab(embyItem), new CastTab(embyItem, emby.client)]
+                const tabNames = ['Inspection', 'Streams', 'Information', 'Cast & Crew']
+                const tabContents = [new InspectionTab(embyItem, inspection, selectedIndices), new StreamsTab(embyItem, selectedIndices), new InformationTab(embyItem), new CastTab(embyItem, emby.client)]
 
+                let filteredTabNames = []
                 let tabButtons = ''
                 tabNames.forEach((tabName, tabIndex) => {
+                    let tabContent = tabContents[tabIndex]
+                    let rendered = tabContent.render()
+                    if (!rendered) {
+                        return
+                    }
+                    filteredTabNames.push(tabName)
                     tabButtons += `
                        <a href="" id="${tabName.toLowerCase().replace(' ', '-')}-button">
                         <div class="tab-button">
@@ -110,7 +116,7 @@ module.exports = () => {
 
                 document.getElementById('tab-buttons').innerHTML = tabButtons
 
-                tabNames.forEach((tabName, tabIndex) => {
+                filteredTabNames.forEach((tabName, tabIndex) => {
                     const tabId = tabName.toLowerCase().replace(' ', '-')
                     let handler = loadTab(`${tabId}`, tabContents[tabIndex])
                     if (!queryParams.openTab && tabIndex === 0) {
