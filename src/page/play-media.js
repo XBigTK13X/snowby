@@ -94,7 +94,12 @@ module.exports = () => {
                 }
 
                 const tabNames = ['Inspection', 'Streams', 'Information', 'Cast & Crew']
-                const tabContents = [new InspectionTab(embyItem, inspection, selectedIndices), new StreamsTab(embyItem, selectedIndices), new InformationTab(embyItem), new CastTab(embyItem, emby.client)]
+                const tabContents = [
+                    new InspectionTab(embyItem, inspection, selectedIndices),
+                    new StreamsTab(embyItem, selectedIndices),
+                    new InformationTab(embyItem),
+                    new CastTab(embyItem, emby.client),
+                ]
 
                 let filteredTabNames = []
                 let tabButtons = ''
@@ -129,24 +134,49 @@ module.exports = () => {
                 })
 
                 const track = () => {
-                    progress.track(embyItem, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 'resume-media-button', 'resume-media-content', inspection.isHdr)
+                    progress.track(
+                        embyItem,
+                        selectedIndices.audio.relative,
+                        selectedIndices.subtitle.relative,
+                        'resume-media-button',
+                        'resume-media-content',
+                        inspection.isHdr
+                    )
                 }
 
                 if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
                     document.getElementById('resume-media-button').style = null
                     document.getElementById('resume-media-button').onclick = event => {
                         event.preventDefault()
-                        player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative, embyItem.UserData.PlaybackPositionTicks, inspection.isHdr).then(() => {
-                            track()
-                        })
+                        player
+                            .openFile(
+                                embyItem.Id,
+                                embyItem.CleanPath,
+                                selectedIndices.audio.relative,
+                                selectedIndices.subtitle.relative,
+                                embyItem.UserData.PlaybackPositionTicks,
+                                inspection.isHdr
+                            )
+                            .then(() => {
+                                track()
+                            })
                     }
                 }
 
                 document.getElementById('play-media-button').onclick = event => {
                     event.preventDefault()
-                    player.openFile(embyItem.Id, embyItem.CleanPath, selectedIndices.audio.relative, selectedIndices.subtitle.relative, 0, inspection.isHdr).then(() => {
-                        track()
-                    })
+                    player
+                        .openFile(
+                            embyItem.Id,
+                            embyItem.CleanPath,
+                            selectedIndices.audio.relative,
+                            selectedIndices.subtitle.relative,
+                            0,
+                            inspection.isHdr
+                        )
+                        .then(() => {
+                            track()
+                        })
                 }
 
                 resolve({

@@ -90,7 +90,9 @@ module.exports = pageName => {
                             .browserGetMediaProfiles()
                             .map((profile, ii) => {
                                 return `
-                                <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>
+                                <option value="${profile}" ${
+                                    queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''
+                                }/>
                                 ${profile}
                                 </option>
                             `

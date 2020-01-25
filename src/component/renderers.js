@@ -78,6 +78,7 @@ module.exports = {
         const generator = child => {
             let item = new EmbyPoster(child)
             item.enableProgressBadge()
+            item.enableUnwatchedBadge()
             item.enableFidelityBadge()
             return item.render()
         }

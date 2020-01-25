@@ -58,7 +58,15 @@ class HttpClient {
                 })
                 .catch(err => {
                     if (options && !options.quiet) {
-                        console.log({ place: 'http-client.wrap', err, method, url, data, config: this.config, time: new Date().toString() })
+                        console.log({
+                            place: 'http-client.wrap',
+                            err,
+                            method,
+                            url,
+                            data,
+                            config: this.config,
+                            time: new Date().toString(),
+                        })
                     }
                     window.loadingCount--
                     window.updateLoading()

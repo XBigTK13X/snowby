@@ -10,7 +10,14 @@ module.exports = () => {
                 const settings = require('../settings')
                 const InternalLink = require('../component/internal-link')
                 const EmbyItemLink = require('../component/emby-item-link')
-                const links = [new InternalLink('Library', 'library.html'), new EmbyItemLink('Next Up', 'next-up'), new InternalLink('Stream', 'streaming.html'), new InternalLink('Search', 'search.html')]
+                const ExternalLink = require('../component/external-link')
+                const links = [
+                    new InternalLink('Library', 'library.html'),
+                    new EmbyItemLink('Next Up', 'next-up'),
+                    new InternalLink('Stream', 'streaming.html'),
+                    new InternalLink('Search', 'search.html'),
+                    new ExternalLink('Intranet', 'http://9914.us')
+                ]
 
                 if (inProgressItems.length > 0) {
                     links.push(new EmbyItemLink('In Progress', 'in-progress'))
@@ -22,7 +29,8 @@ module.exports = () => {
                     })
                     .join('')}</div>`
 
-                document.getElementById('version').innerHTML = `v${require('electron').remote.app.getVersion()} built ${settings.versionDate}`
+                const appVersion = require('electron').remote.app.getVersion()
+                document.getElementById('version').innerHTML = `v${appVersion} built ${settings.versionDate}`
                 document.getElementById('menu-entries').innerHTML = markup
                 document.getElementById('header').innerHTML = 'Snowby'
                 resolve()

@@ -58,7 +58,12 @@ module.exports = {
             return emby.genres(util.queryParams().genreFilter)
         },
         render: renderers.genreList,
-        title: util.queryParams().genreFilter === 'Movie' ? 'Movie Genres' : util.queryParams().genreFilter === 'Series' ? 'TV Show Genres' : 'All Genres',
+        title:
+            util.queryParams().genreFilter === 'Movie'
+                ? 'Movie Genres'
+                : util.queryParams().genreFilter === 'Series'
+                ? 'TV Show Genres'
+                : 'All Genres',
     },
     inProgress: {
         getChildren: emby => {

@@ -10,6 +10,7 @@ module.exports = class EmbyItem {
         this.NextUp = options && options.nextUp
         this.ShowSpoilers = options && options.showSpoilers
         this.ShowParentImage = options && options.showParentImage
+        this.UnwatchedCount = options && options.unwatchedCount
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -226,6 +227,9 @@ module.exports = class EmbyItem {
     }
 
     getUnwatchedCount() {
+        if(this.UnwatchedCount){
+            return this.UnwatchedCount
+        }
         if (this.UserData && this.UserData.UnplayedItemCount > 0) {
             return this.UserData.UnplayedItemCount
         }
