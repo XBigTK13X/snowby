@@ -8,7 +8,11 @@ $snowby-highlight-back: lighten($snowby-text-back, $snowby-highlight-intensity);
 $snowby-tile-text-size: 26px;
 $snowby-highlight-intensity: 30%;
 $snowby-tile-frame: linear-gradient(135deg, $snowby-text-back, lighten($snowby-text-back, $snowby-highlight-intensity));
-$snowby-tile-frame-highlight: linear-gradient(135deg, lighten($snowby-text-back, $snowby-highlight-intensity), lighten($snowby-text-back, $snowby-highlight-intensity * 2));
+$snowby-tile-frame-highlight: linear-gradient(
+    135deg,
+    lighten($snowby-text-back, $snowby-highlight-intensity),
+    lighten($snowby-text-back, $snowby-highlight-intensity * 2)
+);
 
 $snowby-center-grid-row-height: 350px;
 
@@ -41,7 +45,8 @@ $snowby-color-worse: #d18150;
 $snowby-color-worst: #c15050;
 
 html {
-    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, system-ui, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, system-ui, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+        'Open Sans', sans-serif;
     background: $snowby-window-color;
     color: $snowby-text-front;
 }
@@ -184,6 +189,12 @@ tr.channel-guide {
 
 .highlighted-row {
     background-color: #0d3c0d;
+}
+
+.highlighted-warning {
+    background-color: #bbbb12;
+    color: #010101;
+    border-radius: 5px;
 }
 
 .query-container {

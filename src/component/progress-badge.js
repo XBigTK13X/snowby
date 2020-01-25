@@ -10,7 +10,9 @@ const render = embyItem => {
         return ''
     }
 
-    return `<span class="badge badge-top-left badge-good">${ticks.toTimeStamp(embyItem.RunTimeTicks - embyItem.UserData.PlaybackPositionTicks)}</span>`
+    return `<span class="badge badge-top-left badge-good">${ticks.toTimeStamp(
+        embyItem.RunTimeTicks - embyItem.UserData.PlaybackPositionTicks
+    )}</span>`
 }
 
 module.exports = {

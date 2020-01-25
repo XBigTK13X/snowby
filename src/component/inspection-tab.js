@@ -31,17 +31,13 @@ class InspectionTab {
             .add(runTimeBreakdown.seconds, 'seconds')
         let finishStamp = finishAt.format('hh:mm:ss a')
         html += `<p>Finish At - ${finishStamp}</p>`
-        html += `
-            <p>Path - ${this.embyItem.Path}</p>
-            <p>Size - ${fileSize}</p>
-        `
         if (this.inspection.preferDub) {
             html += `<p>Snowby thinks this is dubbed anime.`
         } else {
             if (this.inspection.isAnime) {
                 html += `<p>Snowby thinks this is subbed anime.`
             } else {
-                html += `<p>Snowby doesn't think this is anime.`
+                html += `<p><span class="highlighted-warning">Snowby doesn't think this is anime.</span>`
             }
         }
         if (this.selectedIndices.audio.relative) {
@@ -59,6 +55,10 @@ class InspectionTab {
         } else {
             html += `<p>Snowby thinks this uses an SDR color space. It will only use standard video output when playing.<p>`
         }
+        html += `
+            <p>Path - ${this.embyItem.Path}</p>
+            <p>Size - ${fileSize}</p>
+        `
         return html
     }
 }

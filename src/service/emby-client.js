@@ -1,9 +1,9 @@
 const os = require('os')
+const _ = require('lodash')
 
 const util = require('../util')
 const settings = require('../settings')
 const HttpClient = require('./http-client')
-
 const EmbyItem = require('./emby-item')
 
 const EMBY_AUTH_HEADER = 'X-Emby-Authorization'
@@ -151,7 +151,11 @@ class EmbyClient {
         }
         playbackPositionTicks = Math.floor(playbackPositionTicks)
         if (this.lastProgressUpdate) {
-            if (this.lastProgressUpdate.embyItemId === embyItemId && this.lastProgressUpdate.playbackPositionTicks === playbackPositionTicks && this.lastProgressUpdate.runTimeTicks === runTimeTicks) {
+            if (
+                this.lastProgressUpdate.embyItemId === embyItemId &&
+                this.lastProgressUpdate.playbackPositionTicks === playbackPositionTicks &&
+                this.lastProgressUpdate.runTimeTicks === runTimeTicks
+            ) {
                 return Promise.resolve()
             }
         }
@@ -284,12 +288,30 @@ class EmbyClient {
     }
 
     nextUp() {
-        const url = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
-        return this.httpClient.get(url).then(nextUpResponse => {
+        const nextUpUrl = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
+        const parentUrl = `Users/${this.userId}/Items?SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&Filters=IsUnplayed`
+        let parentLookup = {}
+        return Promise.all([
+                this.httpClient.get(nextUpUrl),
+                this.httpClient.get(parentUrl)
+            ])
+        .then(responses => {
+            let nextUpResponse = responses[0]
+            let parentResponse = responses[1]
+            parentResponse.data.Items.forEach(item=>{
+                parentLookup[item.Id] = item
+            })
             return nextUpResponse.data.Items.sort((a, b) => {
                 return a.SeriesName > b.SeriesName ? 1 : -1
             }).map(x => {
-                return new EmbyItem(x, { showParentImage: true })
+                let unwatchedCount = 0;
+                if(_.has(parentLookup,x.SeriesId)){
+                    let currentParent = parentLookup[x.SeriesId]
+                    if(currentParent.UserData && currentParent.UserData.UnplayedItemCount){
+                        unwatchedCount = currentParent.UserData.UnplayedItemCount
+                    }
+                }
+                return new EmbyItem(x, { showParentImage: true, unwatchedCount: unwatchedCount })
             })
         })
     }
