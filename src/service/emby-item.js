@@ -227,7 +227,7 @@ module.exports = class EmbyItem {
     }
 
     getUnwatchedCount() {
-        if(this.UnwatchedCount){
+        if (this.UnwatchedCount) {
             return this.UnwatchedCount
         }
         if (this.UserData && this.UserData.UnplayedItemCount > 0) {

@@ -291,23 +291,19 @@ class EmbyClient {
         const nextUpUrl = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
         const parentUrl = `Users/${this.userId}/Items?SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&Filters=IsUnplayed`
         let parentLookup = {}
-        return Promise.all([
-                this.httpClient.get(nextUpUrl),
-                this.httpClient.get(parentUrl)
-            ])
-        .then(responses => {
+        return Promise.all([this.httpClient.get(nextUpUrl), this.httpClient.get(parentUrl)]).then(responses => {
             let nextUpResponse = responses[0]
             let parentResponse = responses[1]
-            parentResponse.data.Items.forEach(item=>{
+            parentResponse.data.Items.forEach(item => {
                 parentLookup[item.Id] = item
             })
             return nextUpResponse.data.Items.sort((a, b) => {
                 return a.SeriesName > b.SeriesName ? 1 : -1
             }).map(x => {
-                let unwatchedCount = 0;
-                if(_.has(parentLookup,x.SeriesId)){
+                let unwatchedCount = 0
+                if (_.has(parentLookup, x.SeriesId)) {
                     let currentParent = parentLookup[x.SeriesId]
-                    if(currentParent.UserData && currentParent.UserData.UnplayedItemCount){
+                    if (currentParent.UserData && currentParent.UserData.UnplayedItemCount) {
                         unwatchedCount = currentParent.UserData.UnplayedItemCount
                     }
                 }

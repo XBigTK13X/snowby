@@ -16,7 +16,7 @@ module.exports = () => {
                     new EmbyItemLink('Next Up', 'next-up'),
                     new InternalLink('Stream', 'streaming.html'),
                     new InternalLink('Search', 'search.html'),
-                    new ExternalLink('Intranet', 'http://9914.us')
+                    new ExternalLink('Intranet', 'http://9914.us'),
                 ]
 
                 if (inProgressItems.length > 0) {
