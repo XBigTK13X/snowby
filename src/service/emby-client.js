@@ -311,6 +311,37 @@ class EmbyClient {
             })
         })
     }
+
+    person(personId) {
+        const personUrl = `/Users/${this.userId}/Items?SortOrder=Ascending&IncludeItemTypes=Series%2CMovie&Recursive=true&Fields=People%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear&IncludePeople=true&StartIndex=0&CollapseBoxSetItems=false&SortBy=SortName&PersonIds=${personId}&EnableTotalRecordCount=false`
+        return this.httpClient.get(personUrl).then(response => {
+            return response.data.Items.map(item => {
+                let foundPerson = null
+                for (let ii = 0; ii < item.People.length; ii++) {
+                    if (item.People[ii].Id === personId) {
+                        foundPerson = item.People[ii]
+                        break
+                    }
+                }
+                let tooltip = `
+                    <div class='centered'>
+                        <p>
+                            ${foundPerson.Name.split('"').join("'")}
+                        </p>
+                        <p>as</p>
+                        <p>
+                            ${foundPerson.Role ? foundPerson.Role.split('"').join("'") : foundPerson.Type.split('"').join("'")}
+                        </p>
+                        <p>in</p>
+                        <p>
+                            ${item.Name}
+                        </p>
+                    </div>
+                    `
+                return new EmbyItem(item, { tooltip: tooltip })
+            })
+        })
+    }
 }
 
 const instance = new EmbyClient()

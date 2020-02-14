@@ -15,6 +15,7 @@ const typeHandlers = {
     Playlist: handlers.playlist,
     Season: handlers.tvSeason,
     Series: handlers.tvSeries,
+    Person: handlers.person,
 }
 
 const getHandler = (emby, itemId) => {

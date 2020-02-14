@@ -99,6 +99,12 @@ module.exports = {
         render: renderers.nextUp,
         title: 'Next Up',
     },
+    person: {
+        getChildren: (emby, embyItem) => {
+            return emby.person(embyItem.Id)
+        },
+        render: renderers.person,
+    },
     playlistList: {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {

@@ -5,6 +5,8 @@ class StreamsTab {
     constructor(embyItem, selectedIndices) {
         this.embyItem = embyItem
         this.selectedIndices = selectedIndices
+        this.name = 'Streams'
+        this.order = 2
 
         window.toggleAllStreams = () => {
             let queryParams = util.queryParams()
@@ -46,44 +48,46 @@ class StreamsTab {
     }
 
     render() {
-        let queryParams = util.queryParams()
-        let html = `<table>
-	    <tr>
-	        <th>Index</th>
-	        <th>Type</th>
-	        <th>Name</th>
-	        <th>Quality</th>
-	        <th>Codec</th>
-	        <th>Language</th>
-	        <th>Title</th>
-	    </tr>`
-        let hiddenStreams = 0
-        html += this.embyItem.MediaStreams.map((stream, streamIndex) => {
-            if (!queryParams.showAllStreams && !mediaStream.isShown(stream)) {
-                hiddenStreams++
-                return ''
-            }
-            let rowClass = 'class="clickable"'
-            if (stream.Type === 'Subtitle' || stream.Type === 'Audio') {
-                if (streamIndex === this.selectedIndices.audio.absolute || streamIndex === this.selectedIndices.subtitle.absolute) {
-                    rowClass = 'class="clickable highlighted-row"'
+        return new Promise(resolve => {
+            let queryParams = util.queryParams()
+            let html = `<table>
+    	    <tr>
+    	        <th>Index</th>
+    	        <th>Type</th>
+    	        <th>Name</th>
+    	        <th>Quality</th>
+    	        <th>Codec</th>
+    	        <th>Language</th>
+    	        <th>Title</th>
+    	    </tr>`
+            let hiddenStreams = 0
+            html += this.embyItem.MediaStreams.map((stream, streamIndex) => {
+                if (!queryParams.showAllStreams && !mediaStream.isShown(stream)) {
+                    hiddenStreams++
+                    return ''
                 }
-            }
-            return `
-	        <tr ${rowClass} onClick="window.selectTrack(${streamIndex})">
-	            <td>${(streamIndex === 0 ? 0 : streamIndex) || ''}</td>
-	            <td>${stream.Type || ''}</td>
-	            <td>${stream.DisplayTitle || ''}</td>
-	            <td>${mediaStream.quality(stream)}</td>
-	            <td>${stream.Codec.toLowerCase() || ''}</td>
-	            <td>${stream.DisplayLanguage || ''}</td>
-	            <td>${stream.Title || ''}</td>
-	        </tr>
-	        `
-        }).join('')
-        html = `<p onclick="window.toggleAllStreams()">Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</a></p>` + html
-        html += `</table>`
-        return html
+                let rowClass = 'class="clickable"'
+                if (stream.Type === 'Subtitle' || stream.Type === 'Audio') {
+                    if (streamIndex === this.selectedIndices.audio.absolute || streamIndex === this.selectedIndices.subtitle.absolute) {
+                        rowClass = 'class="clickable highlighted-row"'
+                    }
+                }
+                return `
+    	        <tr ${rowClass} onClick="window.selectTrack(${streamIndex})">
+    	            <td>${(streamIndex === 0 ? 0 : streamIndex) || ''}</td>
+    	            <td>${stream.Type || ''}</td>
+    	            <td>${stream.DisplayTitle || ''}</td>
+    	            <td>${mediaStream.quality(stream)}</td>
+    	            <td>${stream.Codec.toLowerCase() || ''}</td>
+    	            <td>${stream.DisplayLanguage || ''}</td>
+    	            <td>${stream.Title || ''}</td>
+    	        </tr>
+    	        `
+            }).join('')
+            html = `<p onclick="window.toggleAllStreams()">Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</a></p>` + html
+            html += `</table>`
+            resolve(html)
+        })
     }
 }
 
