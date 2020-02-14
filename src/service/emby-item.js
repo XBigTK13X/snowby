@@ -11,6 +11,8 @@ module.exports = class EmbyItem {
         this.ShowSpoilers = options && options.showSpoilers
         this.ShowParentImage = options && options.showParentImage
         this.UnwatchedCount = options && options.unwatchedCount
+        this.ForcedImageTag = options && options.imageTag
+        this.ForceTooltip = options && options.tooltip
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -93,8 +95,16 @@ module.exports = class EmbyItem {
     getImageUrl(width, height) {
         width *= 2
         height *= 2
-        if (this.ForcedImage) {
-            return this.ForcedImage
+        if (this.ForcedImageTag) {
+            let buildImageUrl = (itemId, imageTag, width, height) => {
+                width *= 2
+                height *= 2
+                let result = `${settings.embyServerURL}/emby/Items/${itemId}/Images/Primary`
+                result += '?maxWidth=' + width + '&maxHeight=' + height
+                result += '&tag=' + imageTag + '&quality=100'
+                return result
+            }
+            return buildImageUrl(this.Id, this.ForcedImageTag, 100, 150)
         }
         // Don't show thumbnails for episodes you haven't seen yet
         if (!this.showSpoilers() && !this.ShowParentImage) {
@@ -245,33 +255,38 @@ module.exports = class EmbyItem {
     }
 
     getPlayMediaSummary() {
-        let studio = ''
-        if (this.Studio) {
-            studio = `<p>Studio - ${this.Studio}</p>`
-        }
-        if (this.Studios) {
-            if (this.Studios.length) {
-                studio = `<p>Studios</p><ul>${this.Studios.map(x => {
-                    return `<li>${x.Name}</li>`
-                }).join('')}</ul>`
+        return new Promise(resolve => {
+            let studio = ''
+            if (this.Studio) {
+                studio = `<p>Studio - ${this.Studio}</p>`
             }
-        }
-        let rating = this.OfficialRating || null
-        let overview = this.Overview
-        let seriesName = this.SeriesName || null
-        let releaseYear = this.ProductionYear || null
-        if (!studio && !overview && !rating) {
-            return ''
-        }
-        return `<div>
-            ${overview ? `<h4>Summary</h4><p>${overview}</p>` : ''}
-            ${rating ? `<p>MPAA Rating - ${rating}</p>` : ''}
-            ${studio}
-        </div>
-        `
+            if (this.Studios) {
+                if (this.Studios.length) {
+                    studio = `<p>Studios</p><ul>${this.Studios.map(x => {
+                        return `<li>${x.Name}</li>`
+                    }).join('')}</ul>`
+                }
+            }
+            let rating = this.OfficialRating || null
+            let overview = this.Overview
+            let seriesName = this.SeriesName || null
+            let releaseYear = this.ProductionYear || null
+            if (!studio && !overview && !rating) {
+                return resolve('')
+            }
+            resolve(`<div>
+                ${overview ? `<h4>Summary</h4><p>${overview}</p>` : ''}
+                ${rating ? `<p>MPAA Rating - ${rating}</p>` : ''}
+                ${studio}
+            </div>
+            `)
+        })
     }
 
     getTooltipContent() {
+        if (this.ForceTooltip) {
+            return this.ForceTooltip
+        }
         let rating = this.OfficialRating || null
         let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
@@ -307,6 +322,21 @@ module.exports = class EmbyItem {
             </div>
             `
         }
+
+        if (this.ExtraType === 'Person') {
+            return `
+            <div class='centered'>
+                <p>
+                    ${this.Name.split('"').join("'")}
+                </p>
+                <p>as</p>
+                <p>
+                    ${this.Role ? this.Role.split('"').join("'") : this.Type.split('"').join("'")}
+                </p>
+            </div>
+            `
+        }
+
         return null
     }
 }

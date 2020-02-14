@@ -34,6 +34,9 @@ module.exports = {
     thumbnails: (parent, children) => {
         return renderGrid(EmbyThumbnail, parent, children)
     },
+    person: (parent, children) => {
+        return renderGrid(EmbyPoster, parent, children)
+    },
     playlist: (parent, children) => {
         const generator = child => {
             let poster = new EmbyPoster(child)

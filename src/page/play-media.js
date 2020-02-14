@@ -85,68 +85,91 @@ module.exports = () => {
                         let newParams = util.queryParams()
                         newParams.openTab = targetId
                         window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
-                        document.getElementById('tab-container').innerHTML = content.render()
+                        content.render().then(renderedHtml => {
+                            document.getElementById('tab-container').innerHTML = renderedHtml
+                        })
                     }
                     const target = document.getElementById(`${targetId}-button`)
-                    target.className = active ? 'tab-button tab-button-active' : 'tab-button'
-                    target.onclick = handler
+                    if (target != null) {
+                        target.className = active ? 'tab-button tab-button-active' : 'tab-button'
+                        target.onclick = handler
+                    }
+
                     return handler
                 }
 
-                const tabNames = ['Inspection', 'Streams', 'Information', 'Cast & Crew']
-                const tabContents = [
+                const tabs = [
                     new InspectionTab(embyItem, inspection, selectedIndices),
                     new StreamsTab(embyItem, selectedIndices),
                     new InformationTab(embyItem),
                     new CastTab(embyItem, emby.client),
                 ]
 
-                let filteredTabNames = []
-                let tabButtons = ''
-                tabNames.forEach((tabName, tabIndex) => {
-                    let tabContent = tabContents[tabIndex]
-                    let rendered = tabContent.render()
-                    if (!rendered) {
-                        return
+                Promise.all(
+                    tabs.map((tab, tabIndex) => {
+                        return new Promise(resolve => {
+                            return tab.render().then(renderedHtml => {
+                                if (!renderedHtml) {
+                                    tab.buttonHtml = ''
+                                    return resolve()
+                                }
+                                tab.buttonHtml = `
+                               <a href="" id="${tab.name.toLowerCase().replace(' ', '-')}-button">
+                                <div class="tab-button">
+                                    ${tab.name}
+                                </div>
+                            </a>
+                            `
+                                return resolve()
+                            })
+                        })
+                    })
+                ).then(() => {
+                    document.getElementById('tab-buttons').innerHTML = tabs.map(tab => tab.buttonHtml).join('')
+
+                    tabs.forEach((tab, tabIndex) => {
+                        const tabId = tab.name.toLowerCase().replace(' ', '-')
+                        let handler = loadTab(`${tabId}`, tab)
+                        if (!queryParams.openTab && tabIndex === 0) {
+                            handler()
+                        }
+                        if (queryParams.openTab && tabId === queryParams.openTab && !_.isEqual(window.lastRenderParams, queryParams)) {
+                            handler()
+                            window.lastRenderParams = queryParams
+                        }
+                    })
+
+                    const track = () => {
+                        progress.track(
+                            embyItem,
+                            selectedIndices.audio.relative,
+                            selectedIndices.subtitle.relative,
+                            'resume-media-button',
+                            'resume-media-content',
+                            inspection.isHdr
+                        )
                     }
-                    filteredTabNames.push(tabName)
-                    tabButtons += `
-                       <a href="" id="${tabName.toLowerCase().replace(' ', '-')}-button">
-                        <div class="tab-button">
-                            ${tabName}
-                        </div>
-                    </a>
-                    `
-                })
 
-                document.getElementById('tab-buttons').innerHTML = tabButtons
-
-                filteredTabNames.forEach((tabName, tabIndex) => {
-                    const tabId = tabName.toLowerCase().replace(' ', '-')
-                    let handler = loadTab(`${tabId}`, tabContents[tabIndex])
-                    if (!queryParams.openTab && tabIndex === 0) {
-                        handler()
+                    if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
+                        document.getElementById('resume-media-button').style = null
+                        document.getElementById('resume-media-button').onclick = event => {
+                            event.preventDefault()
+                            player
+                                .openFile(
+                                    embyItem.Id,
+                                    embyItem.CleanPath,
+                                    selectedIndices.audio.relative,
+                                    selectedIndices.subtitle.relative,
+                                    embyItem.UserData.PlaybackPositionTicks,
+                                    inspection.isHdr
+                                )
+                                .then(() => {
+                                    track()
+                                })
+                        }
                     }
-                    if (queryParams.openTab && tabId === queryParams.openTab && !_.isEqual(window.lastRenderParams, queryParams)) {
-                        handler()
-                        window.lastRenderParams = queryParams
-                    }
-                })
 
-                const track = () => {
-                    progress.track(
-                        embyItem,
-                        selectedIndices.audio.relative,
-                        selectedIndices.subtitle.relative,
-                        'resume-media-button',
-                        'resume-media-content',
-                        inspection.isHdr
-                    )
-                }
-
-                if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
-                    document.getElementById('resume-media-button').style = null
-                    document.getElementById('resume-media-button').onclick = event => {
+                    document.getElementById('play-media-button').onclick = event => {
                         event.preventDefault()
                         player
                             .openFile(
@@ -154,34 +177,18 @@ module.exports = () => {
                                 embyItem.CleanPath,
                                 selectedIndices.audio.relative,
                                 selectedIndices.subtitle.relative,
-                                embyItem.UserData.PlaybackPositionTicks,
+                                0,
                                 inspection.isHdr
                             )
                             .then(() => {
                                 track()
                             })
                     }
-                }
 
-                document.getElementById('play-media-button').onclick = event => {
-                    event.preventDefault()
-                    player
-                        .openFile(
-                            embyItem.Id,
-                            embyItem.CleanPath,
-                            selectedIndices.audio.relative,
-                            selectedIndices.subtitle.relative,
-                            0,
-                            inspection.isHdr
-                        )
-                        .then(() => {
-                            track()
-                        })
-                }
-
-                resolve({
-                    enableProfilePicker: true,
-                    defaultMediaProfile: 'default',
+                    resolve({
+                        enableProfilePicker: true,
+                        defaultMediaProfile: 'default',
+                    })
                 })
             })
     })
