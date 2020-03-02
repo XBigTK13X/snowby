@@ -18,43 +18,52 @@ const streamIsLabeled = (stream, labels) => {
     return false
 }
 
-const isAnimeSubtitle = stream => {
+const calculateAnimeSubtitleScore = stream => {
     if (stream.Type !== 'Subtitle') {
-        return false
+        return null
     }
     if (streamIsLabeled(stream, ['songs', 'signs'])) {
-        return false
+        return null
     }
     if (streamIsLabeled(stream, ['eng'])) {
-        return 10
+        if (isForced(stream)) {
+            return 75
+        }
+        return 100
     }
     if (streamIsLabeled(stream, ['und'])) {
-        return 5
+        if (isForced(stream)) {
+            return 25
+        }
+        return 50
     }
-    return false
+    return null
 }
 
-const isJapaneseAudio = stream => {
+const calculateJapaneseAudioScore = stream => {
     if (stream.Type !== 'Audio') {
-        return false
+        return null
     }
     if (streamIsLabeled(stream, ['comment', 'description'])) {
-        return false
+        return null
     }
     if (streamIsLabeled(stream, ['jpn', 'jap'])) {
-        return true
+        return 100
     }
-    return false
+    return null
 }
 
-const isEnglishAudio = stream => {
+const calculateEnglishAudioScore = stream => {
     if (stream.Type !== 'Audio') {
-        return false
+        return null
     }
     if (streamIsLabeled(stream, ['eng'])) {
-        return true
+        if (stream.Codec && stream.Codec === 'truehd') {
+            return 100
+        }
+        return 50
     }
-    return false
+    return null
 }
 
 const isForced = stream => {
@@ -71,51 +80,55 @@ const isForced = stream => {
 }
 
 const inspect = embyItem => {
-    let animeAudio = false
-    let animeSubtitle = false
-    let animeSubtitleScore = -1
-    let animated = false
+    let hasAnimeAudio = false
+    let hasAnimeSubtitle = false
+    let isHdr = false
+    let isAnimated = false
+    let isDubbedAnime = false
+    let isSubbedAnime = false
+
     let subtitleIndex = 0
-    let audioIndex = 0
     let subtitleAbsoluteIndex = 0
-    let audioAbsoluteIndex = 0
     let subtitleRelativeIndex = 0
+    let audioIndex = 0
+    let audioAbsoluteIndex = 0
     let audioRelativeIndex = 0
+
+    let animeAudioScore = -1
+    let animeSubtitleScore = -1
+
+    let englishAudioScore = -1
     let englishAudioAbsoluteIndex = 1
     let englishAudioRelativeIndex = 1
-    let isHdr = false
 
     let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
     if (genres.includes('Anime') || genres.includes('Animation')) {
-        animated = true
+        isAnimated = true
     }
 
-    let dubbedAnime = false
-    let subbedAnime = false
     if (embyItem.TagItems) {
         embyItem.TagItems.forEach(tag => {
             if (tag.Name === 'DubbedAnime') {
-                dubbedAnime = true
+                isDubbedAnime = true
             }
             if (tag.Name === 'SubbedAnime') {
-                subbedAnime = true
+                isSubbedAnime = true
             }
         })
     }
     if (embyItem.Series && embyItem.Series.TagItems) {
         embyItem.Series.TagItems.forEach(tag => {
             if (tag.Name === 'DubbedAnime') {
-                dubbedAnime = true
+                isDubbedAnime = true
             }
             if (tag.Name === 'SubbedAnime') {
-                subbedAnime = true
+                isSubbedAnime = true
             }
         })
     }
 
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
         const stream = embyItem.MediaStreams[trackIndex]
-        const forced = isForced(stream)
         if (stream.Type === 'Video') {
             if ((stream.VideoRange && stream.VideoRange.includes('HDR')) || (stream.ColorSpace && stream.ColorSpace.includes('2020'))) {
                 isHdr = true
@@ -123,23 +136,27 @@ const inspect = embyItem => {
         }
         if (stream.Type === 'Audio') {
             audioIndex++
+            let streamJapaneseAudioScore = calculateJapaneseAudioScore(stream)
+            if (!isDubbedAnime || isSubbedAnime) {
+                if (streamJapaneseAudioScore > animeAudioScore) {
+                    hasAnimeAudio = true
+                    animeAudioScore = streamJapaneseAudioScore
+                    audioAbsoluteIndex = trackIndex
+                    audioRelativeIndex = audioIndex
+                }
+            }
+            let streamEnglishAudioScore = calculateEnglishAudioScore(stream)
+            if (streamEnglishAudioScore !== null && streamEnglishAudioScore > englishAudioScore) {
+                englishAudioScore = streamEnglishAudioScore
+                englishAudioRelativeIndex = audioIndex
+                englishAudioAbsoluteIndex = trackIndex
+            }
         }
         if (stream.Type === 'Subtitle') {
             subtitleIndex++
-        }
-        if ((!dubbedAnime && isJapaneseAudio(stream)) || (subbedAnime && !animeAudio && stream.Type === 'Audio')) {
-            animeAudio = true
-            audioAbsoluteIndex = trackIndex
-            audioRelativeIndex = audioIndex
-        }
-        if (isEnglishAudio(stream) && englishAudioRelativeIndex === 1) {
-            englishAudioRelativeIndex = audioIndex
-            englishAudioAbsoluteIndex = trackIndex
-        }
-        const streamSubtitleScore = isAnimeSubtitle(stream)
-        if (!dubbedAnime && streamSubtitleScore >= animeSubtitleScore) {
-            if (!forced || (forced && !animeSubtitle)) {
-                animeSubtitle = true
+            const streamSubtitleScore = calculateAnimeSubtitleScore(stream)
+            if (!isDubbedAnime && streamSubtitleScore !== null && streamSubtitleScore >= animeSubtitleScore) {
+                hasAnimeSubtitle = true
                 animeSubtitleScore = streamSubtitleScore
                 subtitleAbsoluteIndex = trackIndex
                 subtitleRelativeIndex = subtitleIndex
@@ -147,7 +164,7 @@ const inspect = embyItem => {
         }
     }
 
-    const isAnime = (animated && animeSubtitle && animeAudio) || subbedAnime
+    const isAnime = (isAnimated && hasAnimeSubtitle && hasAnimeAudio) || isSubbedAnime
 
     const result = {
         audioAbsoluteIndex,
@@ -156,8 +173,8 @@ const inspect = embyItem => {
         isHdr,
         subtitleAbsoluteIndex,
         subtitleRelativeIndex,
-        dubbedAnime,
-        subbedAnime,
+        isDubbedAnime,
+        isSubbedAnime,
     }
     if (!isAnime) {
         result.audioAbsoluteIndex = englishAudioAbsoluteIndex

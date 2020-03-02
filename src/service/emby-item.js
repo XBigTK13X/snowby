@@ -13,6 +13,7 @@ module.exports = class EmbyItem {
         this.UnwatchedCount = options && options.unwatchedCount
         this.ForcedImageTag = options && options.imageTag
         this.ForceTooltip = options && options.tooltip
+        this.NoImageTag = options && options.noImageTag
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -95,6 +96,9 @@ module.exports = class EmbyItem {
     getImageUrl(width, height) {
         width *= 2
         height *= 2
+        if (this.NoImageTag) {
+            return this.NoImageTag
+        }
         if (this.ForcedImageTag) {
             let buildImageUrl = (itemId, imageTag, width, height) => {
                 width *= 2

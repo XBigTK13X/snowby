@@ -212,8 +212,8 @@ class EmbyClient {
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
             return [
                 responses[0].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
                 responses[1].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
+                responses[2].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
             ]
         })
     }

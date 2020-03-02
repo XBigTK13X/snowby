@@ -1,6 +1,8 @@
 const EmbyPoster = require('./emby-poster')
 const EmbyItem = require('../service/emby-item')
 
+NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
+
 class CastTab {
     constructor(embyItem, embyClient) {
         this.embyItem = embyItem
@@ -19,14 +21,16 @@ class CastTab {
                 return resolve('')
             }
             let peopleHtml = people
-                .filter(x => {
-                    return !!x.PrimaryImageTag
-                })
                 .sort((a, b) => {
                     return a.Name > b.Name ? 1 : -1
                 })
                 .map(x => {
-                    let poster = new EmbyPoster(new EmbyItem({ ...x, ExtraType: 'Person' }, { imageTag: x.PrimaryImageTag }))
+                    let poster = new EmbyPoster(
+                        new EmbyItem(
+                            { ...x, ExtraType: 'Person' },
+                            { imageTag: x.PrimaryImageTag, noImageTag: x.PrimaryImageTag ? null : NOT_FOUND_IMAGE_HREF }
+                        )
+                    )
                     return poster.render()
                 })
                 .join(' ')

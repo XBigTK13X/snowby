@@ -34,16 +34,16 @@ class InspectionTab {
                 .add(runTimeBreakdown.seconds, 'seconds')
             let finishStamp = finishAt.format('hh:mm:ss a')
             html += `<p>Finish At - ${finishStamp}</p>`
-            if (this.inspection.preferDub) {
+            if (this.inspection.isDubbedAnime) {
                 html += `<p>Snowby was told that this is dubbed anime.`
             } else {
-                if (this.inspection.subbedAnime) {
+                if (this.inspection.isSubbedAnime) {
                     html += `<p>Snowby was told that this is subbed anime.`
                 } else {
                     if (this.inspection.isAnime) {
                         html += `<p>Snowby thinks that this is subbed anime.`
                     } else {
-                        html += `<p><span class="highlighted-warning">Snowby doesn't think that this is anime.</span>`
+                        html += `<p>Snowby doesn't think that this is anime.`
                     }
                 }
             }
