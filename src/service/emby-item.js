@@ -44,6 +44,10 @@ module.exports = class EmbyItem {
                 this.MediaStreams[ii] = stream
             }
         }
+        if (this.ExtraType === 'Person') {
+            this.PersonRole = this.Role ? this.Role.split('"').join("'") : this.Type.split('"').join("'")
+            this.PersonName = this.Name.split('"').join("'")
+        }
     }
 
     getDisplayName() {
@@ -331,11 +335,11 @@ module.exports = class EmbyItem {
             return `
             <div class='centered'>
                 <p>
-                    ${this.Name.split('"').join("'")}
+                    ${this.PersonName}
                 </p>
                 <p>as</p>
                 <p>
-                    ${this.Role ? this.Role.split('"').join("'") : this.Type.split('"').join("'")}
+                    ${this.PersonRole}
                 </p>
             </div>
             `

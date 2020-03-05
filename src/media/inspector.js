@@ -18,7 +18,7 @@ const streamIsLabeled = (stream, labels) => {
     return false
 }
 
-const calculateAnimeSubtitleScore = stream => {
+const calculateEnglishSubtitleScore = stream => {
     if (stream.Type !== 'Subtitle') {
         return null
     }
@@ -27,13 +27,16 @@ const calculateAnimeSubtitleScore = stream => {
     }
     if (streamIsLabeled(stream, ['eng'])) {
         if (isForced(stream)) {
-            return 75
+            return 70
+        }
+        if (streamIsLabeled(stream, 'cc')) {
+            return 80
         }
         return 100
     }
     if (streamIsLabeled(stream, ['und'])) {
         if (isForced(stream)) {
-            return 25
+            return 20
         }
         return 50
     }
@@ -80,12 +83,13 @@ const isForced = stream => {
 }
 
 const inspect = embyItem => {
-    let hasAnimeAudio = false
-    let hasAnimeSubtitle = false
+    let hasJapaneseAudio = false
+    let hasEnglishSubtitle = false
     let isHdr = false
     let isAnimated = false
     let isDubbedAnime = false
     let isSubbedAnime = false
+    let hasEnglishAudio = false
 
     let subtitleIndex = 0
     let subtitleAbsoluteIndex = 0
@@ -94,8 +98,11 @@ const inspect = embyItem => {
     let audioAbsoluteIndex = 0
     let audioRelativeIndex = 0
 
+    let firstAudioAbsoluteIndex = -1
+    let firstAudioRelativeIndex = -1
+
     let animeAudioScore = -1
-    let animeSubtitleScore = -1
+    let englishSubtitleScore = -1
 
     let englishAudioScore = -1
     let englishAudioAbsoluteIndex = 1
@@ -136,10 +143,14 @@ const inspect = embyItem => {
         }
         if (stream.Type === 'Audio') {
             audioIndex++
+            if (firstAudioRelativeIndex == -1) {
+                firstAudioRelativeIndex = audioIndex
+                firstAudioAbsoluteIndex = trackIndex
+            }
             let streamJapaneseAudioScore = calculateJapaneseAudioScore(stream)
             if (!isDubbedAnime || isSubbedAnime) {
                 if (streamJapaneseAudioScore > animeAudioScore) {
-                    hasAnimeAudio = true
+                    hasJapaneseAudio = true
                     animeAudioScore = streamJapaneseAudioScore
                     audioAbsoluteIndex = trackIndex
                     audioRelativeIndex = audioIndex
@@ -147,6 +158,7 @@ const inspect = embyItem => {
             }
             let streamEnglishAudioScore = calculateEnglishAudioScore(stream)
             if (streamEnglishAudioScore !== null && streamEnglishAudioScore > englishAudioScore) {
+                hasEnglishAudio = true
                 englishAudioScore = streamEnglishAudioScore
                 englishAudioRelativeIndex = audioIndex
                 englishAudioAbsoluteIndex = trackIndex
@@ -154,18 +166,19 @@ const inspect = embyItem => {
         }
         if (stream.Type === 'Subtitle') {
             subtitleIndex++
-            const streamSubtitleScore = calculateAnimeSubtitleScore(stream)
-            if (!isDubbedAnime && streamSubtitleScore !== null && streamSubtitleScore >= animeSubtitleScore) {
-                hasAnimeSubtitle = true
-                animeSubtitleScore = streamSubtitleScore
+            const streamSubtitleScore = calculateEnglishSubtitleScore(stream)
+            if (!isDubbedAnime && streamSubtitleScore !== null && streamSubtitleScore >= englishSubtitleScore) {
+                hasEnglishSubtitle = true
+                englishSubtitleScore = streamSubtitleScore
                 subtitleAbsoluteIndex = trackIndex
                 subtitleRelativeIndex = subtitleIndex
             }
         }
     }
 
-    const isAnime = (isAnimated && hasAnimeSubtitle && hasAnimeAudio) || isSubbedAnime
+    const isAnime = (isAnimated && hasEnglishSubtitle && hasJapaneseAudio) || isSubbedAnime
 
+    // Japanese anime
     const result = {
         audioAbsoluteIndex,
         audioRelativeIndex,
@@ -177,10 +190,20 @@ const inspect = embyItem => {
         isSubbedAnime,
     }
     if (!isAnime) {
-        result.audioAbsoluteIndex = englishAudioAbsoluteIndex
-        result.audioRelativeIndex = englishAudioRelativeIndex
-        result.subtitleAbsoluteIndex = 0
-        result.subtitleRelativeIndex = 0
+        // American/British show or movie
+        if (hasEnglishAudio) {
+            result.audioAbsoluteIndex = englishAudioAbsoluteIndex
+            result.audioRelativeIndex = englishAudioRelativeIndex
+            result.subtitleAbsoluteIndex = 0
+            result.subtitleRelativeIndex = 0
+        }
+        //Foreign show or movie
+        else {
+            result.audioAbsoluteIndex = firstAudioAbsoluteIndex
+            result.audioRelativeIndex = firstAudioRelativeIndex
+            result.subtitleAbsoluteIndex = subtitleAbsoluteIndex
+            result.subtitleRelativeIndex = subtitleRelativeIndex
+        }
     }
     return result
 }
