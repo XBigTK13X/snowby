@@ -14,6 +14,7 @@ module.exports = () => {
         const StreamsTab = require('../component/streams-tab')
         const InformationTab = require('../component/information-tab')
         const CastTab = require('../component/cast-tab')
+        const ChapterTab = require('../component/chapter-tab')
 
         const progress = require('../media/progress')
         const emby = require('../service/emby-client')
@@ -87,6 +88,12 @@ module.exports = () => {
                         window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
                         content.render().then(renderedHtml => {
                             document.getElementById('tab-container').innerHTML = renderedHtml
+                            try {
+                                window.$lazyLoad()
+                            } catch (swallow) {}
+                            try {
+                                util.loadTooltips()
+                            } catch (swallow) {}
                         })
                     }
                     const target = document.getElementById(`${targetId}-button`)
@@ -103,6 +110,7 @@ module.exports = () => {
                     new StreamsTab(embyItem, selectedIndices),
                     new InformationTab(embyItem),
                     new CastTab(embyItem, emby.client),
+                    new ChapterTab(embyItem),
                 ]
 
                 Promise.all(
