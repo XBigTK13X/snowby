@@ -1,11 +1,3 @@
-const ENABLED_LIBRARIES = {
-    movies: true,
-    tvshows: true,
-    playlists: true,
-    livetv: true,
-    boxsets: true,
-}
-
 module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
@@ -21,9 +13,7 @@ module.exports = () => {
                 let menuEntries = []
 
                 libraries.forEach(library => {
-                    if (ENABLED_LIBRARIES[library.CollectionType]) {
-                        menuEntries.push(new EmbyItemLink(library.Name, library.Id))
-                    }
+                    menuEntries.push(new EmbyItemLink(library.Name, library.Id))
                 })
 
                 menuEntries.push(new InternalLink('Genres', 'genres.html'))
