@@ -31,6 +31,16 @@ module.exports = {
         },
         render: renderers.posters,
     },
+    collectionFolder: {
+        getChildren: (emby, embyItem) => {
+            return emby.embyItems(embyItem.Id, { ParentId: embyItem.Id }).then(results => {
+                return results.sort((a, b) => {
+                    return a.Name > b.Name ? 1 : -1
+                })
+            })
+        },
+        render: renderers.posters,
+    },
     collections: {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {
