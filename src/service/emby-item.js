@@ -292,6 +292,14 @@ module.exports = class EmbyItem {
     }
 
     getTooltipContent() {
+        let result = this.getTooltipText()
+        if (result) {
+            return result.replace(/"/g, "'")
+        }
+        return result
+    }
+
+    getTooltipText() {
         if (this.ForceTooltip) {
             return this.ForceTooltip
         }
