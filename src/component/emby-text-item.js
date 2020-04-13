@@ -18,16 +18,16 @@ class EmbyTextItem {
     render() {
         let fidelityBadgeMarkup = this.fidelityBadge ? this.fidelityBadge : ''
         return `
-        <div class="badge-container">
-             <a
-                data-target="random-action"
-                href="${this.href}">
-                <div class="grid-item text-grid-item">
-            			${this.content}
-                </div>
-            ${fidelityBadgeMarkup}
-            </a>
-        </div>
+        <a
+            data-target="random-action"
+            href="${this.href}">
+            <div class="grid-item text-grid-item">
+                    ${this.content}
+            </div>
+            <div class="badge-container">
+                ${fidelityBadgeMarkup}
+            </div>
+        </a>
 		`
     }
 }
