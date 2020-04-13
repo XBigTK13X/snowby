@@ -27,18 +27,18 @@ class EmbyThumbnail {
         let tooltipMarkup = summary ? `data-tippy-content="<div class='snowby-tooltip'>${summary}</div>"` : ''
         let fidelityBadgeMarkup = this.fidelityBadge ? this.fidelityBadge : ''
         return `
-        <div ${tooltipMarkup}>
-        	<div class="grid-item wide-grid-item badge-container">
-				<a
-					data-target="random-action"
-					href="${this.href}"
-					>
-					<img class="lazy rounded wide-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource}/>
-				</a>
-                ${fidelityBadgeMarkup}
-			</div>
-			${titleMarkup}
-		</div>
+        <a
+            data-target="random-action"
+            href="${this.href}"
+            >
+            <div ${tooltipMarkup}>
+            	<div class="grid-item wide-grid-item badge-container">
+    					<img class="lazy rounded wide-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource}/>
+                    ${fidelityBadgeMarkup}
+    			</div>
+    			${titleMarkup}
+    		</div>
+        </a>
 		`
     }
 }

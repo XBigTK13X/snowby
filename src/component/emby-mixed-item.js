@@ -29,18 +29,19 @@ class EmbyMixedItem {
         let kindBadgeMarkup = this.kindBadge ? this.kindBadge : ''
         let progressBadgeMarkup = this.progressBadge ? this.progressBadge : ''
         return `
-        <div ${tooltipMarkup}>
-            <div class="grid-item square-grid-item badge-container">
-    			<a
-    				data-target="random-action"
-    				href="${this.href}"
-    				>
-    				<img class="lazy rounded ${this.imageFormat}-image ${this.imageCenter}" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
-    			</a>
-                ${progressBadgeMarkup}
-                ${kindBadgeMarkup}
-            </div>
-		</div>
+        <a
+            data-target="random-action"
+            href="${this.href}"
+            >
+            <div ${tooltipMarkup}>
+                <div class="grid-item square-grid-item badge-container">
+
+        				<img class="lazy rounded ${this.imageFormat}-image ${this.imageCenter}" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+                    ${progressBadgeMarkup}
+                    ${kindBadgeMarkup}
+                </div>
+    		</div>
+        </a>
 		`
     }
 }

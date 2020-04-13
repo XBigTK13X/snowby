@@ -44,21 +44,22 @@ class EmbyPoster {
         let unwatchedBadgeMarkup = this.unwatchedBadge ? this.unwatchedBadge : ''
         let progressBadgeMarkup = this.progressBadge ? this.progressBadge : ''
         return `
-        <div ${tooltipMarkup}>
-	        <div class="grid-item tall-grid-item badge-container">
-				<a
-					data-target="random-action"
-					href="${this.href}"
-					>
-					<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource} />
-				</a>
-				${unwatchedBadgeMarkup}
-                ${fidelityBadgeMarkup}
-                ${kindBadgeMarkup}
-                ${progressBadgeMarkup}
-			</div>
-			${titleMarkup}
-		</div>
+        <a
+            data-target="random-action"
+            href="${this.href}"
+            >
+            <div ${tooltipMarkup}>
+    	        <div class="grid-item tall-grid-item badge-container">
+
+    					<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource} />
+    				${unwatchedBadgeMarkup}
+                    ${fidelityBadgeMarkup}
+                    ${kindBadgeMarkup}
+                    ${progressBadgeMarkup}
+    			</div>
+    			${titleMarkup}
+    		</div>
+        </a>
 		`
     }
 }
