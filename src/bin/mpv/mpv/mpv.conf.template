@@ -2,9 +2,8 @@ profile=gpu-hq
 hwdec=auto
 save-position-on-quit=no
 fullscreen=yes
-no-resume-playback=yes
+no-resume-playback
 osd-bar=no
-;force-window=immediate ; For some reason, having this open enabled prevents MPV from closing when media completes.
 keep-open=no
 reset-on-next-file=audio-delay,mute,pause,speed,sub-delay,video-aspect,video-pan-x,video-pan-y,video-rotate,video-zoom,volume
 log-file="<MPV_ROOT_DIR>\mpv.log"
@@ -12,11 +11,19 @@ screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 
 [480p]
-glsl-shader="<MPV_ROOT_DIR>\shader\noise.glsl"
-glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_GLSL_v1.0RC2\Anime4K_Adaptive_v1.0RC2.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Upscale_CNN_L_x2_Denoise.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Auto_Downscale_Pre_x4.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Deblur_DoG.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_DarkLines_HQ.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_ThinLines_HQ.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Upscale_CNN_M_x2_Deblur.glsl"
 
 [anime4k]
-glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_GLSL_v1.0RC2\Anime4K_Adaptive_v1.0RC2.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Denoise_Bilateral_Mode.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Deblur_DoG.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_DarkLines_HQ.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_ThinLines_HQ.glsl"
+glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.0\Anime4K_3.0_Upscale_CNN_M_x2_Deblur.glsl"
 
 [livetv]
 vf=lavfi=yadif
