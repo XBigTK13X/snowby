@@ -14,6 +14,7 @@ module.exports = class EmbyItem {
         this.ForcedImageTag = options && options.imageTag
         this.ForceTooltip = options && options.tooltip
         this.NoImageTag = options && options.noImageTag
+        this.ForcedHref = options && options.href
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
@@ -25,6 +26,10 @@ module.exports = class EmbyItem {
             this.Href = `play-media.html?embyItemId=${this.Id}`
         } else {
             this.Href = `emby-items.html?embyItemId=${this.Id}`
+        }
+
+        if (this.ForcedHref) {
+            this.Href = this.ForcedHref
         }
 
         let relativeAudioIndex = 1
