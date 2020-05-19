@@ -12,11 +12,11 @@ const collectionHandlers = {
 
 const typeHandlers = {
     BoxSet: handlers.boxSet,
+    CollectionFolder: handlers.collectionFolder,
+    Person: handlers.person,
     Playlist: handlers.playlist,
     Season: handlers.tvSeason,
     Series: handlers.tvSeries,
-    Person: handlers.person,
-    CollectionFolder: handlers.collectionFolder,
 }
 
 const getHandler = (emby, itemId) => {

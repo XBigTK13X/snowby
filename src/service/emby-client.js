@@ -99,16 +99,24 @@ class EmbyClient {
     embyItem(itemId) {
         const client = this
         const url = `Users/${this.userId}/Items/${itemId}`
-        return this.httpClient.get(url).then(itemResponse => {
-            const result = new EmbyItem(itemResponse.data)
-            if (result.Type !== 'Episode') {
-                return result
-            }
-            return client.embyItem(result.SeriesId).then(seriesItem => {
-                result.Series = seriesItem
-                return result
+        return this.httpClient
+            .get(url)
+            .then(itemResponse => {
+                const result = new EmbyItem(itemResponse.data)
+                if (result.Type !== 'Episode') {
+                    return result
+                }
+                return client.embyItem(result.SeriesId).then(seriesItem => {
+                    result.Series = seriesItem
+                    return result
+                })
             })
-        })
+            .then(result => {
+                return client.specialFeatures(itemId).then(specialFeatures => {
+                    result.SpecialFeatures = specialFeatures
+                    return result
+                })
+            })
     }
 
     embyItems(parentId, searchParams) {
@@ -339,6 +347,23 @@ class EmbyClient {
                     </div>
                     `
                 return new EmbyItem(item, { tooltip: tooltip })
+            })
+        })
+    }
+
+    specialFeatures(embyItemId) {
+        const url = `/Users/${this.userId}/Items/${embyItemId}/SpecialFeatures`
+        return this.httpClient.get(url).then(response => {
+            return response.data.map(item => {
+                let tooltip = `
+                    <div class='centered'>
+                        <p>
+                            ${item.Name}
+                        </p>
+                    </div>
+                    `
+
+                return new EmbyItem(item, { tooltip: tooltip, href: 'play-media.html?embyItemId=' + item.Id })
             })
         })
     }
