@@ -96,6 +96,15 @@ module.exports = {
         }
         return renderGeneratedGrid(generator, parent, children)
     },
+    tags: (parent, children) => {
+        const generator = child => {
+            let poster = new EmbyPoster(child)
+            poster.enableFidelityBadge()
+            poster.enableKindBadge()
+            return poster.render()
+        }
+        return renderGeneratedGrid(generator, parent, children)
+    },
     tvChannels: (parent, children) => {
         let html = `
         <table class="channel-guide">

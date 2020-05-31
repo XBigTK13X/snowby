@@ -17,6 +17,7 @@ module.exports = () => {
                 })
 
                 menuEntries.push(new InternalLink('Genres', 'genres.html'))
+                menuEntries.push(new InternalLink('Playlists', 'playlists.html'))
 
                 menuEntries.sort((a, b) => {
                     if (a.name === 'TV Shows' || a.name === 'Movies') {

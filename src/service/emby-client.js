@@ -367,6 +367,26 @@ class EmbyClient {
             })
         })
     }
+
+    tags() {
+        const url = `/Tags`
+        return this.httpClient.get(url).then(response => {
+            return response.data.Items
+        })
+    }
+
+    addTag(embyItemId, tag) {
+        const url = `/Items/${embyItemId}/Tags/Add`
+        const payload = {
+            Tags: [
+                {
+                    Name: tag.Name,
+                    Id: tag.Id,
+                },
+            ],
+        }
+        return this.httpClient.post(url, payload)
+    }
 }
 
 const instance = new EmbyClient()
