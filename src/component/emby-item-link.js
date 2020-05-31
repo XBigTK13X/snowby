@@ -7,6 +7,9 @@ class EmbyItemLink {
         if (options && options.genreFilter) {
             this.href = `${this.href}&genreFilter=${options.genreFilter}`
         }
+        if (options && options.tagId) {
+            this.href = `${this.href}&tagId=${options.tagId}&showUnwatched=true&tagName=${options.tagName}`
+        }
     }
 
     render() {

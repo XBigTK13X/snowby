@@ -18,7 +18,7 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
         if (!params.Filters) {
             params.Filters = 'IsUnplayed'
         } else {
-            params.Fitlers += '&IsUnplayed'
+            params.Filters += '&IsUnplayed'
         }
     }
     return emby.embyItems(embyItemId, params)
@@ -130,6 +130,25 @@ module.exports = {
             return emby.playlist(embyItem.Id)
         },
         render: renderers.playlist,
+    },
+    tags: {
+        getChildren: (emby, embyItem) => {
+            let tagId = util.queryParams().tagId
+            let includeItemTypes = 'Movie,Series'
+            let params = {
+                Recursive: true,
+                SortBy: 'PremiereDate,ProductionYear,SortName',
+                SortOrder: 'Ascending',
+                IncludeItemTypes: includeItemTypes,
+                Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
+                TagIds: tagId,
+            }
+            return emby.embyItems(null, params).then(items => {
+                return items
+            })
+        },
+        render: renderers.tags,
+        title: util.queryParams().tagName ? util.queryParams().tagName.replace('Playlist:', '') : 'Playlist',
     },
     tvSeries: {
         getChildren: (emby, embyItem) => {

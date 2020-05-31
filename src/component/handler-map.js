@@ -30,6 +30,9 @@ const getHandler = (emby, itemId) => {
         if (itemId === 'next-up') {
             return resolve({ handler: handlers.nextUp })
         }
+        if (itemId === 'tags') {
+            return resolve({ handler: handlers.tags })
+        }
         return emby.embyItem(itemId).then(embyItem => {
             navbar.render({
                 showToggleButton: embyItem.isCollection(),
