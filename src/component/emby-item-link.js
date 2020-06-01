@@ -11,7 +11,7 @@ class EmbyItemLink {
         if (options && options.tagId) {
             this.href = `${this.href}&tagId=${options.tagId}&showUnwatched=true&tagName=${options.tagName}`
         }
-        if(this.name.length > 15){
+        if (this.name.length > 15) {
             this.fontResize = 'small-tile-text'
         }
     }
