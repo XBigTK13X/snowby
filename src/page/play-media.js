@@ -64,13 +64,13 @@ module.exports = () => {
                 }
 
                 let discussionQuery = embyItem.getDiscussionQuery()
-                if(discussionQuery){
+                if (discussionQuery) {
                     document.getElementById('discussion-button').onclick = event => {
                         event.preventDefault()
-                        require('electron').ipcRenderer.send('snowby-open-website','https://duckduckgo.com/'+encodeURIComponent(discussionQuery)); return false;
+                        require('electron').ipcRenderer.send('snowby-open-website', 'https://duckduckgo.com/' + encodeURIComponent(discussionQuery))
+                        return false
                     }
-                }
-                else {
+                } else {
                     document.getElementById('discussion-button').setAttribute('style', 'display:none')
                 }
 
