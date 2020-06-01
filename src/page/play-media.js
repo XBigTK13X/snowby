@@ -63,6 +63,17 @@ module.exports = () => {
                     window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
                 }
 
+                let discussionQuery = embyItem.getDiscussionQuery()
+                if(discussionQuery){
+                    document.getElementById('discussion-button').onclick = event => {
+                        event.preventDefault()
+                        require('electron').ipcRenderer.send('snowby-open-website','https://duckduckgo.com/'+encodeURIComponent(discussionQuery)); return false;
+                    }
+                }
+                else {
+                    document.getElementById('discussion-button').setAttribute('style', 'display:none')
+                }
+
                 const inspection = inspector.inspect(embyItem)
                 let selectedIndices = {
                     audio: {

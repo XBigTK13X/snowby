@@ -35,7 +35,7 @@ class InspectionTab {
             let finishStamp = finishAt.format('hh:mm:ss a')
             html += `<p>Finish At - ${finishStamp}</p>`
             if (this.inspection.isDubbedAnime) {
-                html += `<p>Snowby was told that this is dubbed anime.`
+                html += `<p>Snowby was told that nothing special should be done to pick streams.`
             } else {
                 if (this.inspection.isSubbedAnime) {
                     html += `<p>Snowby was told that this is subbed anime.`
