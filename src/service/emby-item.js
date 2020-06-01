@@ -59,6 +59,16 @@ module.exports = class EmbyItem {
         return CHANNEL_MAP[this.Name] || this.Name
     }
 
+    getDiscussionQuery(){
+        if(this.Type === 'Movie'){
+            return `reddit discussion movie ${this.Name} ${this.ProductionYear}`
+        }
+        if(this.Type === 'Episode'){
+            return `reddit discussion ${this.SeriesName} ${this.SeasonName} episode ${this.IndexNumber}`
+        }
+        return ''
+    }
+
     getTitle(enableSeriesName) {
         let result = ''
         if (this.ForcedTitle) {

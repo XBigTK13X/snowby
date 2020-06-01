@@ -115,7 +115,7 @@ const inspect = embyItem => {
 
     if (embyItem.TagItems) {
         embyItem.TagItems.forEach(tag => {
-            if (tag.Name === 'DubbedAnime') {
+            if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:')) {
                 isDubbedAnime = true
             }
             if (tag.Name === 'SubbedAnime') {
