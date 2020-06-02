@@ -32,7 +32,7 @@ const resetDeviceSync = () => {
     resetProcess = spawn('powershell', [util.appPath('/bin/audio/reset-connection.ps1')])
 }
 
-process.on('exit', function() {
+process.on('exit', function () {
     cleanup()
 })
 

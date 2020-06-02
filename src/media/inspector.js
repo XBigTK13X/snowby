@@ -18,7 +18,7 @@ const streamIsLabeled = (stream, labels) => {
     return false
 }
 
-const calculateEnglishSubtitleScore = stream => {
+const calculateEnglishSubtitleScore = (stream) => {
     if (stream.Type !== 'Subtitle') {
         return null
     }
@@ -43,7 +43,7 @@ const calculateEnglishSubtitleScore = stream => {
     return null
 }
 
-const calculateJapaneseAudioScore = stream => {
+const calculateJapaneseAudioScore = (stream) => {
     if (stream.Type !== 'Audio') {
         return null
     }
@@ -56,7 +56,7 @@ const calculateJapaneseAudioScore = stream => {
     return null
 }
 
-const calculateEnglishAudioScore = stream => {
+const calculateEnglishAudioScore = (stream) => {
     if (stream.Type !== 'Audio') {
         return null
     }
@@ -69,7 +69,7 @@ const calculateEnglishAudioScore = stream => {
     return null
 }
 
-const isForced = stream => {
+const isForced = (stream) => {
     if (stream.Type !== 'Subtitle') {
         return false
     }
@@ -82,7 +82,7 @@ const isForced = stream => {
     return false
 }
 
-const inspect = embyItem => {
+const inspect = (embyItem) => {
     let hasJapaneseAudio = false
     let hasEnglishSubtitle = false
     let isHdr = false
@@ -114,7 +114,7 @@ const inspect = embyItem => {
     }
 
     if (embyItem.TagItems) {
-        embyItem.TagItems.forEach(tag => {
+        embyItem.TagItems.forEach((tag) => {
             if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:')) {
                 isDubbedAnime = true
             }
@@ -124,7 +124,7 @@ const inspect = embyItem => {
         })
     }
     if (embyItem.Series && embyItem.Series.TagItems) {
-        embyItem.Series.TagItems.forEach(tag => {
+        embyItem.Series.TagItems.forEach((tag) => {
             if (tag.Name === 'DubbedAnime') {
                 isDubbedAnime = true
             }

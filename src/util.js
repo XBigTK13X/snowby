@@ -4,7 +4,7 @@ const readLine = require('readline')
 
 let profiles = null
 
-const appPath = relativePath => {
+const appPath = (relativePath) => {
     return path.join(__dirname, relativePath)
 }
 
@@ -41,7 +41,7 @@ const browserGetMediaProfiles = () => {
     return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
 }
 
-const isClass = target => {
+const isClass = (target) => {
     try {
         new target()
     } catch (err) {
@@ -53,7 +53,7 @@ const isClass = target => {
 let tippyInstances = []
 
 const loadTooltips = () => {
-    tippyInstances.forEach(instance => {
+    tippyInstances.forEach((instance) => {
         instance.destroy()
     })
     const tippy = require('tippy.js').default
@@ -65,7 +65,7 @@ const loadTooltips = () => {
 
 let lastLocation = ''
 let lastParams = {}
-const queryParams = target => {
+const queryParams = (target) => {
     target = target || location.search
     if (lastLocation === target) {
         return { ...lastParams }
@@ -75,7 +75,7 @@ const queryParams = target => {
     return lastParams
 }
 
-const queryString = target => {
+const queryString = (target) => {
     return require('query-string').stringify(target)
 }
 

@@ -33,7 +33,7 @@ module.exports = {
     },
     collectionFolder: {
         getChildren: (emby, embyItem) => {
-            return emby.embyItems(embyItem.Id, { ParentId: embyItem.Id }).then(results => {
+            return emby.embyItems(embyItem.Id, { ParentId: embyItem.Id }).then((results) => {
                 return results.sort((a, b) => {
                     return a.Name > b.Name ? 1 : -1
                 })
@@ -64,7 +64,7 @@ module.exports = {
         render: renderers.posters,
     },
     genreList: {
-        getChildren: emby => {
+        getChildren: (emby) => {
             return emby.genres(util.queryParams().genreFilter)
         },
         render: renderers.genreList,
@@ -76,14 +76,14 @@ module.exports = {
                 : 'All Genres',
     },
     inProgress: {
-        getChildren: emby => {
+        getChildren: (emby) => {
             return emby.itemsInProgress()
         },
         render: renderers.inProgress,
         title: 'In Progress',
     },
     liveTv: {
-        getChildren: emby => {
+        getChildren: (emby) => {
             return emby.liveChannels()
         },
         render: renderers.tvChannels,
@@ -103,7 +103,7 @@ module.exports = {
         render: renderers.movieList,
     },
     nextUp: {
-        getChildren: emby => {
+        getChildren: (emby) => {
             return emby.nextUp()
         },
         render: renderers.nextUp,
@@ -119,8 +119,8 @@ module.exports = {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {
                 ParentId: embyItem.Id,
-            }).then(children => {
-                return children.filter(x => x.Name !== 'Hype Game Tracks')
+            }).then((children) => {
+                return children.filter((x) => x.Name !== 'Hype Game Tracks')
             })
         },
         render: renderers.playlistList,
@@ -143,7 +143,7 @@ module.exports = {
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
                 TagIds: tagId,
             }
-            return emby.embyItems(null, params).then(items => {
+            return emby.embyItems(null, params).then((items) => {
                 return items
             })
         },
@@ -171,7 +171,7 @@ module.exports = {
             return embyItemsSearch(emby, embyItem.Id, {
                 IncludeItemTypes: 'Series',
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
-            }).then(results => {
+            }).then((results) => {
                 return results
             })
         },

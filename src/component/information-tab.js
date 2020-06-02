@@ -6,8 +6,8 @@ class InformationTab {
     }
 
     render() {
-        return new Promise(resolve => {
-            this.embyItem.getPlayMediaSummary().then(summary => {
+        return new Promise((resolve) => {
+            this.embyItem.getPlayMediaSummary().then((summary) => {
                 resolve(summary)
             })
         })

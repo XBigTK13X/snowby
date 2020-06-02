@@ -3,7 +3,7 @@ const util = require('../util')
 const fidelityBadge = require('./fidelity-badge')
 
 module.exports = {
-    render: options => {
+    render: (options) => {
         let navbarContent = `
 			<div class="navbar">
 		      <a href="landing.html" >

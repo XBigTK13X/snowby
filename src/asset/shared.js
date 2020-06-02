@@ -1,6 +1,6 @@
-module.exports = pageName => {
+module.exports = (pageName) => {
     window.lastTargetUrl = null
-    window.reloadPage = targetUrl => {
+    window.reloadPage = (targetUrl) => {
         if (targetUrl) {
             if (targetUrl === window.lastTargetUrl) {
                 return
@@ -13,7 +13,7 @@ module.exports = pageName => {
         const util = require('../util')
         window.$ = window.jQuery = require('jquery')
         require('jquery-lazy')
-        $('body').keydown(e => {
+        $('body').keydown((e) => {
             if (e.key == 'ArrowLeft') {
                 history.back()
             } else if (e.key === 'ArrowRight') {
@@ -50,7 +50,7 @@ module.exports = pageName => {
         }
         window.loadingInterval = setInterval(updateLoading, 200)
 
-        require(`../page/${pageName}`)().then(result => {
+        require(`../page/${pageName}`)().then((result) => {
             util.loadTooltips()
 
             if (result) {
@@ -73,7 +73,7 @@ module.exports = pageName => {
                         player.setProfile(result.defaultMediaProfile)
                         queryParams.mediaProfile = result.defaultMediaProfile
                     }
-                    window.changeProfile = target => {
+                    window.changeProfile = (target) => {
                         player.setProfile(target.value)
                         const newParams = util.queryParams()
                         newParams.mediaProfile = target.value

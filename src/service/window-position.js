@@ -8,22 +8,22 @@ const getScrollPosition = () => {
     }
 }
 
-const restore = pageId => {
+const restore = (pageId) => {
     const scrollY = window.sessionStorage.getItem(storageKey(pageId))
     window.scrollTo(0, scrollY)
 }
 
-const save = pageId => {
+const save = (pageId) => {
     window.sessionStorage.setItem(storageKey(pageId), getScrollPosition().y)
 }
 
-const saveOnChange = pageId => {
+const saveOnChange = (pageId) => {
     window.addEventListener('scroll', () => {
         save(pageId)
     })
 }
 
-const storageKey = pageId => {
+const storageKey = (pageId) => {
     return `emby-item-${pageId}-scroll`
 }
 

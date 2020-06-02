@@ -1,6 +1,6 @@
 module.exports = () => {
     let embyItem
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const _ = require('lodash')
         const emby = require('../service/emby-client')
         const navbar = require('../component/navbar')
@@ -21,12 +21,12 @@ module.exports = () => {
             .then(() => {
                 return handlerMap.getHandler(emby.client, queryParams.embyItemId)
             })
-            .then(result => {
+            .then((result) => {
                 handler = result.handler
                 parent = result.item
                 return handler.getChildren(emby.client, parent)
             })
-            .then(children => {
+            .then((children) => {
                 const renderedHtml = handler.render(parent, children)
                 if (children.length) {
                     document.getElementById('emby-items').innerHTML = renderedHtml

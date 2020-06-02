@@ -8,7 +8,7 @@ class ChapterTab {
     }
 
     render() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             if (!this.embyItem.Chapters || !this.embyItem.Chapters.length) {
                 return resolve('')
             }

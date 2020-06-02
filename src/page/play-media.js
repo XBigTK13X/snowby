@@ -1,7 +1,7 @@
 const player = require('../media/player')
 
 module.exports = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const _ = require('lodash')
         const { shell } = require('electron')
         const moment = require('moment')
@@ -33,26 +33,26 @@ module.exports = () => {
             .then(() => {
                 return emby.client.embyItem(queryParams.embyItemId)
             })
-            .then(embyItem => {
+            .then((embyItem) => {
                 if (embyItem.Type === 'Episode') {
                     navbar.render({
                         parentId: embyItem.SeasonId,
                         parentName: 'Season',
                     })
                 }
-                document.getElementById('mark-watched-button').onclick = event => {
+                document.getElementById('mark-watched-button').onclick = (event) => {
                     event.preventDefault()
                     emby.client.markPlayed(queryParams.embyItemId)
                     return false
                 }
 
-                document.getElementById('mark-unwatched-button').onclick = event => {
+                document.getElementById('mark-unwatched-button').onclick = (event) => {
                     event.preventDefault()
                     emby.client.markUnplayed(queryParams.embyItemId)
                     return false
                 }
 
-                document.getElementById('reset-streams-button').onclick = event => {
+                document.getElementById('reset-streams-button').onclick = (event) => {
                     event.preventDefault()
                     let newParams = util.queryParams()
                     delete newParams.audioRelativeIndex
@@ -65,7 +65,7 @@ module.exports = () => {
 
                 let discussionQuery = embyItem.getDiscussionQuery()
                 if (discussionQuery) {
-                    document.getElementById('discussion-button').onclick = event => {
+                    document.getElementById('discussion-button').onclick = (event) => {
                         event.preventDefault()
                         require('electron').ipcRenderer.send('snowby-open-website', 'https://duckduckgo.com/' + encodeURIComponent(discussionQuery))
                         return false
@@ -91,14 +91,14 @@ module.exports = () => {
 
                 const loadTab = (targetId, content) => {
                     const active = queryParams.openTab === targetId || (!queryParams.openTab && targetId === 'inspection-button')
-                    const handler = event => {
+                    const handler = (event) => {
                         if (event) {
                             event.preventDefault()
                         }
                         let newParams = util.queryParams()
                         newParams.openTab = targetId
                         window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
-                        content.render().then(renderedHtml => {
+                        content.render().then((renderedHtml) => {
                             document.getElementById('tab-container').innerHTML = renderedHtml
                             try {
                                 window.$lazyLoad()
@@ -128,8 +128,8 @@ module.exports = () => {
 
                 Promise.all(
                     tabs.map((tab, tabIndex) => {
-                        return new Promise(resolve => {
-                            return tab.render().then(renderedHtml => {
+                        return new Promise((resolve) => {
+                            return tab.render().then((renderedHtml) => {
                                 if (!renderedHtml) {
                                     tab.buttonHtml = ''
                                     return resolve()
@@ -146,7 +146,7 @@ module.exports = () => {
                         })
                     })
                 ).then(() => {
-                    document.getElementById('tab-buttons').innerHTML = tabs.map(tab => tab.buttonHtml).join('')
+                    document.getElementById('tab-buttons').innerHTML = tabs.map((tab) => tab.buttonHtml).join('')
 
                     tabs.forEach((tab, tabIndex) => {
                         const tabId = tab.name.toLowerCase().replace(' ', '-')
@@ -173,7 +173,7 @@ module.exports = () => {
 
                     if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
                         document.getElementById('resume-media-button').style = null
-                        document.getElementById('resume-media-button').onclick = event => {
+                        document.getElementById('resume-media-button').onclick = (event) => {
                             event.preventDefault()
                             player
                                 .openFile(
@@ -190,7 +190,7 @@ module.exports = () => {
                         }
                     }
 
-                    document.getElementById('play-media-button').onclick = event => {
+                    document.getElementById('play-media-button').onclick = (event) => {
                         event.preventDefault()
                         player
                             .openFile(

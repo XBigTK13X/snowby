@@ -281,14 +281,14 @@ module.exports = class EmbyItem {
     }
 
     getPlayMediaSummary() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             let studio = ''
             if (this.Studio) {
                 studio = `<p>Studio - ${this.Studio}</p>`
             }
             if (this.Studios) {
                 if (this.Studios.length) {
-                    studio = `<p>Studios</p><ul>${this.Studios.map(x => {
+                    studio = `<p>Studios</p><ul>${this.Studios.map((x) => {
                         return `<li>${x.Name}</li>`
                     }).join('')}</ul>`
                 }

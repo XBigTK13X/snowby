@@ -4,7 +4,7 @@ const player = require('../media/player')
 const emby = require('../service/emby-client')
 const util = require('../util')
 
-const setConnectionStatus = connected => {
+const setConnectionStatus = (connected) => {
     let status = 'Snowby is connected to the media player and monitoring progress.'
     if (!connected) {
         status = 'Snowby does not think media is playing.'
@@ -25,7 +25,7 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
             .then(() => {
                 player
                     .getPositionInEmbyTicks()
-                    .then(playbackPositionTicks => {
+                    .then((playbackPositionTicks) => {
                         if (playbackPositionTicks != lastTicks && playbackPositionTicks != null) {
                             lastTicks = playbackPositionTicks
                             setConnectionStatus(true)
@@ -38,12 +38,12 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             }
                         }
                     })
-                    .catch(mediaFinished => {
+                    .catch((mediaFinished) => {
                         setConnectionStatus(false)
                         clearInterval(trackInterval)
                     })
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err === 'disconnected') {
                     setConnectionStatus(false)
                     clearInterval(trackInterval)

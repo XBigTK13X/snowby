@@ -7,7 +7,7 @@ const _ = require('lodash')
 const util = require('../util')
 
 const renderGrid = (itemClass, parent, children) => {
-    const generator = child => {
+    const generator = (child) => {
         return new itemClass(child).render()
     }
     return renderGeneratedGrid(generator, parent, children)
@@ -16,7 +16,7 @@ const renderGrid = (itemClass, parent, children) => {
 const renderGeneratedGrid = (itemGenerator, parent, children) => {
     let html = `<div class="grid">`
     html += children
-        .map(child => {
+        .map((child) => {
             return itemGenerator(child)
         })
         .join('')
@@ -38,7 +38,7 @@ module.exports = {
         return renderGrid(EmbyPoster, parent, children)
     },
     playlist: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableFidelityBadge()
             poster.enableKindBadge()
@@ -47,7 +47,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     playlistList: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableTitle()
             return poster.render()
@@ -55,7 +55,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     genreList: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let text = new EmbyTextItem(child)
             let href = `emby-items.html?embyItemId=${child.Id}&showWatched=true`
             const queryParams = util.queryParams()
@@ -70,7 +70,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     movieList: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableFidelityBadge()
             return poster.render()
@@ -78,7 +78,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     nextUp: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let item = new EmbyPoster(child)
             item.enableProgressBadge()
             item.enableUnwatchedBadge()
@@ -88,7 +88,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     inProgress: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let mixed = new EmbyMixedItem(child)
             mixed.enableKindBadge()
             mixed.enableProgressBadge()
@@ -97,7 +97,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     tags: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableFidelityBadge()
             poster.enableKindBadge()
@@ -122,7 +122,7 @@ module.exports = {
         <tbody>
         `
         html += children
-            .map(child => {
+            .map((child) => {
                 const embyChannel = new EmbyTvChannel(child)
                 return embyChannel.render()
             })
@@ -131,7 +131,7 @@ module.exports = {
         return html
     },
     tvSeason: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let thumbnail = new EmbyThumbnail(child)
             thumbnail.enableTitle()
             thumbnail.enableFidelityBadge()
@@ -140,12 +140,12 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     tvSeries: (parent, children) => {
-        const nextUpGenerator = child => {
+        const nextUpGenerator = (child) => {
             let text = new EmbyTextItem(child)
             text.enableFidelityBadge()
             return text.render()
         }
-        const seasonGenerator = child => {
+        const seasonGenerator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableTitle()
             poster.enableUnwatchedBadge()
@@ -160,7 +160,7 @@ module.exports = {
         return renderGeneratedGrid(seasonGenerator, parent, children)
     },
     tvShowList: (parent, children) => {
-        const generator = child => {
+        const generator = (child) => {
             let poster = new EmbyPoster(child)
             poster.enableUnwatchedBadge()
             return poster.render()

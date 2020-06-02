@@ -3,7 +3,7 @@ const settings = require('../settings')
 const TEN_THOUSAND = 10000
 const TEN_MILLION = 10000000
 
-const breakdown = ticksInSecs => {
+const breakdown = (ticksInSecs) => {
     let ticks = ticksInSecs
     let hh = Math.floor(ticks / 3600)
     let mm = Math.floor((ticks % 3600) / 60)
@@ -15,14 +15,14 @@ const breakdown = ticksInSecs => {
     }
 }
 
-const pad = num => {
+const pad = (num) => {
     if (num < 10) {
         return '0' + num
     }
     return num
 }
 
-const toTimeStamp = embyTicks => {
+const toTimeStamp = (embyTicks) => {
     const b = breakdown(Math.floor(embyTicks / TEN_MILLION))
     let timestamp = `${pad(b.seconds)}s`
     if (b.minutes || b.hours) {
@@ -34,15 +34,15 @@ const toTimeStamp = embyTicks => {
     return timestamp
 }
 
-const mpvToEmby = mpvSeconds => {
+const mpvToEmby = (mpvSeconds) => {
     return Math.floor(mpvSeconds * TEN_MILLION)
 }
 
-const embyToSeconds = embyTicks => {
+const embyToSeconds = (embyTicks) => {
     return Math.floor(embyTicks / TEN_MILLION)
 }
 
-const stepBack = embyTicks => {
+const stepBack = (embyTicks) => {
     const adjustment = Math.floor(TEN_MILLION * settings.stepBackSeconds)
     if (embyTicks < adjustment) {
         return 0

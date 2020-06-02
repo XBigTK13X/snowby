@@ -16,14 +16,14 @@ class EmbyClient {
     }
 
     heartBeat() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             if (!this.authHeader || !this.userId) {
                 return resolve(false)
             }
             const url = `System/Info`
             this.httpClient
                 .get(url, null, { quiet: true })
-                .then(result => {
+                .then((result) => {
                     resolve(!!result)
                 })
                 .catch(() => {
@@ -37,7 +37,7 @@ class EmbyClient {
         const usersURL = 'users/public'
         return this.httpClient
             .get(usersURL)
-            .then(usersResponse => {
+            .then((usersResponse) => {
                 const user = usersResponse.data[0]
                 const loginPayload = {
                     Username: user.Name,
@@ -48,7 +48,7 @@ class EmbyClient {
                 const loginURL = 'users/authenticatebyname'
                 return this.httpClient.post(loginURL, loginPayload)
             })
-            .then(loginResponse => {
+            .then((loginResponse) => {
                 const authenticatedUser = loginResponse.data
                 this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
                 window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
@@ -59,8 +59,8 @@ class EmbyClient {
     }
 
     connect() {
-        return new Promise(resolve => {
-            this.heartBeat().then(heartBeatResult => {
+        return new Promise((resolve) => {
+            this.heartBeat().then((heartBeatResult) => {
                 if (heartBeatResult) {
                     return resolve(true)
                 } else {
@@ -70,7 +70,7 @@ class EmbyClient {
                         this.authHeader = authToken
                         this.userId = userId
                         this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
-                        return this.heartBeat().then(heartBeatRetryResult => {
+                        return this.heartBeat().then((heartBeatRetryResult) => {
                             if (heartBeatRetryResult) {
                                 return resolve(true)
                             } else {
@@ -91,8 +91,8 @@ class EmbyClient {
 
     libraryViews() {
         const url = `Users/${this.userId}/Views`
-        return this.httpClient.get(url).then(viewsResponse => {
-            return viewsResponse.data.Items.map(item => new EmbyItem(item))
+        return this.httpClient.get(url).then((viewsResponse) => {
+            return viewsResponse.data.Items.map((item) => new EmbyItem(item))
         })
     }
 
@@ -101,18 +101,18 @@ class EmbyClient {
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient
             .get(url)
-            .then(itemResponse => {
+            .then((itemResponse) => {
                 const result = new EmbyItem(itemResponse.data)
                 if (result.Type !== 'Episode') {
                     return result
                 }
-                return client.embyItem(result.SeriesId).then(seriesItem => {
+                return client.embyItem(result.SeriesId).then((seriesItem) => {
                     result.Series = seriesItem
                     return result
                 })
             })
-            .then(result => {
-                return client.specialFeatures(itemId).then(specialFeatures => {
+            .then((result) => {
+                return client.specialFeatures(itemId).then((specialFeatures) => {
                     result.SpecialFeatures = specialFeatures
                     return result
                 })
@@ -122,21 +122,21 @@ class EmbyClient {
     embyItems(parentId, searchParams) {
         const query = util.queryString(searchParams)
         const url = `Users/${this.userId}/Items?${query}`
-        return this.httpClient.get(url).then(itemsResponse => {
-            return itemsResponse.data.Items.map(item => new EmbyItem(item))
+        return this.httpClient.get(url).then((itemsResponse) => {
+            return itemsResponse.data.Items.map((item) => new EmbyItem(item))
         })
     }
 
     seasons(seriesId) {
         const seasonsUrl = `Shows/${seriesId}/Seasons?UserId=${this.userId}`
         const nextUpUrl = `Shows/NextUp?SeriesId=${seriesId}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
-        return Promise.all([this.httpClient.get(seasonsUrl), this.httpClient.get(nextUpUrl)]).then(responses => {
+        return Promise.all([this.httpClient.get(seasonsUrl), this.httpClient.get(nextUpUrl)]).then((responses) => {
             let results = []
             let nextUp = responses[1].data.Items[0]
             if (nextUp) {
                 results.push(new EmbyItem(nextUp, { nextUp: true }))
             }
-            results = results.concat(responses[0].data.Items.map(item => new EmbyItem(item)))
+            results = results.concat(responses[0].data.Items.map((item) => new EmbyItem(item)))
             return results
         })
     }
@@ -148,8 +148,8 @@ class EmbyClient {
             Fields: 'MediaStreams,Path',
         })
         const url = `Shows/${seriesId}/Episodes?${query}`
-        return this.httpClient.get(url).then(episodesResponse => {
-            return episodesResponse.data.Items.map(item => new EmbyItem(item))
+        return this.httpClient.get(url).then((episodesResponse) => {
+            return episodesResponse.data.Items.map((item) => new EmbyItem(item))
         })
     }
 
@@ -217,11 +217,11 @@ class EmbyClient {
         const movieURL = this.buildSearchURL(query, 'Movie')
         const seriesURL = this.buildSearchURL(query, 'Series')
         const episodeURL = this.buildSearchURL(query, 'Episode')
-        return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then(responses => {
+        return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then((responses) => {
             return [
-                responses[0].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
-                responses[1].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
-                responses[2].data.Items.map(item => new EmbyItem(item, { showSpoilers: true })),
+                responses[0].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
+                responses[1].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
+                responses[2].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
             ]
         })
     }
@@ -238,8 +238,8 @@ class EmbyClient {
 
     itemsInProgress() {
         const url = `Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
-        return this.httpClient.get(url).then(progressResponse => {
-            return progressResponse.data.Items.map(item => {
+        return this.httpClient.get(url).then((progressResponse) => {
+            return progressResponse.data.Items.map((item) => {
                 return new EmbyItem(item, { isSearchResult: true })
             })
         })
@@ -248,8 +248,8 @@ class EmbyClient {
     playlist(embyItemId) {
         const fields = 'ProductionYear,MediaStreams,Path'
         const url = `Playlists/${embyItemId}/Items?EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&UserId=${this.userId}&Fields=${fields}`
-        return this.httpClient.get(url).then(playlistResponse => {
-            return playlistResponse.data.Items.map(item => {
+        return this.httpClient.get(url).then((playlistResponse) => {
+            return playlistResponse.data.Items.map((item) => {
                 return new EmbyItem(item)
             })
         })
@@ -257,8 +257,8 @@ class EmbyClient {
 
     liveChannels() {
         const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=250&Fields=PrimaryImageAspectRatio%2CChannelInfo%2CSortName`
-        return this.httpClient.get(url).then(channelsResponse => {
-            return channelsResponse.data.Items.map(item => {
+        return this.httpClient.get(url).then((channelsResponse) => {
+            return channelsResponse.data.Items.map((item) => {
                 return new EmbyItem(item)
             }).sort((a, b) => {
                 return a.getDisplayName() > b.getDisplayName() ? 1 : -1
@@ -272,15 +272,15 @@ class EmbyClient {
             genreFilter = filter
         }
         let url = `Genres?SortBy=SortName&SortOrder=Ascending&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&IncludeItemTypes=${genreFilter}`
-        return this.httpClient.get(url).then(genresResponse => {
+        return this.httpClient.get(url).then((genresResponse) => {
             return genresResponse.data.Items.sort((a, b) => {
                 return a.Name > b.Name ? 1 : -1
             })
-                .map(x => {
+                .map((x) => {
                     x.Name = x.Name.replace('/', ' ').replace('.', ' ')
                     return x
                 })
-                .map(x => {
+                .map((x) => {
                     return new EmbyItem(x)
                 })
         })
@@ -299,15 +299,15 @@ class EmbyClient {
         const nextUpUrl = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
         const parentUrl = `Users/${this.userId}/Items?SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&Filters=IsUnplayed`
         let parentLookup = {}
-        return Promise.all([this.httpClient.get(nextUpUrl), this.httpClient.get(parentUrl)]).then(responses => {
+        return Promise.all([this.httpClient.get(nextUpUrl), this.httpClient.get(parentUrl)]).then((responses) => {
             let nextUpResponse = responses[0]
             let parentResponse = responses[1]
-            parentResponse.data.Items.forEach(item => {
+            parentResponse.data.Items.forEach((item) => {
                 parentLookup[item.Id] = item
             })
             return nextUpResponse.data.Items.sort((a, b) => {
                 return a.SeriesName > b.SeriesName ? 1 : -1
-            }).map(x => {
+            }).map((x) => {
                 let unwatchedCount = 0
                 if (_.has(parentLookup, x.SeriesId)) {
                     let currentParent = parentLookup[x.SeriesId]
@@ -322,8 +322,8 @@ class EmbyClient {
 
     person(personId) {
         const personUrl = `/Users/${this.userId}/Items?SortOrder=Ascending&IncludeItemTypes=Series%2CMovie&Recursive=true&Fields=People%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear&IncludePeople=true&StartIndex=0&CollapseBoxSetItems=false&SortBy=SortName&PersonIds=${personId}&EnableTotalRecordCount=false`
-        return this.httpClient.get(personUrl).then(response => {
-            return response.data.Items.map(item => {
+        return this.httpClient.get(personUrl).then((response) => {
+            return response.data.Items.map((item) => {
                 let foundPerson = null
                 for (let ii = 0; ii < item.People.length; ii++) {
                     if (item.People[ii].Id === personId) {
@@ -353,8 +353,8 @@ class EmbyClient {
 
     specialFeatures(embyItemId) {
         const url = `/Users/${this.userId}/Items/${embyItemId}/SpecialFeatures`
-        return this.httpClient.get(url).then(response => {
-            return response.data.map(item => {
+        return this.httpClient.get(url).then((response) => {
+            return response.data.map((item) => {
                 let tooltip = `
                     <div class='centered'>
                         <p>
@@ -370,7 +370,7 @@ class EmbyClient {
 
     tags() {
         const url = `/Tags`
-        return this.httpClient.get(url).then(response => {
+        return this.httpClient.get(url).then((response) => {
             return response.data.Items
         })
     }

@@ -6,7 +6,7 @@ module.exports = () => {
             .then(() => {
                 return emby.client.itemsInProgress()
             })
-            .then(inProgressItems => {
+            .then((inProgressItems) => {
                 const settings = require('../settings')
                 const InternalLink = require('../component/internal-link')
                 const EmbyItemLink = require('../component/emby-item-link')
@@ -24,7 +24,7 @@ module.exports = () => {
                 }
 
                 let markup = `<div class="grid center-grid">${links
-                    .map(link => {
+                    .map((link) => {
                         return link.render()
                     })
                     .join('')}</div>`

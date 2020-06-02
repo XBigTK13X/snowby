@@ -1,5 +1,5 @@
 module.exports = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const debounce = require('debounce')
         const emby = require('../service/emby-client')
         const EmbyMixedItem = require('../component/emby-mixed-item')
@@ -7,15 +7,15 @@ module.exports = () => {
 
         const queryParams = util.queryParams()
 
-        const executeQuery = debounce(queryText => {
+        const executeQuery = debounce((queryText) => {
             if (queryText.length > 1) {
-                emby.client.search(queryText).then(results => {
+                emby.client.search(queryText).then((results) => {
                     const foundResults = results[0].length || results[1].length || results[2].length
                     let resultsCount = 0
                     if (foundResults) {
                         let renderedItems = `<div class="grid square-grid">`
-                        results.forEach(embyItems => {
-                            embyItems.forEach(embyItem => {
+                        results.forEach((embyItems) => {
+                            embyItems.forEach((embyItem) => {
                                 let mixed = new EmbyMixedItem(embyItem)
                                 mixed.enableKindBadge()
                                 renderedItems += mixed.render()
@@ -46,7 +46,7 @@ module.exports = () => {
                 executeQuery(queryParams.query)
             }
 
-            document.getElementById('query-input').addEventListener('input', event => {
+            document.getElementById('query-input').addEventListener('input', (event) => {
                 executeQuery(event.target.value)
             })
 

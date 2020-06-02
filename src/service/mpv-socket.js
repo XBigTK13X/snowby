@@ -29,8 +29,8 @@ class MpvSocket {
     connect() {
         let self = this
         self.socket.on('close', () => self.closeHandler())
-        self.socket.on('error', error => self.errorHandler(error))
-        self.socket.on('data', data => self.dataHandler(data))
+        self.socket.on('error', (error) => self.errorHandler(error))
+        self.socket.on('data', (data) => self.dataHandler(data))
         self.socket.setMaxListeners(0)
         self.socket.connect({ path: self.socketPath })
     }
@@ -56,7 +56,7 @@ class MpvSocket {
         }
         this.isConnected = true
         let messages = data.toString().split('\n')
-        messages.forEach(message => {
+        messages.forEach((message) => {
             if (message.length > 0) {
                 const JSONmessage = JSON.parse(message)
                 if (JSONmessage.request_id && JSONmessage.request_id !== 0) {
