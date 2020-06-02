@@ -18,8 +18,6 @@ module.exports = pageName => {
                 history.back()
             } else if (e.key === 'ArrowRight') {
                 history.forward()
-            } else if (e.key === 'MediaPlayPause') {
-                require('electron').ipcRenderer.send('snowby-wake-audio')
             }
         })
         const pageOptions = require('./page-options')
