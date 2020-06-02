@@ -2,6 +2,7 @@ const util = require('./util')
 
 module.exports = {
     debugApiCalls: false,
+    debugMpvSocket: false,
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     enableHdrToggle: true,
@@ -13,6 +14,7 @@ module.exports = {
     keepAudioDeviceAwake: true,
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
+    mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
     versionDate: 'June 1, 2020',

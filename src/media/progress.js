@@ -26,7 +26,7 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                 player
                     .getPositionInEmbyTicks()
                     .then(playbackPositionTicks => {
-                        if (playbackPositionTicks != lastTicks) {
+                        if (playbackPositionTicks != lastTicks && playbackPositionTicks != null) {
                             lastTicks = playbackPositionTicks
                             setConnectionStatus(true)
                             if (playbackPositionTicks > 0) {
