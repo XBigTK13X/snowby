@@ -24,7 +24,7 @@ FIDELITY_BADGE_COLORS = {
     },
 }
 
-const render = embyItem => {
+const render = (embyItem) => {
     if (util.queryParams().hideBadges) {
         return ''
     }
@@ -42,9 +42,9 @@ const legend = () => {
     return (
         "<div class='badge-legend'>" +
         resolutions
-            .map(resolution => {
+            .map((resolution) => {
                 return sources
-                    .map(source => {
+                    .map((source) => {
                         return `
                 <p>
                     <span class='badge-${FIDELITY_BADGE_COLORS[resolution][source]}'>${resolution} ${source}</span>

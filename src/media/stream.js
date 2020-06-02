@@ -1,4 +1,4 @@
-const isShown = stream => {
+const isShown = (stream) => {
     if (stream.Type === 'Video') {
         return true
     }
@@ -14,7 +14,7 @@ const isShown = stream => {
     return false
 }
 
-const quality = stream => {
+const quality = (stream) => {
     let result = ``
     if (stream.Type === 'Video') {
         result = `${stream.VideoRange}`

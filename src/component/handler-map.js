@@ -20,7 +20,7 @@ const typeHandlers = {
 }
 
 const getHandler = (emby, itemId) => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         if (itemId === 'in-progress') {
             return resolve({ handler: handlers.inProgress })
         }
@@ -33,7 +33,7 @@ const getHandler = (emby, itemId) => {
         if (itemId === 'tags') {
             return resolve({ handler: handlers.tags })
         }
-        return emby.embyItem(itemId).then(embyItem => {
+        return emby.embyItem(itemId).then((embyItem) => {
             navbar.render({
                 showToggleButton: embyItem.isCollection(),
             })

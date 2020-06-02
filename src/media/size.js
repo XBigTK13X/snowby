@@ -14,7 +14,7 @@ const humanFileSize = (bytes, si) => {
     return bytes.toFixed(1) + ' ' + units[u]
 }
 
-const getDisplay = filePath => {
+const getDisplay = (filePath) => {
     var stats = fs.statSync(filePath)
     var fileSizeInBytes = stats['size']
     return humanFileSize(fileSizeInBytes, true)

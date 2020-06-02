@@ -18,7 +18,7 @@ class StreamsTab {
             window.reloadPage(`play-media.html?${util.queryString(queryParams)}`)
         }
 
-        window.selectTrack = streamIndex => {
+        window.selectTrack = (streamIndex) => {
             const stream = embyItem.MediaStreams[streamIndex]
             let queryParams = util.queryParams()
             if (stream.Type === 'Audio') {
@@ -48,7 +48,7 @@ class StreamsTab {
     }
 
     render() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             let queryParams = util.queryParams()
             let html = `<table>
     	    <tr>

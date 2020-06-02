@@ -13,7 +13,7 @@ class CastTab {
     }
 
     render() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             let dedupe = {}
             let people = this.embyItem.People
             if (this.embyItem.Series && this.embyItem.Series.People) {
@@ -23,13 +23,13 @@ class CastTab {
                 return resolve('')
             }
             let peopleHtml = people
-                .map(x => {
+                .map((x) => {
                     return new EmbyItem(
                         { ...x, ExtraType: 'Person' },
                         { imageTag: x.PrimaryImageTag, noImageTag: x.PrimaryImageTag ? null : NOT_FOUND_IMAGE_HREF }
                     )
                 })
-                .filter(x => {
+                .filter((x) => {
                     let slug = x.PersonName + x.PersonRole
                     if (!_.has(dedupe, slug)) {
                         dedupe[slug] = true
@@ -40,7 +40,7 @@ class CastTab {
                 .sort((a, b) => {
                     return a.PersonRole > b.PersonRole ? 1 : -1
                 })
-                .map(x => {
+                .map((x) => {
                     return new EmbyPoster(x).render()
                 })
                 .join(' ')

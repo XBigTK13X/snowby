@@ -68,7 +68,7 @@ class MpvClient {
     }
 
     getPositionInEmbyTicks() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             let position = this.mpv.getTimePosition()
             if (position === null) {
                 return resolve(null)

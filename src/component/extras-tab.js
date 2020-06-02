@@ -8,12 +8,12 @@ class ExtrasTab {
     }
 
     render() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             if (!this.embyItem.SpecialFeatures || !this.embyItem.SpecialFeatures.length) {
                 return resolve('')
             }
             let html = `<div class="grid square-grid">`
-            this.embyItem.SpecialFeatures.forEach(feature => {
+            this.embyItem.SpecialFeatures.forEach((feature) => {
                 html += new EmbyPoster(feature).render()
             })
             html += '</div>'

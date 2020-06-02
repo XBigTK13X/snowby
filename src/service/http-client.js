@@ -14,12 +14,12 @@ class HttpClient {
     newAxios() {
         this.client = axios.create(this.config)
         if (settings.debugApiCalls) {
-            this.client.interceptors.request.use(request => {
+            this.client.interceptors.request.use((request) => {
                 console.log({ request })
                 return request
             })
 
-            this.client.interceptors.response.use(response => {
+            this.client.interceptors.response.use((response) => {
                 console.log({ response })
                 return response
             })
@@ -46,9 +46,9 @@ class HttpClient {
             window.loadingCount++
         }
         window.updateLoading()
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             return this.client[method](url, data)
-                .then(result => {
+                .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         console.log({ method, url, data, result, config: this.config })
                     }
@@ -56,7 +56,7 @@ class HttpClient {
                     window.updateLoading()
                     return resolve(result)
                 })
-                .catch(err => {
+                .catch((err) => {
                     if (options && !options.quiet) {
                         console.log({
                             place: 'http-client.wrap',

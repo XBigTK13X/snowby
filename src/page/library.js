@@ -9,10 +9,10 @@ module.exports = () => {
             .then(() => {
                 return emby.client.libraryViews()
             })
-            .then(libraries => {
+            .then((libraries) => {
                 let menuEntries = []
 
-                libraries.forEach(library => {
+                libraries.forEach((library) => {
                     menuEntries.push(new EmbyItemLink(library.Name, library.Id))
                 })
 
@@ -30,7 +30,7 @@ module.exports = () => {
                 })
 
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
-                    .map(entry => {
+                    .map((entry) => {
                         return entry.render()
                     })
                     .join('')}</div>`

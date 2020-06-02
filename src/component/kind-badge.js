@@ -1,6 +1,6 @@
 const util = require('../util')
 
-const render = embyItem => {
+const render = (embyItem) => {
     if (util.queryParams().hideBadges) {
         return ''
     }

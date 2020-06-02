@@ -42,12 +42,12 @@ module.exports = () => {
             return a.title > b.title ? 1 : -1
         })
 
-        STREAMING_LINKS.forEach(link => {
+        STREAMING_LINKS.forEach((link) => {
             menuEntries.push(new ExternalLink(link.title, link.link))
         })
 
         let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
-            .map(entry => {
+            .map((entry) => {
                 return entry.render()
             })
             .join('')}</div>`

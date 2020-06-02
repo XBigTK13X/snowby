@@ -1,5 +1,5 @@
 module.exports = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         const EmbyItemLink = require('../component/emby-item-link')
         const categories = [
             new EmbyItemLink('Movies', 'genres', { genreFilter: 'Movie' }),
@@ -7,7 +7,7 @@ module.exports = () => {
             new EmbyItemLink('Both', 'genres'),
         ]
         const categoriesMarkup = `<div class="grid center-grid">${categories
-            .map(x => {
+            .map((x) => {
                 return x.render()
             })
             .join('')}</div>`

@@ -12,7 +12,7 @@ class InspectionTab {
     }
 
     render(embyItem, inspection) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const fileSize = size.getDisplay(this.embyItem.CleanPath)
             let html = ``
             if (this.embyItem.RunTimeTicks) {
