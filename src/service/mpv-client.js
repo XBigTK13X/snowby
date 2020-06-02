@@ -1,17 +1,33 @@
-//Modified from https://github.com/AxelTerizaki/Node-MPV/tree/FixIPCRequestID
 const settings = require('../settings')
-const mpvApi = require('../vendor/node-mpv')
 const ticks = require('../media/ticks')
+const ipcRenderer = require('electron').ipcRenderer
+const _ = require('lodash')
 
 let instance
 
+class IpcWrapper {
+    constructor() {}
+
+    isRunning() {
+        let result = ipcRenderer.sendSync('snowby-is-mpv-running')
+        return result
+    }
+
+    play(options) {
+        return ipcRenderer.sendSync('snowby-launch-mpv', options)
+    }
+
+    getTimePosition() {
+        return ipcRenderer.sendSync('snowby-get-mpv-position')
+    }
+}
+
 class MpvClient {
     constructor() {
-        this.mpv = new mpvApi({
-            binary: settings.mpvExePath,
-        })
+        this.mpv = new IpcWrapper()
         this.lastProfile = null
         this.profile = null
+        this.defaultOptions = []
     }
 
     connect() {
@@ -32,41 +48,33 @@ class MpvClient {
     }
 
     openPath(mediaPath, audioIndex, subtitleIndex, seekTicks) {
-        let start = Promise.resolve()
-        if (!this.mpv.isRunning()) {
-            start = this.mpv.start()
+        let options = _.cloneDeep(this.defaultOptions)
+        options.push(mediaPath)
+        if (audioIndex !== null) {
+            options.push(`--aid=${audioIndex}`)
         }
-        return start
-            .then(() => {
-                return this.mpv.load(mediaPath)
-            })
-            .then(() => {
-                if (audioIndex !== null) {
-                    return this.mpv.selectAudioTrack(audioIndex)
-                }
-            })
-            .then(() => {
-                if (subtitleIndex !== null) {
-                    return this.mpv.selectSubtitle(subtitleIndex)
-                }
-            })
-            .then(() => {
-                if (!seekTicks) {
-                    return Promise.resolve()
-                }
-                return this.seek(seekTicks)
-            })
+        if (subtitleIndex !== null) {
+            options.push(`--sid=${subtitleIndex}`)
+        }
+        if (seekTicks) {
+            options.push(`--start=${this.seek(seekTicks)}`)
+        }
+        return this.mpv.play(options)
     }
 
     seek(seekTicks) {
         let adjustment = ticks.stepBack(seekTicks)
-        return this.mpv.goToPosition(ticks.embyToSeconds(adjustment))
+        return ticks.embyToSeconds(adjustment)
     }
 
     getPositionInEmbyTicks() {
-        return this.mpv.getTimePosition().then(position => {
+        return new Promise(resolve => {
+            let position = this.mpv.getTimePosition()
+            if (position === null) {
+                return resolve(null)
+            }
             const embyTicks = ticks.mpvToEmby(position)
-            return embyTicks
+            return resolve(embyTicks)
         })
     }
 
@@ -75,20 +83,11 @@ class MpvClient {
             return
         }
         this.lastProfile = profile
-        if (this.mpv.isRunning()) {
-            this.mpv.quit()
-        }
         this.profile = profile
-        let options = []
+        this.defaultOptions = []
         if (profile && profile !== 'default') {
-            options.push(`--profile=${this.profile}`)
+            this.defaultOptions.push(`--profile=${this.profile}`)
         }
-        this.mpv = new mpvApi(
-            {
-                binary: settings.mpvExePath,
-            },
-            options
-        )
     }
 }
 

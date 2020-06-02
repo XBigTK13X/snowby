@@ -79,6 +79,13 @@ const queryString = target => {
     return require('query-string').stringify(target)
 }
 
+const getCaller = () => {
+    // get the top most caller of the function stack for error message purposes
+    const stackMatch = new Error().stack.match(/at\s\w*[^getCaller]\.\w*\s/g)
+    const caller = stackMatch[stackMatch.length - 1].split('.')[1].trim() + '()'
+    return caller
+}
+
 module.exports = {
     appPath,
     browserGetMediaProfiles,
@@ -88,4 +95,5 @@ module.exports = {
     queryParams,
     queryString,
     swapConfig,
+    getCaller,
 }
