@@ -87,7 +87,7 @@ const inspect = (embyItem) => {
     let hasEnglishSubtitle = false
     let isHdr = false
     let isAnimated = false
-    let isDubbedAnime = false
+    let ignoreInspector = false
     let isSubbedAnime = false
     let hasEnglishAudio = false
 
@@ -115,8 +115,8 @@ const inspect = (embyItem) => {
 
     if (embyItem.TagItems) {
         embyItem.TagItems.forEach((tag) => {
-            if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:')) {
-                isDubbedAnime = true
+            if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:') || tag.Name === 'IgnoreInspector') {
+                ignoreInspector = true
             }
             if (tag.Name === 'SubbedAnime') {
                 isSubbedAnime = true
@@ -125,8 +125,8 @@ const inspect = (embyItem) => {
     }
     if (embyItem.Series && embyItem.Series.TagItems) {
         embyItem.Series.TagItems.forEach((tag) => {
-            if (tag.Name === 'DubbedAnime') {
-                isDubbedAnime = true
+            if (tag.Name === 'DubbedAnime' || tag.Name === 'IgnoreInspector') {
+                ignoreInspector = true
             }
             if (tag.Name === 'SubbedAnime') {
                 isSubbedAnime = true
@@ -148,7 +148,7 @@ const inspect = (embyItem) => {
                 firstAudioAbsoluteIndex = trackIndex
             }
             let streamJapaneseAudioScore = calculateJapaneseAudioScore(stream)
-            if (!isDubbedAnime || isSubbedAnime) {
+            if (!ignoreInspector || isSubbedAnime) {
                 if (streamJapaneseAudioScore > animeAudioScore) {
                     hasJapaneseAudio = true
                     animeAudioScore = streamJapaneseAudioScore
@@ -167,7 +167,7 @@ const inspect = (embyItem) => {
         if (stream.Type === 'Subtitle') {
             subtitleIndex++
             const streamSubtitleScore = calculateEnglishSubtitleScore(stream)
-            if (!isDubbedAnime && streamSubtitleScore !== null && streamSubtitleScore >= englishSubtitleScore) {
+            if (!ignoreInspector && streamSubtitleScore !== null && streamSubtitleScore >= englishSubtitleScore) {
                 hasEnglishSubtitle = true
                 englishSubtitleScore = streamSubtitleScore
                 subtitleAbsoluteIndex = trackIndex
@@ -186,7 +186,7 @@ const inspect = (embyItem) => {
         isHdr,
         subtitleAbsoluteIndex,
         subtitleRelativeIndex,
-        isDubbedAnime,
+        ignoreInspector,
         isSubbedAnime,
     }
     if (!isAnime) {

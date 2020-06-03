@@ -34,7 +34,7 @@ class InspectionTab {
                 .add(runTimeBreakdown.seconds, 'seconds')
             let finishStamp = finishAt.format('hh:mm:ss a')
             html += `<p>Finish At - ${finishStamp}</p>`
-            if (this.inspection.isDubbedAnime) {
+            if (this.inspection.ignoreInspector) {
                 html += `<p>Snowby was told that nothing special should be done to pick streams.`
             } else {
                 if (this.inspection.isSubbedAnime) {
