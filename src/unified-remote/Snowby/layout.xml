@@ -2,7 +2,7 @@
 <layout>
 	<row>
 		<button text="Sleep" ontap="sleepComputer" />
-		<button text="Wake" ontap="@wol,MAC" />
+		<button text="Wake" ontap="@wol,MA:AC:AD:DR:RE:S1" />
 	</row>
 	<row>
 		<button text="Full\nScreen" ontap="toggleFullScreen" />
@@ -12,7 +12,7 @@
 	<row>
 		<button text="Snowby" ontap="focusSnowby" />
 		<button text="MPV" ontap="focusMPV" />
-		<button text="Browser" ontap="focusEdge" />
+		<button text="Browser" ontap="focusBrowser" />
 	</row>
 	<row>
 		<button text="Backward" ontap="jumpBackward" />

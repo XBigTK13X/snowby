@@ -1,0 +1,1 @@
+cscript.exe C:\aa\bin\snowby-win32-x64\resources\app\src\bin\hdr\hdr-toggle.vbs

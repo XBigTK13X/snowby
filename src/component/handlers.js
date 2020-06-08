@@ -134,7 +134,7 @@ module.exports = {
     tags: {
         getChildren: (emby, embyItem) => {
             let tagId = util.queryParams().tagId
-            let includeItemTypes = 'Movie,Series'
+            let includeItemTypes = 'Movie,Episode'
             let params = {
                 Recursive: true,
                 SortBy: 'PremiereDate,ProductionYear,SortName',
@@ -144,7 +144,10 @@ module.exports = {
                 TagIds: tagId,
             }
             return emby.embyItems(null, params).then((items) => {
-                return items
+                return items.map((x) => {
+                    x.ShowSpoilers = true
+                    return x
+                })
             })
         },
         render: renderers.tags,
