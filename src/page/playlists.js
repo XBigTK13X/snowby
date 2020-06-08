@@ -12,6 +12,9 @@ module.exports = () => {
                     .filter((x) => {
                         return x.Name.includes('Playlist:')
                     })
+                    .sort((a, b) => {
+                        return a.Name > b.Name ? 1 : -1
+                    })
                     .map((x) => {
                         return new EmbyItemLink(x.Name.replace('Playlist:', ''), 'tags', { tagId: x.Id, tagName: x.Name })
                     })

@@ -36,7 +36,7 @@ class IpcServer {
                 if (settings.debugMpvSocket) {
                     console.log('args', args)
                 }
-                this.mpvProcess = spawn(settings.mpvExePath, args)
+                this.mpvProcess = spawn(settings.mpvExePath, args, { stdio: 'ignore' })
                 if (settings.debugMpvSocket) {
                     console.log('Process spawned')
                 }

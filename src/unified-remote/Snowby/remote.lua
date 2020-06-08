@@ -1,3 +1,9 @@
+-- Documentation
+-- http://www.unifiedremote.com/api
+
+-- Supported Keys
+-- https://github.com/unifiedremote/Docs/blob/master/res/keys.md
+
 -- Native Windows Stuff
 local ffi = require("ffi");
 ffi.cdef[[
@@ -5,14 +11,6 @@ bool SetSuspendState(bool hibernate, bool forceCritical, bool disableWakeEvent);
 ]]
 local PowrProf = ffi.load("PowrProf");
 local kb = libs.keyboard;
-
-
--- Documentation
--- http://www.unifiedremote.com/api
-
--- Supported Keys
--- https://github.com/unifiedremote/Docs/blob/master/res/keys.md
-
 
 actions.toggleMedia = function ()
 	kb.stroke("mediaplaypause");
@@ -30,7 +28,7 @@ actions.focusMPV = function()
 	kb.stroke('windows','d3')
 end
 
-actions.focusEdge = function()
+actions.focusBrowser = function()
 	kb.stroke('windows','d4')
 end
 
