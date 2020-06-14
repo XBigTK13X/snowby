@@ -55,3 +55,19 @@ end
 actions.sleepComputer = function ()
 	PowrProf.SetSuspendState(false, true, false);
 end
+
+actions.subSyncMinus = function()
+	kb.stroke('z')
+end
+
+actions.subSyncPlus = function()
+	kb.stroke('shift','z')
+end
+
+actions.audioSyncMinus = function()
+	kb.stroke('ctrl','z')
+end
+
+actions.audioSyncPlus = function()
+	kb.stroke('ctrl','shift','z')
+end

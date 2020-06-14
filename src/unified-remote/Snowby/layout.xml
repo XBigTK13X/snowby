@@ -10,6 +10,12 @@
 		<button text="App\nExit" ontap="exitApp" />
 	</row>
 	<row>
+		<button text="Sub -" ontap="subSyncMinus" />
+		<button text="Sub +" ontap="subSyncPlus" />
+		<button text="Audio -" ontap="audioSyncMinus" />
+		<button text="Audio +" ontap="audioSyncPlus" />
+	</row>
+	<row>
 		<button text="Snowby" ontap="focusSnowby" />
 		<button text="MPV" ontap="focusMPV" />
 		<button text="Browser" ontap="focusBrowser" />
