@@ -16,7 +16,10 @@ class IpcServer {
         })
 
         this.ipcMain.on('snowby-open-website', (event, url) => {
-            spawn('cmd.exe', [`/c start firefox ${url}`], settings.spawnOptions)
+            spawn('cmd.exe', [`/c start firefox ${url}`], {
+                stdio: 'ignore',
+                detached: true,
+            })
             //spawn('cmd.exe', [`/c start chrome ${url}`], settings.spawnOptions)
             //spawn('cmd.exe', [`/c start microsoft-edge:${url}`], settings.spawnOptions)
         })
