@@ -67,7 +67,10 @@ module.exports = () => {
                 if (discussionQuery) {
                     document.getElementById('discussion-button').onclick = (event) => {
                         event.preventDefault()
-                        require('electron').ipcRenderer.send('snowby-open-website', 'https://duckduckgo.com/' + encodeURIComponent(discussionQuery))
+                        require('electron').ipcRenderer.send(
+                            'snowby-open-website',
+                            'https://google.com/search?q=' + encodeURIComponent(discussionQuery)
+                        )
                         return false
                     }
                 } else {

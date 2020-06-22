@@ -17,7 +17,7 @@ module.exports = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'June 14, 2020',
+    versionDate: 'June 22, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
