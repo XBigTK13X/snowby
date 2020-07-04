@@ -27,13 +27,18 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
 module.exports = {
     boxSet: {
         getChildren: (emby, embyItem) => {
-            return emby.embyItems(embyItem.Id, { ParentId: embyItem.Id })
+            return emby.embyItems(embyItem.Id, {
+                ParentId: embyItem.Id,
+                Fields: 'DateCreated,Genres,MediaStreams,ParentId,Path,SortName,ProductionYear',
+                IncludeItemTypes: 'Movie',
+                SortBy: 'ProductionYear',
+            })
         },
-        render: renderers.posters,
+        render: renderers.boxSet,
     },
     collectionFolder: {
         getChildren: (emby, embyItem) => {
-            return emby.embyItems(embyItem.Id, { ParentId: embyItem.Id }).then((results) => {
+            return emby.embyItems(embyItem.Id).then((results) => {
                 return results.sort((a, b) => {
                     return a.Name > b.Name ? 1 : -1
                 })

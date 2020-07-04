@@ -506,3 +506,22 @@ tr.channel-guide {
 .tippy-content {
     padding: 5px 9px;
 }
+
+.admin-list-item {
+    border: 1px solid grey;
+    padding: 2px;
+    margin: 2px;
+    display: inline-block;
+}
+
+.admin-list-item-selected {
+    border: 1px solid yellow;
+    padding: 2px;
+    margin: 2px;
+    display: inline-block;
+}
+
+.admin-button {
+    width: 80%;
+    height: 40px;
+}
