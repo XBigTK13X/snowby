@@ -1,6 +1,7 @@
 const util = require('./util')
 
 module.exports = {
+    adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
     embyServerURL: 'http://9914.us:8096',
@@ -17,7 +18,7 @@ module.exports = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'June 22, 2020',
+    versionDate: 'July 4, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,

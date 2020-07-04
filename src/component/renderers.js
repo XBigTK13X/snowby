@@ -34,6 +34,14 @@ module.exports = {
     thumbnails: (parent, children) => {
         return renderGrid(EmbyThumbnail, parent, children)
     },
+    boxSet: (parent, children) => {
+        const generator = (child) => {
+            let poster = new EmbyPoster(child)
+            poster.enableFidelityBadge()
+            return poster.render()
+        }
+        return renderGeneratedGrid(generator, parent, children)
+    },
     person: (parent, children) => {
         return renderGrid(EmbyPoster, parent, children)
     },
