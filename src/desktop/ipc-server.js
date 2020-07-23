@@ -29,34 +29,39 @@ class IpcServer {
                 // Disabling the terminal prevents mpv from hanging and crashing after playing video for a few minutes
                 let defaults = ['--no-terminal', '--msg-level=ipc=v', `--input-ipc-server=${settings.mpvSocketPath}`]
                 let args = defaults.concat(options)
+                util.serverLog('ipcServer - Launching mpv with options ' + JSON.stringify(args))
                 if (this.mpvProcess) {
                     if (settings.debugMpvSocket) {
-                        console.log('Killing')
+                        util.serverLog('ipcServer - Killing existing socket')
                     }
                     this.mpvProcess.kill()
                     this.mpvSocket.quit()
                 }
                 if (settings.debugMpvSocket) {
-                    console.log('args', args)
+                    util.serverLog('ipcServer - args: ' + JSON.stringify(args))
                 }
                 this.mpvProcess = spawn(settings.mpvExePath, args, { stdio: 'ignore' })
                 if (settings.debugMpvSocket) {
-                    console.log('Process spawned')
+                    util.serverLog('ipcServer - Process spawned')
                 }
+                let connectAttempt = 1
                 let connectInterval = setInterval(() => {
                     if (!this.mpvSocket || (this.mpvSocket && !this.mpvSocket.getIsConnected())) {
+                        util.serverLog('ipcServer - Attempting to connect with MPV socket #' + connectAttempt)
+                        connectAttempt++
                         this.mpvSocket = new MpvSocket(settings.mpvSocketPath)
                         this.mpvSocket.connect()
                     }
                     if (this.mpvSocket && this.mpvSocket.getIsConnected()) {
+                        util.serverLog('ipcServer - MPV socket connected')
                         clearInterval(connectInterval)
                         if (settings.debugMpvSocket) {
-                            console.log('Socket connected')
+                            util.serverLog('ipcServer - Socket connected')
                         }
 
                         event.returnValue = 'success'
                     }
-                }, 100)
+                }, 200)
             } catch {
                 event.returnValue = 'failure'
             }
@@ -79,9 +84,13 @@ class IpcServer {
             }
         })
 
+        this.ipcMain.on('snowby-log', async (event, message) => {
+            util.serverLog(message)
+        })
+
         process.on('exit', function () {
             if (settings.debugMpvSocket) {
-                console.log('Exiting')
+                util.serverLog('ipcServer - Exiting')
             }
             if (this.mpvProcess) {
                 this.mpvProcess.kill()

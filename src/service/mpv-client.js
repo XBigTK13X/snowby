@@ -31,7 +31,7 @@ class MpvClient {
     }
 
     connect() {
-        let failThreshold = 2
+        let failThreshold = 4
         return new Promise((resolve, reject) => {
             const heartbeat = setInterval(() => {
                 if (failThreshold <= 0) {

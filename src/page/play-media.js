@@ -4,7 +4,6 @@ module.exports = () => {
     return new Promise((resolve) => {
         const _ = require('lodash')
         const { shell } = require('electron')
-        const moment = require('moment')
 
         const inspector = require('../media/inspector')
         const settings = require('../settings')
