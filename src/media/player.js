@@ -16,17 +16,14 @@ class Player {
     }
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
-        return emby.client
-            .markUnplayed(embyItemId)
-            .then(() => {
-                return hdr.configure(isHdr)
-            })
+        return hdr
+            .configure(isHdr)
             .then(() => {
                 return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
             })
             .then(() => {
                 if (!seekTicks) {
-                    return Promise.resolve()
+                    return emby.client.markUnplayed(embyItemId)
                 }
                 return emby.client.updateProgress(embyItemId, seekTicks)
             })

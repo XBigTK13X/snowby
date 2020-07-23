@@ -6,11 +6,8 @@ const ipcServer = require('./desktop/ipc-server')
 
 let mainWindow = null
 
-// Remove unexpected space in first log
-console.log('')
-
 if (!app.requestSingleInstanceLock()) {
-    console.log('An instance of Snowby is already running. Exiting the duplicate app.')
+    util.serverLog('main - An instance of Snowby is already running. Exiting the duplicate app.')
     app.quit()
     return
 } else {
@@ -23,9 +20,9 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow() {
-    audio.keepAwake()
     await util.swapConfig()
-    console.log('Opening main window')
+    audio.keepAwake()
+    util.serverLog('main - Opening main window')
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
     mainWindow = new BrowserWindow({
         width: windowWidth,

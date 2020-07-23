@@ -2,6 +2,7 @@
 
 const net = require('net')
 const settings = require('../settings')
+const util = require('../util')
 
 class ipcRequest {
     constructor(resolve, reject, args) {
@@ -41,18 +42,18 @@ class MpvSocket {
 
     closeHandler() {
         if (settings.debugMpvSocket) {
-            console.log('Closed socket')
+            util.serverLog('mpvSocket - MPV socket closed')
         }
     }
     errorHandler(err) {
         this.isConnected = false
         if (settings.debugMpvSocket) {
-            console.log('Error received', err)
+            util.serverLog('mpvSocket - err: ' + JSON.stringify(err))
         }
     }
     dataHandler(data) {
         if (settings.debugMpvSocket) {
-            console.log('Message received')
+            util.serverLog('mpvSocket - data received ' + JSON.stringify(data))
         }
         this.isConnected = true
         let messages = data.toString().split('\n')
@@ -73,7 +74,7 @@ class MpvSocket {
                     }
                 } else {
                     if (settings.debugMpvSocket) {
-                        console.log('message', JSON.parse(message))
+                        util.serverLog('mpvSocket - message: ' + message)
                     }
                 }
             }
@@ -81,7 +82,7 @@ class MpvSocket {
     }
     quit() {
         if (settings.debugMpvSocket) {
-            console.log('Quitting')
+            util.serverLog('mpvSocket - Quitting')
         }
         this.socket.removeAllListeners('close')
         this.socket.removeAllListeners('error')

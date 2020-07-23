@@ -15,12 +15,12 @@ class HttpClient {
         this.client = axios.create(this.config)
         if (settings.debugApiCalls) {
             this.client.interceptors.request.use((request) => {
-                console.log({ request })
+                util.clientLog('httpClient - request' + JSON.stringify(request))
                 return request
             })
 
             this.client.interceptors.response.use((response) => {
-                console.log({ response })
+                util.clientLog('httpClient - response - ' + JSON.stringify(response))
                 return response
             })
         }
@@ -50,7 +50,7 @@ class HttpClient {
             return this.client[method](url, data)
                 .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
-                        console.log({ method, url, data, result, config: this.config })
+                        util.clientLog('httpClient - result ' + JSON.stringify({ method, url, data, result, config: this.config }))
                     }
                     window.loadingCount--
                     window.updateLoading()
@@ -58,15 +58,18 @@ class HttpClient {
                 })
                 .catch((err) => {
                     if (options && !options.quiet) {
-                        console.log({
-                            place: 'http-client.wrap',
-                            err,
-                            method,
-                            url,
-                            data,
-                            config: this.config,
-                            time: new Date().toString(),
-                        })
+                        util.clientLog(
+                            'httpClient - err ' +
+                                JSON.stringify({
+                                    place: 'http-client.wrap',
+                                    err,
+                                    method,
+                                    url,
+                                    data,
+                                    config: this.config,
+                                    time: new Date().toString(),
+                                })
+                        )
                     }
                     window.loadingCount--
                     window.updateLoading()

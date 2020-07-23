@@ -1,7 +1,9 @@
+const moment = require('moment')
 const path = require('path')
 const fs = require('fs')
 const readLine = require('readline')
-
+const ipcRenderer = require('electron').ipcRenderer
+let logFile = null
 let profiles = null
 
 const appPath = (relativePath) => {
@@ -9,7 +11,7 @@ const appPath = (relativePath) => {
 }
 
 const swapConfig = async () => {
-    console.log('Prepping mpv.conf')
+    serverLog('util - Prepping mpv.conf')
     const source = appPath('bin/mpv/mpv/mpv.conf.template')
     const destination = appPath('bin/mpv/mpv/mpv.conf')
     const mpvRootDir = appPath('/bin/mpv')
@@ -23,7 +25,7 @@ const swapConfig = async () => {
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
         if (swapped.indexOf('log-file') !== -1 && swapped.indexOf('#') === -1) {
-            console.log(`MPV will log to ${swapped.split('=')[1]}`)
+            serverLog(`util - MPV will log to ${swapped.split('=')[1]}`)
         }
         if (swapped.indexOf('[') !== -1 && swapped.indexOf(']') !== -1) {
             profiles.push(swapped.replace('[', '').replace(']', ''))
@@ -86,14 +88,31 @@ const getCaller = () => {
     return caller
 }
 
+const serverLog = (message) => {
+    if (!logFile) {
+        logFile = appPath('snowby-ipc.log')
+        // Clear the log each launch
+        console.log('')
+        fs.writeFileSync(logFile, '')
+    }
+    console.log(message)
+    fs.appendFileSync(logFile, moment().format('MMMM Do YYYY, h:mm:ss a') + ' - ' + message + '\n')
+}
+
+const clientLog = (message) => {
+    ipcRenderer.sendSync('snowby-log', message)
+}
+
 module.exports = {
     appPath,
     browserGetMediaProfiles,
+    clientLog,
     getMediaProfiles,
     isClass,
     loadTooltips,
     queryParams,
     queryString,
+    serverLog,
     swapConfig,
     getCaller,
 }

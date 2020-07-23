@@ -7,7 +7,7 @@ let resetProcess
 
 const cleanup = () => {
     if (audioProcess) {
-        console.log(`Cleaning up audio keep awake process`)
+        util.serverLog(`audio - Cleaning up audio keep awake process`)
         audioProcess.kill()
     }
 }
@@ -15,7 +15,7 @@ const cleanup = () => {
 const keepAwake = () => {
     cleanup()
     if (settings.keepAudioDeviceAwake) {
-        console.log(`Waking audio device by looping ${settings.inaudibleWavPath}`)
+        util.serverLog(`audio - Waking audio device by looping ${settings.inaudibleWavPath}`)
         audioProcess = spawn(
             settings.mpvExePath,
             [`${settings.inaudibleWavPath}`, `--loop`, `--vo=null`, `--no-config`, `--gapless-audio=yes`, '--volume=1'],
