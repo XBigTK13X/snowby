@@ -26,51 +26,84 @@ class IpcServer {
 
         this.ipcMain.on('snowby-launch-mpv', (event, options) => {
             try {
+                const pipePath = settings.mpvSocketPath
                 // Disabling the terminal prevents mpv from hanging and crashing after playing video for a few minutes
-                let defaults = ['--no-terminal', '--msg-level=ipc=v', `--input-ipc-server=${settings.mpvSocketPath}`]
+                let defaults = ['--no-terminal', '--msg-level=ipc=v', `--input-ipc-server=${pipePath}`]
                 let args = defaults.concat(options)
                 util.serverLog('ipcServer - Launching mpv with options ' + JSON.stringify(args))
                 if (this.mpvProcess) {
                     if (settings.debugMpvSocket) {
-                        util.serverLog('ipcServer - Killing existing socket')
+                        util.serverLog('ipcServer - Killing existing mpv process')
                     }
                     this.mpvProcess.kill()
-                    this.mpvSocket.quit()
+                    this.mpvProcess = null
                 }
-                if (settings.debugMpvSocket) {
-                    util.serverLog('ipcServer - args: ' + JSON.stringify(args))
+                if (this.mpvSocket) {
+                    if (settings.debugMpvSocket) {
+                        util.serverLog('ipcServer - Wiping existing mpv socket')
+                    }
+                    this.mpvSocket.quit()
+                    this.mpvSocket = null
                 }
                 this.mpvProcess = spawn(settings.mpvExePath, args, { stdio: 'ignore' })
                 if (settings.debugMpvSocket) {
                     util.serverLog('ipcServer - Process spawned')
                 }
-                let connectAttempt = 1
-                let connectInterval = setInterval(() => {
-                    if (!this.mpvSocket || (this.mpvSocket && !this.mpvSocket.getIsConnected())) {
-                        util.serverLog('ipcServer - Attempting to connect with MPV socket #' + connectAttempt)
-                        connectAttempt++
-                        this.mpvSocket = new MpvSocket(settings.mpvSocketPath)
-                        this.mpvSocket.connect()
+                let attempt = 0
+                let maxAttempt = 10
+                let connectionWaitMilliseconds = 1000
+                let connectionInterval = setInterval(() => {
+                    attempt++
+                    if (settings.debugMpvSocket) {
+                        util.serverLog(`ipcServer - Socket connection attempt ${attempt}`)
                     }
-                    if (this.mpvSocket && this.mpvSocket.getIsConnected()) {
-                        util.serverLog('ipcServer - MPV socket connected')
-                        clearInterval(connectInterval)
-                        if (settings.debugMpvSocket) {
-                            util.serverLog('ipcServer - Socket connected')
+                    if (attempt >= maxAttempt) {
+                        clearInterval(connectionInterval)
+                        event.returnValue = 'failure'
+                        return
+                    }
+                    if (this.mpvSocket) {
+                        this.mpvSocket.quit()
+                    }
+                    let self = this
+                    this.mpvSocket = new MpvSocket(pipePath)
+                    this.mpvSocket.connect(() => {
+                        if (self.mpvSocket.getIsConnected()) {
+                            if (settings.debugMpvSocket) {
+                                util.serverLog(`ipcServer - Socket connected successfully`)
+                            }
+                            clearInterval(connectionInterval)
+                            event.returnValue = 'success'
+                        } else {
+                            if (settings.debugMpvSocket) {
+                                util.serverLog(`ipcServer - Socket couldn't connect, retry after a short wait`)
+                            }
                         }
-
-                        event.returnValue = 'success'
-                    }
-                }, 200)
-            } catch {
+                    })
+                }, connectionWaitMilliseconds)
+            } catch (exception) {
+                if (settings.debugMpvSocket) {
+                    util.serverLog(`ipcServer - Socket connect exception caught: ${JSON.stringify(exception)}`)
+                }
+                if (this.mpvProcess) {
+                    this.mpvProcess.kill()
+                    this.mpvProcess = null
+                }
+                if (this.mpvSocket) {
+                    this.mpvSocket.quit()
+                    this.mpvSocket = null
+                }
                 event.returnValue = 'failure'
             }
         })
 
         this.ipcMain.on('snowby-is-mpv-running', (event) => {
             try {
-                let result = this.mpvSocket.getIsConnected()
-                event.returnValue = result
+                if (this.mpvSocket) {
+                    let result = this.mpvSocket.getIsConnected()
+                    event.returnValue = result
+                }
+                event.returnValue = false
             } catch {
                 event.returnValue = false
             }
@@ -78,7 +111,10 @@ class IpcServer {
 
         this.ipcMain.on('snowby-get-mpv-position', async (event) => {
             try {
-                event.returnValue = await this.mpvSocket.getProperty('time-pos')
+                if (this.mpvSocket && this.mpvSocket.getIsConnected()) {
+                    event.returnValue = await this.mpvSocket.getProperty('time-pos')
+                }
+                event.returnValue = null
             } catch {
                 event.returnValue = null
             }
@@ -94,6 +130,7 @@ class IpcServer {
             }
             if (this.mpvProcess) {
                 this.mpvProcess.kill()
+                this.mpvSocket.quit()
             }
         })
     }

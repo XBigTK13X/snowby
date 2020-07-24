@@ -4,6 +4,8 @@ const net = require('net')
 const settings = require('../settings')
 const util = require('../util')
 
+var mpv_socket_count = 0
+
 class ipcRequest {
     constructor(resolve, reject, args) {
         this.messageResolve = resolve
@@ -25,12 +27,21 @@ class MpvSocket {
         this.messageId = 1
         this.isConnected = false
         this.ipcRequests = {}
+        mpv_socket_count++
+        this.socketCount = mpv_socket_count
     }
 
-    connect() {
+    connect(afterConnect) {
         let self = this
+        self.socket.on('connect', () => {
+            self.isConnected = true
+            afterConnect()
+        })
         self.socket.on('close', () => self.closeHandler())
-        self.socket.on('error', (error) => self.errorHandler(error))
+        self.socket.on('error', (error) => {
+            onError(error)
+            self.errorHandler(error)
+        })
         self.socket.on('data', (data) => self.dataHandler(data))
         self.socket.setMaxListeners(0)
         self.socket.connect({ path: self.socketPath })
@@ -41,20 +52,18 @@ class MpvSocket {
     }
 
     closeHandler() {
+        this.isConnected = false
         if (settings.debugMpvSocket) {
-            util.serverLog('mpvSocket - MPV socket closed')
+            util.serverLog(`mpvSocket - #${this.socketCount} - socket closed`)
         }
     }
     errorHandler(err) {
         this.isConnected = false
         if (settings.debugMpvSocket) {
-            util.serverLog('mpvSocket - err: ' + JSON.stringify(err))
+            util.serverLog(`mpvSocket - #${this.socketCount} - err: ` + JSON.stringify(err))
         }
     }
     dataHandler(data) {
-        if (settings.debugMpvSocket) {
-            util.serverLog('mpvSocket - data received ' + JSON.stringify(data))
-        }
         this.isConnected = true
         let messages = data.toString().split('\n')
         messages.forEach((message) => {
@@ -74,7 +83,7 @@ class MpvSocket {
                     }
                 } else {
                     if (settings.debugMpvSocket) {
-                        util.serverLog('mpvSocket - message: ' + message)
+                        util.serverLog(`mpvSocket - #${this.socketCount} message: ` + message)
                     }
                 }
             }
@@ -82,7 +91,7 @@ class MpvSocket {
     }
     quit() {
         if (settings.debugMpvSocket) {
-            util.serverLog('mpvSocket - Quitting')
+            util.serverLog(`mpvSocket - #${this.socketCount} Quitting`)
         }
         this.socket.removeAllListeners('close')
         this.socket.removeAllListeners('error')
