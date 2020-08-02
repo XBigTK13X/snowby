@@ -2,6 +2,10 @@
 
 Snowman's Emby
 
+## WIKI
+
+A lot of information, including screenshots, can be found on the [WIKI](https://github.com/XBigTK13X/snowby/wiki).
+
 ## Why not use the stock Emby client?
 
 I was unhappy with the audio output and subtitle handling on both the Android and Windows PC Emby clients. Emby server is the best tool for managing a large library of video content, but the players kept causing me annoyances.
