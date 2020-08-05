@@ -177,6 +177,7 @@ module.exports = {
     tvShowList: {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {
+                ParentId: embyItem.Id,
                 IncludeItemTypes: 'Series',
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
             }).then((results) => {
