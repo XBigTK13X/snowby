@@ -21,6 +21,9 @@ class Hdr {
         if (!this.isCapable) {
             return Promise.resolve()
         }
+        if (!settings.enableHdrToggle) {
+            return Promise.resolve()
+        }
         return this.isActive().then((active) => {
             if (active === enable) {
                 return Promise.resolve()
@@ -36,6 +39,9 @@ class Hdr {
 
     isActive() {
         return new Promise((resolve, reject) => {
+            if (!settings.enableHdrToggle) {
+                return resolve(false)
+            }
             const statusProcess = spawn('powershell', [settings.hdrStatusPath])
             statusProcess.stdout.setEncoding('utf8')
             statusProcess.stdout.on('data', function (data) {
