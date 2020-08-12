@@ -1,4 +1,3 @@
-profile=gpu-hq
 hwdec=auto
 save-position-on-quit=no
 fullscreen=yes
