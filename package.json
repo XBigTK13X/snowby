@@ -1,6 +1,6 @@
 {
   "name": "snowby",
-  "version": "3.1.5",
+  "version": "3.1.6",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "license": "MIT",
   "devDependencies": {
     "concurrently": "5.2.0",
-    "electron": "9.0.4",
-    "electron-packager": "14.2.1",
+    "electron": "9.2.0",
+    "electron-packager": "15.0.0",
     "node-sass": "4.14.1",
     "nodemon": "2.0.4",
     "prettier": "2.0.5"
