@@ -32,12 +32,11 @@ module.exports = () => {
                     document.getElementById('emby-items').innerHTML = renderedHtml
                 } else {
                     let watchedParams = util.queryParams()
-                    if(!watchedParams.showWatched){
+                    if (!watchedParams.showWatched) {
                         watchedParams.showWatched = true
                         const watchedUrl = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(watchedParams)}`
                         window.reloadPage(watchedUrl)
-                    }
-                    else {
+                    } else {
                         document.getElementById('emby-items').innerHTML = '<p class="empty-results">No items found.</p>'
                     }
                 }
