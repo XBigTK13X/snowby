@@ -1,6 +1,6 @@
 const util = require('./util')
 
-module.exports = {
+let config = {
     adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -15,6 +15,8 @@ module.exports = {
     keepAudioDeviceAwake: true,
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
+    mpvConfigFile: util.appPath('bin/mpv/mpv/mpv.conf'),
+    mpvInputFile: util.appPath('bin/mpv/mpv/input.conf'),
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
@@ -44,3 +46,11 @@ module.exports = {
         square: 160,
     },
 }
+
+if (process.platform === 'linux') {
+    config.enableHdrToggle = false
+    config.mpvExePath = '/usr/bin/mpv'
+    config.mpvSocketPath = util.appPath('bin/mpv/socket')
+}
+
+module.exports = config

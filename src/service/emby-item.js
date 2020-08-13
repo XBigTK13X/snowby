@@ -17,7 +17,10 @@ module.exports = class EmbyItem {
         this.ForcedHref = options && options.href
 
         if (this.Path) {
-            this.CleanPath = this.Path.replace('smb:', '').replace(/\//g, '\\')
+            this.CleanPath = this.Path.replace('smb:', '')
+            if (process.platform === 'linux') {
+                this.CleanPath = this.Path.replace('smb://9914.us/', '/media/trove/')
+            }
         }
 
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
