@@ -24,6 +24,9 @@ const swapConfig = async () => {
     const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
+        if (process.platform === 'linux') {
+            swapped = swapped.replace(/\\/g, '/')
+        }
         if (swapped.indexOf('log-file') !== -1 && swapped.indexOf('#') === -1) {
             serverLog(`util - MPV will log to ${swapped.split('=')[1]}`)
         }

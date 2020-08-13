@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, nativeImage } = require('electron')
 const settings = require('./settings')
 const util = require('./util')
 const audio = require('./desktop/audio')
@@ -33,7 +33,7 @@ async function createWindow() {
         fullscreen: settings.fullScreen,
         backgroundColor: settings.windowBackgroundColor,
         autoHideMenuBar: !settings.menuBarVisible,
-        icon: util.appPath('asset/img/snowflake.ico'),
+        icon: nativeImage.createFromPath(util.appPath('asset/img/snowflake.ico')),
     })
     mainWindow.maximize()
 

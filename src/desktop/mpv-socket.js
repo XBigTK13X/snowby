@@ -39,7 +39,6 @@ class MpvSocket {
         })
         self.socket.on('close', () => self.closeHandler())
         self.socket.on('error', (error) => {
-            onError(error)
             self.errorHandler(error)
         })
         self.socket.on('data', (data) => self.dataHandler(data))

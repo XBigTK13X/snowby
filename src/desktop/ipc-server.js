@@ -16,10 +16,17 @@ class IpcServer {
         })
 
         this.ipcMain.on('snowby-open-website', (event, url) => {
-            spawn('cmd.exe', [`/c start firefox ${url}`], {
-                stdio: 'ignore',
-                detached: true,
-            })
+            if (process.platform === 'linux') {
+                spawn('firefox', [url], {
+                    stdio: 'ignore',
+                    detached: true,
+                })
+            } else {
+                spawn('cmd.exe', [`/c start firefox ${url}`], {
+                    stdio: 'ignore',
+                    detached: true,
+                })
+            }
             //spawn('cmd.exe', [`/c start chrome ${url}`], settings.spawnOptions)
             //spawn('cmd.exe', [`/c start microsoft-edge:${url}`], settings.spawnOptions)
         })
@@ -28,7 +35,13 @@ class IpcServer {
             try {
                 const pipePath = settings.mpvSocketPath
                 // Disabling the terminal prevents mpv from hanging and crashing after playing video for a few minutes
-                let defaults = ['--no-terminal', '--msg-level=ipc=v', `--input-ipc-server=${pipePath}`]
+                let defaults = [
+                    '--no-terminal',
+                    '--msg-level=ipc=v',
+                    `--input-ipc-server=${pipePath}`,
+                    `--include=${settings.mpvConfigFile}`,
+                    `--input-conf=${settings.mpvInputFile}`,
+                ]
                 let args = defaults.concat(options)
                 util.serverLog('ipcServer - Launching mpv with options ' + JSON.stringify(args))
                 if (this.mpvProcess) {
