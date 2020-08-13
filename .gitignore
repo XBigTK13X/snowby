@@ -4,6 +4,7 @@ screenshot/
 mpv.conf
 mpv.log
 snowby-win32-x64/
+snowby-linux-x64/
 # Logs
 logs
 *.log
