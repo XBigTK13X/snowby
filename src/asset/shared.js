@@ -1,5 +1,6 @@
-module.exports = (pageName) => {
+module.exports = (pageName, options) => {
     window.lastTargetUrl = null
+    options = options || {}
     window.reloadPage = (targetUrl) => {
         if (targetUrl) {
             if (targetUrl === window.lastTargetUrl) {
@@ -20,16 +21,8 @@ module.exports = (pageName) => {
                 history.forward()
             }
         })
-        const pageOptions = require('./page-options')
-        let options = {}
-        if (_.has(pageOptions, pageName)) {
-            options = pageOptions[pageName]
-        }
-        if (!options.hideNavbar) {
-            require('../component/navbar').render({
-                showToggleButton: options.showToggleButton,
-            })
-        }
+
+        require('../component/navbar').render(options)
 
         let dots = ''
         window.updateLoading = () => {
