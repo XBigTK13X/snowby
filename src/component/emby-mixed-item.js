@@ -12,7 +12,7 @@ class EmbyMixedItem {
         this.imageUrl = embyItem.getImageUrl(settings.tileDimension[this.imageFormat].x, settings.tileDimension[this.imageFormat].y)
         this.embyItemId = embyItem.Id
         this.embyItem = embyItem
-        this.imageCenter = this.imageFormat === 'wide' ? 'top-spacer' : ''
+        this.imageCenter = this.imageFormat === 'wide' ? 'top-spacer-wide' : 'top-spacer-tall'
     }
 
     enableKindBadge() {
@@ -36,7 +36,7 @@ class EmbyMixedItem {
             <div ${tooltipMarkup}>
                 <div class="grid-item square-grid-item badge-container">
 
-        				<img class="lazy rounded ${this.imageFormat}-image ${this.imageCenter}" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+        				<img class="lazy rounded ${this.imageFormat}-image-mixed ${this.imageCenter}" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
                     ${progressBadgeMarkup}
                     ${kindBadgeMarkup}
                 </div>
