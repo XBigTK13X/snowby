@@ -4,6 +4,7 @@ const fidelityBadge = require('./fidelity-badge')
 
 module.exports = {
     render: (options) => {
+        options = options || {}
         let navbarContent = `
 			<div class="navbar">
 		      <a href="landing.html" >
@@ -11,12 +12,16 @@ module.exports = {
 		          Home
 		        </div>
 		      </a>
-		      <a href="javascript:history.back()">
-		        <div class="navbar-button">
-		          Previous
-		        </div>
-		      </a>
 		`
+        if (!options.disablePrevious) {
+            navbarContent += `
+                  <a href="javascript:history.back()">
+                    <div class="navbar-button">
+                      Previous
+                    </div>
+                  </a>
+            `
+        }
         if (options.showToggleButton) {
             let watchedParams = util.queryParams()
             if (!watchedParams.showWatched) {
