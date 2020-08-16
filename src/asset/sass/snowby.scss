@@ -14,22 +14,22 @@ $snowby-tile-frame-highlight: linear-gradient(
     lighten($snowby-text-back, $snowby-highlight-intensity * 2)
 );
 
-$snowby-center-grid-row-height: 350px;
+$snowby-center-grid-row-height: 20vh;
 
-$snowby-navbar-button-width: 200px;
-$snowby-navbar-button-height: 40px;
+$snowby-navbar-button-width: 12.5vw;
+$snowby-navbar-button-height: 6vw;
 
-$snowby-center-dimension-y: 200px;
-$snowby-tall-dimension-x: 108px;
-$snowby-tall-dimension-y: 160px;
-$snowby-wide-dimension-x: 160px;
-$snowby-wide-dimension-y: 108px;
-$snowby-square-dimension: 160px;
-$snowby-text-dimension-x: 170px;
-$snowby-text-dimension-y: 108px;
+$snowby-center-dimension-y: 15vh;
+$snowby-tall-dimension-x: 10.5vw;
+$snowby-tall-dimension-y: 15vw;
+$snowby-wide-dimension-x: 10.5vw;
+$snowby-wide-dimension-y: 6vw;
+$snowby-square-dimension: 12.5vw;
+$snowby-text-dimension-x: 10.5vw;
+$snowby-text-dimension-y: 6vw;
 
-$snowby-channel-logo-width: 50px;
-$snowby-channel-logo-height: 30px;
+$snowby-channel-logo-width: 2vw;
+$snowby-channel-logo-height: 1.5vw;
 
 $snowby-roundness: 10px;
 $snowby-buffer: 4px;
@@ -160,7 +160,7 @@ tr.channel-guide {
     border-radius: $snowby-roundness;
     padding: 5px;
     width: 80%;
-    font-size: 16px;
+    font-size: 2.5vh;
     font-weight: normal;
 }
 
@@ -205,8 +205,8 @@ tr.channel-guide {
 .query {
     text-align: center;
     width: 100%;
-    height: 100px;
-    font-size: 75px;
+    height: 13vh;
+    font-size: 10vh;
     border-radius: $snowby-roundness;
     background-color: $snowby-text-back;
     color: $snowby-text-front;
@@ -243,10 +243,6 @@ tr.channel-guide {
 .empty-results {
     text-align: center;
     font-size: 36px;
-}
-
-.top-spacer {
-    margin-top: 25px;
 }
 
 .small-tile-text {
@@ -312,6 +308,24 @@ tr.channel-guide {
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 20%;
+}
+
+.top-spacer-wide {
+    margin-top: 20%;
+}
+
+.top-spacer-tall {
+    margin-top: 10%;
+}
+
+.tall-image-mixed {
+    height: $snowby-square-dimension * 0.8;
+    width: $snowby-square-dimension * 0.6;
+}
+
+.wide-image-mixed {
+    height: $snowby-square-dimension * 0.6;
+    width: $snowby-square-dimension * 0.8;
 }
 
 .tall-grid-item {

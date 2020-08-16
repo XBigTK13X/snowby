@@ -20,7 +20,7 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'August 13, 2020',
+    versionDate: 'August 14, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
@@ -28,22 +28,22 @@ let config = {
     },
     tileDimension: {
         channelLogo: {
-            x: 50,
-            y: 30,
+            x: 150,
+            y: 90,
         },
         tall: {
-            x: 108,
-            y: 160,
+            x: 337,
+            y: 500,
         },
         wide: {
-            x: 160,
-            y: 108,
+            x: 500,
+            y: 337,
         },
         text: {
-            x: 170,
-            y: 108,
+            x: 500,
+            y: 337,
         },
-        square: 160,
+        square: 500,
     },
 }
 
