@@ -1,7 +1,9 @@
 const { shell } = require('electron')
 const _ = require('lodash')
 const settings = require('../settings')
+
 const CHANNEL_MAP = require('../media/channel-map')
+const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
 
 module.exports = class EmbyItem {
     constructor(responseBody, options) {
@@ -15,6 +17,7 @@ module.exports = class EmbyItem {
         this.ForceTooltip = options && options.tooltip
         this.NoImageTag = options && options.noImageTag
         this.ForcedHref = options && options.href
+        this.ForcedImageUrl = options && options.ForcedImageUrl
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '')
@@ -72,7 +75,7 @@ module.exports = class EmbyItem {
         return ''
     }
 
-    getTitle(enableSeriesName) {
+    getTitle(enableSeriesName, enableEpisodeName) {
         let result = ''
         if (this.ForcedTitle) {
             result = this.ForcedTitle
@@ -86,13 +89,11 @@ module.exports = class EmbyItem {
                 if (this.IndexNumberEnd && this.IndexNumberEnd !== this.IndexNumber) {
                     result += `-E${this.IndexNumberEnd}`
                 }
-                if (this.showSpoilers()) {
-                    result = result
-                } else {
-                    if (this.NextUp) {
-                        return 'Next Up - ' + result
-                    }
-                    return result
+                if (enableEpisodeName) {
+                    result += ' - ' + this.Name
+                }
+                if (this.NextUp) {
+                    result = `Next Up - ${result}`
                 }
             } else {
                 if (this.ChannelNumber) {
@@ -119,6 +120,9 @@ module.exports = class EmbyItem {
     }
 
     getImageUrl(width, height) {
+        if (this.ForcedImageUrl) {
+            return this.ForcedImageUrl
+        }
         width *= 2
         height *= 2
         if (this.NoImageTag) {
@@ -137,7 +141,7 @@ module.exports = class EmbyItem {
         }
         // Don't show thumbnails for episodes you haven't seen yet
         if (!this.showSpoilers() && !this.ShowParentImage) {
-            return null
+            return HIDE_SPOILERS_IMAGE_HREF
         }
         if (Object.keys(this.ImageTags).length > 0) {
             let itemId = this.Id

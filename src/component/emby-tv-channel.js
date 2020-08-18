@@ -12,7 +12,7 @@ class EmbyTvChannel {
         return `
         <tr class="clickable" data-target="random-action" onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;">
 	        <td class="channel-logo">
-				<img class="lazy channel-logo" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+				<img class="lazy channel-logo" src="null" data-src="${this.imageUrl}"/>
 			</td>
 			<td>
 				${this.embyItem.getDisplayName()}

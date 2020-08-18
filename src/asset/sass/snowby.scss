@@ -25,8 +25,8 @@ $snowby-tall-dimension-y: 15vw;
 $snowby-wide-dimension-x: 10.5vw;
 $snowby-wide-dimension-y: 6vw;
 $snowby-square-dimension: 12.5vw;
-$snowby-text-dimension-x: 10.5vw;
-$snowby-text-dimension-y: 6vw;
+$snowby-text-dimension-x: 15vw;
+$snowby-text-dimension-y: 8.5vw;
 
 $snowby-channel-logo-width: 2vw;
 $snowby-channel-logo-height: 1.5vw;
@@ -133,6 +133,10 @@ tr.channel-guide {
 
 .rounded {
     border-radius: $snowby-roundness;
+}
+
+.hidden {
+    visibility: hidden;
 }
 
 .navbar-button {
@@ -285,6 +289,7 @@ tr.channel-guide {
 .center-grid-item:hover {
     background: $snowby-highlight-back;
     color: $snowby-highlight-front;
+    cursor: pointer;
 }
 
 .center-grid {

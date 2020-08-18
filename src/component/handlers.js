@@ -124,8 +124,6 @@ module.exports = {
         getChildren: (emby, embyItem) => {
             return embyItemsSearch(emby, embyItem.Id, {
                 ParentId: embyItem.Id,
-            }).then((children) => {
-                return children.filter((x) => x.Name !== 'Hype Game Tracks')
             })
         },
         render: renderers.playlistList,
