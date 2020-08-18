@@ -132,6 +132,9 @@ module.exports = () => {
                     })
                 }
                 let tagsMarkup = tags
+                    .sort((a, b) => {
+                        return a.Name > b.Name ? 1 : -1
+                    })
                     .map((x) => {
                         return `<div class="admin-list-item"  onClick="selectTag(${x.Id},'${x.Name}')">${x.Name}</div>`
                     })

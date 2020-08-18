@@ -88,7 +88,11 @@ module.exports = () => {
                     },
                 }
 
-                document.getElementById('header').innerHTML = embyItem.getTitle(true) + ` (${embyItem.ProductionYear})`
+                let headerMarkup = embyItem.getTitle(true)
+                if (embyItem.ProductionYear) {
+                    headerMarkup += ` (${embyItem.ProductionYear})`
+                }
+                document.getElementById('header').innerHTML = headerMarkup
                 document.getElementById('tagline').innerHTML = embyItem.getTagline()
 
                 const loadTab = (targetId, content) => {
