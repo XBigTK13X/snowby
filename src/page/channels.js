@@ -36,25 +36,24 @@ module.exports = () => {
         const _ = require('lodash')
         const settings = require('../settings')
 
-        let showLookup = {}
-        let picks = []
-        let pickIndex = 0
-
-        window.channelEpisodeDedupe = {}
+        window.showLookup = {}
+        window.picks = []
+        window.pickIndex = 0
+        window.channelLastEpisode = null
         window.channelLastShow = null
 
         window.displayPick = (episodePickIndex) => {
-            pickIndex = episodePickIndex
-            let pick = picks[pickIndex]
+            window.pickIndex = episodePickIndex
+            let pick = window.picks[window.pickIndex]
             let pickPoster = new EmbyPoster(pick.episode)
             let pagerMarkup = `<div class="grid center-grid">`
-            if (picks.length > 0) {
+            if (window.picks.length > 0) {
                 pagerMarkup += `
                     <div
-                        class="grid-item center-grid-item${pickIndex > 0 ? '' : ' hidden'}"
+                        class="grid-item center-grid-item${window.pickIndex > 0 ? '' : ' hidden'}"
                         onclick="window.previousPick()"
                     >
-                        Last Pick (${pickIndex}/${picks.length})
+                        Last Pick (${window.pickIndex}/${window.picks.length})
                     </div>
                 `
                 pagerMarkup += `
@@ -67,10 +66,10 @@ module.exports = () => {
                 `
                 pagerMarkup += `
                     <div
-                        class="grid-item center-grid-item${pickIndex < picks.length - 1 ? '' : ' hidden'}"
+                        class="grid-item center-grid-item${window.pickIndex < window.picks.length - 1 ? '' : ' hidden'}"
                         onclick="window.nextPick()"
                     >
-                        Next Pick (${pickIndex + 2}/${picks.length})
+                        Next Pick (${window.pickIndex + 2}/${window.picks.length})
                     </div>
                 `
             }
@@ -91,27 +90,27 @@ module.exports = () => {
         }
 
         window.previousPick = () => {
-            if (pickIndex > 0) {
-                pickIndex--
+            if (window.pickIndex > 0) {
+                window.pickIndex--
             }
-            window.displayPick(pickIndex)
+            window.displayPick(window.pickIndex)
         }
 
         window.nextPick = () => {
-            if (pickIndex < picks.length - 1) {
-                pickIndex++
+            if (window.pickIndex < window.picks.length - 1) {
+                window.pickIndex++
             }
-            window.displayPick(pickIndex)
+            window.displayPick(window.pickIndex)
         }
 
         window.pickEpisodeFromShow = (tvShowId) => {
             let pick = {}
-            pick.tvShow = showLookup[tvShowId]
+            pick.tvShow = window.showLookup[tvShowId]
             emby.client
                 .seasons(pick.tvShow.Id)
                 .then((seasons) => {
                     seasons = seasons.filter((x) => {
-                        return x.Name !== 'Specials'
+                        return x.Name !== 'Specials' && !x.NextUp
                     })
                     let season = _.sample(seasons)
                     pick.season = season
@@ -119,16 +118,17 @@ module.exports = () => {
                 })
                 .then((episodes) => {
                     let episode = _.sample(episodes)
-                    const slug = `${tvShowId}-S${pick.season}-E${episode}`
-                    if (_.has(window.channelEpisodeDedupe, slug)) {
+                    const slug = `${tvShowId}-S${pick.season.Name}-E${episode.Name}`
+                    if (window.channelLastEpisode === slug) {
                         window.pickEpisodeFromShow(tvShowId)
                         return
                     }
+                    window.channelLastEpisode = slug
                     episode.ShowSpoilers = true
                     pick.episode = episode
                     pick.episode.ForcedImageUrl = pick.tvShow.getImageUrl(settings.tileDimension.tall.x, settings.tileDimension.tall.y)
-                    picks.push(pick)
-                    window.displayPick(picks.length - 1)
+                    window.picks.push(pick)
+                    window.displayPick(window.picks.length - 1)
                 })
         }
 
@@ -142,7 +142,7 @@ module.exports = () => {
                     return
                 }
                 window.channelLastShow = tvShow.Id
-                showLookup[tvShow.Id] = tvShow
+                window.showLookup[tvShow.Id] = tvShow
                 window.pickEpisodeFromShow(tvShow.Id)
             })
         }
@@ -164,7 +164,7 @@ module.exports = () => {
                     .map((x) => {
                         return new ChannelSelector(x.Name.replace('Channel: ', ''), x.Id)
                     })
-                let channelsMarkup = `<div class="grid center-grid">${playlists
+                let channelsMarkup = `<div class="grid">${playlists
                     .map((x) => {
                         return x.render()
                     })
