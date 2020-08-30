@@ -40,6 +40,9 @@ module.exports = () => {
         let picks = []
         let pickIndex = 0
 
+        window.channelEpisodeDedupe = {}
+        window.channelLastShow = null
+
         window.displayPick = (episodePickIndex) => {
             pickIndex = episodePickIndex
             let pick = picks[pickIndex]
@@ -107,12 +110,20 @@ module.exports = () => {
             emby.client
                 .seasons(pick.tvShow.Id)
                 .then((seasons) => {
+                    seasons = seasons.filter((x) => {
+                        return x.Name !== 'Specials'
+                    })
                     let season = _.sample(seasons)
                     pick.season = season
                     return emby.client.episodes(season.ParentId, season.Id)
                 })
                 .then((episodes) => {
                     let episode = _.sample(episodes)
+                    const slug = `${tvShowId}-S${pick.season}-E${episode}`
+                    if (_.has(window.channelEpisodeDedupe, slug)) {
+                        window.pickEpisodeFromShow(tvShowId)
+                        return
+                    }
                     episode.ShowSpoilers = true
                     pick.episode = episode
                     pick.episode.ForcedImageUrl = pick.tvShow.getImageUrl(settings.tileDimension.tall.x, settings.tileDimension.tall.y)
@@ -126,6 +137,11 @@ module.exports = () => {
                 TagIds: channelId,
             }).then((tvShows) => {
                 let tvShow = _.sample(tvShows)
+                if (window.channelLastShow === tvShow.Id) {
+                    window.chooseEpisode(channelId)
+                    return
+                }
+                window.channelLastShow = tvShow.Id
                 showLookup[tvShow.Id] = tvShow
                 window.pickEpisodeFromShow(tvShow.Id)
             })
