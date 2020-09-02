@@ -261,7 +261,7 @@ class EmbyClient {
             return channelsResponse.data.Items.map((item) => {
                 return new EmbyItem(item)
             }).sort((a, b) => {
-                return a.getDisplayName() > b.getDisplayName() ? 1 : -1
+                return a.getChannelName() > b.getChannelName() ? 1 : -1
             })
         })
     }

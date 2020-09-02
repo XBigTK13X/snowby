@@ -1,5 +1,5 @@
-const moment = require('moment')
 const settings = require('../settings')
+NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 
 class EmbyTvChannel {
     constructor(embyItem) {
@@ -10,27 +10,28 @@ class EmbyTvChannel {
 
     render() {
         return `
-        <tr class="clickable" data-target="random-action" onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;">
+        <tr
+        	class="clickable"
+        	data-target="random-action"
+        	onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.streamUrl}'); return false;"
+        >
 	        <td class="channel-logo">
-				<img class="lazy channel-logo" src="null" data-src="${this.imageUrl}"/>
+				<img class="lazy channel-logo" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
 			</td>
 			<td>
-				${this.embyItem.getDisplayName()}
+				${this.embyItem.getChannelName()}
 			</td>
 			<td>
 				${this.embyItem.CurrentProgram.Name}
 			</td>
 			<td>
-				${moment(this.embyItem.CurrentProgram.StartDate).format('hh:mm a')}
+				${this.embyItem.CurrentProgram.StartDate}
 			</td>
 			<td>
-				${moment(this.embyItem.CurrentProgram.EndDate).format('hh:mm a')}
+				${this.embyItem.CurrentProgram.EndDate}
 			</td>
 			<td>
 				${this.embyItem.ChannelNumber}
-			</td>
-			<td>
-				${this.embyItem.Name}
 			</td>
 		</tr>
 		`
