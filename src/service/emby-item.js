@@ -77,7 +77,14 @@ module.exports = class EmbyItem {
     }
 
     getStreamURL() {
-        return `${settings.embyServerURL}/web/index.html#!/item?id=${this.Id}&serverId=${this.ServerId}`
+        if (!settings.liveTvChannelUrlTemplates) {
+            return null
+        }
+        if (this.ChannelNumber.indexOf('.') !== -1) {
+            return settings.liveTvChannelUrlTemplates.homeRun(this.ChannelNumber)
+        } else {
+            return settings.liveTvChannelUrlTemplates.iptv(this.ChannelNumber)
+        }
     }
 
     getChannelName() {
