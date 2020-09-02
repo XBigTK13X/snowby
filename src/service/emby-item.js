@@ -85,19 +85,17 @@ module.exports = class EmbyItem {
             return this.CachedChannelName
         }
         if (_.has(CHANNEL_MAP, this.Name)) {
-            this.CachedChannelName = CHANNEL_MAP[this.Name]
-            return this.CachedChannelName
+            this.CachedChannelName = 'LOCAL: ' + CHANNEL_MAP[this.Name]
+            return 'LOCAL: ' + this.CachedChannelName
         }
         let result = this.Name
-        if (result.indexOf(': ') !== -1) {
-            result = result.split(': ')[1]
-        }
         if (result.indexOf(' (') !== -1) {
             result = result.split(' (')[0]
         }
         if (result.indexOf(' |') !== -1) {
             result = result.split(' |')[0]
         }
+        result = result.replace(' HD', '')
         this.CachedChannelName = result
         return result
     }

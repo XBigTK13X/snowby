@@ -22,7 +22,7 @@ class IpcServer {
                     detached: true,
                 })
             } else {
-                let cleanUrl = url.replace('&', '^&')
+                let cleanUrl = url.replace(/&/g, '^&')
                 spawn('cmd.exe', [`/c start firefox ${cleanUrl}`], {
                     stdio: 'ignore',
                     detached: true,
