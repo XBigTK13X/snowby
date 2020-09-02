@@ -1,4 +1,6 @@
 const util = require('./util')
+const fs = require('fs')
+const _ = require('lodash')
 
 let config = {
     adminEnabled: false,
@@ -10,9 +12,9 @@ let config = {
     fullScreen: true,
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
-    homeRunURL: 'http://192.168.1.6:5004/auto',
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
+    liveTvChannelUrlTemplates: null,
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
     mpvConfigFile: util.appPath('bin/mpv/mpv/mpv.conf'),
@@ -51,6 +53,12 @@ if (process.platform === 'linux') {
     config.enableHdrToggle = false
     config.mpvExePath = '/usr/bin/mpv'
     config.mpvSocketPath = util.appPath('bin/mpv/socket')
+}
+
+const overridePath = '\\\\9914.us\\share\\software\\snowby-overrides.js'
+if (fs.existsSync(overridePath)) {
+    const overrides = require(overridePath)
+    config = _.merge(config, overrides)
 }
 
 module.exports = config

@@ -13,7 +13,7 @@ class EmbyTvChannel {
         <tr
         	class="clickable"
         	data-target="random-action"
-        	onclick="require('electron').ipcRenderer.send('snowby-open-website','${this.streamUrl}'); return false;"
+        	onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;"
         >
 	        <td class="channel-logo">
 				<img class="lazy channel-logo" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
