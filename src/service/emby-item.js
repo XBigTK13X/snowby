@@ -1,6 +1,7 @@
 const { shell } = require('electron')
 const _ = require('lodash')
 const settings = require('../settings')
+const moment = require('moment')
 
 const CHANNEL_MAP = require('../media/channel-map')
 const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
@@ -18,6 +19,20 @@ module.exports = class EmbyItem {
         this.NoImageTag = options && options.noImageTag
         this.ForcedHref = options && options.href
         this.ForcedImageUrl = options && options.ForcedImageUrl
+
+        if (!this.CurrentProgram) {
+            this.CurrentProgram = {
+                Name: 'Unknown',
+                StartDate: '???',
+                EndDate: '???',
+            }
+        } else {
+            this.CurrentProgram = {
+                Name: this.CurrentProgram.Name,
+                StartDate: moment(this.CurrentProgram.StartDate).format('hh:mm a'),
+                EndDate: moment(this.CurrentProgram.EndDate).format('hh:mm a'),
+            }
+        }
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '')
@@ -61,8 +76,30 @@ module.exports = class EmbyItem {
         }
     }
 
-    getDisplayName() {
-        return CHANNEL_MAP[this.Name] || this.Name
+    getStreamURL() {
+        return `${settings.embyServerURL}/web/index.html#!/item?id=${this.Id}&serverId=${this.ServerId}`
+    }
+
+    getChannelName() {
+        if (this.CachedChannelName) {
+            return this.CachedChannelName
+        }
+        if (_.has(CHANNEL_MAP, this.Name)) {
+            this.CachedChannelName = CHANNEL_MAP[this.Name]
+            return this.CachedChannelName
+        }
+        let result = this.Name
+        if (result.indexOf(': ') !== -1) {
+            result = result.split(': ')[1]
+        }
+        if (result.indexOf(' (') !== -1) {
+            result = result.split(' (')[0]
+        }
+        if (result.indexOf(' |') !== -1) {
+            result = result.split(' |')[0]
+        }
+        this.CachedChannelName = result
+        return result
     }
 
     getDiscussionQuery() {
@@ -260,13 +297,6 @@ module.exports = class EmbyItem {
             return contentType + videoFidelity.trim() + ' ' + audioFidelity.trim()
         }
         return ''
-    }
-
-    getStreamURL() {
-        if (this.ChannelNumber) {
-            return `${settings.homeRunURL}/v${this.ChannelNumber}`
-        }
-        return '#'
     }
 
     getUnwatchedCount() {

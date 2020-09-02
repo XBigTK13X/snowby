@@ -124,7 +124,6 @@ module.exports = {
             <th>Start</th>
             <th>End</th>
             <th>Channel Number</th>
-            <th>Broadcast Name</th>
         </tr>
         </thead>
         <tbody>
