@@ -22,13 +22,10 @@ class EmbyTvChannel {
 				${this.embyItem.getChannelName()}
 			</td>
 			<td>
+				${this.embyItem.ChannelQuality}
+			</td>
+			<td>
 				${this.embyItem.CurrentProgram.Name}
-			</td>
-			<td>
-				${this.embyItem.CurrentProgram.StartDate}
-			</td>
-			<td>
-				${this.embyItem.CurrentProgram.EndDate}
 			</td>
 			<td>
 				${this.embyItem.ChannelNumber}

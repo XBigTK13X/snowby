@@ -93,18 +93,31 @@ module.exports = class EmbyItem {
         }
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.CachedChannelName = 'LOCAL: ' + CHANNEL_MAP[this.Name]
-            return 'LOCAL: ' + this.CachedChannelName
+            this.ChannelQuality = 'HD'
+            return this.CachedChannelName
         }
         let result = this.Name
+        let quality = 'HD'
+        if (result.indexOf(' SD') !== -1) {
+            quality = 'SD'
+        } else if (result.indexOf(' HD') !== -1) {
+            quality = 'HD'
+        } else if (result.indexOf(' FHD') !== -1) {
+            quality = 'FHD'
+        } else if (result.indexOf(' UHD') !== -1) {
+            quality = 'UHD'
+        }
+        result = result.replace(' ' + quality, '')
         if (result.indexOf(' (') !== -1) {
             result = result.split(' (')[0]
         }
         if (result.indexOf(' |') !== -1) {
             result = result.split(' |')[0]
         }
-        result = result.replace(' HD', '')
-        this.CachedChannelName = result
-        return result
+
+        this.ChannelQuality = quality
+        this.CachedChannelName = `${result}`
+        return this.CachedChannelName
     }
 
     getDiscussionQuery() {
