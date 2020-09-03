@@ -28,6 +28,12 @@ class EmbyTvChannel {
 				${this.embyItem.CurrentProgram.Name}
 			</td>
 			<td>
+				${this.embyItem.CurrentProgram.StartTime}
+			</td>
+			<td>
+				${this.embyItem.CurrentProgram.EndTime}
+			</td>
+			<td>
 				${this.embyItem.ChannelNumber}
 			</td>
 		</tr>

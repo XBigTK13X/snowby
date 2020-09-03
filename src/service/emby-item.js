@@ -23,14 +23,14 @@ module.exports = class EmbyItem {
         if (!this.CurrentProgram) {
             this.CurrentProgram = {
                 Name: 'Unknown',
-                StartDate: '???',
-                EndDate: '???',
+                StartTime: '???',
+                EndTime: '???',
             }
         } else {
             this.CurrentProgram = {
                 Name: this.CurrentProgram.Name,
-                StartDate: moment(this.CurrentProgram.StartDate).format('hh:mm a'),
-                EndDate: moment(this.CurrentProgram.EndDate).format('hh:mm a'),
+                StartTime: moment(this.CurrentProgram.StartDate).format('hh:mm a'),
+                EndTime: moment(this.CurrentProgram.EndDate).format('hh:mm a'),
             }
         }
 
