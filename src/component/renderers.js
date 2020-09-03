@@ -122,6 +122,8 @@ module.exports = {
             <th>Channel Name</th>
             <th>Quality</th>
             <th>Current Program</th>
+            <th>Start Time</th>
+            <th>End Time</th>
             <th>Channel Number</th>
         </tr>
         </thead>
