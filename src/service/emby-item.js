@@ -100,11 +100,9 @@ module.exports = class EmbyItem {
         let quality = 'HD'
         if (result.indexOf(' SD') !== -1) {
             quality = 'SD'
-        } else if (result.indexOf(' HD') !== -1) {
-            quality = 'HD'
         } else if (result.indexOf(' FHD') !== -1) {
             quality = 'FHD'
-        } else if (result.indexOf(' UHD') !== -1) {
+        } else if (result.indexOf(' UHD') === -1) {
             quality = 'UHD'
         }
         result = result.replace(' ' + quality, '')
@@ -114,7 +112,7 @@ module.exports = class EmbyItem {
         if (result.indexOf(' |') !== -1) {
             result = result.split(' |')[0]
         }
-
+        result = result.replace('UK ', 'UK: ').replace('CA ', 'CA: ').replace('USA ', 'US: ')
         this.ChannelQuality = quality
         this.CachedChannelName = `${result}`
         return this.CachedChannelName
