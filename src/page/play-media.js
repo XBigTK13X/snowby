@@ -181,6 +181,7 @@ module.exports = () => {
                         document.getElementById('resume-media-button').style = null
                         document.getElementById('resume-media-button').onclick = (event) => {
                             event.preventDefault()
+                            window.updateLoading(1)
                             player
                                 .openFile(
                                     embyItem.Id,
@@ -192,12 +193,17 @@ module.exports = () => {
                                 )
                                 .then(() => {
                                     track()
+                                    window.updateLoading(-1)
+                                })
+                                .catch(()=>{
+                                    window.updateLoading(-1)
                                 })
                         }
                     }
 
                     document.getElementById('play-media-button').onclick = (event) => {
                         event.preventDefault()
+                        window.updateLoading(1)
                         player
                             .openFile(
                                 embyItem.Id,
@@ -209,6 +215,7 @@ module.exports = () => {
                             )
                             .then(() => {
                                 track()
+                                window.updateLoading(-1)
                             })
                     }
 

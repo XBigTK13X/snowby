@@ -4,7 +4,6 @@ NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 class EmbyTvChannel {
     constructor(embyItem) {
         this.embyItem = embyItem
-        this.imageUrl = embyItem.getImageUrl(settings.tileDimension.channelLogo.x, settings.tileDimension.channelLogo.y)
         this.streamUrl = embyItem.getStreamURL()
     }
 
@@ -13,16 +12,13 @@ class EmbyTvChannel {
         <tr
         	class="clickable"
         	data-target="random-action"
-        	onclick="require('../media/player').openStream('${this.streamUrl}',false); return false;"
+        	onclick="window.playChannel('${this.embyItem.ChannelSlug}'); return false;"
         >
-	        <td class="channel-logo">
-				<img class="lazy channel-logo" src="${NOT_FOUND_IMAGE_HREF}" data-src="${this.imageUrl}"/>
+			<td>
+				${this.embyItem.ChannelName}
 			</td>
 			<td>
-				${this.embyItem.getChannelName()}
-			</td>
-			<td>
-				${this.embyItem.ChannelQuality}
+				${this.embyItem.ChannelRegion}
 			</td>
 			<td>
 				${this.embyItem.CurrentProgram.Name}
@@ -33,8 +29,7 @@ class EmbyTvChannel {
 			<td>
 				${this.embyItem.CurrentProgram.EndTime}
 			</td>
-			<td>
-				${this.embyItem.ChannelNumber}
+			<td id="active-channel-${this.embyItem.ChannelSlug}">
 			</td>
 		</tr>
 		`

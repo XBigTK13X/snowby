@@ -118,17 +118,19 @@ module.exports = {
         <table class="channel-guide">
         <thead>
         <tr>
-            <th>Logo</th>
             <th>Channel Name</th>
-            <th>Quality</th>
+            <th>Region</th>
             <th>Current Program</th>
             <th>Start Time</th>
             <th>End Time</th>
-            <th>Channel Number</th>
+            <th>Active Channel</th>
         </tr>
         </thead>
         <tbody>
         `
+
+        let duplicateChannels = {}
+
         html += children
             .map((child) => {
                 const embyChannel = new EmbyTvChannel(child)

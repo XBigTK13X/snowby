@@ -9,7 +9,7 @@ let config = {
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     enableHdrToggle: true,
-    fullScreen: true,
+    fullScreen: false,
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
