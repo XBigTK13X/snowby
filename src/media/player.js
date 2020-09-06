@@ -29,9 +29,9 @@ class Player {
             })
     }
 
-    openStream(streamURL, isHdr) {
+    openStream(streamURL, isHdr, streamName) {
         return hdr.configure(isHdr).then(() => {
-            return this.mediaHandler.openPath(streamURL, null, null, null)
+            return this.mediaHandler.openPath(streamURL, null, null, null, streamName)
         })
     }
 

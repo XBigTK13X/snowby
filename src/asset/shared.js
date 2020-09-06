@@ -27,7 +27,13 @@ module.exports = (pageName, options) => {
         let dots = ''
         window.loadingCount = 0
         window.updateLoading = (amount) => {
-            window.loadingCount += amount
+            if (amount) {
+                window.loadingCount += amount
+                if (window.loadingCount < 0) {
+                    util.clientLog('shared - uploadLoading - More calls were made to close than were made to open')
+                    window.loadingCount = 0
+                }
+            }
             let indicator = document.getElementById('loading')
             if (window.loadingCount) {
                 if (dots.length > 4) {

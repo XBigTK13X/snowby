@@ -46,19 +46,35 @@ class MpvClient {
         })
     }
 
-    openPath(mediaPath, audioIndex, subtitleIndex, seekTicks) {
-        let options = _.cloneDeep(this.defaultOptions)
-        options.push(mediaPath)
-        if (audioIndex !== null) {
-            options.push(`--aid=${audioIndex}`)
-        }
-        if (subtitleIndex !== null) {
-            options.push(`--sid=${subtitleIndex}`)
-        }
-        if (seekTicks) {
-            options.push(`--start=${this.seek(seekTicks)}`)
-        }
-        return this.mpv.play(options)
+    openPath(mediaPath, audioIndex, subtitleIndex, seekTicks, mediaName) {
+        window.updateLoading(1)
+        return new Promise((resolve, reject) => {
+            let options = _.cloneDeep(this.defaultOptions)
+            options.push(mediaPath)
+            if (audioIndex !== null) {
+                options.push(`--aid=${audioIndex}`)
+            }
+            if (subtitleIndex !== null) {
+                options.push(`--sid=${subtitleIndex}`)
+            }
+            if (seekTicks) {
+                options.push(`--start=${this.seek(seekTicks)}`)
+            }
+            if (mediaName) {
+                options.push(`--title=${mediaName}`)
+                options.push(`--force-media-title=${mediaName}`)
+            }
+            this.mpv.play(options)
+            this.connect()
+                .then(() => {
+                    window.updateLoading(-1)
+                    resolve()
+                })
+                .catch(() => {
+                    window.updateLoading(-1)
+                    reject()
+                })
+        })
     }
 
     seek(seekTicks) {
