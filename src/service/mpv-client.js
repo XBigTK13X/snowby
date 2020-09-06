@@ -9,8 +9,7 @@ class IpcWrapper {
     constructor() {}
 
     isRunning() {
-        let result = ipcRenderer.sendSync('snowby-is-mpv-running')
-        return result
+        return ipcRenderer.sendSync('snowby-is-mpv-running')
     }
 
     play(options) {

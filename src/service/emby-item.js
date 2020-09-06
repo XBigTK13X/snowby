@@ -87,35 +87,47 @@ module.exports = class EmbyItem {
         }
     }
 
-    getChannelName() {
-        if (this.CachedChannelName) {
-            return this.CachedChannelName
-        }
+    processChannelInfo() {
         if (_.has(CHANNEL_MAP, this.Name)) {
-            this.CachedChannelName = 'LOCAL: ' + CHANNEL_MAP[this.Name]
+            this.ChannelName = CHANNEL_MAP[this.Name]
             this.ChannelQuality = 'HD'
-            return this.CachedChannelName
+            this.ChannelSlug = this.CurrentProgram.Name
+            this.ChannelRegion = 'KC'
+            return
         }
         let result = this.Name
         let quality = 'HD'
-        if (result.indexOf(' SD') !== -1) {
+        if (result.indexOf('SD') !== -1) {
             quality = 'SD'
-        } else if (result.indexOf(' FHD') !== -1) {
+        }
+        else if (result.indexOf('LHD') !== -1){
+            quality = 'LHD'
+        } else if (result.indexOf('FHD') !== -1) {
             quality = 'FHD'
-        } else if (result.indexOf(' UHD') === -1) {
+        } else if (result.indexOf('UHD') !== -1) {
             quality = 'UHD'
         }
-        result = result.replace(' ' + quality, '')
+
         if (result.indexOf(' (') !== -1) {
             result = result.split(' (')[0]
         }
         if (result.indexOf(' |') !== -1) {
             result = result.split(' |')[0]
         }
-        result = result.replace('UK ', 'UK: ').replace('CA ', 'CA: ').replace('USA ', 'US: ')
+        let region = 'USA'
+        if (result.indexOf('UK ') !== -1){
+            region = 'UK'
+        }
+        else if(result.indexOf('CA ') !== -1){
+            region = 'CA'
+        }
+        result = result.replace(region + ' ','')
+        result = result.replace(' WEST','').replace(' EAST','').replace('East','').replace('West','')
+        result = result.replace(' ' + quality, '')
         this.ChannelQuality = quality
-        this.CachedChannelName = `${result}`
-        return this.CachedChannelName
+        this.ChannelName = result
+        this.ChannelSlug = this.CurrentProgram.Name
+        this.ChannelRegion = region
     }
 
     getDiscussionQuery() {

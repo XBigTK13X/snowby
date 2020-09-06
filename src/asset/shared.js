@@ -25,7 +25,9 @@ module.exports = (pageName, options) => {
         require('../component/navbar').render(options)
 
         let dots = ''
-        window.updateLoading = () => {
+        window.loadingCount = 0
+        window.updateLoading = (amount) => {
+            window.loadingCount += amount
             let indicator = document.getElementById('loading')
             if (window.loadingCount) {
                 if (dots.length > 4) {
