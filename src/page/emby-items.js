@@ -20,12 +20,23 @@ module.exports = () => {
         emby.client
             .connect()
             .then(() => {
-                window.playChannel = (channelSlug)=>{
-                    window.duplicateChannels[channelSlug].index = (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
+                window.playChannel = (channelSlug) => {
+                    window.updateLoading(1)
+                    window.duplicateChannels[channelSlug].index =
+                        (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
                     let channel = window.duplicateChannels[channelSlug].items[window.duplicateChannels[channelSlug].index]
-                    let activeChannelInfo = `${ window.duplicateChannels[channelSlug].index + 1} of ${window.duplicateChannels[channelSlug].items.length}`
-                    document.getElementById('active-channel-'+channelSlug).innerHTML = activeChannelInfo
-                    mediaPlayer.openStream(channel.getStreamURL(),false);
+                    let activeChannelInfo = `${window.duplicateChannels[channelSlug].index + 1} of ${
+                        window.duplicateChannels[channelSlug].items.length
+                    }`
+                    document.getElementById('active-channel-' + channelSlug).innerHTML = activeChannelInfo
+                    mediaPlayer
+                        .openStream(channel.getStreamURL(), false, channel.getStreamName())
+                        .then(() => {
+                            window.updateLoading(-1)
+                        })
+                        .catch(() => {
+                            window.updateLoading(-1)
+                        })
                 }
                 return handlerMap.getHandler(emby.client, queryParams.embyItemId)
             })

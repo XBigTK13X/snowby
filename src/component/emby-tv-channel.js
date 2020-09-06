@@ -29,7 +29,7 @@ class EmbyTvChannel {
 			<td>
 				${this.embyItem.CurrentProgram.EndTime}
 			</td>
-			<td id="active-channel-${this.embyItem.ChannelSlug}">
+			<td id="active-channel-${this.embyItem.ChannelSlug}" class="centered">
 			</td>
 		</tr>
 		`

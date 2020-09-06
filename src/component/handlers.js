@@ -96,7 +96,6 @@ module.exports = {
         title: 'Live TV',
         pageOptions: {
             enableProfilePicker: true,
-            defaultMediaProfile: 'livetv',
         },
     },
     movieList: {

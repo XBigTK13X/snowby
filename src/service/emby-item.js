@@ -87,11 +87,15 @@ module.exports = class EmbyItem {
         }
     }
 
+    getStreamName() {
+        return `${this.ChannelRegion} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.ChannelNumber} - ${this.ChannelQuality}`
+    }
+
     processChannelInfo() {
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.ChannelName = CHANNEL_MAP[this.Name]
             this.ChannelQuality = 'HD'
-            this.ChannelSlug = this.CurrentProgram.Name
+            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '')
             this.ChannelRegion = 'KC'
             return
         }
@@ -99,8 +103,7 @@ module.exports = class EmbyItem {
         let quality = 'HD'
         if (result.indexOf('SD') !== -1) {
             quality = 'SD'
-        }
-        else if (result.indexOf('LHD') !== -1){
+        } else if (result.indexOf('LHD') !== -1) {
             quality = 'LHD'
         } else if (result.indexOf('FHD') !== -1) {
             quality = 'FHD'
@@ -115,18 +118,17 @@ module.exports = class EmbyItem {
             result = result.split(' |')[0]
         }
         let region = 'USA'
-        if (result.indexOf('UK ') !== -1){
+        if (result.indexOf('UK ') !== -1) {
             region = 'UK'
-        }
-        else if(result.indexOf('CA ') !== -1){
+        } else if (result.indexOf('CA ') !== -1) {
             region = 'CA'
         }
-        result = result.replace(region + ' ','')
-        result = result.replace(' WEST','').replace(' EAST','').replace('East','').replace('West','')
+        result = result.replace(region + ' ', '')
+        result = result.replace(' WEST', '').replace(' EAST', '').replace('East', '').replace('West', '')
         result = result.replace(' ' + quality, '')
         this.ChannelQuality = quality
         this.ChannelName = result
-        this.ChannelSlug = this.CurrentProgram.Name
+        this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '')
         this.ChannelRegion = region
     }
 

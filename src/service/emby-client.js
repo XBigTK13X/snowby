@@ -263,25 +263,25 @@ class EmbyClient {
             return channelsResponse.data.Items.map((item) => {
                 let embyItem = new EmbyItem(item)
                 embyItem.processChannelInfo()
-                if(!_.has(window.duplicateChannels, embyItem.ChannelSlug)){
+                if (!_.has(window.duplicateChannels, embyItem.ChannelSlug)) {
                     window.duplicateChannels[embyItem.ChannelSlug] = {
                         index: 0,
-                        items: []
+                        items: [],
                     }
                 }
                 window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
-                if(window.duplicateChannels[embyItem.ChannelSlug].items.length === 1){
+                if (window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
                     return embyItem
                 }
                 window.duplicateChannels[embyItem.ChannelSlug].index += 1
                 return null
             })
-            .filter(x=>{
-                return x !== null
-            })
-            .sort((a, b) => {
-                return a.ChannelName > b.ChannelName ? 1 : -1
-            })
+                .filter((x) => {
+                    return x !== null
+                })
+                .sort((a, b) => {
+                    return a.ChannelName > b.ChannelName ? 1 : -1
+                })
         })
     }
 

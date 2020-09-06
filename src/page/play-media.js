@@ -195,7 +195,7 @@ module.exports = () => {
                                     track()
                                     window.updateLoading(-1)
                                 })
-                                .catch(()=>{
+                                .catch(() => {
                                     window.updateLoading(-1)
                                 })
                         }
@@ -215,6 +215,9 @@ module.exports = () => {
                             )
                             .then(() => {
                                 track()
+                                window.updateLoading(-1)
+                            })
+                            .catch((err) => {
                                 window.updateLoading(-1)
                             })
                     }
