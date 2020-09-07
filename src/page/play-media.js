@@ -39,6 +39,7 @@ module.exports = () => {
                         parentName: 'Season',
                     })
                 }
+
                 document.getElementById('mark-watched-button').onclick = (event) => {
                     event.preventDefault()
                     emby.client.markPlayed(queryParams.embyItemId)
@@ -177,32 +178,7 @@ module.exports = () => {
                         )
                     }
 
-                    if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
-                        document.getElementById('resume-media-button').style = null
-                        document.getElementById('resume-media-button').onclick = (event) => {
-                            event.preventDefault()
-                            window.updateLoading(1)
-                            player
-                                .openFile(
-                                    embyItem.Id,
-                                    embyItem.CleanPath,
-                                    selectedIndices.audio.relative,
-                                    selectedIndices.subtitle.relative,
-                                    embyItem.UserData.PlaybackPositionTicks,
-                                    inspection.isHdr
-                                )
-                                .then(() => {
-                                    track()
-                                    window.updateLoading(-1)
-                                })
-                                .catch(() => {
-                                    window.updateLoading(-1)
-                                })
-                        }
-                    }
-
-                    document.getElementById('play-media-button').onclick = (event) => {
-                        event.preventDefault()
+                    window.playMedia = (seekTicks) => {
                         window.updateLoading(1)
                         player
                             .openFile(
@@ -210,16 +186,33 @@ module.exports = () => {
                                 embyItem.CleanPath,
                                 selectedIndices.audio.relative,
                                 selectedIndices.subtitle.relative,
-                                0,
+                                seekTicks,
                                 inspection.isHdr
                             )
                             .then(() => {
                                 track()
                                 window.updateLoading(-1)
                             })
-                            .catch((err) => {
+                            .catch(() => {
                                 window.updateLoading(-1)
                             })
+                    }
+
+                    window.playExtra = (extraId) => {
+                        window.location.href = `./play-media.html?embyItemId=${extraId}`
+                    }
+
+                    if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
+                        document.getElementById('resume-media-button').style = null
+                        document.getElementById('resume-media-button').onclick = (event) => {
+                            event.preventDefault()
+                            window.playMedia(embyItem.UserData.PlaybackPositionTicks)
+                        }
+                    }
+
+                    document.getElementById('play-media-button').onclick = (event) => {
+                        event.preventDefault()
+                        window.playMedia(0)
                     }
 
                     resolve({

@@ -20,7 +20,10 @@ class ChapterTab {
             </tr>`
             this.embyItem.Chapters.forEach((chapter, chapterIndex) => {
                 html += `
-                    <tr>
+                    <tr
+                        class="clickable"
+                        onclick="window.playMedia(${chapter.StartPositionTicks}); return false;"
+                    >
                         <td>
                             ${chapterIndex + 1}
                         </td>
