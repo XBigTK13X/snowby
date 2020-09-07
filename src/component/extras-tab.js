@@ -1,5 +1,3 @@
-const EmbyPoster = require('./emby-poster')
-
 class ExtrasTab {
     constructor(embyItem) {
         this.embyItem = embyItem
@@ -12,11 +10,25 @@ class ExtrasTab {
             if (!this.embyItem.SpecialFeatures || !this.embyItem.SpecialFeatures.length) {
                 return resolve('')
             }
-            let html = `<div class="grid square-grid">`
-            this.embyItem.SpecialFeatures.forEach((feature) => {
-                html += new EmbyPoster(feature).render()
+            let html = `<table>
+            <tr>
+                <th>Name</th>
+            </tr>`
+            this.embyItem.SpecialFeatures.sort((a, b) => {
+                return a.Name > b.Name ? 1 : -1
+            }).forEach((feature) => {
+                html += `
+                    <tr
+                        class="clickable"
+                        onclick="window.playExtra(${feature.Id}); return false;"
+                    >
+                        <td>
+                            ${feature.Name}
+                        </td>
+                    </tr>
+                `
             })
-            html += '</div>'
+            html += '</table>'
             resolve(html)
         })
     }
