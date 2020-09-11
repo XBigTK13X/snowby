@@ -280,6 +280,9 @@ class EmbyClient {
                     return x !== null
                 })
                 .sort((a, b) => {
+                    if (a.ChannelRegion !== b.ChannelRegion) {
+                        return a.ChannelRegion > b.ChannelRegion ? 1 : -1
+                    }
                     return a.ChannelName > b.ChannelName ? 1 : -1
                 })
         })
