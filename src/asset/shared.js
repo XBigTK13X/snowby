@@ -27,7 +27,7 @@ module.exports = (pageName, options) => {
         let dots = ''
         window.loadingCount = 0
         window.updateLoading = (amount) => {
-            if (amount) {
+            if (amount !== undefined) {
                 window.loadingCount += amount
                 if (window.loadingCount < 0) {
                     util.clientLog('shared - uploadLoading - More calls were made to close than were made to open')

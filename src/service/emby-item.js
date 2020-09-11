@@ -95,7 +95,7 @@ module.exports = class EmbyItem {
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.ChannelName = CHANNEL_MAP[this.Name]
             this.ChannelQuality = 'HD'
-            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '')
+            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
             this.ChannelRegion = 'KC'
             return
         }
@@ -128,7 +128,7 @@ module.exports = class EmbyItem {
         result = result.replace(' ' + quality, '')
         this.ChannelQuality = quality
         this.ChannelName = result
-        this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '')
+        this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
         this.ChannelRegion = region
     }
 
