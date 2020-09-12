@@ -22,7 +22,7 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'September 11, 2020',
+    versionDate: 'September 12, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
