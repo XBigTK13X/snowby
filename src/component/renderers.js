@@ -118,8 +118,8 @@ module.exports = {
         <table class="channel-guide">
         <thead>
         <tr>
+            <th>Category</th>
             <th>Channel Name</th>
-            <th>Region</th>
             <th>Current Program</th>
             <th>Start Time</th>
             <th>End Time</th>
