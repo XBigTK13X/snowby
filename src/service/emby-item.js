@@ -88,48 +88,31 @@ module.exports = class EmbyItem {
     }
 
     getStreamName() {
-        return `${this.ChannelRegion} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.ChannelNumber} - ${this.ChannelQuality}`
+        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.ChannelNumber}`
     }
 
     processChannelInfo() {
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.ChannelName = CHANNEL_MAP[this.Name]
-            this.ChannelQuality = 'HD'
-            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
-            this.ChannelRegion = 'KC'
+            this.ChannelSlug = this.ChannelName
+            if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
+                this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
+            }
+            this.ChannelCategory = 'LOCAL'
             return
         }
         let result = this.Name
-        let quality = 'HD'
-        if (result.indexOf('SD') !== -1) {
-            quality = 'SD'
-        } else if (result.indexOf('LHD') !== -1) {
-            quality = 'LHD'
-        } else if (result.indexOf('FHD') !== -1) {
-            quality = 'FHD'
-        } else if (result.indexOf('UHD') !== -1) {
-            quality = 'UHD'
-        }
 
-        if (result.indexOf(' (') !== -1) {
-            result = result.split(' (')[0]
+        result = result.replace('*', '')
+
+        let parts = result.split('  ')
+
+        this.ChannelCategory = parts[0]
+        this.ChannelName = parts[1]
+        this.ChannelSlug = this.ChannelName
+        if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
+            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
         }
-        if (result.indexOf(' |') !== -1) {
-            result = result.split(' |')[0]
-        }
-        let region = 'USA'
-        if (result.indexOf('UK ') !== -1) {
-            region = 'UK'
-        } else if (result.indexOf('CA ') !== -1) {
-            region = 'CA'
-        }
-        result = result.replace(region + ' ', '')
-        result = result.replace(' WEST', '').replace(' EAST', '').replace('East', '').replace('West', '')
-        result = result.replace(' ' + quality, '')
-        this.ChannelQuality = quality
-        this.ChannelName = result
-        this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
-        this.ChannelRegion = region
     }
 
     getDiscussionQuery() {

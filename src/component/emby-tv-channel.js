@@ -14,11 +14,11 @@ class EmbyTvChannel {
         	data-target="random-action"
         	onclick="window.playChannel('${this.embyItem.ChannelSlug}'); return false;"
         >
+        	<td>
+        		${this.embyItem.ChannelCategory}
+        	</td>
 			<td>
 				${this.embyItem.ChannelName}
-			</td>
-			<td>
-				${this.embyItem.ChannelRegion}
 			</td>
 			<td>
 				${this.embyItem.CurrentProgram.Name}
