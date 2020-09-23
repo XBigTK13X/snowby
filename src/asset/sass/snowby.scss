@@ -1,7 +1,8 @@
 $snowby-window-color: #030303;
-$snowby-text-front: #c7c7c7;
+$snowby-text-front: #a7a7a7;
 $snowby-text-back: #272727;
 $snowby-highlight-intensity: 5%;
+$snowby-mild-highlight-front: darken($snowby-text-front, $snowby-highlight-intensity + 50);
 $snowby-highlight-front: lighten($snowby-text-front, $snowby-highlight-intensity);
 $snowby-highlight-back: lighten($snowby-text-back, $snowby-highlight-intensity);
 
@@ -75,7 +76,7 @@ table,
 th,
 td,
 tr {
-    border: 1px solid $snowby-highlight-front;
+    border: 1px solid $snowby-mild-highlight-front;
     border-collapse: collapse;
     padding: 5px;
 }

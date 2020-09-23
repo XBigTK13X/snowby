@@ -13,6 +13,7 @@ class EmbyTvChannel {
         	class="clickable"
         	data-target="random-action"
         	onclick="window.playChannel('${this.embyItem.ChannelSlug}'); return false;"
+        	data-category="${this.embyItem.ChannelCategory}"
         >
         	<td>
         		${this.embyItem.ChannelCategory}

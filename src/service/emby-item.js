@@ -109,6 +109,7 @@ module.exports = class EmbyItem {
 
         this.ChannelCategory = parts[0]
         this.ChannelName = parts[1]
+        this.ChannelName = this.ChannelName.replace(' FHD', '')
         this.ChannelSlug = this.ChannelName
         if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
             this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
