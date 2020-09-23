@@ -259,6 +259,10 @@ class EmbyClient {
         const fields = `PrimaryImageAspectRatio%2CChannelInfo%2CSortName%2CMediaSources`
         const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=400&Fields=${fields}`
         window.duplicateChannels = {}
+        window.channelCategories = {
+            lookup: { ALL: true },
+            list: ['ALL'],
+        }
         return this.httpClient.get(url).then((channelsResponse) => {
             return channelsResponse.data.Items.map((item) => {
                 let embyItem = new EmbyItem(item)
@@ -268,6 +272,11 @@ class EmbyClient {
                         index: 0,
                         items: [],
                     }
+                }
+                if (!_.has(window.channelCategories.lookup, embyItem.ChannelCategory)) {
+                    window.channelCategories.lookup[embyItem.ChannelCategory] = true
+                    window.channelCategories.list.push(embyItem.ChannelCategory)
+                    window.channelCategories.list.sort()
                 }
                 window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
                 if (window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {

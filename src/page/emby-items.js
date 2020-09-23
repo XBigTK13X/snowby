@@ -38,6 +38,15 @@ module.exports = () => {
                             window.updateLoading(-1)
                         })
                 }
+                window.filterChannels = (category) => {
+                    const tags = document.getElementsByTagName('tr')
+                    for (var ii = 0; ii < tags.length; ii++) {
+                        let tag = tags[ii]
+                        const tagCategory = tag.getAttribute('data-category')
+                        const show = tagCategory === category || tagCategory === 'HEADER' || category === 'ALL' ? '' : 'display:none'
+                        tag.setAttribute('style', show)
+                    }
+                }
                 return handlerMap.getHandler(emby.client, queryParams.embyItemId)
             })
             .then((result) => {

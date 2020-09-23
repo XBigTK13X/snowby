@@ -115,9 +115,25 @@ module.exports = {
     },
     tvChannels: (parent, children) => {
         let html = `
+        <div class="navbar">
+            ${window.channelCategories.list
+                .map((category) => {
+                    return `
+                        <a href="" onclick="window.filterChannels('${category}'); return false;">
+                            <div class="navbar-button">
+                                ${category}
+                            </div>
+                        </a>
+                    `
+                })
+                .join('')}
+        </div>
+        `
+
+        html += `
         <table class="channel-guide">
         <thead>
-        <tr>
+        <tr data-category="HEADER">
             <th>Category</th>
             <th>Channel Name</th>
             <th>Current Program</th>
