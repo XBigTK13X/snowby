@@ -300,9 +300,11 @@ class EmbyClient {
 
     tvGuide() {
         const startDate = DateTime.utc()
-        const duration = Duration.fromObject({hours: 6})
+        const duration = Duration.fromObject({ hours: 6 })
         const endDate = startDate.plus(duration)
-        const url = `LiveTv/EPG?Limit=3000&MaxStartDate=${endDate.toISO()}&MinEndDate=${startDate.toISO()}&AddCurrentProgram=true&EnableUserData=false&UserId=${this.userId}`
+        const url = `LiveTv/EPG?Limit=3000&MaxStartDate=${endDate.toISO()}&MinEndDate=${startDate.toISO()}&AddCurrentProgram=true&EnableUserData=false&UserId=${
+            this.userId
+        }`
         window.duplicateChannels = {}
         window.channelCategories = {
             lookup: { ALL: true },
@@ -382,18 +384,24 @@ class EmbyClient {
             parentResponse.data.Items.forEach((item) => {
                 parentLookup[item.Id] = item
             })
-            return nextUpResponse.data.Items.sort((a, b) => {
-                return a.SeriesName > b.SeriesName ? 1 : -1
-            }).map((x) => {
-                let unwatchedCount = 0
-                if (_.has(parentLookup, x.SeriesId)) {
-                    let currentParent = parentLookup[x.SeriesId]
-                    if (currentParent.UserData && currentParent.UserData.UnplayedItemCount) {
-                        unwatchedCount = currentParent.UserData.UnplayedItemCount
-                    }
-                }
-                return new EmbyItem(x, { showParentImage: true, unwatchedCount: unwatchedCount })
+            return nextUpResponse.data.Items.filter((x) => {
+                // Don't show any season that isn't in progress in this view.
+                // If you watched at least two episodes, then assume in progress.
+                return x.IndexNumber && x.IndexNumber > 2
             })
+                .sort((a, b) => {
+                    return a.SeriesName > b.SeriesName ? 1 : -1
+                })
+                .map((x) => {
+                    let unwatchedCount = 0
+                    if (_.has(parentLookup, x.SeriesId)) {
+                        let currentParent = parentLookup[x.SeriesId]
+                        if (currentParent.UserData && currentParent.UserData.UnplayedItemCount) {
+                            unwatchedCount = currentParent.UserData.UnplayedItemCount
+                        }
+                    }
+                    return new EmbyItem(x, { showParentImage: true, unwatchedCount: unwatchedCount })
+                })
         })
     }
 

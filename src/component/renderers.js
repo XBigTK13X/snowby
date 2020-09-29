@@ -114,7 +114,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     tvChannels: (parent, children) => {
-        document.body.style['overflow-y'] = 'scroll';
+        document.body.style['overflow-y'] = 'scroll'
         let html = `
         <div class="navbar">
             ${window.channelCategories.list
