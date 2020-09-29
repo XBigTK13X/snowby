@@ -32,17 +32,17 @@ module.exports = class EmbyItem {
                 StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
                 EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
             }
-            if(this.Programs[0].EpisodeTitle){
+            if (this.Programs[0].EpisodeTitle) {
                 this.CurrentProgram.Name += ' -> ' + this.Programs[0].EpisodeTitle
             }
         }
-        if(this.Programs && this.Programs.length > 1){
+        if (this.Programs && this.Programs.length > 1) {
             this.NextProgram = this.Programs[1]
-            if(!this.NextProgram){
+            if (!this.NextProgram) {
                 this.NextProgram = {
                     Name: 'Unknown',
                     StartTime: '???',
-                    EndTime: '???'
+                    EndTime: '???',
                 }
             } else {
                 this.NextProgram = {
@@ -50,7 +50,7 @@ module.exports = class EmbyItem {
                     StartTime: DateTime.fromISO(this.NextProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
                     EndTime: DateTime.fromISO(this.NextProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
                 }
-                if(this.Programs[1].EpisodeTitle){
+                if (this.Programs[1].EpisodeTitle) {
                     this.NextProgram.Name += ' -> ' + this.Programs[1].EpisodeTitle
                 }
             }
@@ -58,7 +58,7 @@ module.exports = class EmbyItem {
             this.NextProgram = {
                 Name: 'Unknown',
                 StartTime: '???',
-                EndTime: '???'
+                EndTime: '???',
             }
         }
 
