@@ -114,6 +114,7 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     tvChannels: (parent, children) => {
+        document.body.style['overflow-y'] = 'scroll';
         let html = `
         <div class="navbar">
             ${window.channelCategories.list
@@ -134,12 +135,13 @@ module.exports = {
         <table class="channel-guide">
         <thead>
         <tr data-category="HEADER">
-            <th>Category</th>
-            <th>Channel Name</th>
-            <th>Current Program</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Active Channel</th>
+            <th style="width:5vw;"></th>
+            <th style="width:10vw;">Channel Name</th>
+            <th style="width:25vw;">Now Playing</th>
+            <th style="width:10vw;">Current Block
+            <th style="width:25vw;">Next Up</th>
+            <th style="width:10vw;">Next Block</th>
+            <th style="width:10vw;">Active Channel</th>
         </tr>
         </thead>
         <tbody>

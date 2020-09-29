@@ -99,6 +99,10 @@ tr.channel-guide {
     text-decoration: none;
 }
 
+table.channel-guide {
+    width: 95vw;
+}
+
 .clearfix::after {
     content: '';
     clear: both;

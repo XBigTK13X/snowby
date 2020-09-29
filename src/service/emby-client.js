@@ -1,6 +1,7 @@
 const os = require('os')
 const _ = require('lodash')
 
+const { DateTime, Duration } = require('luxon')
 const util = require('../util')
 const settings = require('../settings')
 const HttpClient = require('./http-client')
@@ -298,8 +299,48 @@ class EmbyClient {
     }
 
     tvGuide() {
-
-        const url = `EPG?EnableFavoriteSorting=true&Fields=PrimaryImageAspectRatio&Limit=30&MaxStartDate=2020-09-30T00:00:00.000Z&MinEndDate=2020-09-29T16:00:01.000Z&SortBy=SortName&SortOrder=Ascending&AddCurrentProgram=true&EnableUserData=false&EnableImageTypes=Primary&UserId=${this.userId}`
+        const startDate = DateTime.utc()
+        const duration = Duration.fromObject({hours: 6})
+        const endDate = startDate.plus(duration)
+        const url = `LiveTv/EPG?Limit=3000&MaxStartDate=${endDate.toISO()}&MinEndDate=${startDate.toISO()}&AddCurrentProgram=true&EnableUserData=false&UserId=${this.userId}`
+        window.duplicateChannels = {}
+        window.channelCategories = {
+            lookup: { ALL: true },
+            list: ['ALL'],
+        }
+        return this.httpClient.get(url).then((guideResponse) => {
+            return guideResponse.data.Items.map((item) => {
+                item.Channel.Programs = item.Programs
+                let embyItem = new EmbyItem(item.Channel)
+                embyItem.processChannelInfo()
+                if (!_.has(window.duplicateChannels, embyItem.ChannelSlug)) {
+                    window.duplicateChannels[embyItem.ChannelSlug] = {
+                        index: 0,
+                        items: [],
+                    }
+                }
+                if (!_.has(window.channelCategories.lookup, embyItem.ChannelCategory)) {
+                    window.channelCategories.lookup[embyItem.ChannelCategory] = true
+                    window.channelCategories.list.push(embyItem.ChannelCategory)
+                    window.channelCategories.list.sort()
+                }
+                window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
+                if (window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
+                    return embyItem
+                }
+                window.duplicateChannels[embyItem.ChannelSlug].index += 1
+                return null
+            })
+                .filter((x) => {
+                    return x !== null
+                })
+                .sort((a, b) => {
+                    if (a.ChannelCategory !== b.ChannelCategory) {
+                        return a.ChannelCategory > b.ChannelCategory ? 1 : -1
+                    }
+                    return a.ChannelName > b.ChannelName ? 1 : -1
+                })
+        })
     }
 
     genres(filter) {
