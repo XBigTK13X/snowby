@@ -297,6 +297,11 @@ class EmbyClient {
         })
     }
 
+    tvGuide() {
+
+        const url = `EPG?EnableFavoriteSorting=true&Fields=PrimaryImageAspectRatio&Limit=30&MaxStartDate=2020-09-30T00:00:00.000Z&MinEndDate=2020-09-29T16:00:01.000Z&SortBy=SortName&SortOrder=Ascending&AddCurrentProgram=true&EnableUserData=false&EnableImageTypes=Primary&UserId=${this.userId}`
+    }
+
     genres(filter) {
         let genreFilter = `Series%2CMovie`
         if (filter) {

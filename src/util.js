@@ -1,4 +1,4 @@
-const moment = require('moment')
+const { DateTime } = require('luxon')
 const path = require('path')
 const fs = require('fs')
 const readLine = require('readline')
@@ -97,8 +97,9 @@ const serverLog = (message) => {
         console.log('')
         fs.writeFileSync(logFile, '')
     }
-    console.log(message)
-    fs.appendFileSync(logFile, moment().format('MMMM Do YYYY, h:mm:ss a') + ' - ' + message + '\n')
+    let stampedMessage = DateTime.local().toRFC2822() + ' - ' + message
+    console.log(stampedMessage)
+    fs.appendFileSync(logFile, stampedMessage + '\n')
 }
 
 const clientLog = (message) => {
