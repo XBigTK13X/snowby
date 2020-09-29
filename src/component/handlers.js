@@ -90,7 +90,7 @@ module.exports = {
     },
     liveTv: {
         getChildren: (emby) => {
-            return emby.liveChannels()
+            return emby.tvGuide()
         },
         render: renderers.tvChannels,
         title: 'Live TV',

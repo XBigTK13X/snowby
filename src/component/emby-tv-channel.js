@@ -24,11 +24,14 @@ class EmbyTvChannel {
 			<td>
 				${this.embyItem.CurrentProgram.Name}
 			</td>
-			<td>
-				${this.embyItem.CurrentProgram.StartTime}
+			<td style="text-align:right;">
+				${this.embyItem.CurrentProgram.StartTime} to ${this.embyItem.CurrentProgram.EndTime}
 			</td>
 			<td>
-				${this.embyItem.CurrentProgram.EndTime}
+				${this.embyItem.NextProgram.Name}
+			</td>
+			<td style="text-align:right;">
+				${this.embyItem.NextProgram.StartTime} to ${this.embyItem.NextProgram.EndTime}
 			</td>
 			<td id="active-channel-${this.embyItem.ChannelSlug}" class="centered">
 			</td>
