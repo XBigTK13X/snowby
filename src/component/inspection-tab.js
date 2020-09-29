@@ -1,6 +1,6 @@
 const size = require('../media/size')
 const ticks = require('../media/ticks')
-const moment = require('moment')
+const { DateTime, Duration } = require('luxon')
 
 class InspectionTab {
     constructor(embyItem, inspection, selectedIndices) {
@@ -28,11 +28,9 @@ class InspectionTab {
                 html += `<p>Remaining - ${remaining}</p>`
             }
 
-            let finishAt = moment()
-                .add(runTimeBreakdown.hours, 'hours')
-                .add(runTimeBreakdown.minutes, 'minutes')
-                .add(runTimeBreakdown.seconds, 'seconds')
-            let finishStamp = finishAt.format('hh:mm:ss a')
+            let duration = Duration.fromObject(runTimeBreakdown)
+            let finishAt = DateTime.local().plus(duration)
+            let finishStamp = finishAt.toLocaleString(DateTime.TIME_SIMPLE)
             html += `<p>Finish At - ${finishStamp}</p>`
             if (this.inspection.ignoreInspector) {
                 html += `<p>Snowby was told that nothing special should be done to pick streams.`

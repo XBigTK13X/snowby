@@ -1,7 +1,7 @@
 const { shell } = require('electron')
 const _ = require('lodash')
 const settings = require('../settings')
-const moment = require('moment')
+const { DateTime } = require('luxon')
 
 const CHANNEL_MAP = require('../media/channel-map')
 const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
@@ -29,8 +29,8 @@ module.exports = class EmbyItem {
         } else {
             this.CurrentProgram = {
                 Name: this.CurrentProgram.Name,
-                StartTime: moment(this.CurrentProgram.StartDate).format('hh:mm a'),
-                EndTime: moment(this.CurrentProgram.EndDate).format('hh:mm a'),
+                StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
+                EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
             }
         }
 

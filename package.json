@@ -30,7 +30,7 @@
     "jquery": "3.5.1",
     "jquery-lazy": "1.7.10",
     "lodash": "4.17.15",
-    "moment": "2.26.0",
+    "luxon": "^1.25.0",
     "query-string": "6.13.1",
     "tippy.js": "5.2.1"
   }
