@@ -15,25 +15,28 @@ class EmbyTvChannel {
         	onclick="window.playChannel('${this.embyItem.ChannelSlug}'); return false;"
         	data-category="${this.embyItem.ChannelCategory}"
         >
-        	<td>
+        	<td class="cell-small">
         		${this.embyItem.ChannelCategory}
         	</td>
-			<td>
+			<td class="cell-medium">
 				${this.embyItem.ChannelName}
 			</td>
-			<td>
+			<td class="cell-large">
 				${this.embyItem.CurrentProgram.Name}
+				<br/><span class="program-subtitle">${this.embyItem.CurrentProgram.EpisodeName}</span>
 			</td>
-			<td style="text-align:right;">
-				${this.embyItem.CurrentProgram.StartTime} to ${this.embyItem.CurrentProgram.EndTime}
+			<td class="cell-small">
+				${this.embyItem.CurrentProgram.StartTime}<br/>${this.embyItem.CurrentProgram.EndTime}
 			</td>
-			<td>
+			<td class="cell-large">
 				${this.embyItem.NextProgram.Name}
+				<br/><span class="program-subtitle">${this.embyItem.NextProgram.EpisodeName}</span>
 			</td>
-			<td style="text-align:right;">
-				${this.embyItem.NextProgram.StartTime} to ${this.embyItem.NextProgram.EndTime}
+			<td class="cell-small">
+				${this.embyItem.NextProgram.StartTime}<br/>${this.embyItem.NextProgram.EndTime}
 			</td>
-			<td id="active-channel-${this.embyItem.ChannelSlug}" class="centered">
+			<td class="cell-small">${this.embyItem.ChannelCount}</td>
+			<td class="cell-small" id="active-channel-${this.embyItem.ChannelSlug}" class="centered">
 			</td>
 		</tr>
 		`

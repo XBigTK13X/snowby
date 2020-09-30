@@ -5,7 +5,7 @@ const _ = require('lodash')
 let config = {
     adminEnabled: false,
     debugApiCalls: false,
-    debugMpvSocket: false,
+    debugMpvSocket: true,
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     enableHdrToggle: true,
