@@ -123,7 +123,9 @@ module.exports = class EmbyItem {
     }
 
     getStreamName() {
-        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.CurrentProgram.EpisodeName ? this.CurrentProgram.EpisodeName + ' - ' : ''} ${this.ChannelNumber}`
+        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${
+            this.CurrentProgram.EpisodeName ? this.CurrentProgram.EpisodeName + ' - ' : ''
+        } ${this.ChannelNumber}`
     }
 
     processChannelInfo() {
@@ -132,7 +134,7 @@ module.exports = class EmbyItem {
             this.ChannelSlug = this.ChannelName
             this.ChannelCategory = 'LOCAL'
             if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-                this.ChannelSlug = this.ChannelCategory + " - " + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
+                this.ChannelSlug = this.ChannelCategory + ' - ' + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
             }
             return
         }
@@ -147,7 +149,7 @@ module.exports = class EmbyItem {
         this.ChannelName = this.ChannelName.replace(' FHD', '')
         this.ChannelSlug = this.ChannelName
         if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-            this.ChannelSlug = this.ChannelCategory + " - " + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
+            this.ChannelSlug = this.ChannelCategory + ' - ' + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
         }
     }
 

@@ -26,6 +26,7 @@ class MpvSocket {
         this.socketPath = socketPath
         this.messageId = 1
         this.isConnected = false
+        this.isStreaming = false
         this.ipcRequests = {}
         mpv_socket_count++
         this.socketCount = mpv_socket_count
@@ -84,10 +85,15 @@ class MpvSocket {
                     if (settings.debugMpvSocket) {
                         util.serverLog(`mpvSocket - #${this.socketCount} message: ` + message)
                     }
+                    // This is how a streaming URL reports that the playback has started
+                    if (message && message.indexOf('playback-restart') !== -1) {
+                        this.isStreaming = true
+                    }
                 }
             }
         })
     }
+
     quit() {
         if (settings.debugMpvSocket) {
             util.serverLog(`mpvSocket - #${this.socketCount} Quitting`)
@@ -98,10 +104,12 @@ class MpvSocket {
         this.socket.destroy()
         this.isConnected = false
     }
+
     getProperty(property) {
         const command_list = ['get_property', property]
         return this.send(command_list)
     }
+
     send(command) {
         return new Promise((resolve, reject) => {
             if (this.socket.destroyed) {
@@ -120,6 +128,10 @@ class MpvSocket {
                 return reject(this.errorHandler(JSON.stringify(command)))
             }
         })
+    }
+
+    getStreamConnected() {
+        return this.isStreaming
     }
 }
 

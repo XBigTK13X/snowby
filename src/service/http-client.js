@@ -40,14 +40,15 @@ class HttpClient {
     }
 
     wrap(method, url, data, options) {
-        window.updateLoading(1)
+        let loadingMessage = 'Making web request to ' + url
+        window.loadingStart(loadingMessage)
         return new Promise((resolve) => {
             return this.client[method](url, data)
                 .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         util.clientLog('httpClient - result ' + JSON.stringify({ method, url, data, result, config: this.config }))
                     }
-                    window.updateLoading(-1)
+                    window.loadingStop(loadingMessage)
                     return resolve(result)
                 })
                 .catch((err) => {
@@ -65,7 +66,7 @@ class HttpClient {
                                 })
                         )
                     }
-                    window.updateLoading(-1)
+                    window.loadingStop(loadingMessage)
                     return resolve()
                 })
         })

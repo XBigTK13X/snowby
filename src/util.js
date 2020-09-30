@@ -45,6 +45,14 @@ const browserGetMediaProfiles = () => {
     return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
 }
 
+const getMpvStreamConnected = () => {
+    return require('electron').ipcRenderer.sendSync('snowby-get-mpv-stream-connected')
+}
+
+const killMpv = () => {
+    return require('electron').ipcRenderer.sendSync('snowby-kill-mpv')
+}
+
 const isClass = (target) => {
     try {
         new target()
@@ -114,12 +122,14 @@ module.exports = {
     appPath,
     browserGetMediaProfiles,
     clientLog,
+    getCaller,
     getMediaProfiles,
+    getMpvStreamConnected,
     isClass,
+    killMpv,
     loadTooltips,
     queryParams,
     queryString,
     serverLog,
     swapConfig,
-    getCaller,
 }

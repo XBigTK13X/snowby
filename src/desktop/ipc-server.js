@@ -111,6 +111,22 @@ class IpcServer {
             }
         })
 
+        this.ipcMain.on('snowby-kill-mpv', (event) => {
+            try {
+                if (this.mpvProcess) {
+                    this.mpvProcess.kill()
+                    this.mpvProcess = null
+                }
+                if (this.mpvSocket) {
+                    this.mpvSocket.quit()
+                    this.mpvSocket = null
+                }
+                event.returnValue = true
+            } catch {
+                event.returnValue = false
+            }
+        })
+
         this.ipcMain.on('snowby-is-mpv-running', (event) => {
             try {
                 if (this.mpvSocket) {
@@ -131,6 +147,14 @@ class IpcServer {
                 event.returnValue = null
             } catch {
                 event.returnValue = null
+            }
+        })
+
+        this.ipcMain.on('snowby-get-mpv-stream-connected', (event) => {
+            try {
+                event.returnValue = this.mpvSocket.getStreamConnected()
+            } catch {
+                event.returnValue = false
             }
         })
 

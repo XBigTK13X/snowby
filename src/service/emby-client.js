@@ -388,7 +388,10 @@ class EmbyClient {
             return nextUpResponse.data.Items.filter((x) => {
                 // Don't show any season that isn't in progress in this view.
                 // If you watched at least two episodes, then assume in progress.
-                return x.IndexNumber && x.IndexNumber > 2
+                if (x.SeasonName === 'Season 1') {
+                    return x.IndexNumber && x.IndexNumber > 2
+                }
+                return x.IndexNumber && x.IndexNumber > 1
             })
                 .sort((a, b) => {
                     return a.SeriesName > b.SeriesName ? 1 : -1
