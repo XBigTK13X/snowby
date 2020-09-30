@@ -21,7 +21,8 @@ module.exports = () => {
             .connect()
             .then(() => {
                 window.playChannel = (channelSlug) => {
-                    window.updateLoading(1)
+                    let loadingMessage = 'Opening channel ' + channelSlug + ' in MPV'
+                    window.loadingStart(loadingMessage)
                     window.duplicateChannels[channelSlug].index =
                         (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
                     let channel = window.duplicateChannels[channelSlug].items[window.duplicateChannels[channelSlug].index]
@@ -30,10 +31,28 @@ module.exports = () => {
                     mediaPlayer
                         .openStream(channel.getStreamURL(), false, channel.getStreamName())
                         .then(() => {
-                            window.updateLoading(-1)
+                            window.loadingStop(loadingMessage)
+                            let attempts = 20
+                            let streamMessage = 'Waiting for stream contents to buffer'
+                            window.loadingStart(streamMessage)
+                            let refreshInterval = setInterval(() => {
+                                attempts--
+                                if (attempts < 0) {
+                                    util.killMpv()
+                                    let killInfoMessage = 'The stream took too long to buffer, giving up'
+                                    window.loadingStart(killInfoMessage)
+                                    setTimeout(() => {
+                                        window.loadingStop(killInfoMessage)
+                                    }, 3500)
+                                }
+                                if (util.getMpvStreamConnected() || attempts < 0) {
+                                    clearInterval(refreshInterval)
+                                    window.loadingStop(streamMessage)
+                                }
+                            }, 400)
                         })
                         .catch(() => {
-                            window.updateLoading(-1)
+                            window.loadingStop(loadingMessage)
                         })
                 }
                 window.filterChannels = (category) => {

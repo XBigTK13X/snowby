@@ -5,11 +5,11 @@ const _ = require('lodash')
 let config = {
     adminEnabled: false,
     debugApiCalls: false,
-    debugMpvSocket: true,
+    debugMpvSocket: false,
     embyServerURL: 'http://9914.us:8096',
     embyTrackProgress: true,
     enableHdrToggle: true,
-    fullScreen: false,
+    fullScreen: true,
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
@@ -22,7 +22,7 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'September 29, 2020',
+    versionDate: 'September 30, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,

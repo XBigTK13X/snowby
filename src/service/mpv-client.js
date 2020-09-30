@@ -47,7 +47,8 @@ class MpvClient {
     }
 
     openPath(mediaPath, audioIndex, subtitleIndex, seekTicks, mediaName) {
-        window.updateLoading(1)
+        let loadingMessage = 'MPV opening mediaPath ' + mediaPath
+        window.loadingStart(loadingMessage)
         return new Promise((resolve, reject) => {
             let options = _.cloneDeep(this.defaultOptions)
             options.push(mediaPath)
@@ -67,11 +68,11 @@ class MpvClient {
             this.mpv.play(options)
             this.connect()
                 .then(() => {
-                    window.updateLoading(-1)
+                    window.loadingStop(loadingMessage)
                     resolve()
                 })
                 .catch(() => {
-                    window.updateLoading(-1)
+                    window.loadingStop(loadingMessage)
                     reject()
                 })
         })

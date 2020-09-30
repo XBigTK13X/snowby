@@ -1,6 +1,9 @@
 module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
+        const util = require('../util')
+        // Helps prevent dangling MPV media sessions when flipping through Snowby
+        util.killMpv()
         emby.client
             .connect()
             .then(() => {

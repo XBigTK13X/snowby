@@ -25,31 +25,35 @@ module.exports = (pageName, options) => {
         require('../component/navbar').render(options)
 
         let dots = ''
-        window.loadingCount = 0
-        window.updateLoading = (amount) => {
-            if (amount !== undefined) {
-                window.loadingCount += amount
-                if (window.loadingCount < 0) {
-                    util.clientLog('shared - uploadLoading - More calls were made to close than were made to open')
-                    window.loadingCount = 0
-                }
+        window.loadingMessages = {}
+        window.loadingStart = (message) => {
+            if (!_.has(window.loadingMessages, message)) {
+                window.loadingMessages[message] = 0
             }
+        }
+        window.loadingStop = (message) => {
+            if (_.has(window.loadingMessages, message)) {
+                delete window.loadingMessages[message]
+            }
+        }
+        let loadingIntervalMilliseconds = 1000
+        document.getElementById('loading').setAttribute('style', 'display: none')
+        let updateLoadIndicator = () => {
+            let messages = Object.keys(window.loadingMessages)
             let indicator = document.getElementById('loading')
-            if (window.loadingCount) {
-                if (dots.length > 4) {
-                    dots = ''
-                }
-                dots = dots + '.'
+            if (messages.length > 0) {
                 indicator.setAttribute('style', '')
-                indicator.innerHTML = 'Loading' + dots
+                let loadingMarkup = ''
+                messages.forEach((message) => {
+                    window.loadingMessages[message] += loadingIntervalMilliseconds
+                    loadingMarkup += `${message} (${window.loadingMessages[message] / 1000}s)<br/>`
+                })
+                indicator.innerHTML = loadingMarkup
             } else {
                 indicator.setAttribute('style', 'display:none')
             }
         }
-        if (window.loadingInterval) {
-            clearInterval(window.loadingInterval)
-        }
-        window.loadingInterval = setInterval(updateLoading, 200)
+        window.loadingInterval = setInterval(updateLoadIndicator, loadingIntervalMilliseconds)
 
         require(`../page/${pageName}`)().then((result) => {
             util.loadTooltips()

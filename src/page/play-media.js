@@ -179,7 +179,8 @@ module.exports = () => {
                     }
 
                     window.playMedia = (seekTicks) => {
-                        window.updateLoading(1)
+                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in MPV'
+                        window.loadingStart(loadingMessage)
                         player
                             .openFile(
                                 embyItem.Id,
@@ -191,10 +192,10 @@ module.exports = () => {
                             )
                             .then(() => {
                                 track()
-                                window.updateLoading(-1)
+                                window.loadingStop(loadingMessage)
                             })
                             .catch(() => {
-                                window.updateLoading(-1)
+                                window.loadingStop(loadingMessage)
                             })
                     }
 
