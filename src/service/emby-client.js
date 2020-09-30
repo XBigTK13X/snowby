@@ -331,6 +331,7 @@ class EmbyClient {
                     return embyItem
                 }
                 window.duplicateChannels[embyItem.ChannelSlug].index += 1
+                window.duplicateChannels[embyItem.ChannelSlug].items[0].ChannelCount += 1
                 return null
             })
                 .filter((x) => {

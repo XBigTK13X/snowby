@@ -20,20 +20,24 @@ module.exports = class EmbyItem {
         this.ForcedHref = options && options.href
         this.ForcedImageUrl = options && options.ForcedImageUrl
 
+        this.ChannelCount = 1
+
         if (!this.CurrentProgram) {
             this.CurrentProgram = {
                 Name: 'Unknown',
+                EpisodeName: '',
                 StartTime: '???',
                 EndTime: '???',
             }
         } else {
             this.CurrentProgram = {
                 Name: this.CurrentProgram.Name,
+                EpisodeName: '',
                 StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
                 EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
             }
             if (this.Programs[0].EpisodeTitle) {
-                this.CurrentProgram.Name += ' -> ' + this.Programs[0].EpisodeTitle
+                this.CurrentProgram.EpisodeName = this.Programs[0].EpisodeTitle
             }
         }
         if (this.Programs && this.Programs.length > 1) {
@@ -41,22 +45,25 @@ module.exports = class EmbyItem {
             if (!this.NextProgram) {
                 this.NextProgram = {
                     Name: 'Unknown',
+                    EpisodeName: '',
                     StartTime: '???',
                     EndTime: '???',
                 }
             } else {
                 this.NextProgram = {
                     Name: this.NextProgram.Name,
+                    EpisodeName: '',
                     StartTime: DateTime.fromISO(this.NextProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
                     EndTime: DateTime.fromISO(this.NextProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
                 }
                 if (this.Programs[1].EpisodeTitle) {
-                    this.NextProgram.Name += ' -> ' + this.Programs[1].EpisodeTitle
+                    this.NextProgram.EpisodeName = this.Programs[1].EpisodeTitle
                 }
             }
         } else {
             this.NextProgram = {
                 Name: 'Unknown',
+                EpisodeName: '',
                 StartTime: '???',
                 EndTime: '???',
             }
@@ -116,17 +123,17 @@ module.exports = class EmbyItem {
     }
 
     getStreamName() {
-        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.ChannelNumber}`
+        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${this.CurrentProgram.EpisodeName ? this.CurrentProgram.EpisodeName + ' - ' : ''} ${this.ChannelNumber}`
     }
 
     processChannelInfo() {
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.ChannelName = CHANNEL_MAP[this.Name]
             this.ChannelSlug = this.ChannelName
-            if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-                this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
-            }
             this.ChannelCategory = 'LOCAL'
+            if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
+                this.ChannelSlug = this.ChannelCategory + " - " + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
+            }
             return
         }
         let result = this.Name
@@ -140,7 +147,7 @@ module.exports = class EmbyItem {
         this.ChannelName = this.ChannelName.replace(' FHD', '')
         this.ChannelSlug = this.ChannelName
         if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-            this.ChannelSlug = this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
+            this.ChannelSlug = this.ChannelCategory + " - " + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
         }
     }
 

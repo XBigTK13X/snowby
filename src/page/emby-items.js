@@ -25,9 +25,7 @@ module.exports = () => {
                     window.duplicateChannels[channelSlug].index =
                         (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
                     let channel = window.duplicateChannels[channelSlug].items[window.duplicateChannels[channelSlug].index]
-                    let activeChannelInfo = `${channel.ChannelNumber} (${window.duplicateChannels[channelSlug].index + 1} of ${
-                        window.duplicateChannels[channelSlug].items.length
-                    })`
+                    let activeChannelInfo = `${channel.ChannelNumber}`
                     document.getElementById('active-channel-' + channelSlug).innerHTML = activeChannelInfo
                     mediaPlayer
                         .openStream(channel.getStreamURL(), false, channel.getStreamName())
