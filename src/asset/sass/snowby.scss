@@ -72,9 +72,12 @@ h2 {
     margin-block-start: 0;
 }
 
+td {
+    padding: 5px;
+}
+
 table,
 th,
-td,
 tr {
     border: 1px solid $snowby-mild-highlight-front;
     border-collapse: collapse;
@@ -89,7 +92,6 @@ select {
 
 table.channel-guide,
 th.channel-guide,
-td.channel-guide,
 tr.channel-guide {
     font-size: 18px;
     font-weight: bold;
@@ -108,7 +110,7 @@ table.channel-guide {
 }
 
 .cell-medium {
-    width: 10vw;
+    width: 15vw;
 }
 
 .cell-large {
@@ -258,6 +260,17 @@ table.channel-guide {
     position: fixed;
     z-index: 500;
     background-color: $snowby-text-back;
+    width: 95vw;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ellipsify {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
 }
 
 .empty-results {
