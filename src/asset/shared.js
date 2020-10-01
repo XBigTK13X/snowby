@@ -25,35 +25,51 @@ module.exports = (pageName, options) => {
         require('../component/navbar').render(options)
 
         let dots = ''
-        window.loadingMessages = {}
-        window.loadingStart = (message) => {
-            if (!_.has(window.loadingMessages, message)) {
-                window.loadingMessages[message] = 0
-            }
-        }
-        window.loadingStop = (message) => {
-            if (_.has(window.loadingMessages, message)) {
-                delete window.loadingMessages[message]
-            }
-        }
-        let loadingIntervalMilliseconds = 1000
-        document.getElementById('loading').setAttribute('style', 'display: none')
-        let updateLoadIndicator = () => {
-            let messages = Object.keys(window.loadingMessages)
-            let indicator = document.getElementById('loading')
-            if (messages.length > 0) {
-                indicator.setAttribute('style', '')
+        let loadingMessages = {}
+        let loadingIndicator = document.getElementById('loading')
+        loadingIndicator.setAttribute('style', 'display:none')
+        let loadingIntervalMilliseconds = 100
+        let refreshInterval = null
+        let refreshMessages = (timeBump) => {
+            let messages = Object.keys(loadingMessages)
+            if (!messages.length) {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval)
+                    refreshInterval = null
+                }
+                loadingIndicator.setAttribute('style', 'display:none')
+            } else {
+                loadingIndicator.setAttribute('style', '')
                 let loadingMarkup = ''
                 messages.forEach((message) => {
-                    window.loadingMessages[message] += loadingIntervalMilliseconds
-                    loadingMarkup += `${message} (${window.loadingMessages[message] / 1000}s)<br/>`
+                    if (timeBump) {
+                        loadingMessages[message].time += loadingIntervalMilliseconds
+                    }
+                    loadingMarkup += `${loadingMessages[message].displayMessage} (${loadingMessages[message].time / 1000}s)<br/>`
                 })
-                indicator.innerHTML = loadingMarkup
-            } else {
-                indicator.setAttribute('style', 'display:none')
+                loadingIndicator.innerHTML = loadingMarkup
+                if (!refreshInterval) {
+                    refreshInterval = setInterval(() => {
+                        refreshMessages(loadingIntervalMilliseconds)
+                    }, loadingIntervalMilliseconds)
+                }
             }
         }
-        window.loadingInterval = setInterval(updateLoadIndicator, loadingIntervalMilliseconds)
+        window.loadingStart = (message) => {
+            if (!_.has(loadingMessages, message)) {
+                loadingMessages[message] = {
+                    time: 0,
+                    displayMessage: message.length > 150 ? message.substring(0, 150) + '...' : message,
+                }
+            }
+            refreshMessages()
+        }
+        window.loadingStop = (message) => {
+            if (_.has(loadingMessages, message)) {
+                delete loadingMessages[message]
+            }
+            refreshMessages()
+        }
 
         require(`../page/${pageName}`)().then((result) => {
             util.loadTooltips()

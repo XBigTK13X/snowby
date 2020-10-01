@@ -21,7 +21,7 @@ module.exports = () => {
             .connect()
             .then(() => {
                 window.playChannel = (channelSlug) => {
-                    let loadingMessage = 'Opening channel ' + channelSlug + ' in MPV'
+                    let loadingMessage = 'Opening channel ' + channelSlug + ' in mpv.'
                     window.loadingStart(loadingMessage)
                     window.duplicateChannels[channelSlug].index =
                         (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
@@ -32,18 +32,18 @@ module.exports = () => {
                         .openStream(channel.getStreamURL(), false, channel.getStreamName())
                         .then(() => {
                             window.loadingStop(loadingMessage)
-                            let attempts = 20
-                            let streamMessage = 'Waiting for stream contents to buffer'
+                            let attempts = 19
+                            let streamMessage = `Waiting up to ${Math.round((20 * 400) / 1000)} seconds for stream contents to buffer.`
                             window.loadingStart(streamMessage)
                             let refreshInterval = setInterval(() => {
                                 attempts--
                                 if (attempts < 0) {
                                     util.killMpv()
-                                    let killInfoMessage = 'The stream took too long to buffer, giving up'
+                                    let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
                                     window.loadingStart(killInfoMessage)
                                     setTimeout(() => {
                                         window.loadingStop(killInfoMessage)
-                                    }, 3500)
+                                    }, 3000)
                                 }
                                 if (util.getMpvStreamConnected() || attempts < 0) {
                                     clearInterval(refreshInterval)
