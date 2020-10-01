@@ -135,13 +135,13 @@ module.exports = {
         <table class="channel-guide">
         <thead>
         <tr data-category="HEADER">
-            <th class="cell-small"></th>
-            <th class="cell-medium">Channel Name</th>
+            <th class="cell-small">Kind</th>
+            <th class="cell-medium">Channel</th>
             <th class="cell-large">Now Playing</th>
             <th class="cell-small">Time</th>
             <th class="cell-large">Next Up</th>
             <th class="cell-small">Time</th>
-            <th class="cell-small">Channels</th>
+            <th class="cell-small">Streams</th>
             <th class="cell-small">Active</th>
         </tr>
         </thead>
