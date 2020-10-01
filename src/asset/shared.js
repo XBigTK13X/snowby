@@ -59,7 +59,7 @@ module.exports = (pageName, options) => {
             if (!_.has(loadingMessages, message)) {
                 loadingMessages[message] = {
                     time: 0,
-                    displayMessage: message.length > 150 ? message.substring(0, 150) + '...' : message,
+                    displayMessage: message,
                 }
             }
             refreshMessages()

@@ -8,6 +8,10 @@ class EmbyTvChannel {
     }
 
     render() {
+        let subtitle = ''
+        if (this.embyItem.CurrentProgram.EpisodeName) {
+            subtitle = `<br/><span class="program-subtitle">${this.embyItem.CurrentProgram.EpisodeName}</span>`
+        }
         return `
         <tr
         	class="clickable"
@@ -21,14 +25,14 @@ class EmbyTvChannel {
 			<td class="cell-medium">
 				${this.embyItem.ChannelName}
 			</td>
-			<td class="cell-large">
+			<td class="cell-large ellipsify">
 				${this.embyItem.CurrentProgram.Name}
-				<br/><span class="program-subtitle">${this.embyItem.CurrentProgram.EpisodeName}</span>
+				${subtitle}
 			</td>
 			<td class="cell-small">
 				${this.embyItem.CurrentProgram.StartTime}<br/>${this.embyItem.CurrentProgram.EndTime}
 			</td>
-			<td class="cell-large">
+			<td class="cell-large ellipsify">
 				${this.embyItem.NextProgram.Name}
 				<br/><span class="program-subtitle">${this.embyItem.NextProgram.EpisodeName}</span>
 			</td>
