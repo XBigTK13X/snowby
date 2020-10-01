@@ -179,7 +179,7 @@ module.exports = () => {
                     }
 
                     window.playMedia = (seekTicks) => {
-                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in MPV'
+                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in mpv.'
                         window.loadingStart(loadingMessage)
                         player
                             .openFile(

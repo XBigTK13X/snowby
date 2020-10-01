@@ -47,7 +47,7 @@ class MpvClient {
     }
 
     openPath(mediaPath, audioIndex, subtitleIndex, seekTicks, mediaName) {
-        let loadingMessage = 'MPV opening mediaPath ' + mediaPath
+        let loadingMessage = 'mpv opening media at ' + mediaPath + '.'
         window.loadingStart(loadingMessage)
         return new Promise((resolve, reject) => {
             let options = _.cloneDeep(this.defaultOptions)

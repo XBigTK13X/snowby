@@ -40,7 +40,7 @@ class HttpClient {
     }
 
     wrap(method, url, data, options) {
-        let loadingMessage = 'Making web request to ' + url
+        let loadingMessage = 'Making web request to ' + url + '.'
         window.loadingStart(loadingMessage)
         return new Promise((resolve) => {
             return this.client[method](url, data)
