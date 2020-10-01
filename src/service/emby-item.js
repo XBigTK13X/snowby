@@ -33,8 +33,8 @@ module.exports = class EmbyItem {
             this.CurrentProgram = {
                 Name: this.CurrentProgram.Name,
                 EpisodeName: '',
-                StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
-                EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
+                StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
+                EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
             }
             if (this.Programs[0].EpisodeTitle) {
                 this.CurrentProgram.EpisodeName = this.Programs[0].EpisodeTitle
@@ -53,8 +53,8 @@ module.exports = class EmbyItem {
                 this.NextProgram = {
                     Name: this.NextProgram.Name,
                     EpisodeName: '',
-                    StartTime: DateTime.fromISO(this.NextProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE),
-                    EndTime: DateTime.fromISO(this.NextProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE),
+                    StartTime: DateTime.fromISO(this.NextProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
+                    EndTime: DateTime.fromISO(this.NextProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
                 }
                 if (this.Programs[1].EpisodeTitle) {
                     this.NextProgram.EpisodeName = this.Programs[1].EpisodeTitle
