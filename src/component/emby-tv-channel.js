@@ -8,7 +8,7 @@ class EmbyTvChannel {
     }
 
     render() {
-        let subtitle = ''
+        let subtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
         if (this.embyItem.CurrentProgram.EpisodeName) {
             subtitle = `<br/><span class="program-subtitle">${this.embyItem.CurrentProgram.EpisodeName}</span>`
         }

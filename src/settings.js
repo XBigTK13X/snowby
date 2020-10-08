@@ -3,6 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
+    versionDate: 'October 7, 2020',
     adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -10,6 +11,7 @@ let config = {
     embyTrackProgress: true,
     enableHdrToggle: true,
     fullScreen: true,
+    graphicsFailureLogMessage: 'The GPU device instance has been suspended',
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
@@ -22,7 +24,6 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
-    versionDate: 'October 1, 2020',
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
@@ -47,6 +48,7 @@ let config = {
         },
         square: 500,
     },
+    runTime: {},
 }
 
 if (process.platform === 'linux') {

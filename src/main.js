@@ -20,7 +20,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow() {
-    await util.swapConfig()
+    await util.swapConfig(settings)
     audio.keepAwake()
     util.serverLog('main - Opening main window')
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
