@@ -9,7 +9,7 @@ const appPath = (relativePath) => {
     return path.join(__dirname, relativePath)
 }
 
-const swapConfig = async () => {
+const swapConfig = async (settings) => {
     serverLog('util - Prepping mpv.conf')
     const source = appPath('bin/mpv/mpv/mpv.conf.template')
     const destination = appPath('bin/mpv/mpv/mpv.conf')
@@ -23,6 +23,9 @@ const swapConfig = async () => {
     const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
+        if (swapped.indexOf('mpv.log') !== -1) {
+            settings.runTime.mpvLogPath = swapped.split('"')[1]
+        }
         if (process.platform === 'linux') {
             swapped = swapped.replace(/\\/g, '/')
         }
