@@ -13,7 +13,11 @@ const swapConfig = async (settings) => {
     serverLog('util - Prepping mpv.conf')
     const source = appPath('bin/mpv/mpv/mpv.conf.template')
     const destination = appPath('bin/mpv/mpv/mpv.conf')
+    if(fs.existsSync(destination)){
+        serverLog(`util - ${destination} already exists, skip generation`)
+    }
     const mpvRootDir = appPath('/bin/mpv')
+    const appRootDir = __dirname
     try {
         fs.unlinkSync(destination)
     } catch (swallow) {}
@@ -23,6 +27,7 @@ const swapConfig = async (settings) => {
     const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
+        swapped = line.replace('<APP_ROOT_DIR>', appRootDir)
         if (swapped.indexOf('mpv.log') !== -1) {
             settings.runTime.mpvLogPath = swapped.split('"')[1]
         }
@@ -103,7 +108,7 @@ const getCaller = () => {
 
 const serverLog = (message) => {
     if (!logFile) {
-        logFile = appPath('snowby-ipc.log')
+        logFile = appPath('logs/snowby-ipc.log')
         // Clear the log each launch
         console.log('')
         fs.writeFileSync(logFile, '')

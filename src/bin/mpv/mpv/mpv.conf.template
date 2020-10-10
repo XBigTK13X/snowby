@@ -6,7 +6,7 @@ osd-bar=no
 term-osd=no
 keep-open=no
 reset-on-next-file=audio-delay,mute,pause,speed,sub-delay,video-aspect,video-pan-x,video-pan-y,video-rotate,video-zoom,volume
-log-file="<MPV_ROOT_DIR>\mpv.log"
+log-file="<APP_ROOT_DIR>\logs\mpv.log"
 screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 

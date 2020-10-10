@@ -18,7 +18,7 @@ const keepAwake = () => {
         util.serverLog(`audio - Waking audio device by looping ${settings.inaudibleWavPath}`)
         audioProcess = spawn(
             settings.mpvExePath,
-            [`${settings.inaudibleWavPath}`, `--loop`, `--vo=null`, `--no-config`, `--gapless-audio=yes`, '--volume=1'],
+            [`${settings.inaudibleWavPath}`, `--loop`, `--vo=null`, `--no-config`, `--gapless-audio=yes`, '--volume=1', `--log-file=${util.appPath('logs/audio-keep-awake.log')}`],
             {
                 stdio: 'ignore',
             }
