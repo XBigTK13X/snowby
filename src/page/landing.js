@@ -32,10 +32,9 @@ module.exports = () => {
                     })
                     .join('')}</div>`
 
-                const appVersion = require('electron').remote.app.getVersion()
-                let versionHtml = `v${appVersion} built ${settings.versionDate}`
+                let versionHtml = `v${settings.appVersion} built ${settings.versionDate}`
                 if (settings.adminEnabled) {
-                    versionHtml = `<a href="admin.html">v${appVersion} built ${settings.versionDate}</a>`
+                    versionHtml = `<a href="admin.html">v${settings.appVersion} built ${settings.versionDate}</a>`
                 }
                 document.getElementById('version').innerHTML = versionHtml
                 document.getElementById('menu-entries').innerHTML = markup

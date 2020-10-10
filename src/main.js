@@ -6,7 +6,7 @@ const ipcServer = require('./desktop/ipc-server')
 
 const fs = require('fs')
 const logDirectory = util.appPath('logs')
-if(!fs.existsSync(logDirectory)){
+if (!fs.existsSync(logDirectory)) {
     fs.mkdirSync(logDirectory)
 }
 
@@ -27,7 +27,7 @@ if (!app.requestSingleInstanceLock()) {
 
 async function createWindow() {
     await util.swapConfig(settings)
-    setTimeout(()=>{
+    setTimeout(() => {
         audio.keepAwake()
     }, 0)
     util.serverLog('main - Opening main window')

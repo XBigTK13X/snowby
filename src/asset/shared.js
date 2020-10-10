@@ -68,6 +68,8 @@ module.exports = (pageName, options) => {
                 window.history.back()
             } else if (e.key === 'ArrowRight') {
                 window.history.forward()
+            } else if (e.key === '/') {
+                window.localStorage.clear()
             }
         })
 

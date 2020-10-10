@@ -35,10 +35,10 @@ module.exports = () => {
                             let attempts = 19
                             let streamMessage = `Waiting up to ${Math.round((20 * 400) / 1000)} seconds for stream contents to buffer.`
                             window.loadingStart(streamMessage)
-                            let refreshInterval = setInterval(() => {
+                            let refreshInterval = setInterval(async () => {
                                 attempts--
                                 if (attempts < 0) {
-                                    util.killMpv()
+                                    await util.killMpv()
                                     let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
                                     window.loadingStart(killInfoMessage)
                                     setTimeout(() => {
