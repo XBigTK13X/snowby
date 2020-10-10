@@ -4,13 +4,13 @@ const _ = require('lodash')
 
 let config = {
     versionDate: 'October 7, 2020',
+    fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
-    embyServerURL: 'http://9914.us:8096',
+    embyServerURL: null,
     embyTrackProgress: true,
     enableHdrToggle: true,
-    fullScreen: true,
     graphicsFailureLogMessage: 'The GPU device instance has been suspended',
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),

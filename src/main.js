@@ -4,6 +4,12 @@ const util = require('./util')
 const audio = require('./desktop/audio')
 const ipcServer = require('./desktop/ipc-server')
 
+const fs = require('fs')
+const logDirectory = util.appPath('logs')
+if(!fs.existsSync(logDirectory)){
+    fs.mkdirSync(logDirectory)
+}
+
 let mainWindow = null
 
 if (!app.requestSingleInstanceLock()) {
@@ -21,7 +27,9 @@ if (!app.requestSingleInstanceLock()) {
 
 async function createWindow() {
     await util.swapConfig(settings)
-    audio.keepAwake()
+    setTimeout(()=>{
+        audio.keepAwake()
+    }, 0)
     util.serverLog('main - Opening main window')
     const { windowWidth, windowHeight } = require('electron').screen.getPrimaryDisplay().workAreaSize
     mainWindow = new BrowserWindow({
