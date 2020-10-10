@@ -13,7 +13,7 @@ const swapConfig = async (settings) => {
     serverLog('util - Prepping mpv.conf')
     const source = appPath('bin/mpv/mpv/mpv.conf.template')
     const destination = appPath('bin/mpv/mpv/mpv.conf')
-    if(fs.existsSync(destination)){
+    if (fs.existsSync(destination)) {
         serverLog(`util - ${destination} already exists, skip generation`)
     }
     const mpvRootDir = appPath('/bin/mpv')
@@ -58,7 +58,7 @@ const getMpvStreamConnected = () => {
 }
 
 const killMpv = () => {
-    return require('electron').ipcRenderer.sendSync('snowby-kill-mpv')
+    return require('electron').ipcRenderer.send('snowby-kill-mpv')
 }
 
 const isClass = (target) => {
@@ -115,12 +115,16 @@ const serverLog = (message) => {
     }
     let stampedMessage = DateTime.local().toRFC2822() + ' - ' + message
     console.log(stampedMessage)
-    fs.appendFileSync(logFile, stampedMessage + '\n')
+    fs.appendFile(logFile, stampedMessage + '\n', (err) => {
+        if (err) {
+            console.log({ err })
+        }
+    })
 }
 
 const clientLog = (message) => {
     try {
-        require('electron').ipcRenderer.sendSync('snowby-log', message)
+        require('electron').ipcRenderer.send('snowby-log', message)
     } catch (err) {
         console.log('Swallowing an error that occurred while sending a client log', { err })
     }

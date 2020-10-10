@@ -3,7 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    versionDate: 'October 7, 2020',
+    appVersion: '3.4.2',
+    versionDate: 'October 10, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -14,6 +15,7 @@ let config = {
     graphicsFailureLogMessage: 'The GPU device instance has been suspended',
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
+    httpCacheTTLSeconds: 10,
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
     liveTvChannelUrlTemplates: null,

@@ -23,7 +23,7 @@ class EmbyClient {
             }
             const url = `System/Info`
             this.httpClient
-                .get(url, null, { quiet: true })
+                .get(url, null, { quiet: true, cache: true })
                 .then((result) => {
                     resolve(!!result)
                 })
@@ -37,7 +37,7 @@ class EmbyClient {
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
         const usersURL = 'users/public'
         return this.httpClient
-            .get(usersURL)
+            .get(usersURL, null, { cache: true })
             .then((usersResponse) => {
                 const user = usersResponse.data[0]
                 const loginPayload = {

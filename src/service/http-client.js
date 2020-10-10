@@ -1,5 +1,42 @@
 const axios = require('axios')
 const settings = require('../settings')
+const util = require('../util')
+const _ = require('lodash')
+const { DateTime } = require('luxon')
+
+class HttpCache {
+    constructor() {
+        this.cache = {}
+        if (window.localStorage.getItem('httpCache')) {
+            try {
+                this.cache = JSON.parse(window.localStorage.getItem('httpCache'))
+            } catch {
+                this.cache = {}
+            }
+        } else {
+            window.localStorage.setItem('httpCache', JSON.stringify(this.cache))
+        }
+    }
+    get(key) {
+        if (!_.has(this.cache, key)) {
+            return null
+        }
+        let cacheTimestamp = DateTime.fromISO(this.cache[key].timestamp)
+        let now = DateTime.local()
+        let cacheAgeSeconds = now.diff(cacheTimestamp, 'seconds').toObject().seconds
+        if (cacheAgeSeconds > settings.httpCacheTTLSeconds) {
+            return null
+        }
+        return this.cache[key].value
+    }
+    set(key, value) {
+        this.cache[key] = {
+            value: value,
+            timestamp: DateTime.local().toISO(),
+        }
+        window.localStorage.setItem('httpCache', JSON.stringify(this.cache))
+    }
+}
 
 class HttpClient {
     constructor(baseURL) {
@@ -9,18 +46,23 @@ class HttpClient {
             headers: {},
         }
         this.newAxios()
+        this.cache = new HttpCache()
     }
 
     newAxios() {
         this.client = axios.create(this.config)
         if (settings.debugApiCalls) {
             this.client.interceptors.request.use((request) => {
-                util.clientLog('httpClient - request' + JSON.stringify(request))
+                util.clientLog('httpClient - request' + request.url)
                 return request
             })
 
             this.client.interceptors.response.use((response) => {
-                util.clientLog('httpClient - response - ' + JSON.stringify(response))
+                let payload = {
+                    url: response.url,
+                    data: response.data,
+                }
+                util.clientLog('httpClient - response - ' + JSON.stringify(payload))
                 return response
             })
         }
@@ -40,19 +82,31 @@ class HttpClient {
     }
 
     wrap(method, url, data, options) {
-        let loadingMessage = 'Making web request to ' + url + '.'
-        window.loadingStart(loadingMessage)
+        let self = this
         return new Promise((resolve) => {
+            if (options && options.cache) {
+                let cacheSlug = `${method}-${url}-${data ? JSON.stringify(data) : null}`
+                let cachedResult = self.cache.get(cacheSlug)
+                if (cachedResult) {
+                    return resolve(cachedResult)
+                }
+            }
+            let loadingMessage = 'Making web request to ' + url + '.'
+            window.loadingStart(loadingMessage)
             return this.client[method](url, data)
                 .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         util.clientLog('httpClient - result ' + JSON.stringify({ method, url, data, result, config: this.config }))
                     }
                     window.loadingStop(loadingMessage)
+                    if (options && options.cache) {
+                        let cacheSlug = `${method}-${url}-${data ? JSON.stringify(data) : null}`
+                        self.cache.set(cacheSlug, result)
+                    }
                     return resolve(result)
                 })
                 .catch((err) => {
-                    if (options && !options.quiet) {
+                    if (!options || !options.quiet) {
                         util.clientLog(
                             'httpClient - err ' +
                                 JSON.stringify({
