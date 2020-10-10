@@ -96,7 +96,7 @@ class IpcServer {
                     let mpvLog = fs.readFileSync(settings.runTime.mpvLogPath, 'utf8')
                     if (mpvLog.indexOf(failureLogMessage) !== -1) {
                         if (settings.debugMpvSocket) {
-                            util.serverLog(`ipcServer - Graphics failure detected, restarting mpv`)
+                            util.serverLog(`ipcServer - Graphics failure detected, restarting mpv. Will try ${self.graphicsFailureRetryAttempts} more times`)
                         }
                         clearInterval(graphicsFailureInterval)
                         if (connectionInterval) {
@@ -106,7 +106,6 @@ class IpcServer {
                         if (self.graphicsFailureRetryAttempts <= 0) {
                             resolve('failure')
                         } else {
-                            clearInterval(graphicsFailureInterval)
                             self.launchMpv(options)
                                 .then((result) => {
                                     resolve(result)
