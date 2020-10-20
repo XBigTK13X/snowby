@@ -27,7 +27,7 @@ const swapConfig = async (settings) => {
     const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
-        swapped = line.replace('<APP_ROOT_DIR>', appRootDir)
+        swapped = swapped.replace('<APP_ROOT_DIR>', appRootDir)
         if (swapped.indexOf('mpv.log') !== -1) {
             settings.runTime.mpvLogPath = swapped.split('"')[1]
         }
