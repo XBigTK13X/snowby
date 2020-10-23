@@ -5,6 +5,7 @@ const EmbyThumbnail = require('../component/emby-thumbnail')
 const EmbyTvChannel = require('../component/emby-tv-channel')
 const _ = require('lodash')
 const util = require('../util')
+const settings = require('../settings')
 
 const renderGrid = (itemClass, parent, children) => {
     const generator = (child) => {
@@ -115,6 +116,13 @@ module.exports = {
     },
     tvChannels: (parent, children) => {
         document.body.style['overflow-y'] = 'scroll'
+        let rawTvLink = `
+            <a href="./raw-tv.html">
+                <div class="navbar-button">
+                    Raw TV
+                </div>
+            </a>
+        `
         let html = `
         <div class="navbar">
             ${window.channelCategories.list
@@ -128,6 +136,7 @@ module.exports = {
                     `
                 })
                 .join('')}
+                ${settings.liveTvRawM3U ? rawTvLink : ''}
         </div>
         `
 
