@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.3',
-    versionDate: 'October 20, 2020',
+    appVersion: '3.4.4',
+    versionDate: 'October 23, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -19,6 +19,7 @@ let config = {
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
     liveTvChannelUrlTemplates: null,
+    liveTvRawM3U: null,
     menuBarVisible: false,
     mpvExePath: util.appPath('bin/mpv/mpv.exe'),
     mpvConfigFile: util.appPath('bin/mpv/mpv/mpv.conf'),
