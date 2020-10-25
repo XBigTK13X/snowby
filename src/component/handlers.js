@@ -39,10 +39,8 @@ module.exports = {
     },
     collectionFolder: {
         getChildren: (emby, embyItem) => {
-            return emby.embyItems(embyItem.Id).then((results) => {
-                return results.sort((a, b) => {
-                    return a.Name > b.Name ? 1 : -1
-                })
+            return embyItemsSearch(emby, embyItem.Id, {
+                ParentId: embyItem.Id,
             })
         },
         render: renderers.posters,

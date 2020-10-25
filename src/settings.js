@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.4',
-    versionDate: 'October 23, 2020',
+    appVersion: '3.4.5',
+    versionDate: 'October 25, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -50,6 +50,9 @@ let config = {
             y: 337,
         },
         square: 500,
+    },
+    hiddenLibraries: {
+        Recordings: true,
     },
     runTime: {},
 }

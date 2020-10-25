@@ -1,6 +1,8 @@
 module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
+        const _ = require('lodash')
+        const settings = require('../settings')
         const EmbyItemLink = require('../component/emby-item-link')
         const InternalLink = require('../component/internal-link')
 
@@ -13,7 +15,9 @@ module.exports = () => {
                 let menuEntries = []
 
                 libraries.forEach((library) => {
-                    menuEntries.push(new EmbyItemLink(library.Name, library.Id))
+                    if (!_.has(settings.hiddenLibraries, library.Name)) {
+                        menuEntries.push(new EmbyItemLink(library.Name, library.Id))
+                    }
                 })
 
                 menuEntries.push(new InternalLink('Genres', 'genres.html'))
