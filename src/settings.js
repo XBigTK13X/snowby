@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.5',
-    versionDate: 'October 25, 2020',
+    appVersion: '3.4.6',
+    versionDate: 'November 09, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -63,7 +63,7 @@ if (process.platform === 'linux') {
     config.mpvSocketPath = util.appPath('bin/mpv/socket')
 }
 
-const overridePath = '\\\\9914.us\\share\\software\\snowby-overrides.js'
+const overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'
 if (fs.existsSync(overridePath)) {
     const overrides = require(overridePath)
     config = _.merge(config, overrides)
