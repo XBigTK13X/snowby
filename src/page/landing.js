@@ -2,8 +2,9 @@ module.exports = () => {
     return new Promise((resolve, reject) => {
         const emby = require('../service/emby-client')
         const util = require('../util')
-        // Helps prevent dangling MPV media sessions when flipping through Snowby
-        util.killMpv()
+        const mediaPlayer = require('../media/player')
+        // Helps prevent dangling video player media sessions when flipping through Snowby
+        mediaPlayer.kill()
         emby.client
             .connect()
             .then(() => {
@@ -20,6 +21,9 @@ module.exports = () => {
                     new InternalLink('Stream', 'streaming.html'),
                     new InternalLink('Search', 'search.html'),
                     new ExternalLink('Intranet', 'http://9914.us'),
+                    // TODO VLC has better media playback on lowend systems, but falls on its face for network streaming
+                    // Test this with newer versions in the future to see if the situation improved
+                    new ExternalLink('Live TV', settings.liveTvBrowseUrl),
                 ]
 
                 if (inProgressItems.length > 0) {

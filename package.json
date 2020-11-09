@@ -1,6 +1,6 @@
 {
   "name": "snowby",
-  "version": "3.4.5",
+  "version": "3.5.0",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "develop-sass": "node-sass ./src/asset/sass -o ./src/asset/css && node-sass --watch ./src/asset/sass -o ./src/asset/css",
     "package": "npm run format-all && npm run package-all",
     "package-all": "npm run package-win",
-    "package-win": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=win32 --arch=x64 --ignore pdn/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
-    "package-lin": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
+    "package-win": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=win32 --arch=x64 --ignore pdn/  --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
+    "package-lin": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/  --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
     "format-all": "prettier --write \"src/**/*.{js,html,css,scss}\"",
     "retag-files": "node src/script/retag-files.js"
   },
@@ -27,10 +27,11 @@
   "dependencies": {
     "axios": "0.19.2",
     "debounce": "1.2.0",
+    "fast-xml-parser": "^3.17.4",
     "jquery": "3.5.1",
     "jquery-lazy": "1.7.10",
     "lodash": "4.17.15",
-    "luxon": "^1.25.0",
+    "luxon": "1.25.0",
     "query-string": "6.13.1",
     "tippy.js": "5.2.1"
   }

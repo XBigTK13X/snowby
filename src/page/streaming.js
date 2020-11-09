@@ -10,11 +10,6 @@ const STREAMING_LINKS = [
         title: 'Amazon',
     },
     {
-        link: 'https://www.twitch.tv/overwatchleague',
-        image: 'twitch-logo.png',
-        title: 'OWL (Twitch)',
-    },
-    {
         link: 'https://crunchyroll.com',
         image: 'crunchyroll-logo.png',
         title: 'Crunchyroll',

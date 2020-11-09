@@ -70,7 +70,7 @@ module.exports = class EmbyItem {
         }
 
         if (this.Path) {
-            this.CleanPath = this.Path.replace('smb:', '')
+            this.CleanPath = this.Path.replace('smb://9914.us/media/', 'P:/')
             if (process.platform === 'linux') {
                 this.CleanPath = this.Path.replace('smb://9914.us/', '/media/trove/')
             }

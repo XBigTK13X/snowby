@@ -26,7 +26,6 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow() {
-    await util.swapConfig(settings)
     setTimeout(() => {
         audio.keepAwake()
     }, 0)

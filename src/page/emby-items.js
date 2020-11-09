@@ -21,7 +21,7 @@ module.exports = () => {
             .connect()
             .then(() => {
                 window.playChannel = (channelSlug) => {
-                    let loadingMessage = 'Opening channel ' + channelSlug + ' in mpv.'
+                    let loadingMessage = 'Opening channel ' + channelSlug + ' in video player.'
                     window.loadingStart(loadingMessage)
                     window.duplicateChannels[channelSlug].index =
                         (window.duplicateChannels[channelSlug].index + 1) % window.duplicateChannels[channelSlug].items.length
@@ -38,14 +38,14 @@ module.exports = () => {
                             let refreshInterval = setInterval(async () => {
                                 attempts--
                                 if (attempts < 0) {
-                                    await util.killMpv()
+                                    await mediaPlayer.kill()
                                     let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
                                     window.loadingStart(killInfoMessage)
                                     setTimeout(() => {
                                         window.loadingStop(killInfoMessage)
                                     }, 3000)
                                 }
-                                if (util.getMpvStreamConnected() || attempts < 0) {
+                                if ((await mediaPlayer.isStreaming()) || attempts < 0) {
                                     clearInterval(refreshInterval)
                                     window.loadingStop(streamMessage)
                                 }

@@ -9,58 +9,6 @@ const appPath = (relativePath) => {
     return path.join(__dirname, relativePath)
 }
 
-const swapConfig = async (settings) => {
-    serverLog('util - Prepping mpv.conf')
-    const source = appPath('bin/mpv/mpv/mpv.conf.template')
-    const destination = appPath('bin/mpv/mpv/mpv.conf')
-    if (fs.existsSync(destination)) {
-        serverLog(`util - ${destination} already exists, skip generation`)
-    }
-    const mpvRootDir = appPath('/bin/mpv')
-    const appRootDir = __dirname
-    try {
-        fs.unlinkSync(destination)
-    } catch (swallow) {}
-    profiles = ['default']
-    const reader = fs.createReadStream(source)
-    const writer = fs.createWriteStream(destination)
-    const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })
-    for await (const line of lineReader) {
-        let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
-        swapped = swapped.replace('<APP_ROOT_DIR>', appRootDir)
-        if (swapped.indexOf('mpv.log') !== -1) {
-            settings.runTime.mpvLogPath = swapped.split('"')[1]
-        }
-        if (process.platform === 'linux') {
-            swapped = swapped.replace(/\\/g, '/')
-        }
-        if (swapped.indexOf('log-file') !== -1 && swapped.indexOf('#') === -1) {
-            serverLog(`util - MPV will log to ${swapped.split('=')[1]}`)
-        }
-        if (swapped.indexOf('[') !== -1 && swapped.indexOf(']') !== -1) {
-            profiles.push(swapped.replace('[', '').replace(']', ''))
-        }
-        writer.write(swapped + '\n')
-    }
-    writer.end()
-}
-
-const getMediaProfiles = () => {
-    return profiles
-}
-
-const browserGetMediaProfiles = () => {
-    return require('electron').ipcRenderer.sendSync('snowby-get-media-profiles')
-}
-
-const getMpvStreamConnected = () => {
-    return require('electron').ipcRenderer.sendSync('snowby-get-mpv-stream-connected')
-}
-
-const killMpv = () => {
-    return require('electron').ipcRenderer.send('snowby-kill-mpv')
-}
-
 const isClass = (target) => {
     try {
         new target()
@@ -132,16 +80,11 @@ const clientLog = (message) => {
 
 module.exports = {
     appPath,
-    browserGetMediaProfiles,
     clientLog,
     getCaller,
-    getMediaProfiles,
-    getMpvStreamConnected,
     isClass,
-    killMpv,
     loadTooltips,
     queryParams,
     queryString,
     serverLog,
-    swapConfig,
 }

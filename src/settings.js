@@ -3,30 +3,37 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.5',
-    versionDate: 'October 25, 2020',
+    appVersion: '3.5.0',
+    versionDate: 'November 9, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
-    debugMpvSocket: false,
     embyServerURL: null,
     embyTrackProgress: true,
     enableHdrToggle: true,
-    graphicsFailureLogMessage: 'The GPU device instance has been suspended',
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     httpCacheTTLSeconds: 10,
     inaudibleWavPath: util.appPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
+    log: {
+        audioKeepAwake: util.appPath('logs/audio-keep-awake.log'),
+        videoPlayer: util.appPath('logs/video-player.log'),
+    },
     liveTvChannelUrlTemplates: null,
     liveTvRawM3U: null,
+    liveTvBrowseUrl: null,
     menuBarVisible: false,
-    mpvExePath: util.appPath('bin/mpv/mpv.exe'),
-    mpvConfigFile: util.appPath('bin/mpv/mpv/mpv.conf'),
-    mpvInputFile: util.appPath('bin/mpv/mpv/input.conf'),
-    mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
     stepBackSeconds: 4,
+    vlc: {
+        exePath: 'C:/aa/bin/vlc/4.0.0-November-08-2020/vlc.exe',
+        http: {
+            address: 'localhost',
+            port: 4980,
+            password: 'snowby',
+        },
+    },
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
@@ -53,17 +60,15 @@ let config = {
     },
     hiddenLibraries: {
         Recordings: true,
+        'Live TV': true,
     },
-    runTime: {},
 }
 
 if (process.platform === 'linux') {
     config.enableHdrToggle = false
-    config.mpvExePath = '/usr/bin/mpv'
-    config.mpvSocketPath = util.appPath('bin/mpv/socket')
 }
 
-const overridePath = '\\\\9914.us\\share\\software\\snowby-overrides.js'
+const overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'
 if (fs.existsSync(overridePath)) {
     const overrides = require(overridePath)
     config = _.merge(config, overrides)

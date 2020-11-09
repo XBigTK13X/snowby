@@ -1,18 +1,22 @@
 const ticks = require('./ticks')
 const emby = require('../service/emby-client')
 const settings = require('../settings')
-const mpv = require('../service/mpv-client')
+const video = require('../service/vlc-client')
 const hdr = require('../service/hdr').client
 let instance
 
 class Player {
     constructor() {
-        this.mediaHandler = mpv.client
+        this.mediaHandler = video.client
         this.profiles = []
     }
 
     connect() {
         return this.mediaHandler.connect()
+    }
+
+    kill() {
+        return require('electron').ipcRenderer.send('snowby-kill-video')
     }
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
@@ -39,8 +43,8 @@ class Player {
         return this.mediaHandler.getPositionInEmbyTicks()
     }
 
-    setProfile(profile) {
-        this.mediaHandler.setProfile(profile)
+    isStreaming() {
+        return this.mediaHandler.isStreaming()
     }
 }
 

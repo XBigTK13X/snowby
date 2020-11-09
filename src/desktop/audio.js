@@ -16,21 +16,18 @@ const keepAwake = () => {
     cleanup()
     if (settings.keepAudioDeviceAwake) {
         util.serverLog(`audio - Waking audio device by looping ${settings.inaudibleWavPath}`)
-        audioProcess = spawn(
-            settings.mpvExePath,
-            [
-                `${settings.inaudibleWavPath}`,
-                `--loop`,
-                `--vo=null`,
-                `--no-config`,
-                `--gapless-audio=yes`,
-                '--volume=1',
-                `--log-file=${util.appPath('logs/audio-keep-awake.log')}`,
-            ],
-            {
-                stdio: 'ignore',
-            }
-        ) // DEBUG ->, `--log-file=${util.appPath('/bin/mpv/mpv-audio-keep-awake.log')}`])
+        const options = [
+            `-I dummy`,
+            `--dummy-quiet`,
+            `--loop`,
+            `--file-logging`,
+            `-vv`,
+            `--logfile=${settings.log.audioKeepAwake}`,
+            settings.inaudibleWavPath,
+        ]
+        audioProcess = spawn(settings.vlc.exePath, options, {
+            stdio: 'ignore',
+        })
     }
 }
 

@@ -17,7 +17,7 @@
 	</row>
 	<row>
 		<button text="Snowby" ontap="focusSnowby" />
-		<button text="MPV" ontap="focusMPV" />
+		<button text="Video" ontap="focusMPV" />
 		<button text="Browser" ontap="focusBrowser" />
 	</row>
 	<row>

@@ -179,7 +179,7 @@ module.exports = () => {
                     }
 
                     window.playMedia = (seekTicks) => {
-                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in mpv.'
+                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in video player.'
                         window.loadingStart(loadingMessage)
                         player
                             .openFile(
@@ -216,10 +216,7 @@ module.exports = () => {
                         window.playMedia(0)
                     }
 
-                    resolve({
-                        enableProfilePicker: true,
-                        defaultMediaProfile: 'default',
-                    })
+                    resolve()
                 })
             })
     })

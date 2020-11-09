@@ -34,7 +34,7 @@ const toTimeStamp = (embyTicks) => {
     return timestamp
 }
 
-const mpvToEmby = (mpvSeconds) => {
+const videoPlayerToEmby = (mpvSeconds) => {
     return Math.floor(mpvSeconds * TEN_MILLION)
 }
 
@@ -54,7 +54,7 @@ const stepBack = (embyTicks) => {
 module.exports = {
     embyToSeconds,
     breakdown,
-    mpvToEmby,
+    videoPlayerToEmby,
     stepBack,
     toTimeStamp,
 }

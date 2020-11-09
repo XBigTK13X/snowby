@@ -39,11 +39,16 @@ class HttpCache {
 }
 
 class HttpClient {
-    constructor(baseURL) {
+    constructor(baseURL, password) {
         this.config = {
             baseURL: baseURL,
             timeout: 30000,
             headers: {},
+        }
+        if (password) {
+            this.config.auth = {
+                password: password,
+            }
         }
         this.newAxios()
         this.cache = new HttpCache()

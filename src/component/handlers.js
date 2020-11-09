@@ -92,9 +92,6 @@ module.exports = {
         },
         render: renderers.tvChannels,
         title: 'Live TV',
-        pageOptions: {
-            enableProfilePicker: true,
-        },
     },
     movieList: {
         getChildren: (emby, embyItem) => {

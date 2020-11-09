@@ -33,7 +33,7 @@ module.exports = () => {
                 }
             })
             window.playChannel = (channelId) => {
-                let loadingMessage = 'Opening channel ' + channelId + ' in mpv.'
+                let loadingMessage = 'Opening channel ' + channelId + ' in video player.'
                 window.loadingStart(loadingMessage)
                 let channel = channels[channelId]
                 mediaPlayer
@@ -46,14 +46,14 @@ module.exports = () => {
                         let refreshInterval = setInterval(async () => {
                             attempts--
                             if (attempts < 0) {
-                                await util.killMpv()
+                                await mediaPlayer.kill()
                                 let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
                                 window.loadingStart(killInfoMessage)
                                 setTimeout(() => {
                                     window.loadingStop(killInfoMessage)
                                 }, 3000)
                             }
-                            if (util.getMpvStreamConnected() || attempts < 0) {
+                            if ((await mediaPlayer.isStreaming()) || attempts < 0) {
                                 clearInterval(refreshInterval)
                                 window.loadingStop(streamMessage)
                             }
