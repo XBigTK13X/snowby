@@ -2,6 +2,7 @@ const renderers = require('./renderers')
 const util = require('../util')
 const navbar = require('../component/navbar')
 const _ = require('lodash')
+const settings = require('../settings')
 
 const SearchParams = {
     Recursive: true,
@@ -23,6 +24,23 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
         }
     }
     return emby.embyItems(embyItemId, params)
+}
+
+class Rating {
+    constructor(kind, name) {
+        this.kind = kind
+        this.name = name
+        if (this.kind === 'movie') {
+            this.ParentId = settings.ratingParents.movie
+        } else {
+            this.ParentId = settings.ratingParents.series
+        }
+        this.Rating = this.name
+    }
+
+    getTitle() {
+        return this.name
+    }
 }
 
 module.exports = {
@@ -98,10 +116,15 @@ module.exports = {
     },
     movieList: {
         getChildren: (emby, embyItem) => {
-            return embyItemsSearch(emby, embyItem.Id, {
+            let options = {
                 IncludeItemTypes: 'Movie',
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
-            })
+            }
+            let rating = util.queryParams().rating
+            if (rating) {
+                options.OfficialRatings = rating
+            }
+            return embyItemsSearch(emby, embyItem.Id, options)
         },
         render: renderers.movieList,
     },
@@ -131,6 +154,20 @@ module.exports = {
             return emby.playlist(embyItem.Id)
         },
         render: renderers.playlist,
+    },
+    ratingList: {
+        getChildren: (emby) => {
+            if (util.queryParams().ratingsFilter === 'Movie') {
+                return settings.ratings.movie.map((x) => {
+                    return new Rating('movie', x)
+                })
+            }
+            return settings.ratings.series.map((x) => {
+                return new Rating('series', `TV-${x}`)
+            })
+        },
+        render: renderers.ratingList,
+        title: util.queryParams().ratingsFilter === 'Movie' ? 'Movie Ratings' : 'TV Show Ratings',
     },
     tags: {
         getChildren: (emby, embyItem) => {
@@ -172,11 +209,16 @@ module.exports = {
     },
     tvShowList: {
         getChildren: (emby, embyItem) => {
-            return embyItemsSearch(emby, embyItem.Id, {
+            let options = {
                 ParentId: embyItem.Id,
                 IncludeItemTypes: 'Series',
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
-            }).then((results) => {
+            }
+            let rating = util.queryParams().rating
+            if (rating) {
+                options.OfficialRatings = rating
+            }
+            return embyItemsSearch(emby, embyItem.Id, options).then((results) => {
                 return results
             })
         },

@@ -20,10 +20,6 @@ module.exports = () => {
                     }
                 })
 
-                menuEntries.push(new InternalLink('Genres', 'genres.html'))
-                menuEntries.push(new InternalLink('Playlists', 'playlists.html'))
-                menuEntries.push(new InternalLink('Channels', 'channels.html'))
-
                 menuEntries.sort((a, b) => {
                     if (a.name === 'TV Shows' || a.name === 'Movies') {
                         return -1
@@ -31,8 +27,22 @@ module.exports = () => {
                     if (b.name === 'TV Shows' || b.name === 'Movies') {
                         return 1
                     }
+                    if (b.name === 'Live TV') {
+                        return 1
+                    }
+                    if (a.name === 'Web Series') {
+                        return -1
+                    }
+                    if (a.name === 'Collections') {
+                        return 1
+                    }
                     return a.name > b.name ? 1 : -1
                 })
+
+                menuEntries.push(new InternalLink('Playlists', 'playlists.html'))
+                menuEntries.push(new InternalLink('Genres', 'genres.html'))
+                menuEntries.push(new InternalLink('Ratings', 'ratings.html'))
+                menuEntries.push(new InternalLink('Channels', 'channels.html'))
 
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
                     .map((entry) => {

@@ -28,9 +28,6 @@ const swapConfig = async (settings) => {
     for await (const line of lineReader) {
         let swapped = line.replace('<MPV_ROOT_DIR>', mpvRootDir)
         swapped = swapped.replace('<APP_ROOT_DIR>', appRootDir)
-        if (swapped.indexOf('mpv.log') !== -1) {
-            settings.runTime.mpvLogPath = swapped.split('"')[1]
-        }
         if (process.platform === 'linux') {
             swapped = swapped.replace(/\\/g, '/')
         }

@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.6',
-    versionDate: 'November 09, 2020',
+    appVersion: '3.4.7',
+    versionDate: 'November 10, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -12,7 +12,6 @@ let config = {
     embyServerURL: null,
     embyTrackProgress: true,
     enableHdrToggle: true,
-    graphicsFailureLogMessage: 'The GPU device instance has been suspended',
     hdrStatusPath: util.appPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: util.appPath('bin/hdr/hdr-toggle.vbs'),
     httpCacheTTLSeconds: 10,
@@ -54,7 +53,14 @@ let config = {
     hiddenLibraries: {
         Recordings: true,
     },
-    runTime: {},
+    ratingParents: {
+        movie: 'f137a2dd21bbc1b99aa5c0f6bf02a805',
+        series: '767bffe4f11c93ef34b805451a696a4e',
+    },
+    ratings: {
+        movie: ['G', 'PG', 'PG-13', 'R', 'NC-17', 'NR'],
+        series: ['Y', 'Y7', 'G', 'PG', '14', 'MA'],
+    },
 }
 
 if (process.platform === 'linux') {
