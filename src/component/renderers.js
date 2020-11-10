@@ -105,6 +105,15 @@ module.exports = {
         }
         return renderGeneratedGrid(generator, parent, children)
     },
+    ratingList: (parent, children) => {
+        const generator = (child) => {
+            let text = new EmbyTextItem(child)
+            let href = `emby-items.html?embyItemId=${child.ParentId}&showWatched=true&rating=${child.Rating}`
+            text.setHref(href)
+            return text.render()
+        }
+        return renderGeneratedGrid(generator, parent, children)
+    },
     tags: (parent, children) => {
         const generator = (child) => {
             let poster = new EmbyPoster(child)

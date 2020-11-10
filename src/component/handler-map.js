@@ -19,19 +19,18 @@ const typeHandlers = {
     Series: handlers.tvSeries,
 }
 
+const customHandlers = {
+    'in-progress': handlers.inProgress,
+    genres: handlers.genreList,
+    'next-up': handlers.nextUp,
+    tags: handlers.tags,
+    ratings: handlers.ratingList,
+}
+
 const getHandler = (emby, itemId) => {
     return new Promise((resolve) => {
-        if (itemId === 'in-progress') {
-            return resolve({ handler: handlers.inProgress })
-        }
-        if (itemId === 'genres') {
-            return resolve({ handler: handlers.genreList })
-        }
-        if (itemId === 'next-up') {
-            return resolve({ handler: handlers.nextUp })
-        }
-        if (itemId === 'tags') {
-            return resolve({ handler: handlers.tags })
+        if (_.has(customHandlers, itemId)) {
+            return resolve({ handler: customHandlers[itemId] })
         }
         return emby.embyItem(itemId).then((embyItem) => {
             navbar.render({

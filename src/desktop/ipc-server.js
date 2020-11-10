@@ -10,7 +10,6 @@ class IpcServer {
         this.ipcMain = ipcMain
         this.mpvSocket
         this.mpvProcess
-        this.graphicsFailureRetryAttempts
     }
 
     launchMpv(options) {
@@ -78,46 +77,6 @@ class IpcServer {
                         }
                     })
                 }, connectionWaitMilliseconds)
-
-                const failureLogMessage = settings.graphicsFailureLogMessage
-                let graphicsMaxMilliseconds = 5000
-                let graphicsCheckMilliseconds = 200
-                let graphicsFailureInterval = setInterval(() => {
-                    graphicsMaxMilliseconds -= 200
-                    if (graphicsMaxMilliseconds < 0) {
-                        clearInterval(graphicsFailureInterval)
-                        return
-                    }
-                    // MPV isn't ready, don't start the clock until it finishes launching
-                    if (!fs.existsSync(settings.runTime.mpvLogPath)) {
-                        graphicsMaxMilliseconds += 200
-                        return
-                    }
-                    let mpvLog = fs.readFileSync(settings.runTime.mpvLogPath, 'utf8')
-                    if (mpvLog.indexOf(failureLogMessage) !== -1) {
-                        if (settings.debugMpvSocket) {
-                            util.serverLog(
-                                `ipcServer - Graphics failure detected, restarting mpv. Will try ${self.graphicsFailureRetryAttempts} more times`
-                            )
-                        }
-                        clearInterval(graphicsFailureInterval)
-                        if (connectionInterval) {
-                            clearInterval(connectionInterval)
-                        }
-                        self.graphicsFailureRetryAttempts -= 1
-                        if (self.graphicsFailureRetryAttempts <= 0) {
-                            resolve('failure')
-                        } else {
-                            self.launchMpv(options)
-                                .then((result) => {
-                                    resolve(result)
-                                })
-                                .catch(() => {
-                                    resolve('failure')
-                                })
-                        }
-                    }
-                }, graphicsCheckMilliseconds)
             } catch (exception) {
                 if (settings.debugMpvSocket) {
                     util.serverLog(`ipcServer - Socket connect exception caught: ${JSON.stringify(exception)}`)
@@ -158,7 +117,6 @@ class IpcServer {
         })
 
         this.ipcMain.on('snowby-launch-mpv', async (event, options) => {
-            this.graphicsFailureRetryAttempts = 5
             event.returnValue = await this.launchMpv(options)
         })
 
