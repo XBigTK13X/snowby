@@ -23,6 +23,9 @@ module.exports = () => {
         }
 
         let channelMarkup = programming
+            .sort((a, b) => {
+                return a.ChannelName > b.ChannelName ? 1 : -1
+            })
             .map((channel, channelIndex) => {
                 let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
                 if (channel.Current.EpisodeName) {
