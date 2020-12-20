@@ -130,6 +130,11 @@ class MpvSocket {
         })
     }
 
+    seek(timeSeconds) {
+        const command = ['set_property', 'time-pos', timeSeconds]
+        return this.send(command)
+    }
+
     getStreamConnected() {
         return this.isStreaming
     }

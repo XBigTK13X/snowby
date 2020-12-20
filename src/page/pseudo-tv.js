@@ -13,7 +13,7 @@ module.exports = () => {
             let loadingMessage = 'Opening channel ' + channel.Name + ' in mpv.'
             window.loadingStart(loadingMessage)
             mediaPlayer
-                .openStream(channel.Playlist, false, channel.Name, channel.StartPositionEmbyTicks)
+                .openStream(channel.Playlist, false, channel.Name, channel.StartPositionEmbyTicks, true)
                 .then(() => {
                     window.loadingStop(loadingMessage)
                 })

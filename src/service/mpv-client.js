@@ -19,6 +19,10 @@ class IpcWrapper {
     getTimePosition() {
         return ipcRenderer.sendSync('snowby-get-mpv-position')
     }
+
+    seek(timeSeconds) {
+        return ipcRenderer.sendSync('snowby-mpv-seek', timeSeconds)
+    }
 }
 
 class MpvClient {
@@ -46,7 +50,7 @@ class MpvClient {
         })
     }
 
-    openPath(mediaPath, audioIndex, subtitleIndex, seekTicks, mediaName) {
+    openPath(mediaPath, audioIndex, subtitleIndex, seekTicks, mediaName, delayedSeek) {
         let loadingMessage = 'mpv opening media at ' + mediaPath + '.'
         window.loadingStart(loadingMessage)
         return new Promise((resolve, reject) => {
@@ -58,8 +62,10 @@ class MpvClient {
             if (subtitleIndex !== null) {
                 options.push(`--sid=${subtitleIndex}`)
             }
-            if (seekTicks) {
-                options.push(`--start=${this.seek(seekTicks)}`)
+            if (!delayedSeek) {
+                if (seekTicks) {
+                    options.push(`--start=${this.seek(seekTicks)}`)
+                }
             }
             if (mediaName) {
                 options.push(`--title=${mediaName}`)
@@ -67,6 +73,14 @@ class MpvClient {
             }
             this.mpv.play(options)
             this.connect()
+                .then(() => {
+                    if (!delayedSeek) {
+                        window.loadingStop(loadingMessage)
+                        resolve()
+                    } else {
+                        return this.mpv.seek(this.seek(seekTicks))
+                    }
+                })
                 .then(() => {
                     window.loadingStop(loadingMessage)
                     resolve()
