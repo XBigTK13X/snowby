@@ -10,6 +10,11 @@ if (!fs.existsSync(logDirectory)) {
     fs.mkdirSync(logDirectory)
 }
 
+const m3uDirectory = util.appPath('m3u')
+if (!fs.existsSync(m3uDirectory)) {
+    fs.mkdirSync(m3uDirectory)
+}
+
 let mainWindow = null
 
 if (!app.requestSingleInstanceLock()) {

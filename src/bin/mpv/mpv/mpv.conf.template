@@ -9,6 +9,7 @@ reset-on-next-file=audio-delay,mute,pause,speed,sub-delay,video-aspect,video-pan
 log-file="<APP_ROOT_DIR>\logs\mpv.log"
 screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
+load-unsafe-playlists=yes
 
 [480p]
 glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Upscale_CNN_L_x2_Denoise.glsl"

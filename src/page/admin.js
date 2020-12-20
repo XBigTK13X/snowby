@@ -15,6 +15,7 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
 module.exports = () => {
     return new Promise((resolve) => {
         const emby = require('../service/emby-client')
+        const pseudoTV = require('../service/pseudo-tv')
         const _ = require('lodash')
         window.reapplyTags = () => {
             emby.client
@@ -57,6 +58,9 @@ module.exports = () => {
                         })
                     })
                 })
+        }
+        window.generatePseudoTV = () => {
+            pseudoTV.generateSchedule(emby)
         }
         emby.client
             .connect()
