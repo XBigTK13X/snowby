@@ -12,6 +12,7 @@ const SearchParams = {
     Recursive: true,
     SortBy: 'SortName',
     SortOrder: 'Ascending',
+    Fields: 'ProductionYear,MediaStreams,Path',
 }
 
 const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
@@ -54,8 +55,10 @@ const ingestChannelContent = (emby, channel, channelContent) => {
             lookup[channel.Name][channelContent.Name] = episodes.map((x) => {
                 return shrink(x)
             })
-            resolve()
+        } else if (channelContent.Type === 'Movie') {
+            lookup[channel.Name][channelContent.Name] = shrink(channelContent)
         }
+        resolve()
     })
 }
 
@@ -95,7 +98,10 @@ const scheduleChannel = async (channelName, channel) => {
         for (let content of Object.keys(channel)) {
             channelItems = channelItems.concat(channel[content])
         }
-        channelItems = _.shuffle(channelItems)
+        if (channelName.indexOf('Playlist') === -1) {
+            channelItems = _.shuffle(channelItems)
+        }
+
         let blockTime = 0
         for (let channelItem of channelItems) {
             channelItem.BlockTime = blockTime
@@ -137,7 +143,7 @@ const generateSchedule = (emby) => {
         .then((tags) => {
             const channels = tags
                 .filter((x) => {
-                    return x.Name.includes('Channel:')
+                    return x.Name.includes('Channel:') || x.Name.includes('Playlist')
                 })
                 .sort((a, b) => {
                     return a.Name > b.Name ? 1 : -1
@@ -183,7 +189,7 @@ const getCurrentProgramming = async () => {
             let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
             let nextStart = blockStartTime.plus({ minutes: nextProgram.BlockTime })
             let result = {
-                ChannelName: channelName.replace('Channel: ', ''),
+                ChannelName: channelName.replace('Channel: ', '').replace('Playlist:', ''),
                 Current: {
                     Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
                     EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
