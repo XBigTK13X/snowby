@@ -167,6 +167,15 @@ class IpcServer {
             }
         })
 
+        this.ipcMain.on('snowby-mpv-seek', async (event, timeSeconds) => {
+            try {
+                await this.mpvSocket.seek(timeSeconds)
+                event.returnValue = true
+            } catch {
+                event.returnValue = false
+            }
+        })
+
         this.ipcMain.on('snowby-log', async (event, message) => {
             util.serverLog(message)
         })
