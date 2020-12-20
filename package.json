@@ -1,6 +1,6 @@
 {
   "name": "snowby",
-  "version": "3.4.7",
+  "version": "3.5.0",
   "description": "Emby frontend that plays media in an external player.",
   "main": "src/main.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "develop-sass": "node-sass ./src/asset/sass -o ./src/asset/css && node-sass --watch ./src/asset/sass -o ./src/asset/css",
     "package": "npm run format-all && npm run package-all",
     "package-all": "npm run package-win",
-    "package-win": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=win32 --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
-    "package-lin": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
+    "package-win": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=win32 --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore m3u/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
+    "package-lin": "electron-packager . --overwrite --icon=./src/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore m3u/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64",
     "format-all": "prettier --write \"src/**/*.{js,html,css,scss}\"",
     "retag-files": "node src/script/retag-files.js"
   },

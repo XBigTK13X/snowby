@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.4.7',
-    versionDate: 'November 10, 2020',
+    appVersion: '3.5.0',
+    versionDate: 'December 20, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -25,6 +25,7 @@ let config = {
     mpvInputFile: util.appPath('bin/mpv/mpv/input.conf'),
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     progressUpdateInterval: 3000,
+    pseudoTV: null,
     stepBackSeconds: 4,
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
