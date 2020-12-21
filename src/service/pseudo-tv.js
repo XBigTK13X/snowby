@@ -10,7 +10,7 @@ let schedule = {}
 
 const SearchParams = {
     Recursive: true,
-    SortBy: 'SortName',
+    SortBy: 'ProductionYear,PremiereDate,SortName',
     SortOrder: 'Ascending',
     Fields: 'ProductionYear,MediaStreams,Path',
 }
@@ -33,36 +33,68 @@ const shrink = (embyItem) => {
     }
 }
 
-
 const readEmbyTagContent = async (emby) => {
     return new Promise(async (resolve) => {
         const allTags = await emby.client.tags()
         const contentTags = allTags
-                .filter((x) => {
-                    return x.Name.includes('Channel:') || x.Name.includes('Playlist')
-                })
-                .sort((a, b) => {
-                    return a.Name > b.Name ? 1 : -1
-                })
+            .filter((x) => {
+                return x.Name.includes('Channel:') || x.Name.includes('Playlist')
+            })
+            .sort((a, b) => {
+                return a.Name > b.Name ? 1 : -1
+            })
         let embyContent = []
-        for(let tag of contentTags){
+        for (let tag of contentTags) {
             let searchResults = await embyItemsSearch(emby.client, tag.Id, {
                 TagIds: tag.Id,
             })
-            embyContent.push({Name: tag.Name, Items: searchResults})
+            embyContent.push({ Name: tag.Name, Items: searchResults })
         }
         resolve(embyContent)
     })
 }
 
+const readEmbyMovieRatings = (emby) => {
+    return new Promise(async (resolve) => {
+        let content = []
+        for (let rating of settings.ratings.movie) {
+            let items = await embyItemsSearch(emby.client, settings.ratingParents.movie, {
+                IncludeItemTypes: 'Movie',
+                Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
+                OfficialRatings: rating,
+            })
+            content.push({ Name: `Movies Rated ${rating} `, Items: items })
+        }
+        resolve(content)
+    })
+}
+
+const readEmbyTVRatings = (emby) => {
+    return new Promise(async (resolve) => {
+        let content = []
+        for (let rating of settings.ratings.series) {
+            let items = await embyItemsSearch(emby.client, settings.ratingParents.series, {
+                IncludeItemTypes: 'Series',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
+                OfficialRatings: `TV-${rating}`,
+            })
+            content.push({ Name: `TV Rated ${rating} `, Items: items })
+        }
+        resolve(content)
+    })
+}
+
 const readEmbyContent = async (emby) => {
-    return new Promise(async resolve=>{
+    return new Promise(async (resolve) => {
         if (fs.existsSync(settings.pseudoTV.embyContentFile)) {
-            console.log('Using file catalog')
+            console.log('Using file emby content')
             let embyContentJSON = fs.readFileSync(settings.pseudoTV.embyContentFile)
             return resolve(JSON.parse(embyContentJSON))
         }
-        let embyContent = await readEmbyTagContent(emby)
+        let embyContent = []
+        embyContent = embyContent.concat(await readEmbyTagContent(emby))
+        embyContent = embyContent.concat(await readEmbyMovieRatings(emby))
+        embyContent = embyContent.concat(await readEmbyTVRatings(emby))
         fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent, null, 1))
         resolve(embyContent)
     })
@@ -165,13 +197,13 @@ const scheduleProgramming = async (channelLookup) => {
 
 const generateSchedule = async (emby) => {
     lookup = {}
-    console.log("Connecting to Emby")
+    console.log('Connecting to Emby')
     await emby.client.connect()
-    console.log("Reading items from Emby media store")
+    console.log('Reading items from Emby media store')
     let embyContent = await readEmbyContent(emby)
-    console.log("Ingesting Emby metadata to prepare a catalog file")
+    console.log('Ingesting Emby metadata to prepare a catalog file')
     await ingestChannels(emby, embyContent)
-    console.log("Generating a programming schedule")
+    console.log('Generating a programming schedule')
     await scheduleProgramming(lookup)
     console.log('Schedule generation completed')
 }

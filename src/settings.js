@@ -3,10 +3,10 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.2',
+    appVersion: '3.5.3',
     versionDate: 'December 20, 2020',
     fullScreen: false,
-    adminEnabled: true,
+    adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
     embyServerURL: null,
