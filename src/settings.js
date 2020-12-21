@@ -6,7 +6,7 @@ let config = {
     appVersion: '3.5.2',
     versionDate: 'December 20, 2020',
     fullScreen: false,
-    adminEnabled: false,
+    adminEnabled: true,
     debugApiCalls: false,
     debugMpvSocket: false,
     embyServerURL: null,

@@ -33,6 +33,41 @@ const shrink = (embyItem) => {
     }
 }
 
+
+const readEmbyTagContent = async (emby) => {
+    return new Promise(async (resolve) => {
+        const allTags = await emby.client.tags()
+        const contentTags = allTags
+                .filter((x) => {
+                    return x.Name.includes('Channel:') || x.Name.includes('Playlist')
+                })
+                .sort((a, b) => {
+                    return a.Name > b.Name ? 1 : -1
+                })
+        let embyContent = []
+        for(let tag of contentTags){
+            let searchResults = await embyItemsSearch(emby.client, tag.Id, {
+                TagIds: tag.Id,
+            })
+            embyContent.push({Name: tag.Name, Items: searchResults})
+        }
+        resolve(embyContent)
+    })
+}
+
+const readEmbyContent = async (emby) => {
+    return new Promise(async resolve=>{
+        if (fs.existsSync(settings.pseudoTV.embyContentFile)) {
+            console.log('Using file catalog')
+            let embyContentJSON = fs.readFileSync(settings.pseudoTV.embyContentFile)
+            return resolve(JSON.parse(embyContentJSON))
+        }
+        let embyContent = await readEmbyTagContent(emby)
+        fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent, null, 1))
+        resolve(embyContent)
+    })
+}
+
 const ingestChannelContent = (emby, channel, channelContent) => {
     return new Promise(async (resolve) => {
         if (channelContent.Type === 'Series') {
@@ -65,10 +100,7 @@ const ingestChannelContent = (emby, channel, channelContent) => {
 const ingestChannel = (emby, channel) => {
     return new Promise(async (resolve) => {
         lookup[channel.Name] = {}
-        const channelContents = await embyItemsSearch(emby.client, channel.Id, {
-            TagIds: channel.Id,
-        })
-        for (let channelContent of channelContents) {
+        for (let channelContent of channel.Items) {
             await ingestChannelContent(emby, channel, channelContent)
         }
         resolve()
@@ -83,7 +115,6 @@ const ingestChannels = async (emby, channels) => {
             lookup = JSON.parse(catalogJSON)
             return resolve()
         }
-        console.log('Ingesting catalog from Emby')
         for (let channel of channels) {
             await ingestChannel(emby, channel)
         }
@@ -115,7 +146,7 @@ const scheduleChannel = async (channelName, channel) => {
     })
 }
 
-const scheduleChannels = async (channelLookup) => {
+const scheduleProgramming = async (channelLookup) => {
     schedule = {}
     return new Promise(async (resolve) => {
         if (fs.existsSync(settings.pseudoTV.scheduleFile)) {
@@ -124,7 +155,6 @@ const scheduleChannels = async (channelLookup) => {
             schedule = JSON.parse(scheduleJSON)
             return resolve()
         }
-        console.log('Generating schedule')
         for (channelName of Object.keys(channelLookup)) {
             await scheduleChannel(channelName, channelLookup[channelName])
         }
@@ -133,29 +163,17 @@ const scheduleChannels = async (channelLookup) => {
     })
 }
 
-const generateSchedule = (emby) => {
+const generateSchedule = async (emby) => {
     lookup = {}
-    emby.client
-        .connect()
-        .then(() => {
-            return emby.client.tags()
-        })
-        .then((tags) => {
-            const channels = tags
-                .filter((x) => {
-                    return x.Name.includes('Channel:') || x.Name.includes('Playlist')
-                })
-                .sort((a, b) => {
-                    return a.Name > b.Name ? 1 : -1
-                })
-            ingestChannels(emby, channels)
-                .then(() => {
-                    return scheduleChannels(lookup)
-                })
-                .then(() => {
-                    console.log('Schedule generation completed')
-                })
-        })
+    console.log("Connecting to Emby")
+    await emby.client.connect()
+    console.log("Reading items from Emby media store")
+    let embyContent = await readEmbyContent(emby)
+    console.log("Ingesting Emby metadata to prepare a catalog file")
+    await ingestChannels(emby, embyContent)
+    console.log("Generating a programming schedule")
+    await scheduleProgramming(lookup)
+    console.log('Schedule generation completed')
 }
 
 const getCurrentProgramming = async () => {
