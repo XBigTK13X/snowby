@@ -17,47 +17,40 @@ module.exports = () => {
         const emby = require('../service/emby-client')
         const pseudoTV = require('../service/pseudo-tv')
         const _ = require('lodash')
-        window.reapplyTags = () => {
-            emby.client
-                .tags()
-                .then((tags) => {
-                    return tags.filter((x) => {
-                        return x.Name.includes('Playlist:')
-                    })
-                })
-                .then((tags) => {
-                    tags.map((tag) => {
-                        let includeItemTypes = 'Folder,Series'
-                        let additionalParams = {
-                            IncludeItemTypes: includeItemTypes,
-                            Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
-                            TagIds: tag.Id,
-                        }
-                        let params = {
-                            ...SearchParams,
-                            ...additionalParams,
-                        }
-                        emby.client.embyItems(null, params).then((taggedFolders) => {
-                            taggedFolders.forEach(async (folder) => {
-                                let folderParams = {
-                                    IncludeItemTypes: 'Movie,Episode',
-                                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Children',
-                                    ParentId: folder.Id,
-                                }
-                                let folderSearch = {
-                                    ...SearchParams,
-                                    ...folderParams,
-                                }
-                                await emby.client.embyItems(null, folderSearch).then((children) => {
-                                    children.forEach(async (child) => {
-                                        console.log(`Retagging ${child.Name} as ${tag.Name}`)
-                                        await emby.client.addTag(child.Id, tag)
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
+        window.reapplyTags = async () => {
+            let tags = await emby.client.tags()
+            tags = tags.filter((x) => {
+                return x.Name.includes('Playlist:')
+            })
+            for (let tag of tags) {
+                let includeItemTypes = 'Folder,Series'
+                let additionalParams = {
+                    IncludeItemTypes: includeItemTypes,
+                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
+                    TagIds: tag.Id,
+                }
+                let params = {
+                    ...SearchParams,
+                    ...additionalParams,
+                }
+                let taggedFolders = await emby.client.embyItems(null, params)
+                for (let folder of taggedFolders) {
+                    let folderParams = {
+                        IncludeItemTypes: 'Movie,Episode',
+                        Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Children',
+                        ParentId: folder.Id,
+                    }
+                    let folderSearch = {
+                        ...SearchParams,
+                        ...folderParams,
+                    }
+                    let children = await emby.client.embyItems(null, folderSearch)
+                    for (let child of children) {
+                        console.log(`Retagging ${child.Name} as ${tag.Name}`)
+                        await emby.client.addTag(child.Id, tag)
+                    }
+                }
+            }
         }
         window.generatePseudoTV = () => {
             pseudoTV.generateSchedule(emby)
