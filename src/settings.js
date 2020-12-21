@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.3',
-    versionDate: 'December 20, 2020',
+    appVersion: '3.5.4',
+    versionDate: 'December 21, 2020',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
@@ -59,7 +59,7 @@ let config = {
         series: '767bffe4f11c93ef34b805451a696a4e',
     },
     ratings: {
-        movie: ['G', 'PG', 'PG-13', 'R', 'NC-17', 'NR'],
+        movie: ['G', 'PG', 'PG-13', 'R', 'NR'],
         series: ['Y', 'Y7', 'G', 'PG', '14', 'MA'],
     },
 }
