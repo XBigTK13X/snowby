@@ -48,7 +48,8 @@ const readEmbyTagContent = async (emby) => {
             let searchResults = await embyItemsSearch(emby.client, tag.Id, {
                 TagIds: tag.Id,
             })
-            embyContent.push({ Name: tag.Name, Items: searchResults })
+            let channelName = tag.Name.replace('Playlist:', '').replace('Channel: ', '')
+            embyContent.push({ Name: (tag.Name.includes('Playlist') ? 'Playlist' : 'Channel') + '--' + channelName, Items: searchResults })
         }
         resolve(embyContent)
     })
@@ -63,7 +64,7 @@ const readEmbyMovieRatings = (emby) => {
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
                 OfficialRatings: rating,
             })
-            content.push({ Name: `Movies Rated ${rating} `, Items: items })
+            content.push({ Name: 'Movie Rating--' + rating, Items: items })
         }
         resolve(content)
     })
@@ -78,7 +79,7 @@ const readEmbyTVRatings = (emby) => {
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
                 OfficialRatings: `TV-${rating}`,
             })
-            content.push({ Name: `TV Rated ${rating} `, Items: items })
+            content.push({ Name: 'TV Rating--' + rating, Items: items })
         }
         resolve(content)
     })
@@ -220,7 +221,10 @@ const getCurrentProgramming = async () => {
             let blockLoops = Math.floor(diffMinutes / schedule[channelName].MaxRunTimeMinutes)
             let blockStartTime = start.plus({ minutes: blockLoops * schedule[channelName].MaxRunTimeMinutes })
             let blockIndex = 0
-            let cleanChannelName = channelName.replace(': ', '')
+            let cleanChannelName = channelName.replace(':', '')
+            let parts = cleanChannelName.split('--')
+            cleanChannelName = parts[1]
+            let channelKind = parts[0]
             let channelM3UPath = util.appPath('m3u/' + cleanChannelName + '.m3u')
             let currentProgram = _.find(schedule[channelName].Items, (program, programIndex) => {
                 if (program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes) {
@@ -239,7 +243,8 @@ const getCurrentProgramming = async () => {
             let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
             let nextStart = blockStartTime.plus({ minutes: nextProgram.BlockTime })
             let result = {
-                ChannelName: channelName.replace('Channel: ', '').replace('Playlist:', ''),
+                Kind: channelKind,
+                ChannelName: cleanChannelName,
                 Current: {
                     Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
                     EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,

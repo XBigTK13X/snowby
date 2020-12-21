@@ -24,7 +24,10 @@ module.exports = () => {
 
         let channelMarkup = programming
             .sort((a, b) => {
-                return a.ChannelName > b.ChannelName ? 1 : -1
+                if (a.Kind === b.Kind) {
+                    return a.ChannelName > b.ChannelName ? 1 : -1
+                }
+                return a.Kind > b.Kind ? 1 : -1
             })
             .map((channel, channelIndex) => {
                 let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
@@ -41,6 +44,9 @@ module.exports = () => {
                 data-target="random-action"
                 onclick="window.playChannel(${channelIndex}); return false;"
             >
+                <td class="cell-small">
+                    ${channel.Kind}
+                </td>
                 <td class="cell-medium">
                     ${channel.ChannelName}
                 </td>
@@ -66,6 +72,7 @@ module.exports = () => {
             <table class="channel-guide">
             <thead>
             <tr data-category="HEADER">
+                <th class="cell-small">Kind</th>
                 <th class="cell-medium">Channel</th>
                 <th class="cell-large">Now Playing</th>
                 <th class="cell-small">Time</th>
