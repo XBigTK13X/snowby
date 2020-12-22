@@ -76,10 +76,26 @@ const readEmbyTVRatings = (emby) => {
         for (let rating of settings.ratings.series) {
             let items = await embyItemsSearch(emby.client, settings.ratingParents.series, {
                 IncludeItemTypes: 'Series',
-                Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
                 OfficialRatings: `TV-${rating}`,
             })
             content.push({ Name: 'TV Rating--' + rating, Items: items })
+        }
+        resolve(content)
+    })
+}
+
+const readEmbyGenres = (emby) => {
+    return new Promise(async (resolve) => {
+        let content = []
+        let genres = await emby.client.genres('Movie,Series')
+        for (let genre of genres) {
+            let items = await embyItemsSearch(emby.client, genre.Id, {
+                IncludeItemTypes: 'Movie,Series',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
+                Genres: genre.Name,
+            })
+            content.push({ Name: 'Genre--' + genre.Name, Items: items })
         }
         resolve(content)
     })
@@ -96,6 +112,7 @@ const readEmbyContent = async (emby) => {
         embyContent = embyContent.concat(await readEmbyTagContent(emby))
         embyContent = embyContent.concat(await readEmbyMovieRatings(emby))
         embyContent = embyContent.concat(await readEmbyTVRatings(emby))
+        embyContent = embyContent.concat(await readEmbyGenres(emby))
         fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent, null, 1))
         resolve(embyContent)
     })
