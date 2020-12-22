@@ -113,7 +113,7 @@ const readEmbyContent = async (emby) => {
         embyContent = embyContent.concat(await readEmbyMovieRatings(emby))
         embyContent = embyContent.concat(await readEmbyTVRatings(emby))
         embyContent = embyContent.concat(await readEmbyGenres(emby))
-        fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent, null, 1))
+        fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent))
         resolve(embyContent)
     })
 }
@@ -168,7 +168,7 @@ const ingestChannels = async (emby, channels) => {
         for (let channel of channels) {
             await ingestChannel(emby, channel)
         }
-        fs.writeFileSync(settings.pseudoTV.catalogFile, JSON.stringify(lookup, null, 1))
+        fs.writeFileSync(settings.pseudoTV.catalogFile, JSON.stringify(lookup))
         resolve()
     })
 }
@@ -208,7 +208,7 @@ const scheduleProgramming = async (channelLookup) => {
         for (channelName of Object.keys(channelLookup)) {
             await scheduleChannel(channelName, channelLookup[channelName])
         }
-        fs.writeFileSync(settings.pseudoTV.scheduleFile, JSON.stringify(schedule, null, 1))
+        fs.writeFileSync(settings.pseudoTV.scheduleFile, JSON.stringify(schedule))
         resolve()
     })
 }
@@ -226,8 +226,8 @@ const generateSchedule = async (emby) => {
     console.log('Schedule generation completed')
 }
 
-const getCurrentProgramming = async () => {
-    return new Promise(async (resolve) => {
+const getCurrentProgramming = () => {
+    return new Promise((resolve) => {
         const start = DateTime.fromISO('2020-12-19')
         const end = DateTime.local()
         let diffMinutes = end.diff(start, 'minutes').toObject().minutes
@@ -237,25 +237,21 @@ const getCurrentProgramming = async () => {
             let blockMinutes = diffMinutes % schedule[channelName].MaxRunTimeMinutes
             let blockLoops = Math.floor(diffMinutes / schedule[channelName].MaxRunTimeMinutes)
             let blockStartTime = start.plus({ minutes: blockLoops * schedule[channelName].MaxRunTimeMinutes })
-            let blockIndex = 0
             let cleanChannelName = channelName.replace(':', '')
             let parts = cleanChannelName.split('--')
             cleanChannelName = parts[1]
             let channelKind = parts[0]
             let channelM3UPath = util.appPath('m3u/' + cleanChannelName + '.m3u')
-            let currentProgram = _.find(schedule[channelName].Items, (program, programIndex) => {
-                if (program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes) {
-                    blockIndex = programIndex
-                    return true
-                }
-                return false
+            let blockIndex = schedule[channelName].Items.findIndex((program) => {
+                return program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes
             })
+            let currentProgram = schedule[channelName].Items[blockIndex]
             let channelPlaylist = ''
             for (let ii = blockIndex; ii < blockIndex + 12; ii++) {
                 let program = schedule[channelName].Items[ii % schedule[channelName].Items.length]
                 channelPlaylist += program.Path.replace('smb:', '') + '\n'
             }
-            fs.writeFileSync(channelM3UPath, channelPlaylist)
+
             let nextProgram = schedule[channelName].Items[(blockIndex + 1) % schedule[channelName].Items.length]
             let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
             let nextStart = blockStartTime.plus({ minutes: nextProgram.BlockTime })
@@ -276,6 +272,9 @@ const getCurrentProgramming = async () => {
                 },
                 Playlist: channelM3UPath.replace(/\\/g, '\\\\'),
                 StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
+                WriteFile: () => {
+                    fs.writeFileSync(channelM3UPath, channelPlaylist)
+                },
             }
             results.push(result)
         }

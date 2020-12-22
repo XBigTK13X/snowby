@@ -6,39 +6,40 @@ module.exports = () => {
         const _ = require('lodash')
         const mediaPlayer = require('../media/player')
 
-        const programming = await pseudoTV.getCurrentProgramming()
+        resolve()
 
-        window.playChannel = (channelIndex) => {
-            let channel = programming[channelIndex]
-            let loadingMessage = 'Opening channel ' + channel.Name + ' in mpv.'
-            window.loadingStart(loadingMessage)
-            mediaPlayer
-                .openStream(channel.Playlist, false, channel.Name, channel.StartPositionEmbyTicks, true)
-                .then(() => {
-                    window.loadingStop(loadingMessage)
+        pseudoTV.getCurrentProgramming().then((programming) => {
+            window.playChannel = (channelIndex) => {
+                let channel = programming[channelIndex]
+                let loadingMessage = 'Opening channel ' + channel.Name + ' in mpv.'
+                window.loadingStart(loadingMessage)
+                channel.WriteFile()
+                mediaPlayer
+                    .openStream(channel.Playlist, false, channel.Name, channel.StartPositionEmbyTicks, true)
+                    .then(() => {
+                        window.loadingStop(loadingMessage)
+                    })
+                    .catch(() => {
+                        window.loadingStop(loadingMessage)
+                    })
+            }
+            let channelMarkup = programming
+                .sort((a, b) => {
+                    if (a.Kind === b.Kind) {
+                        return a.ChannelName > b.ChannelName ? 1 : -1
+                    }
+                    return a.Kind > b.Kind ? 1 : -1
                 })
-                .catch(() => {
-                    window.loadingStop(loadingMessage)
-                })
-        }
-
-        let channelMarkup = programming
-            .sort((a, b) => {
-                if (a.Kind === b.Kind) {
-                    return a.ChannelName > b.ChannelName ? 1 : -1
-                }
-                return a.Kind > b.Kind ? 1 : -1
-            })
-            .map((channel, channelIndex) => {
-                let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                if (channel.Current.EpisodeName) {
-                    currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
-                }
-                let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                if (channel.Next.EpisodeName) {
-                    nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
-                }
-                return `
+                .map((channel, channelIndex) => {
+                    let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                    if (channel.Current.EpisodeName) {
+                        currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
+                    }
+                    let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                    if (channel.Next.EpisodeName) {
+                        nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
+                    }
+                    return `
             <tr
                 class="clickable"
                 data-target="random-action"
@@ -66,9 +67,9 @@ module.exports = () => {
                 </td>
             </tr>
         `
-            })
-            .join('')
-        let markup = `
+                })
+                .join('')
+            let markup = `
             <table class="channel-guide">
             <thead>
             <tr data-category="HEADER">
@@ -82,10 +83,10 @@ module.exports = () => {
             </thead>
             <tbody>
         `
-        markup += channelMarkup
-        markup += `</tbody></table>`
-        document.getElementById('channels').innerHTML = markup
-        document.getElementById('header').innerHTML = 'Pseudo TV'
-        resolve()
+            markup += channelMarkup
+            markup += `</tbody></table>`
+            document.getElementById('channels').innerHTML = markup
+            document.getElementById('header').innerHTML = 'Pseudo TV'
+        })
     })
 }
