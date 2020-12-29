@@ -114,24 +114,24 @@ const inspect = (embyItem) => {
     }
 
     if (embyItem.TagItems) {
-        embyItem.TagItems.forEach((tag) => {
+        for (let tag of embyItem.TagItems) {
             if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:') || tag.Name === 'IgnoreInspector') {
                 ignoreInspector = true
             }
             if (tag.Name === 'SubbedAnime') {
                 isSubbedAnime = true
             }
-        })
+        }
     }
     if (embyItem.Series && embyItem.Series.TagItems) {
-        embyItem.Series.TagItems.forEach((tag) => {
+        for (let tag of embyItem.Series.TagItems) {
             if (tag.Name === 'DubbedAnime' || tag.Name === 'IgnoreInspector') {
                 ignoreInspector = true
             }
             if (tag.Name === 'SubbedAnime') {
                 isSubbedAnime = true
             }
-        })
+        }
     }
 
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {

@@ -14,14 +14,14 @@ module.exports = () => {
                     let resultsCount = 0
                     if (foundResults) {
                         let renderedItems = `<div class="grid square-grid">`
-                        results.forEach((embyItems) => {
-                            embyItems.forEach((embyItem) => {
+                        for (let embyItems of results) {
+                            for (let embyItem of embyItems) {
                                 let mixed = new EmbyMixedItem(embyItem)
                                 mixed.enableKindBadge()
                                 renderedItems += mixed.render()
                                 resultsCount++
-                            })
-                        })
+                            }
+                        }
                         renderedItems += `</div>`
                         document.getElementById('emby-items').innerHTML = renderedItems
                     } else {

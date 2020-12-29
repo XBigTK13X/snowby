@@ -14,9 +14,9 @@ class ExtrasTab {
             <tr>
                 <th>Name</th>
             </tr>`
-            this.embyItem.SpecialFeatures.sort((a, b) => {
+            for (let feature of this.embyItem.SpecialFeatures.sort((a, b) => {
                 return a.Name > b.Name ? 1 : -1
-            }).forEach((feature) => {
+            })) {
                 html += `
                     <tr
                         class="clickable"
@@ -27,7 +27,7 @@ class ExtrasTab {
                         </td>
                     </tr>
                 `
-            })
+            }
             html += '</table>'
             resolve(html)
         })

@@ -42,9 +42,9 @@ module.exports = () => {
             return a.title > b.title ? 1 : -1
         })
 
-        STREAMING_LINKS.forEach((link) => {
+        for (let link of STREAMING_LINKS) {
             menuEntries.push(new ExternalLink(link.title, link.link))
-        })
+        }
 
         let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
             .map((entry) => {

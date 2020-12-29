@@ -14,7 +14,8 @@ module.exports = () => {
             let lines = rawTvResponse.data.split('\n')
             let channels = {}
             let channel = null
-            lines.forEach((line, lineIndex) => {
+            let lineIndex = 0
+            for (let line of lines) {
                 if (lineIndex === 0) {
                     return
                 }
@@ -31,7 +32,8 @@ module.exports = () => {
                     channel.number = parseInt(parts[parts.length - 1].trim(), 10)
                     channels[channel.number] = _.cloneDeep(channel)
                 }
-            })
+                lineIndex++
+            }
             window.playChannel = (channelId) => {
                 let loadingMessage = 'Opening channel ' + channelId + ' in mpv.'
                 window.loadingStart(loadingMessage)

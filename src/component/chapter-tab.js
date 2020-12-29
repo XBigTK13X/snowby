@@ -18,7 +18,8 @@ class ChapterTab {
                 <th>Name</th>
                 <th>Time</th>
             </tr>`
-            this.embyItem.Chapters.forEach((chapter, chapterIndex) => {
+            let chapterIndex = 0
+            for (let chapter of this.embyItem.Chapters) {
                 html += `
                     <tr
                         class="clickable"
@@ -35,7 +36,8 @@ class ChapterTab {
                         </td>
                     </tr>
                 `
-            })
+                chapterIndex++
+            }
             html += '</table>'
             resolve(html)
         })

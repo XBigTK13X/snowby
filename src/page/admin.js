@@ -61,11 +61,11 @@ module.exports = () => {
                 return emby.client.tags()
             })
             .then((tags) => {
-                window.submitTagUpdates = () => {
-                    Object.keys(window.admin.media.selection).forEach(async (mediaKey) => {
+                window.submitTagUpdates = async () => {
+                    for (let mediaKey of Object.keys(window.admin.media.selection)) {
                         console.log(`Marking ${window.admin.media.lookup[mediaKey]} as ${window.admin.tagName}`)
                         await emby.client.addTag(mediaKey, { Name: window.admin.tagName, Id: window.admin.tagId })
-                    })
+                    }
                     console.log('Updated all tags')
                 }
                 window.selectMediaItem = (mediaItemId, filterText) => {
@@ -122,9 +122,9 @@ module.exports = () => {
                     }
                     embyItemsSearch(emby.client, null, searchType).then((items) => {
                         window.admin.media.list = items
-                        items.forEach((item) => {
+                        for (let item of items) {
                             window.admin.media.lookup[item.Id] = item.Name
-                        })
+                        }
                         window.selectMediaItem()
                     })
                 }
