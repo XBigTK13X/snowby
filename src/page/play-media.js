@@ -155,7 +155,8 @@ module.exports = () => {
                 ).then(() => {
                     document.getElementById('tab-buttons').innerHTML = tabs.map((tab) => tab.buttonHtml).join('')
 
-                    tabs.forEach((tab, tabIndex) => {
+                    let tabIndex = 0
+                    for (let tab of tabs) {
                         const tabId = tab.name.toLowerCase().replace(' ', '-')
                         let handler = loadTab(`${tabId}`, tab)
                         if (!queryParams.openTab && tabIndex === 0) {
@@ -165,7 +166,8 @@ module.exports = () => {
                             handler()
                             window.lastRenderParams = queryParams
                         }
-                    })
+                        tabIndex++
+                    }
 
                     const track = () => {
                         progress.track(

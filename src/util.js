@@ -70,9 +70,9 @@ const isClass = (target) => {
 let tippyInstances = []
 
 const loadTooltips = () => {
-    tippyInstances.forEach((instance) => {
+    for (let instance of tippyInstances) {
         instance.destroy()
-    })
+    }
     const tippy = require('tippy.js').default
     tippyInstances = tippy('[data-tippy-content]', {
         placement: 'bottom',

@@ -382,9 +382,9 @@ class EmbyClient {
         return Promise.all([this.httpClient.get(nextUpUrl), this.httpClient.get(parentUrl)]).then((responses) => {
             let nextUpResponse = responses[0]
             let parentResponse = responses[1]
-            parentResponse.data.Items.forEach((item) => {
+            for (let item of parentResponse.data.Items) {
                 parentLookup[item.Id] = item
-            })
+            }
             return nextUpResponse.data.Items.filter((x) => {
                 // Don't show any season that isn't in progress in this view.
                 // If you watched at least two episodes, then assume in progress.

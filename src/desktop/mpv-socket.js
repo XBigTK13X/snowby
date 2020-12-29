@@ -66,7 +66,7 @@ class MpvSocket {
     dataHandler(data) {
         this.isConnected = true
         let messages = data.toString().split('\n')
-        messages.forEach((message) => {
+        for (let message of messages) {
             if (message.length > 0) {
                 const JSONmessage = JSON.parse(message)
                 if (JSONmessage.request_id && JSONmessage.request_id !== 0) {
@@ -91,7 +91,7 @@ class MpvSocket {
                     }
                 }
             }
-        })
+        }
     }
 
     quit() {

@@ -22,12 +22,12 @@ module.exports = (pageName, options) => {
         } else {
             loadingIndicator.setAttribute('style', '')
             let loadingMarkup = ''
-            messages.forEach((message) => {
+            for (let message of messages) {
                 if (timeBump) {
                     loadingMessages[message].time += loadingIntervalMilliseconds
                 }
                 loadingMarkup += `${loadingMessages[message].displayMessage} (${loadingMessages[message].time / 1000}s)<br/>`
-            })
+            }
             loadingIndicator.innerHTML = loadingMarkup
             if (!refreshInterval) {
                 refreshInterval = setInterval(() => {

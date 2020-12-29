@@ -14,11 +14,11 @@ module.exports = () => {
             .then((libraries) => {
                 let menuEntries = []
 
-                libraries.forEach((library) => {
+                for (let library of libraries) {
                     if (!_.has(settings.hiddenLibraries, library.Name)) {
                         menuEntries.push(new EmbyItemLink(library.Name, library.Id))
                     }
-                })
+                }
 
                 menuEntries.sort((a, b) => {
                     if (a.name === 'TV Shows' || a.name === 'Movies') {
