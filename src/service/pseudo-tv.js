@@ -245,16 +245,20 @@ const getCurrentProgramming = () => {
             let blockIndex = schedule[channelName].Items.findIndex((program) => {
                 return program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes
             })
-            let currentProgram = schedule[channelName].Items[blockIndex]
             let channelPlaylist = ''
             for (let ii = blockIndex; ii < blockIndex + 12; ii++) {
-                let program = schedule[channelName].Items[ii % schedule[channelName].Items.length]
+                let programIndex = ii % schedule[channelName].Items.length
+                let program = schedule[channelName].Items[programIndex]
                 channelPlaylist += program.Path.replace('smb:', '') + '\n'
             }
 
-            let nextProgram = schedule[channelName].Items[(blockIndex + 1) % schedule[channelName].Items.length]
+            let currentProgram = schedule[channelName].Items[blockIndex]
+            let nextIndex = (blockIndex + 1) % schedule[channelName].Items.length
+            let nextProgram = schedule[channelName].Items[nextIndex]
             let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
-            let nextStart = blockStartTime.plus({ minutes: nextProgram.BlockTime })
+            let currentEnd = currentStart.plus({ minutes: currentProgram.RunTimeMinutes })
+            let nextStart = currentEnd
+            let nextEnd = currentEnd.plus({ minutes: nextProgram.RunTimeMinutes })
             let result = {
                 Kind: channelKind,
                 ChannelName: cleanChannelName,
@@ -262,13 +266,13 @@ const getCurrentProgramming = () => {
                     Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
                     EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
                     StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE),
-                    EndTime: currentStart.plus({ minutes: currentProgram.RunTimeMinutes }).toLocaleString(DateTime.TIME_SIMPLE),
+                    EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE),
                 },
                 Next: {
                     Name: nextProgram.SeriesName ? nextProgram.SeriesName : nextProgram.Name,
                     EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
                     StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE),
-                    EndTime: nextStart.plus({ minutes: nextProgram.RunTimeMinutes }).toLocaleString(DateTime.TIME_SIMPLE),
+                    EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE),
                 },
                 Playlist: channelM3UPath.replace(/\\/g, '\\\\'),
                 StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
