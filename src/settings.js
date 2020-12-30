@@ -3,7 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.7',
+    appVersion: '3.5.8',
     versionDate: 'December 29, 2020',
     fullScreen: false,
     adminEnabled: false,
