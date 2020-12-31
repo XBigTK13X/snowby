@@ -226,67 +226,78 @@ const generateSchedule = async (emby) => {
     console.log('Schedule generation completed')
 }
 
-const getCurrentProgramming = () => {
+let channelNamesCache = null
+
+const getChannelProgramming = (channelIndex) => {
+    if (channelIndex === undefined) {
+        channelIndex = 0
+    }
     return new Promise((resolve) => {
         const start = DateTime.fromISO('2020-12-19')
         const end = DateTime.local()
         let diffMinutes = end.diff(start, 'minutes').toObject().minutes
         const schedule = JSON.parse(fs.readFileSync(settings.pseudoTV.scheduleFile))
         let results = []
-        for (let channelName of Object.keys(schedule)) {
-            let blockMinutes = diffMinutes % schedule[channelName].MaxRunTimeMinutes
-            let blockLoops = Math.floor(diffMinutes / schedule[channelName].MaxRunTimeMinutes)
-            let blockStartTime = start.plus({ minutes: blockLoops * schedule[channelName].MaxRunTimeMinutes })
-            let cleanChannelName = channelName.replace(':', '')
-            let parts = cleanChannelName.split('--')
-            cleanChannelName = parts[1]
-            let channelKind = parts[0]
-            let channelM3UPath = util.appPath('m3u/' + cleanChannelName + '.m3u')
-            let blockIndex = schedule[channelName].Items.findIndex((program) => {
-                return program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes
+        if (!channelNamesCache) {
+            channelNamesCache = Object.keys(schedule).sort((a, b) => {
+                return a > b ? 1 : -1
             })
-            let channelPlaylist = ''
-            for (let ii = blockIndex; ii < blockIndex + 12; ii++) {
-                let programIndex = ii % schedule[channelName].Items.length
-                let program = schedule[channelName].Items[programIndex]
-                channelPlaylist += program.Path.replace('smb:', '') + '\n'
-            }
-
-            let currentProgram = schedule[channelName].Items[blockIndex]
-            let nextIndex = (blockIndex + 1) % schedule[channelName].Items.length
-            let nextProgram = schedule[channelName].Items[nextIndex]
-            let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
-            let currentEnd = currentStart.plus({ minutes: currentProgram.RunTimeMinutes })
-            let nextStart = currentEnd
-            let nextEnd = currentEnd.plus({ minutes: nextProgram.RunTimeMinutes })
-            let result = {
-                Kind: channelKind,
-                ChannelName: cleanChannelName,
-                Current: {
-                    Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
-                    EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
-                    StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE),
-                    EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE),
-                },
-                Next: {
-                    Name: nextProgram.SeriesName ? nextProgram.SeriesName : nextProgram.Name,
-                    EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
-                    StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE),
-                    EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE),
-                },
-                Playlist: channelM3UPath.replace(/\\/g, '\\\\'),
-                StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
-                WriteFile: () => {
-                    fs.writeFileSync(channelM3UPath, channelPlaylist)
-                },
-            }
-            results.push(result)
         }
-        resolve(results)
+        let channelNames = channelNamesCache
+        let channelName = channelNames[channelIndex]
+
+        let blockMinutes = diffMinutes % schedule[channelName].MaxRunTimeMinutes
+        let blockLoops = Math.floor(diffMinutes / schedule[channelName].MaxRunTimeMinutes)
+        let blockStartTime = start.plus({ minutes: blockLoops * schedule[channelName].MaxRunTimeMinutes })
+        let cleanChannelName = channelName.replace(':', '')
+        let parts = cleanChannelName.split('--')
+        cleanChannelName = parts[1]
+        let channelKind = parts[0]
+        let channelM3UPath = util.appPath('m3u/' + cleanChannelName + '.m3u')
+        let blockIndex = schedule[channelName].Items.findIndex((program) => {
+            return program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes
+        })
+        let channelPlaylist = ''
+        for (let ii = blockIndex; ii < blockIndex + 12; ii++) {
+            let programIndex = ii % schedule[channelName].Items.length
+            let program = schedule[channelName].Items[programIndex]
+            channelPlaylist += program.Path.replace('smb:', '') + '\n'
+        }
+
+        let currentProgram = schedule[channelName].Items[blockIndex]
+        let nextIndex = (blockIndex + 1) % schedule[channelName].Items.length
+        let nextProgram = schedule[channelName].Items[nextIndex]
+        let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
+        let currentEnd = currentStart.plus({ minutes: currentProgram.RunTimeMinutes })
+        let nextStart = currentEnd
+        let nextEnd = currentEnd.plus({ minutes: nextProgram.RunTimeMinutes })
+        let result = {
+            Kind: channelKind,
+            ChannelName: cleanChannelName,
+            Current: {
+                Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
+                EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
+                StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE),
+                EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE),
+            },
+            Next: {
+                Name: nextProgram.SeriesName ? nextProgram.SeriesName : nextProgram.Name,
+                EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
+                StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE),
+                EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE),
+            },
+            Playlist: channelM3UPath.replace(/\\/g, '\\\\'),
+            StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
+            WriteFile: () => {
+                fs.writeFileSync(channelM3UPath, channelPlaylist)
+            },
+        }
+        let progress = Math.round((100 * (blockMinutes - currentProgram.BlockTime)) / currentProgram.RunTimeMinutes)
+        resolve({ channel: result, channelCount: channelNames.length, progress })
     })
 }
 
 module.exports = {
     generateSchedule,
-    getCurrentProgramming,
+    getChannelProgramming,
 }
