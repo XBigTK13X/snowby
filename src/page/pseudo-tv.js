@@ -54,7 +54,7 @@ module.exports = () => {
                             <td class="cell-medium">
                                 ${channel.ChannelName}
                             </td>
-                            <td class="cell-large ellipsify" style="background-repeat: no-repeat; background: linear-gradient(to right, #171717 ${progress}%,#070707 ${progress}%);">
+                            <td class="cell-large ellipsify">
                                 ${channel.Current.Name}
                                 ${currentSubtitle}
                             </td>
@@ -69,6 +69,7 @@ module.exports = () => {
                                 ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
                             </td>
                         </tr>
+                        <tr><td colspan="100%" style="height: .5vh; background-repeat: no-repeat; background: linear-gradient(to right, #14251f ${progress}%,#171717 ${progress}%);"></td></tr>
                     `
                         })
                         .join('')
