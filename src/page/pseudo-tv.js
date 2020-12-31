@@ -1,16 +1,17 @@
 module.exports = () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const util = require('../util')
         const settings = require('../settings')
         const pseudoTV = require('../service/pseudo-tv')
         const _ = require('lodash')
         const mediaPlayer = require('../media/player')
 
-        resolve()
-
-        pseudoTV.getCurrentProgramming().then((programming) => {
+        setTimeout(() => {
+            let currentIndex = 0
+            let channelCount = 100
+            let programming = []
             window.playChannel = (channelIndex) => {
-                let channel = programming[channelIndex]
+                let channel = programming[channelIndex].channel
                 let loadingMessage = 'Opening channel ' + channel.Name + ' in mpv.'
                 window.loadingStart(loadingMessage)
                 channel.WriteFile()
@@ -23,70 +24,85 @@ module.exports = () => {
                         window.loadingStop(loadingMessage)
                     })
             }
-            let channelMarkup = programming
-                .sort((a, b) => {
-                    if (a.Kind === b.Kind) {
-                        return a.ChannelName > b.ChannelName ? 1 : -1
+            const loadNextChannel = () => {
+                const channelLoadingMessage = `Loading pseudo channel ${currentIndex + 1} of ${channelCount}`
+                window.loadingStart(channelLoadingMessage)
+                pseudoTV.getChannelProgramming(currentIndex).then((result) => {
+                    channelCount = result.channelCount
+                    programming.push({ channel: result.channel, progress: result.progress })
+                    let channelMarkup = programming
+                        .map((result, channelIndex) => {
+                            let channel = result.channel
+                            let progress = result.progress
+                            let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                            if (channel.Current.EpisodeName) {
+                                currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
+                            }
+                            let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                            if (channel.Next.EpisodeName) {
+                                nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
+                            }
+                            return `
+                        <tr
+                            class="clickable"
+                            data-target="random-action"
+                            onclick="window.playChannel(${channelIndex}); return false;"
+                        >
+                            <td class="cell-small">
+                                ${channel.Kind}
+                            </td>
+                            <td class="cell-medium">
+                                ${channel.ChannelName}
+                            </td>
+                            <td class="cell-large ellipsify" style="background-repeat: no-repeat; background: linear-gradient(to right, #171717 ${progress}%,#070707 ${progress}%);">
+                                ${channel.Current.Name}
+                                ${currentSubtitle}
+                            </td>
+                            <td class="cell-small">
+                                ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
+                            </td>
+                            <td class="cell-large ellipsify">
+                                ${channel.Next.Name}
+                                ${nextSubtitle}
+                            </td>
+                            <td class="cell-small">
+                                ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
+                            </td>
+                        </tr>
+                    `
+                        })
+                        .join('')
+                    let markup = `
+                        <table class="channel-guide">
+                        <thead>
+                        <tr data-category="HEADER">
+                            <th class="cell-small">Kind</th>
+                            <th class="cell-medium">Channel</th>
+                            <th class="cell-large">Now Playing</th>
+                            <th class="cell-small">Time</th>
+                            <th class="cell-large">Next Up</th>
+                            <th class="cell-small">Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    `
+                    markup += channelMarkup
+                    markup += `</tbody></table>`
+                    document.getElementById('channels').innerHTML = markup
+                    document.getElementById('header').innerHTML = 'Pseudo TV'
+                    currentIndex++
+                    if (currentIndex < channelCount) {
+                        setTimeout(() => {
+                            window.loadingStop(channelLoadingMessage)
+                            loadNextChannel()
+                        }, 0)
+                    } else {
+                        window.loadingStop(channelLoadingMessage)
                     }
-                    return a.Kind > b.Kind ? 1 : -1
                 })
-                .map((channel, channelIndex) => {
-                    let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                    if (channel.Current.EpisodeName) {
-                        currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
-                    }
-                    let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                    if (channel.Next.EpisodeName) {
-                        nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
-                    }
-                    return `
-            <tr
-                class="clickable"
-                data-target="random-action"
-                onclick="window.playChannel(${channelIndex}); return false;"
-            >
-                <td class="cell-small">
-                    ${channel.Kind}
-                </td>
-                <td class="cell-medium">
-                    ${channel.ChannelName}
-                </td>
-                <td class="cell-large ellipsify">
-                    ${channel.Current.Name}
-                    ${currentSubtitle}
-                </td>
-                <td class="cell-small">
-                    ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
-                </td>
-                <td class="cell-large ellipsify">
-                    ${channel.Next.Name}
-                    ${nextSubtitle}
-                </td>
-                <td class="cell-small">
-                    ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
-                </td>
-            </tr>
-        `
-                })
-                .join('')
-            let markup = `
-            <table class="channel-guide">
-            <thead>
-            <tr data-category="HEADER">
-                <th class="cell-small">Kind</th>
-                <th class="cell-medium">Channel</th>
-                <th class="cell-large">Now Playing</th>
-                <th class="cell-small">Time</th>
-                <th class="cell-large">Next Up</th>
-                <th class="cell-small">Time</th>
-            </tr>
-            </thead>
-            <tbody>
-        `
-            markup += channelMarkup
-            markup += `</tbody></table>`
-            document.getElementById('channels').innerHTML = markup
-            document.getElementById('header').innerHTML = 'Pseudo TV'
-        })
+            }
+            loadNextChannel()
+        }, 0)
+        resolve()
     })
 }
