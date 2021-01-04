@@ -28,3 +28,7 @@ glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Upscale_CNN_M_x2_Deblur.
 
 [livetv]
 vf=lavfi=yadif
+
+[dejudder]
+video-sync=display-resample
+interpolation=yes
