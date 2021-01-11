@@ -227,6 +227,7 @@ const generateSchedule = async (emby) => {
 }
 
 let channelNamesCache = null
+let programmingSchedule = null
 
 const getChannelProgramming = (channelIndex) => {
     if (channelIndex === undefined) {
@@ -236,37 +237,40 @@ const getChannelProgramming = (channelIndex) => {
         const start = DateTime.fromISO('2020-12-19')
         const end = DateTime.local()
         let diffMinutes = end.diff(start, 'minutes').toObject().minutes
-        const schedule = JSON.parse(fs.readFileSync(settings.pseudoTV.scheduleFile))
+        if (!programmingSchedule) {
+            programmingSchedule = JSON.parse(fs.readFileSync(settings.pseudoTV.scheduleFile))
+        }
         let results = []
         if (!channelNamesCache) {
-            channelNamesCache = Object.keys(schedule).sort((a, b) => {
+            channelNamesCache = Object.keys(programmingSchedule).sort((a, b) => {
                 return a > b ? 1 : -1
             })
         }
         let channelNames = channelNamesCache
         let channelName = channelNames[channelIndex]
+        let channel = programmingSchedule[channelName]
 
-        let blockMinutes = diffMinutes % schedule[channelName].MaxRunTimeMinutes
-        let blockLoops = Math.floor(diffMinutes / schedule[channelName].MaxRunTimeMinutes)
-        let blockStartTime = start.plus({ minutes: blockLoops * schedule[channelName].MaxRunTimeMinutes })
+        let blockMinutes = diffMinutes % programmingSchedule[channelName].MaxRunTimeMinutes
+        let blockLoops = Math.floor(diffMinutes / channel.MaxRunTimeMinutes)
+        let blockStartTime = start.plus({ minutes: blockLoops * channel.MaxRunTimeMinutes })
         let cleanChannelName = channelName.replace(':', '')
         let parts = cleanChannelName.split('--')
         cleanChannelName = parts[1]
         let channelKind = parts[0]
         let channelM3UPath = util.appPath('m3u/' + cleanChannelName + '.m3u')
-        let blockIndex = schedule[channelName].Items.findIndex((program) => {
+        let blockIndex = channel.Items.findIndex((program) => {
             return program.BlockTime <= blockMinutes && program.BlockTime + program.RunTimeMinutes >= blockMinutes
         })
         let channelPlaylist = ''
         for (let ii = blockIndex; ii < blockIndex + 12; ii++) {
-            let programIndex = ii % schedule[channelName].Items.length
-            let program = schedule[channelName].Items[programIndex]
+            let programIndex = ii % channel.Items.length
+            let program = channel.Items[programIndex]
             channelPlaylist += program.Path.replace('smb:', '') + '\n'
         }
 
-        let currentProgram = schedule[channelName].Items[blockIndex]
-        let nextIndex = (blockIndex + 1) % schedule[channelName].Items.length
-        let nextProgram = schedule[channelName].Items[nextIndex]
+        let currentProgram = channel.Items[blockIndex]
+        let nextIndex = (blockIndex + 1) % channel.Items.length
+        let nextProgram = channel.Items[nextIndex]
         let currentStart = blockStartTime.plus({ minutes: currentProgram.BlockTime })
         let currentEnd = currentStart.plus({ minutes: currentProgram.RunTimeMinutes })
         let nextStart = currentEnd
