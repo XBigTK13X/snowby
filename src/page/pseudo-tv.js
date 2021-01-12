@@ -68,6 +68,9 @@ module.exports = () => {
                             <td class="cell-small">
                                 ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
                             </td>
+                            <td class="cell-small">
+                                ${channel.IndexDisplay}
+                            </td>
                         </tr>
                         <tr><td colspan="100%" style="height: .5vh; background-repeat: no-repeat; background: linear-gradient(to right, #14251f ${progress}%,#171717 ${progress}%);"></td></tr>
                     `
@@ -83,6 +86,7 @@ module.exports = () => {
                             <th class="cell-small">Time</th>
                             <th class="cell-large">Next Up</th>
                             <th class="cell-small">Time</th>
+                            <th class="cell-small">Index</th>
                         </tr>
                         </thead>
                         <tbody>
