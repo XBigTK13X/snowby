@@ -356,6 +356,7 @@ const getChannelProgramming = (channelIndex) => {
             WriteFile: () => {
                 fs.writeFileSync(channelM3UPath, channelPlaylist)
             },
+            IndexDisplay: `${blockIndex + 1} of ${channel.Items.length}`,
         }
         let progress = Math.round((100 * (blockMinutes - currentProgram.BlockTime)) / currentProgram.RunTimeMinutes)
         resolve({ channel: result, channelCount: channelNames.length, progress })

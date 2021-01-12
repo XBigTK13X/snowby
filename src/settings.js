@@ -3,8 +3,8 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.13',
-    versionDate: 'January 11, 2021',
+    appVersion: '3.5.14',
+    versionDate: 'January 12, 2021',
     fullScreen: false,
     adminEnabled: false,
     debugApiCalls: false,
