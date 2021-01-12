@@ -15,6 +15,10 @@ const SearchParams = {
     Fields: 'ProductionYear,MediaStreams,Path',
 }
 
+const stringify = (data) => {
+    return JSON.stringify(data)
+}
+
 const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
     let params = {
         ...SearchParams,
@@ -100,6 +104,62 @@ const readEmbyGenres = (emby) => {
         resolve(content)
     })
 }
+const readEmbyDecades = (emby) => {
+    return new Promise(async (resolve) => {
+        let content = []
+        let decades = [1960, 1970, 1980, 1990, 2000, 2010, 2020]
+        let kinds = [
+            {
+                name: 'Movie',
+                kind: 'Movie',
+            },
+            {
+                name: 'TV',
+                kind: 'Series',
+            },
+        ]
+        for (let kind of kinds) {
+            let decadeIndex = 0
+            for (let decade of decades) {
+                let years = ''
+                let name = ''
+                if (decadeIndex === 0) {
+                    for (let currentYear = 1900; currentYear < decades[0]; currentYear++) {
+                        years += `${currentYear}`
+                        if (currentYear !== decades[0]) {
+                            years += ','
+                        }
+                    }
+                    name = '1960s and Earlier'
+                } else if (decadeIndex > 0 && decadeIndex < decades.length - 1) {
+                    for (let currentYear = decades[decadeIndex]; currentYear < decades[decadeIndex + 1]; currentYear++) {
+                        years += `${currentYear}`
+                        if (currentYear !== decades[decadeIndex + 1] - 1) {
+                            years += ','
+                        }
+                    }
+                    name = `${decade}s`
+                } else {
+                    for (let currentYear = decades[decadeIndex]; currentYear < decades[decadeIndex] + 10; currentYear++) {
+                        years += `${currentYear}`
+                        if (currentYear !== decades[decadeIndex] + 10) {
+                            years += ','
+                        }
+                    }
+                    name = `${decade}s`
+                }
+                let items = await embyItemsSearch(emby.client, null, {
+                    IncludeItemTypes: kind.kind,
+                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
+                    Years: years,
+                })
+                content.push({ Name: `Period ${kind.name}--${name}`, Items: items })
+                decadeIndex++
+            }
+        }
+        resolve(content)
+    })
+}
 
 const readEmbyContent = async (emby) => {
     return new Promise(async (resolve) => {
@@ -113,7 +173,8 @@ const readEmbyContent = async (emby) => {
         embyContent = embyContent.concat(await readEmbyMovieRatings(emby))
         embyContent = embyContent.concat(await readEmbyTVRatings(emby))
         embyContent = embyContent.concat(await readEmbyGenres(emby))
-        fs.writeFileSync(settings.pseudoTV.embyContentFile, JSON.stringify(embyContent))
+        embyContent = embyContent.concat(await readEmbyDecades(emby))
+        fs.writeFileSync(settings.pseudoTV.embyContentFile, stringify(embyContent))
         resolve(embyContent)
     })
 }
@@ -168,7 +229,7 @@ const ingestChannels = async (emby, channels) => {
         for (let channel of channels) {
             await ingestChannel(emby, channel)
         }
-        fs.writeFileSync(settings.pseudoTV.catalogFile, JSON.stringify(lookup))
+        fs.writeFileSync(settings.pseudoTV.catalogFile, stringify(lookup))
         resolve()
     })
 }
@@ -208,7 +269,7 @@ const scheduleProgramming = async (channelLookup) => {
         for (channelName of Object.keys(channelLookup)) {
             await scheduleChannel(channelName, channelLookup[channelName])
         }
-        fs.writeFileSync(settings.pseudoTV.scheduleFile, JSON.stringify(schedule))
+        fs.writeFileSync(settings.pseudoTV.scheduleFile, stringify(schedule))
         resolve()
     })
 }

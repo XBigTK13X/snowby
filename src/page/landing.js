@@ -36,6 +36,9 @@ module.exports = () => {
                 if (settings.adminEnabled) {
                     versionHtml = `<a href="admin.html">v${settings.appVersion} built ${settings.versionDate}</a>`
                 }
+                if (settings.newVersionAvailable) {
+                    versionHtml += `<br/><div class="badge badge-best">New version available, v${settings.newVersion}</div>`
+                }
                 document.getElementById('version').innerHTML = versionHtml
                 document.getElementById('menu-entries').innerHTML = markup
                 document.getElementById('header').innerHTML = 'Snowby'

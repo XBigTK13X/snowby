@@ -3,7 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.12',
+    appVersion: '3.5.13',
     versionDate: 'January 11, 2021',
     fullScreen: false,
     adminEnabled: false,
@@ -73,6 +73,9 @@ if (process.platform === 'linux') {
 const overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'
 if (fs.existsSync(overridePath)) {
     const overrides = require(overridePath)
+    if (overrides.newVersion && overrides.newVersion !== config.appVersion) {
+        config.newVersionAvailable = true
+    }
     config = _.merge(config, overrides)
 }
 
