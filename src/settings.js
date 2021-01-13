@@ -3,7 +3,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 let config = {
-    appVersion: '3.5.14',
+    appVersion: '3.5.15',
     versionDate: 'January 12, 2021',
     fullScreen: false,
     adminEnabled: false,
@@ -24,7 +24,7 @@ let config = {
     mpvConfigFile: util.appPath('bin/mpv/mpv/mpv.conf'),
     mpvInputFile: util.appPath('bin/mpv/mpv/input.conf'),
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
-    progressUpdateInterval: 3000,
+    progressUpdateInterval: 4000,
     pseudoTV: null,
     stepBackSeconds: 4,
     windowBackgroundColor: '#010101',
@@ -32,6 +32,7 @@ let config = {
         minPercent: 5,
         maxPercent: 90,
     },
+    videoPlayerConnectInterval: 1000,
     tileDimension: {
         channelLogo: {
             x: 150,

@@ -46,7 +46,7 @@ class MpvClient {
                     clearInterval(heartbeat)
                     resolve()
                 }
-            }, settings.progressUpdateInterval / 4)
+            }, settings.videoPlayerConnectInterval)
         })
     }
 
@@ -74,12 +74,15 @@ class MpvClient {
             this.mpv.play(options)
             this.connect()
                 .then(() => {
-                    if (!delayedSeek) {
-                        window.loadingStop(loadingMessage)
-                        resolve()
-                    } else {
-                        return this.mpv.seek(this.seek(seekTicks))
-                    }
+                    setTimeout(() => {
+                        if (!delayedSeek) {
+                            window.loadingStop(loadingMessage)
+                            resolve()
+                        } else {
+                            this.mpv.seek(this.seek(seekTicks))
+                            resolve()
+                        }
+                    }, 200)
                 })
                 .then(() => {
                     window.loadingStop(loadingMessage)

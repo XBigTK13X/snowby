@@ -20,6 +20,7 @@ const keepAwake = () => {
             settings.mpvExePath,
             [
                 `${settings.inaudibleWavPath}`,
+                `--no-terminal`,
                 `--loop`,
                 `--vo=null`,
                 `--no-config`,
