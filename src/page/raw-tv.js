@@ -42,8 +42,12 @@ module.exports = () => {
                     .openStream(channel.streamUrl, false, `${channel.tvGuideName} - ${channel.number}`)
                     .then(() => {
                         window.loadingStop(loadingMessage)
+                        let maxAttempts = 20
                         let attempts = 19
-                        let streamMessage = `Waiting up to ${Math.round((20 * 400) / 1000)} seconds for stream contents to buffer.`
+                        let refreshMilliseconds = 400
+                        let streamMessage = `Waiting up to ${Math.round(
+                            (maxAttempts * refreshMilliseconds) / 1000
+                        )} seconds for stream contents to buffer.`
                         window.loadingStart(streamMessage)
                         let refreshInterval = setInterval(async () => {
                             attempts--
@@ -59,7 +63,7 @@ module.exports = () => {
                                 clearInterval(refreshInterval)
                                 window.loadingStop(streamMessage)
                             }
-                        }, 400)
+                        }, refreshMilliseconds)
                     })
                     .catch(() => {
                         window.loadingStop(loadingMessage)
