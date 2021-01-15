@@ -21,44 +21,48 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
         clearInterval(trackInterval)
     }
     trackInterval = setInterval(() => {
-        if (!mutex) {
-            mutex = true
-            player
-                .connect()
-                .then(() => {
-                    player
-                        .getPositionInEmbyTicks()
-                        .then((playbackPositionTicks) => {
+        player
+            .connect()
+            .then(() => {
+                player
+                    .getPositionInEmbyTicks()
+                    .then((playbackPositionTicks) => {
+                        if (!mutex) {
                             if (playbackPositionTicks != lastTicks && playbackPositionTicks != null) {
                                 lastTicks = playbackPositionTicks
                                 setConnectionStatus(true)
                                 if (playbackPositionTicks > 0) {
-                                    emby.client.updateProgress(embyItem.Id, playbackPositionTicks, embyItem.RunTimeTicks).then(() => {
-                                        let newParams = util.queryParams()
-                                        newParams.resumeTicks = playbackPositionTicks
-                                        window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
-                                        mutex = false
-                                    })
+                                    mutex = true
+                                    emby.client
+                                        .updateProgress(embyItem.Id, playbackPositionTicks, embyItem.RunTimeTicks)
+                                        .then(() => {
+                                            mutex = false
+                                            let newParams = util.queryParams()
+                                            newParams.resumeTicks = playbackPositionTicks
+                                            window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
+                                        })
+                                        .catch((err) => {
+                                            mutex = false
+                                            util.clientLog('Failed to update emby progress ' + embyItem.Path)
+                                        })
                                 }
                             }
-                        })
-                        .catch((mediaFinished) => {
-                            util.clientLog('Media finished playing ' + embyItem.Path)
-                            setConnectionStatus(false)
-                            clearInterval(trackInterval)
-                            mutex = false
-                        })
-                })
-                .catch((err) => {
-                    if (err === 'disconnected') {
-                        util.clientLog('Media disconnected ' + embyItem.Path)
+                        }
+                    })
+                    .catch((mediaFinished) => {
+                        util.clientLog('Media finished playing ' + embyItem.Path)
                         setConnectionStatus(false)
                         clearInterval(trackInterval)
-                        mutex = false
-                    }
-                })
-        }
-    }, settings.progressUpdateInterval)
+                    })
+            })
+            .catch((err) => {
+                if (err === 'disconnected') {
+                    util.clientLog('Media disconnected ' + embyItem.Path)
+                    setConnectionStatus(false)
+                    clearInterval(trackInterval)
+                }
+            })
+    }, settings.interval.progressUpdate)
 }
 
 module.exports = {

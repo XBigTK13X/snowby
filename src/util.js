@@ -121,6 +121,7 @@ const serverLog = (message) => {
 
 const clientLog = (message) => {
     try {
+        console.log(message)
         require('electron').ipcRenderer.send('snowby-log', message)
     } catch (err) {
         console.log('Swallowing an error that occurred while sending a client log', { err })
