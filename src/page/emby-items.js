@@ -7,6 +7,7 @@ module.exports = () => {
         const util = require('../util')
         const windowPosition = require('../service/window-position')
         const mediaPlayer = require('../media/player')
+        const settings = require('../settings')
 
         const queryParams = util.queryParams()
 
@@ -32,24 +33,6 @@ module.exports = () => {
                         .openStream(channel.getStreamURL(), false, channel.getStreamName())
                         .then(() => {
                             window.loadingStop(loadingMessage)
-                            let attempts = 19
-                            let streamMessage = `Waiting up to ${Math.round((20 * 400) / 1000)} seconds for stream contents to buffer.`
-                            window.loadingStart(streamMessage)
-                            let refreshInterval = setInterval(async () => {
-                                attempts--
-                                if (attempts < 0) {
-                                    await util.killMpv()
-                                    let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
-                                    window.loadingStart(killInfoMessage)
-                                    setTimeout(() => {
-                                        window.loadingStop(killInfoMessage)
-                                    }, 3000)
-                                }
-                                if (util.getMpvStreamConnected() || attempts < 0) {
-                                    clearInterval(refreshInterval)
-                                    window.loadingStop(streamMessage)
-                                }
-                            }, 400)
                         })
                         .catch(() => {
                             window.loadingStop(loadingMessage)

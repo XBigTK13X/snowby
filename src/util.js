@@ -128,10 +128,15 @@ const clientLog = (message) => {
     }
 }
 
+const delay = (handler) => {
+    setTimeout(handler, 0)
+}
+
 module.exports = {
     appPath,
     browserGetMediaProfiles,
     clientLog,
+    delay,
     getCaller,
     getMediaProfiles,
     getMpvStreamConnected,

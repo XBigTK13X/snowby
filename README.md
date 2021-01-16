@@ -14,4 +14,10 @@ My Emby client really only works for my library. If there is a request from some
 
 ## Why use snowby?
 
-Especially if you are watching 4K UHD content or anime, snowby does it better. It uses a different video player with better subtitle handling and can force Windows 10 into HDR mode depending on the video content.
+Especially if you are watching 4K UHD HDR content or anime, snowby does it better. It uses a different video player with better subtitle handling and can force Windows 10 into HDR mode depending on the video content.
+
+There are also a few features it provides outside of Emby's core functionality.
+
+- Pseudo TV channel generation and playback
+- Video content profiles for custom graphics filtering
+- Aggregating IPTV channels in a schedule view

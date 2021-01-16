@@ -9,7 +9,6 @@ module.exports = (pageName, options) => {
     let loadingMessages = {}
     let loadingIndicator = document.getElementById('loading')
     loadingIndicator.setAttribute('style', 'display:none')
-    let loadingIntervalMilliseconds = 100
     let refreshInterval = null
     let refreshMessages = (timeBump) => {
         let messages = Object.keys(loadingMessages)
@@ -24,15 +23,15 @@ module.exports = (pageName, options) => {
             let loadingMarkup = ''
             for (let message of messages) {
                 if (timeBump) {
-                    loadingMessages[message].time += loadingIntervalMilliseconds
+                    loadingMessages[message].time += settings.interval.loadingToast
                 }
                 loadingMarkup += `${loadingMessages[message].displayMessage} (${loadingMessages[message].time / 1000}s)<br/>`
             }
             loadingIndicator.innerHTML = loadingMarkup
             if (!refreshInterval) {
                 refreshInterval = setInterval(() => {
-                    refreshMessages(loadingIntervalMilliseconds)
-                }, loadingIntervalMilliseconds)
+                    refreshMessages(settings.interval.loadingToast)
+                }, settings.interval.loadingToast)
             }
         }
     }

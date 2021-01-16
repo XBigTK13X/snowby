@@ -46,8 +46,7 @@ class IpcServer {
                     util.serverLog('ipcServer - Process spawned')
                 }
                 let connectionAttempt = 0
-                let maxConnectionAttempts = 10
-                let connectionWaitMilliseconds = 1000
+                let maxConnectionAttempts = 15
                 let connectionInterval = null
                 connectionInterval = setInterval(() => {
                     connectionAttempt++
@@ -76,7 +75,7 @@ class IpcServer {
                             }
                         }
                     })
-                }, connectionWaitMilliseconds)
+                }, settings.interval.videoPlayerConnect)
             } catch (exception) {
                 if (settings.debugMpvSocket) {
                     util.serverLog(`ipcServer - Socket connect exception caught: ${JSON.stringify(exception)}`)

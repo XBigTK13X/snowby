@@ -47,7 +47,7 @@ class MpvClient {
                     resolve()
                 }
                 // videoPlayerConnect interval * failThreshold needs to be less than 1 interval of progress updating
-                // Otherwise a bunch of race conditions form in the update of progress
+                // Otherwise race conditions form in the update of progress
             }, settings.interval.videoPlayerConnect)
         })
     }
@@ -84,7 +84,7 @@ class MpvClient {
                             this.mpv.seek(this.seek(seekTicks))
                             resolve()
                         }
-                    }, 200)
+                    }, settings.timeout.delaySeek)
                 })
                 .then(() => {
                     window.loadingStop(loadingMessage)
