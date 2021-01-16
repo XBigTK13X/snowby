@@ -42,28 +42,6 @@ module.exports = () => {
                     .openStream(channel.streamUrl, false, `${channel.tvGuideName} - ${channel.number}`)
                     .then(() => {
                         window.loadingStop(loadingMessage)
-                        let maxAttempts = 20
-                        let attempts = 19
-                        let refreshMilliseconds = 400
-                        let streamMessage = `Waiting up to ${Math.round(
-                            (maxAttempts * refreshMilliseconds) / 1000
-                        )} seconds for stream contents to buffer.`
-                        window.loadingStart(streamMessage)
-                        let refreshInterval = setInterval(async () => {
-                            attempts--
-                            if (attempts < 0) {
-                                await util.killMpv()
-                                let killInfoMessage = 'The stream took too long to buffer, giving up in 3 seconds.'
-                                window.loadingStart(killInfoMessage)
-                                setTimeout(() => {
-                                    window.loadingStop(killInfoMessage)
-                                }, 3000)
-                            }
-                            if (util.getMpvStreamConnected() || attempts < 0) {
-                                clearInterval(refreshInterval)
-                                window.loadingStop(streamMessage)
-                            }
-                        }, refreshMilliseconds)
                     })
                     .catch(() => {
                         window.loadingStop(loadingMessage)

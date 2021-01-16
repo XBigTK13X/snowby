@@ -24,19 +24,23 @@ class Hdr {
         if (!settings.enableHdrToggle) {
             return Promise.resolve()
         }
-        return this.isActive().then((active) => {
-            if (active === enable) {
-                return Promise.resolve()
-            }
-            return new Promise((resolve) => {
-                const toggleProcess = spawn('cscript.exe', [settings.hdrTogglePath], { stdio: 'ignore' })
-                toggleProcess.on('close', function (code) {
-                    setTimeout(() => {
-                        resolve()
-                    }, 200)
+        return this.isActive()
+            .then((active) => {
+                if (active === enable) {
+                    return Promise.resolve()
+                }
+                return new Promise((resolve) => {
+                    const toggleProcess = spawn('cscript.exe', [settings.hdrTogglePath], { stdio: 'ignore' })
+                    toggleProcess.on('close', function (code) {
+                        setTimeout(() => {
+                            resolve()
+                        }, settings.timeout.hdrActivate)
+                    })
                 })
             })
-        })
+            .catch((err) => {
+                util.clientLog('Unable to toggle HDR ', { err })
+            })
     }
 
     isActive() {

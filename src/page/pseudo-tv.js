@@ -6,7 +6,7 @@ module.exports = () => {
         const _ = require('lodash')
         const mediaPlayer = require('../media/player')
 
-        setTimeout(() => {
+        const render = () => {
             let currentIndex = 0
             let channelCount = 100
             let programming = []
@@ -97,17 +97,19 @@ module.exports = () => {
                     document.getElementById('header').innerHTML = 'Pseudo TV'
                     currentIndex++
                     if (currentIndex < channelCount) {
-                        setTimeout(() => {
+                        const loadChannel = () => {
                             window.loadingStop(channelLoadingMessage)
                             loadNextChannel()
-                        }, 0)
+                        }
+                        util.delay(loadChannel)
                     } else {
                         window.loadingStop(channelLoadingMessage)
                     }
                 })
             }
             loadNextChannel()
-        }, 0)
+        }
+        util.delay(render)
         resolve()
     })
 }
