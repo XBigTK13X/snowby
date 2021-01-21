@@ -27,22 +27,24 @@ module.exports = () => {
             const loadNextChannel = () => {
                 const channelLoadingMessage = `Loading pseudo channel ${currentIndex + 1} of ${channelCount}`
                 window.loadingStart(channelLoadingMessage)
-                pseudoTV.getChannelProgramming(currentIndex).then((result) => {
-                    channelCount = result.channelCount
-                    programming.push({ channel: result.channel, progress: result.progress })
-                    let channelMarkup = programming
-                        .map((result, channelIndex) => {
-                            let channel = result.channel
-                            let progress = result.progress
-                            let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                            if (channel.Current.EpisodeName) {
-                                currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
-                            }
-                            let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-                            if (channel.Next.EpisodeName) {
-                                nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
-                            }
-                            return `
+                pseudoTV
+                    .getChannelProgramming(currentIndex)
+                    .then((result) => {
+                        channelCount = result.channelCount
+                        programming.push({ channel: result.channel, progress: result.progress })
+                        let channelMarkup = programming
+                            .map((result, channelIndex) => {
+                                let channel = result.channel
+                                let progress = result.progress
+                                let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                                if (channel.Current.EpisodeName) {
+                                    currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
+                                }
+                                let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
+                                if (channel.Next.EpisodeName) {
+                                    nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
+                                }
+                                return `
                         <tr
                             class="clickable"
                             data-target="random-action"
@@ -74,9 +76,9 @@ module.exports = () => {
                         </tr>
                         <tr><td colspan="100%" style="height: .5vh; background-repeat: no-repeat; background: linear-gradient(to right, #14251f ${progress}%,#171717 ${progress}%);"></td></tr>
                     `
-                        })
-                        .join('')
-                    let markup = `
+                            })
+                            .join('')
+                        let markup = `
                         <table class="channel-guide">
                         <thead>
                         <tr data-category="HEADER">
@@ -91,21 +93,32 @@ module.exports = () => {
                         </thead>
                         <tbody>
                     `
-                    markup += channelMarkup
-                    markup += `</tbody></table>`
-                    document.getElementById('channels').innerHTML = markup
-                    document.getElementById('header').innerHTML = 'Pseudo TV'
-                    currentIndex++
-                    if (currentIndex < channelCount) {
-                        const loadChannel = () => {
+                        markup += channelMarkup
+                        markup += `</tbody></table>`
+                        document.getElementById('channels').innerHTML = markup
+                        document.getElementById('header').innerHTML = 'Pseudo TV'
+                        currentIndex++
+                        if (currentIndex < channelCount) {
+                            const loadChannel = () => {
+                                window.loadingStop(channelLoadingMessage)
+                                loadNextChannel()
+                            }
+                            util.delay(loadChannel)
+                        } else {
                             window.loadingStop(channelLoadingMessage)
-                            loadNextChannel()
                         }
-                        util.delay(loadChannel)
-                    } else {
-                        window.loadingStop(channelLoadingMessage)
-                    }
-                })
+                    })
+                    .catch((err) => {
+                        console.log({ channel: pseudoTV.getChannel(currentIndex) })
+                        currentIndex++
+                        if (currentIndex < channelCount) {
+                            const loadChannel = () => {
+                                window.loadingStop(channelLoadingMessage)
+                                loadNextChannel()
+                            }
+                            util.delay(loadChannel)
+                        }
+                    })
             }
             loadNextChannel()
         }
