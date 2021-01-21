@@ -290,6 +290,10 @@ const generateSchedule = async (emby) => {
 let channelNamesCache = null
 let programmingSchedule = null
 
+const getChannel = (channelIndex) => {
+    return { channel: programmingSchedule[channelNamesCache[channelIndex]], name: channelNamesCache[channelIndex] }
+}
+
 const getChannelProgramming = (channelIndex) => {
     if (channelIndex === undefined) {
         channelIndex = 0
@@ -366,4 +370,5 @@ const getChannelProgramming = (channelIndex) => {
 module.exports = {
     generateSchedule,
     getChannelProgramming,
+    getChannel,
 }
