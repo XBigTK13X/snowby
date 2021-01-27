@@ -1,7 +1,7 @@
 m3u/
 logs/
 snowby-ipc.log
-src/asset/css
+desktop/asset/css
 screenshot/
 mpv.conf
 mpv.log
