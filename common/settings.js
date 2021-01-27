@@ -30,6 +30,7 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     pseudoTV: null,
     stepBackSeconds: 4,
+    snowbyServerPort: 24081,
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
