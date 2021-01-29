@@ -488,25 +488,6 @@ table.channel-guide {
     margin: 5px;
 }
 
-.admin-list-item {
-    border: 1px solid grey;
-    padding: 2px;
-    margin: 2px;
-    display: inline-block;
-}
-
-.admin-list-item-selected {
-    border: 1px solid yellow;
-    padding: 2px;
-    margin: 2px;
-    display: inline-block;
-}
-
-.admin-button {
-    width: 80%;
-    height: 40px;
-}
-
 .program-subtitle {
     font-size: 16px;
     color: darken($snowby-text-front, 20);

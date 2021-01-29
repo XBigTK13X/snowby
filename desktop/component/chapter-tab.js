@@ -1,4 +1,4 @@
-const ticks = require('../media/ticks')
+const ticks = require('../../common/ticks')
 
 class ChapterTab {
     constructor(embyItem) {

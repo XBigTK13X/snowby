@@ -1,5 +1,5 @@
 const settings = require('../../common/settings')
-const ticks = require('../media/ticks')
+const ticks = require('../../common/ticks')
 const ipcRenderer = require('electron').ipcRenderer
 const _ = require('lodash')
 

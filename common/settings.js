@@ -7,10 +7,9 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.5.18',
-    versionDate: 'January 21, 2021',
+    appVersion: '3.6.0',
+    versionDate: 'January 29, 2021',
     fullScreen: false,
-    adminEnabled: false,
     debugApiCalls: false,
     debugMpvSocket: false,
     embyServerURL: null,
@@ -31,6 +30,7 @@ let config = {
     pseudoTV: null,
     stepBackSeconds: 4,
     snowbyServerPort: 24081,
+    snowbyServerURL: null,
     windowBackgroundColor: '#010101',
     progressWatchedThreshold: {
         minPercent: 5,
