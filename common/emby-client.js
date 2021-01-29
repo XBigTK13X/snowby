@@ -52,8 +52,8 @@ class EmbyClient {
             .then((loginResponse) => {
                 const authenticatedUser = loginResponse.data
                 this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
-                window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
-                window.localStorage.setItem('SnowbyUserId', this.userId)
+                util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
+                util.window.localStorage.setItem('SnowbyUserId', this.userId)
                 this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                 return true
             })
@@ -65,8 +65,8 @@ class EmbyClient {
                 if (heartBeatResult) {
                     return resolve(true)
                 } else {
-                    let authToken = window.localStorage.getItem(EMBY_AUTH_HEADER)
-                    let userId = window.localStorage.getItem('SnowbyUserId')
+                    let authToken = util.window.localStorage.getItem(EMBY_AUTH_HEADER)
+                    let userId = util.window.localStorage.getItem('SnowbyUserId')
                     if (authToken) {
                         this.authHeader = authToken
                         this.userId = userId
@@ -259,8 +259,8 @@ class EmbyClient {
     liveChannels() {
         const fields = `PrimaryImageAspectRatio%2CChannelInfo%2CSortName%2CMediaSources`
         const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=400&Fields=${fields}`
-        window.duplicateChannels = {}
-        window.channelCategories = {
+        util.window.duplicateChannels = {}
+        util.window.channelCategories = {
             lookup: { ALL: true },
             list: ['ALL'],
         }
@@ -268,22 +268,22 @@ class EmbyClient {
             return channelsResponse.data.Items.map((item) => {
                 let embyItem = new EmbyItem(item)
                 embyItem.processChannelInfo()
-                if (!_.has(window.duplicateChannels, embyItem.ChannelSlug)) {
-                    window.duplicateChannels[embyItem.ChannelSlug] = {
+                if (!_.has(util.window.duplicateChannels, embyItem.ChannelSlug)) {
+                    util.window.duplicateChannels[embyItem.ChannelSlug] = {
                         index: 0,
                         items: [],
                     }
                 }
-                if (!_.has(window.channelCategories.lookup, embyItem.ChannelCategory)) {
-                    window.channelCategories.lookup[embyItem.ChannelCategory] = true
-                    window.channelCategories.list.push(embyItem.ChannelCategory)
-                    window.channelCategories.list.sort()
+                if (!_.has(util.window.channelCategories.lookup, embyItem.ChannelCategory)) {
+                    util.window.channelCategories.lookup[embyItem.ChannelCategory] = true
+                    util.window.channelCategories.list.push(embyItem.ChannelCategory)
+                    util.window.channelCategories.list.sort()
                 }
-                window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
-                if (window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
+                util.window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
+                if (util.window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
                     return embyItem
                 }
-                window.duplicateChannels[embyItem.ChannelSlug].index += 1
+                util.window.duplicateChannels[embyItem.ChannelSlug].index += 1
                 return null
             })
                 .filter((x) => {
@@ -305,8 +305,8 @@ class EmbyClient {
         const url = `LiveTv/EPG?Limit=3000&MaxStartDate=${endDate.toISO()}&MinEndDate=${startDate.toISO()}&AddCurrentProgram=true&EnableUserData=false&UserId=${
             this.userId
         }`
-        window.duplicateChannels = {}
-        window.channelCategories = {
+        util.window.duplicateChannels = {}
+        util.window.channelCategories = {
             lookup: { ALL: true },
             list: ['ALL'],
         }
@@ -315,23 +315,23 @@ class EmbyClient {
                 item.Channel.Programs = item.Programs
                 let embyItem = new EmbyItem(item.Channel)
                 embyItem.processChannelInfo()
-                if (!_.has(window.duplicateChannels, embyItem.ChannelSlug)) {
-                    window.duplicateChannels[embyItem.ChannelSlug] = {
+                if (!_.has(util.window.duplicateChannels, embyItem.ChannelSlug)) {
+                    util.window.duplicateChannels[embyItem.ChannelSlug] = {
                         index: 0,
                         items: [],
                     }
                 }
-                if (!_.has(window.channelCategories.lookup, embyItem.ChannelCategory)) {
-                    window.channelCategories.lookup[embyItem.ChannelCategory] = true
-                    window.channelCategories.list.push(embyItem.ChannelCategory)
-                    window.channelCategories.list.sort()
+                if (!_.has(util.window.channelCategories.lookup, embyItem.ChannelCategory)) {
+                    util.window.channelCategories.lookup[embyItem.ChannelCategory] = true
+                    util.window.channelCategories.list.push(embyItem.ChannelCategory)
+                    util.window.channelCategories.list.sort()
                 }
-                window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
-                if (window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
+                util.window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
+                if (util.window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
                     return embyItem
                 }
-                window.duplicateChannels[embyItem.ChannelSlug].index += 1
-                window.duplicateChannels[embyItem.ChannelSlug].items[0].ChannelCount += 1
+                util.window.duplicateChannels[embyItem.ChannelSlug].index += 1
+                util.window.duplicateChannels[embyItem.ChannelSlug].items[0].ChannelCount += 1
                 return null
             })
                 .filter((x) => {

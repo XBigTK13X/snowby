@@ -119,7 +119,10 @@ const serverLog = (message) => {
 const clientLog = (message) => {
     try {
         console.log(message)
-        require('electron').ipcRenderer.send('snowby-log', message)
+        const electron = require('electron')
+        if (electron.ipcRenderer) {
+            electron.ipcRenderer.send('snowby-log', message)
+        }
     } catch (err) {
         console.log('Swallowing an error that occurred while sending a client log', { err })
     }
@@ -127,6 +130,30 @@ const clientLog = (message) => {
 
 const delay = (handler) => {
     setTimeout(handler, 0)
+}
+
+let windowStorage = {}
+let windowStub = {
+    localStorage: {
+        getItem: (key) => {
+            if (!windowStorage.hasOwnProperty(key)) {
+                return null
+            }
+            return windowStorage[key]
+        },
+        setItem: (key, val) => {
+            windowStorage[key] = val
+        },
+        clear: () => {
+            windowStorage = {}
+        },
+    },
+    loadingStart: (message) => {},
+    loadingStop: () => {},
+}
+
+if (typeof window !== 'undefined') {
+    windowStub = window
 }
 
 module.exports = {
@@ -143,4 +170,5 @@ module.exports = {
     queryString,
     serverLog,
     swapConfig,
+    window: windowStub,
 }

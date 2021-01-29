@@ -7,14 +7,14 @@ const { DateTime } = require('luxon')
 class HttpCache {
     constructor() {
         this.cache = {}
-        if (window.localStorage.getItem('httpCache')) {
+        if (util.window.localStorage.getItem('httpCache')) {
             try {
-                this.cache = JSON.parse(window.localStorage.getItem('httpCache'))
+                this.cache = JSON.parse(util.window.localStorage.getItem('httpCache'))
             } catch {
                 this.cache = {}
             }
         } else {
-            window.localStorage.setItem('httpCache', JSON.stringify(this.cache))
+            util.window.localStorage.setItem('httpCache', JSON.stringify(this.cache))
         }
     }
     get(key) {
@@ -34,7 +34,8 @@ class HttpCache {
             value: value,
             timestamp: DateTime.local().toISO(),
         }
-        window.localStorage.setItem('httpCache', JSON.stringify(this.cache))
+        let cacheString = JSON.stringify(this.cache)
+        util.window.localStorage.setItem('httpCache', cacheString)
     }
 }
 
@@ -92,16 +93,16 @@ class HttpClient {
                 }
             }
             let loadingMessage = 'Making web request to ' + url + '.'
-            window.loadingStart(loadingMessage)
+            util.window.loadingStart(loadingMessage)
             return this.client[method](url, data)
                 .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         util.clientLog('httpClient - result ' + JSON.stringify({ method, url, data, result, config: this.config }))
                     }
-                    window.loadingStop(loadingMessage)
+                    util.window.loadingStop(loadingMessage)
                     if (options && options.cache) {
                         let cacheSlug = `${method}-${url}-${data ? JSON.stringify(data) : null}`
-                        self.cache.set(cacheSlug, result)
+                        self.cache.set(cacheSlug, { data: result.data })
                     }
                     return resolve(result)
                 })
@@ -120,7 +121,7 @@ class HttpClient {
                                 })
                         )
                     }
-                    window.loadingStop(loadingMessage)
+                    util.window.loadingStop(loadingMessage)
                     return resolve()
                 })
         })
