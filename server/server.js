@@ -3,18 +3,33 @@ const app = express()
 
 const settings = require('../common/settings')
 
+const pseudoTv = require('./pseudo-tv')
+const mediaTags = require('./media-tags')
+const mediaQuality = require('./media-quality')
+const embyItemSearch = require('../common/emby-item-search')
+
 const port = settings.snowbyServerPort
 
-app.get('/api/pseudo-tv/schedule/generate', (req, res) => {
-    res.send('Generating...')
+app.get('/api/pseudo-tv/schedule/generate', async (req, res) => {
+    res.send(await pseudoTV.generateSchedule())
 })
 
-app.get('/api/pseudo-tv/schedule', (req, res) => {
-    res.send("Here's the schedule")
+app.get('/api/pseudo-tv/schedule', async (req, res) => {
+    res.send(await pseudoTV.getSchedule())
 })
 
-app.get('/api/tags', (req, res) => {
-    res.send({ tags: 'tags' })
+app.get('/api/tags', async (req, res) => {
+    res.send(await mediaTags.getAll())
+})
+
+app.get('/api/media', async (req, res) => {
+    let params = {}
+    if (req.query.kinds !== 'all') {
+        params = {
+            IncludeItemTypes: req.query.kinds,
+        }
+    }
+    res.send({ items: await embyItemSearch.all(params) })
 })
 
 app.use(express.static('.'))
