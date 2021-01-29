@@ -1,4 +1,4 @@
-const ticks = require('./ticks')
+const ticks = require('../../common/ticks')
 const emby = require('../../common/emby-client')
 const settings = require('../../common/settings')
 const mpv = require('../service/mpv-client')

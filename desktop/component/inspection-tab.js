@@ -1,5 +1,5 @@
 const size = require('../media/size')
-const ticks = require('../media/ticks')
+const ticks = require('../../common/ticks')
 const { DateTime, Duration } = require('luxon')
 
 class InspectionTab {

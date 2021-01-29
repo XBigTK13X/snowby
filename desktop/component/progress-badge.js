@@ -1,5 +1,5 @@
 const util = require('../../common/util')
-const ticks = require('../media/ticks')
+const ticks = require('../../common/ticks')
 
 const render = (embyItem) => {
     if (util.queryParams().hideBadges) {

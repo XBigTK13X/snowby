@@ -1,5 +1,5 @@
 const settings = require('../../common/settings')
-const ticks = require('./ticks')
+const ticks = require('../../common/ticks')
 const player = require('../media/player')
 const emby = require('../../common/emby-client')
 const util = require('../../common/util')

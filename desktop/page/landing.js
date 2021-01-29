@@ -24,9 +24,6 @@ module.exports = () => {
             .join('')}</div>`
 
         let versionHtml = `v${settings.appVersion} built ${settings.versionDate}`
-        if (settings.adminEnabled) {
-            versionHtml = `<a href="admin.html">v${settings.appVersion} built ${settings.versionDate}</a>`
-        }
         if (settings.newVersionAvailable) {
             versionHtml += `<br/><div class="badge badge-best">New version available, v${settings.newVersion}</div>`
         }

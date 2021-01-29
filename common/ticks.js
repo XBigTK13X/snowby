@@ -1,4 +1,4 @@
-const settings = require('../../common/settings')
+const settings = require('./settings')
 
 const TEN_THOUSAND = 10000
 const TEN_MILLION = 10000000
