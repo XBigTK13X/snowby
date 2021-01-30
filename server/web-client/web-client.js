@@ -264,9 +264,49 @@ class PseudoTVControls {
 
     getCurrentProgramming() {
         apiClient.getCurrentProgramming().then((result) => {
+            let markup = `<table class="channel-guide">
+                <thead>
+                <tr data-category="HEADER">
+                    <th class="cell-small">Kind</th>
+                    <th class="cell-medium">Channel</th>
+                    <th class="cell-large">Now Playing</th>
+                    <th class="cell-small">Time</th>
+                    <th class="cell-large">Next Up</th>
+                    <th class="cell-small">Time</th>
+                    <th class="cell-small">Index</th>
+                </tr>
+                </thead>
+                <tbody>`
             for (let program of result.channels) {
-                console.log({ program })
+                let channel = program.channel
+                markup += `
+                <tr>
+                    <td class="cell-small">
+                        ${channel.Kind}
+                    </td>
+                    <td class="cell-medium">
+                        ${channel.ChannelName}
+                    </td>
+                    <td class="cell-large ellipsify">
+                        ${channel.Current.Name}
+                    </td>
+                    <td class="cell-small">
+                        ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
+                    </td>
+                    <td class="cell-large ellipsify">
+                        ${channel.Next.Name}
+                    </td>
+                    <td class="cell-small">
+                        ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
+                    </td>
+                    <td class="cell-small">
+                        ${channel.IndexDisplay}
+                    </td>
+                </tr>
+            `
             }
+            markup += '</tbody></table>'
+            $("#programming").html(markup)
         })
     }
 
@@ -280,6 +320,7 @@ class PseudoTVControls {
                 <button onclick="window.controls.pseudoTV.getCurrentProgramming()">Current Programming</button>
                 <br/>
                 <div id="progress-log"></div>
+                <div id="programming"></div>
             </div>
         `
     }
