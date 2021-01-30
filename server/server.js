@@ -59,6 +59,20 @@ app.get('/api/media', async (req, res) => {
     res.send({ items: await embyItemSearch.all(params) })
 })
 
+app.get('/api/media/movies', async(req, res)=>{
+    res.send({ items: await embyItemSearch.all({
+        IncludeItemTypes: 'Movie',
+        Fields: "MediaStreams,Path"
+    })})
+})
+
+app.get('/api/media/episodes', async(req, res)=>{
+    res.send({ items: await embyItemSearch.all({
+        IncludeItemTypes: 'Episode',
+        Fields: "MediaStreams,Path"
+    })})
+})
+
 app.use(express.static('.'))
 
 app.get('/', function (req, res) {

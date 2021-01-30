@@ -56,6 +56,14 @@ class ApiClient {
     getCurrentProgramming() {
         return this.get('/api/pseudo-tv/programming')
     }
+
+    loadMovies(){
+        return this.get('/api/media/movies')
+    }
+
+    loadEpisodes(){
+        return this.get('/api/media/episodes')
+    }
 }
 
 const apiClient = new ApiClient()
@@ -327,11 +335,54 @@ class PseudoTVControls {
 }
 
 class MediaAnalyzerControls {
-    constructor() {}
+    constructor() {
+        window.controls.mediaAnalyzer = this
+        this.embyItems = {
+            lookup: {}
+        }
+    }
+
+    loadEpisodes(){
+        apiClient.loadEpisodes().then(result=>{
+            let markup = ``
+            for(let episode of result.items){
+                this.embyItems.lookup[episode.Id] = episode
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${episode.Id})">${episode.Name}</div>`
+            }
+            $("#media-list").html(markup)
+        })
+    }
+
+    loadMovies(){
+        apiClient.loadMovies().then(result=>{
+            let markup = ``
+            for(let movie of result.items){
+                this.embyItems.lookup[movie.Id] = movie
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${movie.Id})">${movie.Name}</div>`
+            }
+            $("#media-list").html(markup)
+        })
+    }
+
+    inspect(embyItemId){
+        // Media source has file size
+        // MediaStreams has the different codecs
+        let embyItem = this.embyItems.lookup[embyItemId]
+        //console.log({embyItem})
+        let markup = `${embyItem.Type} - ${embyItem.Name} - ${embyItem.Path}`
+        $("#media-info").html(markup)
+    }
+
     render() {
         return `
         <div>
-            Media Analyzer Controls
+            <h1>
+                Media Analyzer Controls
+            </h1>
+            <button onclick="window.controls.mediaAnalyzer.loadEpisodes()">Load Episodes</button>
+            <button onclick="window.controls.mediaAnalyzer.loadMovies()">Load Movies</button>
+            <div id="media-info"></div>
+            <div id="media-list"></div>
         </div>
         `
     }
