@@ -37,3 +37,8 @@ input {
 .selected {
     border: 4px solid yellow;
 }
+
+table, tr, td, th {
+    border: 2px solid gray;
+    border-collapse: collapse;
+}
