@@ -59,18 +59,19 @@ app.get('/api/media', async (req, res) => {
     res.send({ items: await embyItemSearch.all(params) })
 })
 
-app.get('/api/media/movies', async(req, res)=>{
-    res.send({ items: await embyItemSearch.all({
-        IncludeItemTypes: 'Movie',
-        Fields: "MediaStreams,Path"
-    })})
+app.get('/api/media/movies', async (req, res) => {
+    res.send({
+        items: await mediaQuality.movies(),
+    })
 })
 
-app.get('/api/media/episodes', async(req, res)=>{
-    res.send({ items: await embyItemSearch.all({
-        IncludeItemTypes: 'Episode',
-        Fields: "MediaStreams,Path"
-    })})
+app.get('/api/media/episodes', async (req, res) => {
+    res.send({ items: await mediaQuality.episodes() })
+})
+
+app.get('/api/media/cache/clear', async (req, res) => {
+    mediaQuality.clearCache()
+    res.send({ complete: true })
 })
 
 app.use(express.static('.'))
