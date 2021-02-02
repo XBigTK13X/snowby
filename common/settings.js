@@ -22,6 +22,7 @@ let config = {
     keepAudioDeviceAwake: true,
     liveTvChannelUrlTemplates: null,
     liveTvRawM3U: null,
+    mediaQuality: null,
     menuBarVisible: false,
     mpvExePath: desktopPath('bin/mpv/mpv.exe'),
     mpvConfigFile: desktopPath('bin/mpv/mpv/mpv.conf'),
