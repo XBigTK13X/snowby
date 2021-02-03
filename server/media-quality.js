@@ -22,6 +22,7 @@ class EmbyListItem {
 
         const source = responseBody.MediaSources[0]
         this.FileSize = source.Size
+        this.DisplaySize = source.Size / ONE_BILLION
         this.RunTime = source.RunTimeTicks
         this.Codecs = {}
         for (let stream of responseBody.MediaStreams) {
@@ -63,6 +64,7 @@ const episodes = () => {
                     ShowSize: 0,
                     SeriesName: episode.SeriesName,
                     SeriesId: episode.SeriesId,
+                    EpisodeCount: 0,
                 }
             }
             if (!_.has(showsLookup[episode.SeriesName].Seasons, episode.SeasonName)) {
@@ -74,10 +76,13 @@ const episodes = () => {
             showsLookup[episode.SeriesName].Seasons[episode.SeasonName].Episodes.push(episode)
             showsLookup[episode.SeriesName].ShowSize += episode.FileSize / ONE_BILLION
             showsLookup[episode.SeriesName].Seasons[episode.SeasonName].Episodes.SeasonSize += episode.FileSize / ONE_BILLION
+            showsLookup[episode.SeriesName].EpisodeCount += 1
         }
         let showsList = []
         for (let key of Object.keys(showsLookup)) {
-            showsList.push(showsLookup[key])
+            let entry = showsLookup[key]
+            entry.SizePerEpisode = entry.ShowSize / entry.EpisodeCount
+            showsList.push(entry)
         }
         showsList.sort((a, b) => {
             return a.ShowSize > b.ShowSize ? -1 : 1
