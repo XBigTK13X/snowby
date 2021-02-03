@@ -346,12 +346,18 @@ class MediaAnalyzerControls {
         }
     }
 
+    pretty(num) {
+        return Math.round(100 * num) / 100
+    }
+
     loadEpisodes() {
         apiClient.loadEpisodes().then((result) => {
             let markup = ``
             for (let series of result.items) {
                 this.embyItems.lookup[series.SeriesId] = series
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">${series.SeriesName}</div>`
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">${
+                    series.SeriesName
+                } <br/> (${this.pretty(series.ShowSize)}GB) {${series.EpisodeCount}} [${this.pretty(series.SizePerEpisode)}GB]</div>`
             }
             $('#media-list').html(markup)
         })
@@ -362,7 +368,9 @@ class MediaAnalyzerControls {
             let markup = ``
             for (let movie of result.items) {
                 this.embyItems.lookup[movie.Id] = movie
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">${movie.Name}</div>`
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">${movie.Name}<br/>(${this.pretty(
+                    movie.DisplaySize
+                )}GB)</div>`
             }
             $('#media-list').html(markup)
         })
@@ -370,7 +378,7 @@ class MediaAnalyzerControls {
 
     inspectMovie(movieId) {
         let movie = this.embyItems.lookup[movieId]
-        let markup = `${movie.Name} - ${movie.FileSize / 1000000000}GB`
+        let markup = `${movie.Name} - ${movie.DisplaySize}GB`
         $('#media-info').html(markup)
     }
 
