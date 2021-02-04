@@ -120,11 +120,11 @@ class EmbyClient {
             })
     }
 
-    embyItems(parentId, searchParams) {
+    embyItems(parentId, searchParams, DataClass) {
         const query = util.queryString(searchParams)
         const url = `Users/${this.userId}/Items?${query}`
         return this.httpClient.get(url).then((itemsResponse) => {
-            return itemsResponse.data.Items.map((item) => new EmbyItem(item))
+            return itemsResponse.data.Items.map((item) => (DataClass ? new DataClass(item) : new EmbyItem(item)))
         })
     }
 
