@@ -22,7 +22,10 @@ input {
     font-size: 1em;
 }
 
-table, tr, td, th {
+table,
+tr,
+td,
+th {
     border: 2px solid gray;
     border-collapse: collapse;
     background-color: #eee;

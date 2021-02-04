@@ -1,48 +1,15 @@
-const STREAMING_LINKS = [
-    {
-        link: 'https://youtube.com',
-        image: 'youtube-logo.png',
-        title: 'YouTube',
-    },
-    {
-        link: 'https://www.amazon.com/gp/video/storefront',
-        image: 'amazon-logo.png',
-        title: 'Amazon',
-    },
-    {
-        link: 'https://www.twitch.tv/overwatchleague',
-        image: 'twitch-logo.png',
-        title: 'OWL (Twitch)',
-    },
-    {
-        link: 'https://crunchyroll.com',
-        image: 'crunchyroll-logo.png',
-        title: 'Crunchyroll',
-    },
-    {
-        link: 'https://disneyplus.com',
-        title: 'Disney+',
-    },
-    {
-        link: 'https://netflix.com',
-        title: 'Netflix',
-    },
-    {
-        link: 'https://play.google.com/movies',
-        title: 'Google Play',
-    },
-]
+const settings = require('../../common/settings')
 
 module.exports = () => {
     return new Promise((resolve, reject) => {
         const ExternalLink = require('../component/external-link')
         let menuEntries = []
 
-        STREAMING_LINKS.sort((a, b) => {
+        settings.streamingLinks.sort((a, b) => {
             return a.title > b.title ? 1 : -1
         })
 
-        for (let link of STREAMING_LINKS) {
+        for (let link of settings.streamingLinks) {
             menuEntries.push(new ExternalLink(link.title, link.link))
         }
 

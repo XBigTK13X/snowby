@@ -122,6 +122,7 @@ module.exports = (pageName, options) => {
                             .join('')}
                         </select>
                     </div>
+                    <br/>
                 `
                     profilePicker.innerHTML = pickerMarkup
                 }

@@ -14,6 +14,9 @@ class CastTab {
 
     render() {
         return new Promise((resolve) => {
+            if (!this.embyItem.People || !this.embyItem.People.length) {
+                return resolve('')
+            }
             let dedupe = {}
             let people = this.embyItem.People
             if (this.embyItem.Series && this.embyItem.Series.People) {

@@ -3,6 +3,7 @@ const EmbyPoster = require('../component/emby-poster')
 const EmbyTextItem = require('../component/emby-text-item')
 const EmbyThumbnail = require('../component/emby-thumbnail')
 const EmbyTvChannel = require('../component/emby-tv-channel')
+const ExternalLink = require('../component/external-link')
 const _ = require('lodash')
 const util = require('../../common/util')
 const settings = require('../../common/settings')
@@ -44,7 +45,16 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     person: (parent, children) => {
-        return renderGrid(EmbyPoster, parent, children)
+        let externals = ''
+        if (parent.ExternalUrls && parent.ExternalUrls.length > 0) {
+            externals =
+                '<div class="grid square-grid">' +
+                parent.ExternalUrls.map((x) => {
+                    return new ExternalLink(x.Name, x.Url).render()
+                }).join(' ') +
+                '</div>'
+        }
+        return externals + renderGrid(EmbyPoster, parent, children)
     },
     playlist: (parent, children) => {
         const generator = (child) => {
