@@ -64,6 +64,10 @@ class ApiClient {
     loadEpisodes() {
         return this.get('/api/media/episodes')
     }
+
+    clearCache() {
+        return this.get('/api/media/cache/clear')
+    }
 }
 
 const apiClient = new ApiClient()
@@ -345,9 +349,9 @@ class MediaAnalyzerControls {
     loadEpisodes() {
         apiClient.loadEpisodes().then((result) => {
             let markup = ``
-            for (let episode of result.items) {
-                this.embyItems.lookup[episode.Id] = episode
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${episode.Id})">${episode.Name}</div>`
+            for (let series of result.items) {
+                this.embyItems.lookup[series.SeriesId] = series
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">${series.SeriesName}</div>`
             }
             $('#media-list').html(markup)
         })
@@ -358,19 +362,26 @@ class MediaAnalyzerControls {
             let markup = ``
             for (let movie of result.items) {
                 this.embyItems.lookup[movie.Id] = movie
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${movie.Id})">${movie.Name}</div>`
+                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">${movie.Name}</div>`
             }
             $('#media-list').html(markup)
         })
     }
 
-    inspect(embyItemId) {
-        // Media source has file size
-        // MediaStreams has the different codecs
-        let embyItem = this.embyItems.lookup[embyItemId]
-        //console.log({embyItem})
-        let markup = `${embyItem.Type} - ${embyItem.Name} - ${embyItem.Path}`
+    inspectMovie(movieId) {
+        let movie = this.embyItems.lookup[movieId]
+        let markup = `${movie.Name} - ${movie.FileSize / 1000000000}GB`
         $('#media-info').html(markup)
+    }
+
+    inspectSeries(seriesId) {
+        let series = this.embyItems.lookup[seriesId]
+        let markup = `${series.SeriesName} - ${series.ShowSize}GB`
+        $('#media-info').html(markup)
+    }
+
+    clearCache() {
+        apiClient.clearCache()
     }
 
     render() {
@@ -381,6 +392,7 @@ class MediaAnalyzerControls {
             </h1>
             <button onclick="window.controls.mediaAnalyzer.loadEpisodes()">Load Episodes</button>
             <button onclick="window.controls.mediaAnalyzer.loadMovies()">Load Movies</button>
+            <button onclick="window.controls.mediaAnalyzer.clearCache()">Clear Cache</button>
             <div id="media-info"></div>
             <div id="media-list"></div>
         </div>

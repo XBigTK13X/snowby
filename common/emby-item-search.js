@@ -6,18 +6,18 @@ const SearchParams = {
     SortOrder: 'Ascending',
 }
 
-const embyItemsSearch = (embyClient, embyItemId, additionalSearchParams) => {
+const embyItemsSearch = (embyClient, embyItemId, additionalSearchParams, DataClass) => {
     let params = {
         ...SearchParams,
         ...additionalSearchParams,
     }
     return embyClient.connect().then(() => {
-        return embyClient.embyItems(embyItemId, params)
+        return embyClient.embyItems(embyItemId, params, DataClass)
     })
 }
 
-const all = (params) => {
-    return embyItemsSearch(emby, null, params)
+const all = (params, DataClass) => {
+    return embyItemsSearch(emby, null, params, DataClass)
 }
 
 module.exports = {
