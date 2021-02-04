@@ -15,6 +15,7 @@ module.exports = () => {
         const CastTab = require('../component/cast-tab')
         const ChapterTab = require('../component/chapter-tab')
         const ExtrasTab = require('../component/extras-tab')
+        const ExternalLinksTab = require('../component/external-links-tab')
 
         const progress = require('../media/progress')
         const emby = require('../../common/emby-client')
@@ -131,6 +132,7 @@ module.exports = () => {
                     new CastTab(embyItem, emby.client),
                     new ChapterTab(embyItem),
                     new ExtrasTab(embyItem),
+                    new ExternalLinksTab(embyItem),
                 ]
 
                 Promise.all(

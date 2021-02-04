@@ -57,11 +57,11 @@ class ApiClient {
         return this.get('/api/pseudo-tv/programming')
     }
 
-    loadMovies(){
+    loadMovies() {
         return this.get('/api/media/movies')
     }
 
-    loadEpisodes(){
+    loadEpisodes() {
         return this.get('/api/media/episodes')
     }
 }
@@ -314,7 +314,7 @@ class PseudoTVControls {
             `
             }
             markup += '</tbody></table>'
-            $("#programming").html(markup)
+            $('#programming').html(markup)
         })
     }
 
@@ -338,39 +338,39 @@ class MediaAnalyzerControls {
     constructor() {
         window.controls.mediaAnalyzer = this
         this.embyItems = {
-            lookup: {}
+            lookup: {},
         }
     }
 
-    loadEpisodes(){
-        apiClient.loadEpisodes().then(result=>{
+    loadEpisodes() {
+        apiClient.loadEpisodes().then((result) => {
             let markup = ``
-            for(let episode of result.items){
+            for (let episode of result.items) {
                 this.embyItems.lookup[episode.Id] = episode
                 markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${episode.Id})">${episode.Name}</div>`
             }
-            $("#media-list").html(markup)
+            $('#media-list').html(markup)
         })
     }
 
-    loadMovies(){
-        apiClient.loadMovies().then(result=>{
+    loadMovies() {
+        apiClient.loadMovies().then((result) => {
             let markup = ``
-            for(let movie of result.items){
+            for (let movie of result.items) {
                 this.embyItems.lookup[movie.Id] = movie
                 markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspect(${movie.Id})">${movie.Name}</div>`
             }
-            $("#media-list").html(markup)
+            $('#media-list').html(markup)
         })
     }
 
-    inspect(embyItemId){
+    inspect(embyItemId) {
         // Media source has file size
         // MediaStreams has the different codecs
         let embyItem = this.embyItems.lookup[embyItemId]
         //console.log({embyItem})
         let markup = `${embyItem.Type} - ${embyItem.Name} - ${embyItem.Path}`
-        $("#media-info").html(markup)
+        $('#media-info').html(markup)
     }
 
     render() {

@@ -7,8 +7,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.6.0',
-    versionDate: 'January 29, 2021',
+    appVersion: '3.6.1',
+    versionDate: 'February 03, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -32,6 +32,7 @@ let config = {
     snowbyServerPort: 24081,
     snowbyServerURL: null,
     windowBackgroundColor: '#010101',
+    streamingLinks: [],
     progressWatchedThreshold: {
         minPercent: 5,
         maxPercent: 90,
