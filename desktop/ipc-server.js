@@ -1,7 +1,7 @@
 const { ipcMain } = require('electron')
 const spawn = require('child_process').spawn
-const settings = require('../../common/settings')
-const util = require('../../common/util')
+const settings = require('../common/settings')
+const util = require('../common/util')
 const MpvSocket = require('./mpv-socket')
 const fs = require('fs')
 

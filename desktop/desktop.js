@@ -1,8 +1,8 @@
 const { app, BrowserWindow, nativeImage } = require('electron')
 const settings = require('../common/settings')
 const util = require('../common/util')
-const audio = require('./desktop/audio')
-const ipcServer = require('./desktop/ipc-server')
+const audio = require('./audio')
+const ipcServer = require('./ipc-server')
 
 const fs = require('fs')
 const logDirectory = settings.desktopPath('logs')

@@ -1,8 +1,8 @@
 //Modified from https://github.com/j-holub/Node-MPV
 
 const net = require('net')
-const settings = require('../../common/settings')
-const util = require('../../common/util')
+const settings = require('../common/settings')
+const util = require('../common/util')
 
 var mpv_socket_count = 0
 

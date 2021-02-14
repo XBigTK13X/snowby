@@ -1,6 +1,6 @@
-const settings = require('../../common/settings')
 const spawn = require('child_process').spawn
-const util = require('../../common/util')
+const settings = require('../common/settings')
+const util = require('../common/util')
 
 let audioProcess
 let resetProcess
