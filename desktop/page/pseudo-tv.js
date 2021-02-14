@@ -29,7 +29,6 @@ module.exports = () => {
         snowby
             .getProgramming()
             .then((result) => {
-                console.log({ result })
                 programming = result.channels
                 let channelMarkup = programming
                     .map((result, channelIndex) => {

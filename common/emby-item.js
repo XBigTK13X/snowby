@@ -20,6 +20,8 @@ module.exports = class EmbyItem {
         this.ForcedHref = options && options.href
         this.ForcedImageUrl = options && options.ForcedImageUrl
 
+        this.OriginalName = this.Name + ''
+
         this.ChannelCount = 1
 
         if (!this.CurrentProgram) {
