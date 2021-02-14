@@ -47,6 +47,7 @@ const shrink = (embyItem) => {
         RunTimeMinutes: ticks.embyToSeconds(embyItem.RunTimeTicks) / 60,
         SeriesName: embyItem.SeriesName,
         Path: embyItem.Path,
+        Title: embyItem.getTitle(),
     }
 }
 
@@ -368,12 +369,14 @@ const getChannelProgramming = (channelIndex) => {
             Kind: channelKind,
             ChannelName: cleanChannelName,
             Current: {
+                Title: currentProgram.Title,
                 Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
                 EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
                 StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE),
                 EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE),
             },
             Next: {
+                Title: nextProgram.Title,
                 Name: nextProgram.SeriesName ? nextProgram.SeriesName : nextProgram.Name,
                 EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
                 StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE),
