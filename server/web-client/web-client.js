@@ -344,33 +344,106 @@ class MediaAnalyzerControls {
         this.embyItems = {
             lookup: {},
         }
+        this.seriesList = []
+        this.movieList = []
+        this.activeSet = null
+        this.currentSort = null
+        this.sortDirection = 1
+        this.sortProps = {
+            'total-size': 'FileSize',
+            'episode-count': 'EpisodeCount',
+            'size-per-episode': 'SizePerEpisode',
+            'bits-per-second': 'BitsPerSecond',
+        }
     }
 
-    loadEpisodes() {
-        apiClient.loadEpisodes().then((result) => {
-            let markup = ``
-            for (let series of result.items) {
-                this.embyItems.lookup[series.SeriesId] = series
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">${series.SeriesName}</div>`
-            }
-            $('#media-list').html(markup)
-        })
+    pretty(num) {
+        return Math.round(100 * num) / 100
     }
 
-    loadMovies() {
-        apiClient.loadMovies().then((result) => {
-            let markup = ``
-            for (let movie of result.items) {
-                this.embyItems.lookup[movie.Id] = movie
-                markup += `<div class="list-item" onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">${movie.Name}</div>`
-            }
-            $('#media-list').html(markup)
+    megabitsPerSecond(bitsPerSecond) {
+        return (Math.round(bitsPerSecond / 10000) / 100).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+    }
+
+    async loadEpisodes(seriesList) {
+        if (!seriesList) {
+            this.seriesList = (await apiClient.loadEpisodes()).items
+        } else {
+            this.seriesList = seriesList
+        }
+        this.activeSet = this.seriesList
+
+        let markup = ``
+        for (let series of this.seriesList) {
+            this.embyItems.lookup[series.SeriesId] = series
+            markup += this.renderSeriesListItem(series)
+        }
+        $('#media-list').html(markup)
+    }
+
+    renderSeriesListItem(series) {
+        return `<div
+            class="list-item"
+            onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">
+                ${series.SeriesName}
+                <ul>
+                    <li>Total Size - ${this.pretty(series.ShowSize)}GB</li>
+                    <li>Episodes - ${series.EpisodeCount}</li>
+                    <li>Size / Episode - ${this.pretty(series.SizePerEpisode)}GB</li>
+                    <li>Bits Per Second - ${this.megabitsPerSecond(series.BitsPerSecond)} Mbps</li>
+                </ul>
+            </div>`
+    }
+
+    async loadMovies(movieList) {
+        if (!movieList) {
+            this.movieList = (await apiClient.loadMovies()).items
+        } else {
+            this.movieList = movieList
+        }
+        this.activeSet = this.movieList
+        let markup = ``
+        for (let movie of this.movieList) {
+            this.embyItems.lookup[movie.Id] = movie
+            markup += this.renderMovieListItem(movie)
+        }
+        $('#media-list').html(markup)
+    }
+
+    renderMovieListItem(movie) {
+        return `<div
+            class="list-item"
+            onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">
+            ${movie.Name}
+            <ul>
+                <li>Total Size - ${this.pretty(movie.DisplaySize)}GB</li>
+                <li>Bits Per Second - ${this.megabitsPerSecond(movie.BitsPerSecond)} Mbps</li>
+            </ul>
+        </div>`
+    }
+
+    sort(sortKind) {
+        if (this.currentSort === sortKind) {
+            this.sortDirection *= -1
+        } else {
+            this.sortDirection = 1
+        }
+        this.currentSort = sortKind
+        let sortDirection = this.sortDirection
+        let sortProp = this.sortProps[sortKind]
+        this.activeSet = this.activeSet.sort((a, b) => {
+            return a[sortProp] > b[sortProp] ? 1 * sortDirection : -1 * sortDirection
         })
+        if (this.activeSet === this.movieList) {
+            this.loadMovies(this.activeSet)
+        } else {
+            this.loadEpisodes(this.activeSet)
+        }
     }
 
     inspectMovie(movieId) {
         let movie = this.embyItems.lookup[movieId]
-        let markup = `${movie.Name} - ${movie.FileSize / 1000000000}GB`
+        let markup = `${movie.Name} - ${movie.DisplaySize}GB`
         $('#media-info').html(markup)
     }
 
@@ -394,6 +467,13 @@ class MediaAnalyzerControls {
             <button onclick="window.controls.mediaAnalyzer.loadMovies()">Load Movies</button>
             <button onclick="window.controls.mediaAnalyzer.clearCache()">Clear Cache</button>
             <div id="media-info"></div>
+            <div id="media-sort">
+                <h2>Sort Media</h2>
+                <button onclick="window.controls.mediaAnalyzer.sort('total-size')">Total Size</button>
+                <button onclick="window.controls.mediaAnalyzer.sort('bits-per-second')">Bits Per Second</button>
+                <button onclick="window.controls.mediaAnalyzer.sort('episode-count')">Episode Count</button>
+                <button onclick="window.controls.mediaAnalyzer.sort('size-per-episode')">Size Per Episode</button>
+            </div>
             <div id="media-list"></div>
         </div>
         `

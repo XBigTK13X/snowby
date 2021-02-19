@@ -2,7 +2,7 @@ const fs = require('fs')
 const _ = require('lodash')
 
 const settings = require('../common/settings')
-
+const ticks = require('../common/ticks')
 const embyItemSearch = require('../common/emby-item-search')
 
 const stringify = (data) => {
@@ -24,6 +24,7 @@ class EmbyListItem {
         this.FileSize = source.Size
         this.DisplaySize = source.Size / ONE_BILLION
         this.RunTime = source.RunTimeTicks
+        this.BitsPerSecond = this.FileSize / ticks.embyToSeconds(this.RunTime)
         this.Codecs = {}
         for (let stream of responseBody.MediaStreams) {
             if (stream.Type === 'Audio' || stream.Type === 'Video' || stream.Type === 'Subtitle') {
@@ -65,6 +66,7 @@ const episodes = () => {
                     SeriesName: episode.SeriesName,
                     SeriesId: episode.SeriesId,
                     EpisodeCount: 0,
+                    BitsPerSecond: 0,
                 }
             }
             if (!_.has(showsLookup[episode.SeriesName].Seasons, episode.SeasonName)) {
@@ -77,11 +79,13 @@ const episodes = () => {
             showsLookup[episode.SeriesName].ShowSize += episode.FileSize / ONE_BILLION
             showsLookup[episode.SeriesName].Seasons[episode.SeasonName].Episodes.SeasonSize += episode.FileSize / ONE_BILLION
             showsLookup[episode.SeriesName].EpisodeCount += 1
+            showsLookup[episode.SeriesName].BitsPerSecond += episode.BitsPerSecond
         }
         let showsList = []
         for (let key of Object.keys(showsLookup)) {
             let entry = showsLookup[key]
             entry.SizePerEpisode = entry.ShowSize / entry.EpisodeCount
+            entry.BitsPerSecond = entry.BitsPerSecond / entry.EpisodeCount
             showsList.push(entry)
         }
         showsList.sort((a, b) => {
