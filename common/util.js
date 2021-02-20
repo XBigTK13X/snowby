@@ -14,7 +14,7 @@ const swapConfig = async (settings) => {
         serverLog(`util - ${destination} already exists, skip generation`)
     }
     const mpvRootDir = settings.desktopPath('/bin/mpv')
-    const appRootDir = __dirname
+    const appRootDir = settings.desktopPath('')
     try {
         fs.unlinkSync(destination)
     } catch (swallow) {}
