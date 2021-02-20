@@ -36,11 +36,11 @@ module.exports = () => {
                         let progress = result.progress
                         let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
                         if (channel.Current.EpisodeName) {
-                            currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.EpisodeName}</span>`
+                            currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.Title} - ${channel.Current.EpisodeName}</span>`
                         }
                         let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
                         if (channel.Next.EpisodeName) {
-                            nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.EpisodeName}</span>`
+                            nextSubtitle = `<br/><span class="program-subtitle">${channel.Next.Title} - ${channel.Next.EpisodeName}</span>`
                         }
                         return `
                 <tr
