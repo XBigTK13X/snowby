@@ -82,6 +82,7 @@ const episodes = () => {
             showsLookup[episode.SeriesName].BitsPerSecond += episode.BitsPerSecond
         }
         let showsList = []
+
         for (let key of Object.keys(showsLookup)) {
             let entry = showsLookup[key]
             entry.SizePerEpisode = entry.ShowSize / entry.EpisodeCount
@@ -91,7 +92,11 @@ const episodes = () => {
         showsList.sort((a, b) => {
             return a.ShowSize > b.ShowSize ? -1 : 1
         })
-        resolve(showsList)
+        resolve({
+            items: showsList,
+            episodeCount: episodeList.length,
+            seriesCount: showsList.length,
+        })
     })
 }
 
@@ -116,7 +121,10 @@ const movies = () => {
         movieList.sort((a, b) => {
             return a.FileSize > b.FileSize ? -1 : 1
         })
-        resolve(movieList)
+        resolve({
+            items: movieList,
+            movieCount: movieList.length,
+        })
     })
 }
 

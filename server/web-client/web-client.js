@@ -362,7 +362,7 @@ class MediaAnalyzerControls {
     }
 
     megabitsPerSecond(bitsPerSecond) {
-        return (Math.round(bitsPerSecond / 10000) / 100).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+        return (Math.round(bitsPerSecond / 1000) / 100).toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
     }
 
     async loadEpisodes(seriesList) {
@@ -390,7 +390,7 @@ class MediaAnalyzerControls {
                     <li>Total Size - ${this.pretty(series.ShowSize)}GB</li>
                     <li>Episodes - ${series.EpisodeCount}</li>
                     <li>Size / Episode - ${this.pretty(series.SizePerEpisode)}GB</li>
-                    <li>Bits Per Second - ${this.megabitsPerSecond(series.BitsPerSecond)} Mbps</li>
+                    <li>Avg Quality - ${this.megabitsPerSecond(series.BitsPerSecond)} Mbps</li>
                 </ul>
             </div>`
     }
@@ -417,7 +417,7 @@ class MediaAnalyzerControls {
             ${movie.Name}
             <ul>
                 <li>Total Size - ${this.pretty(movie.DisplaySize)}GB</li>
-                <li>Bits Per Second - ${this.megabitsPerSecond(movie.BitsPerSecond)} Mbps</li>
+                <li>Quality - ${this.megabitsPerSecond(movie.BitsPerSecond)} Mbps</li>
             </ul>
         </div>`
     }
@@ -468,9 +468,9 @@ class MediaAnalyzerControls {
             <button onclick="window.controls.mediaAnalyzer.clearCache()">Clear Cache</button>
             <div id="media-info"></div>
             <div id="media-sort">
-                <h2>Sort Media</h2>
+                <h2>Sort Media <span id="media-count"></span></h2>
                 <button onclick="window.controls.mediaAnalyzer.sort('total-size')">Total Size</button>
-                <button onclick="window.controls.mediaAnalyzer.sort('bits-per-second')">Bits Per Second</button>
+                <button onclick="window.controls.mediaAnalyzer.sort('bits-per-second')">Quality</button>
                 <button onclick="window.controls.mediaAnalyzer.sort('episode-count')">Episode Count</button>
                 <button onclick="window.controls.mediaAnalyzer.sort('size-per-episode')">Size Per Episode</button>
             </div>
@@ -488,7 +488,7 @@ const sections = {
 
 const loadControls = (sectionKey) => {
     let controls = sections[sectionKey]
-    $('#currentControls').html(controls.render())
+    $('#current-controls').html(controls.render())
 }
 
 let landingPage = `
@@ -501,7 +501,7 @@ ${Object.keys(sections)
     })
     .join('')}
     <br/>
-    <div id="currentControls"></div>
+    <div id="current-controls"></div>
 </div>
 `
 
