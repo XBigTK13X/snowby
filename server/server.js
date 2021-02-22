@@ -60,13 +60,11 @@ app.get('/api/media', async (req, res) => {
 })
 
 app.get('/api/media/movies', async (req, res) => {
-    res.send({
-        items: await mediaQuality.movies(),
-    })
+    res.send(await mediaQuality.movies())
 })
 
 app.get('/api/media/episodes', async (req, res) => {
-    res.send({ items: await mediaQuality.episodes() })
+    res.send(await mediaQuality.episodes())
 })
 
 app.get('/api/media/cache/clear', async (req, res) => {
