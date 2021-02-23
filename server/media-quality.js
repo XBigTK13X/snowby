@@ -13,11 +13,18 @@ const ONE_BILLION = 1000000000
 
 class EmbyListItem {
     constructor(responseBody) {
+        this.Codecs = {}
+        if (!responseBody.Path) {
+            //console.log({ responseBody })
+            return
+        }
         this.Id = responseBody.Id
         this.Name = responseBody.Name
         this.SeriesName = responseBody.SeriesName
         this.SeasonName = responseBody.SeasonName
         this.Path = responseBody.Path
+        let lowerPath = this.Path.toLowerCase()
+        this.Remuxed = lowerPath.indexOf('remux') !== -1
         this.SeriesId = responseBody.SeriesId
 
         const source = responseBody.MediaSources[0]
@@ -25,14 +32,21 @@ class EmbyListItem {
         this.DisplaySize = source.Size / ONE_BILLION
         this.RunTime = source.RunTimeTicks
         this.BitsPerSecond = this.FileSize / ticks.embyToSeconds(this.RunTime)
-        this.Codecs = {}
         for (let stream of responseBody.MediaStreams) {
             if (stream.Type === 'Audio' || stream.Type === 'Video' || stream.Type === 'Subtitle') {
                 if (!_.has(this.Codecs, stream.Type)) {
                     this.Codecs[stream.Type] = []
                 }
-                this.Codecs[stream.Type].push(stream.Codec)
+                this.Codecs[stream.Type].push({
+                    Codec: stream.Codec,
+                    Language: stream.Language,
+                })
             }
+        }
+        this.Resolution = {
+            Width: this.Codecs['Video'][0].Width,
+            Heigh: this.Codecs['Video'][0].Height,
+            Quality: lowerPath.indexOf('1080p') !== -1 ? '1080p' : lowerPath.indexOf('2160p') !== -1 ? '2160p' : 'Unknown',
         }
     }
 }
@@ -58,6 +72,7 @@ const episodes = () => {
         console.log('Processing data')
         let showsLookup = {}
         let done = false
+        let subtitleCount = 0
         for (let episode of episodeList) {
             if (!_.has(showsLookup, episode.SeriesName)) {
                 showsLookup[episode.SeriesName] = {
@@ -80,6 +95,9 @@ const episodes = () => {
             showsLookup[episode.SeriesName].Seasons[episode.SeasonName].Episodes.SeasonSize += episode.FileSize / ONE_BILLION
             showsLookup[episode.SeriesName].EpisodeCount += 1
             showsLookup[episode.SeriesName].BitsPerSecond += episode.BitsPerSecond
+            if (episode.Codecs['Subtitle']) {
+                subtitleCount += 1
+            }
         }
         let showsList = []
 
@@ -94,8 +112,11 @@ const episodes = () => {
         })
         resolve({
             items: showsList,
-            episodeCount: episodeList.length,
-            seriesCount: showsList.length,
+            stats: {
+                episodeCount: episodeList.length,
+                seriesCount: showsList.length,
+                subtitleCount,
+            },
         })
     })
 }
@@ -118,12 +139,37 @@ const movies = () => {
             )
             fs.writeFileSync(settings.mediaQuality.moviesFile, stringify(movieList))
         }
+        let remuxCount = {
+            '2160p': 0,
+            '1080p': 0,
+            Unknown: 0,
+        }
+        let totalCount = {
+            '2160p': 0,
+            '1080p': 0,
+            Unknown: 0,
+        }
+        let subtitleCount = 0
+        for (let movie of movieList) {
+            if (movie.Remuxed) {
+                remuxCount[movie.Resolution.Quality] += 1
+            }
+            totalCount[movie.Resolution.Quality] += 1
+            if (movie.Codecs['Subtitle']) {
+                subtitleCount += 1
+            }
+        }
         movieList.sort((a, b) => {
             return a.FileSize > b.FileSize ? -1 : 1
         })
         resolve({
             items: movieList,
-            movieCount: movieList.length,
+            stats: {
+                remuxCount,
+                totalCount,
+                movieCount: movieList.length,
+                subtitleCount,
+            },
         })
     })
 }

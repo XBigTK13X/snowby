@@ -22,6 +22,10 @@ input {
     font-size: 1em;
 }
 
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
 table,
 tr,
 td,
@@ -51,4 +55,9 @@ ul {
 
 .selected {
     border: 4px solid yellow;
+}
+
+.stats {
+    text-align: left;
+    margin-left: 10vw;
 }

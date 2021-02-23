@@ -278,14 +278,14 @@ class PseudoTVControls {
         apiClient.getCurrentProgramming().then((result) => {
             let markup = `<table class="channel-guide">
                 <thead>
-                <tr data-category="HEADER">
-                    <th class="cell-small">Kind</th>
-                    <th class="cell-medium">Channel</th>
-                    <th class="cell-large">Now Playing</th>
-                    <th class="cell-small">Time</th>
-                    <th class="cell-large">Next Up</th>
-                    <th class="cell-small">Time</th>
-                    <th class="cell-small">Index</th>
+                <tr>
+                    <th>Kind</th>
+                    <th>Channel</th>
+                    <th>Now Playing</th>
+                    <th>Time</th>
+                    <th>Next Up</th>
+                    <th>Time</th>
+                    <th>Index</th>
                 </tr>
                 </thead>
                 <tbody>`
@@ -293,25 +293,25 @@ class PseudoTVControls {
                 let channel = program.channel
                 markup += `
                 <tr>
-                    <td class="cell-small">
+                    <td>
                         ${channel.Kind}
                     </td>
-                    <td class="cell-medium">
+                    <td>
                         ${channel.ChannelName}
                     </td>
-                    <td class="cell-large ellipsify">
+                    <td>
                         ${channel.Current.Name}
                     </td>
-                    <td class="cell-small">
+                    <td>
                         ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
                     </td>
-                    <td class="cell-large ellipsify">
+                    <td>
                         ${channel.Next.Name}
                     </td>
-                    <td class="cell-small">
+                    <td>
                         ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
                     </td>
-                    <td class="cell-small">
+                    <td>
                         ${channel.IndexDisplay}
                     </td>
                 </tr>
@@ -367,59 +367,96 @@ class MediaAnalyzerControls {
 
     async loadEpisodes(seriesList) {
         if (!seriesList) {
-            this.seriesList = (await apiClient.loadEpisodes()).items
+            let seriesResponse = await apiClient.loadEpisodes()
+            this.seriesStats = seriesResponse.stats
+            this.seriesList = seriesResponse.items
         } else {
             this.seriesList = seriesList
         }
         this.activeSet = this.seriesList
 
-        let markup = ``
+        let markup = `
+            <table>
+            <thead>
+                <th>Name</th>
+                <th>Size (GB)</th>
+                <th>Episodes</th>
+                <th>Size / Episode (GB)</th>
+                <th>Avg Quality (Mbps)</th>
+            </thead>
+            <tbody>
+        `
         for (let series of this.seriesList) {
             this.embyItems.lookup[series.SeriesId] = series
             markup += this.renderSeriesListItem(series)
         }
+        markup += '</tbody></table>'
+        let statsMarkup = `
+            Total Series Count: ${this.seriesStats.seriesCount}
+            <br/>
+            Total Episode Count: ${this.seriesStats.episodeCount}
+            <br/>
+            Episodes With Subtitles: ${this.seriesStats.subtitleCount}
+        `
         $('#media-list').html(markup)
+        $('#media-stats').html(statsMarkup)
     }
 
     renderSeriesListItem(series) {
-        return `<div
-            class="list-item"
-            onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">
-                ${series.SeriesName}
-                <ul>
-                    <li>Total Size - ${this.pretty(series.ShowSize)}GB</li>
-                    <li>Episodes - ${series.EpisodeCount}</li>
-                    <li>Size / Episode - ${this.pretty(series.SizePerEpisode)}GB</li>
-                    <li>Avg Quality - ${this.megabitsPerSecond(series.BitsPerSecond)} Mbps</li>
-                </ul>
+        return `<tr onClick="window.controls.mediaAnalyzer.inspectSeries(${series.SeriesId})">
+                    <td>${series.SeriesName}</td>
+                    <td>${this.pretty(series.ShowSize)}</td>
+                    <td>${series.EpisodeCount}</td>
+                    <td>${this.pretty(series.SizePerEpisode)}</td>
+                    <td>${this.megabitsPerSecond(series.BitsPerSecond)}</td>
+                </tr>
             </div>`
     }
 
     async loadMovies(movieList) {
         if (!movieList) {
-            this.movieList = (await apiClient.loadMovies()).items
+            let movieResponse = await apiClient.loadMovies()
+            this.movieList = movieResponse.items
+            this.movieStats = movieResponse.stats
         } else {
             this.movieList = movieList
         }
         this.activeSet = this.movieList
-        let markup = ``
+        let markup = `
+            <table>
+            <thead>
+                <th>Name</th>
+                <th>Total Size (GB)</th>
+                <th>Quality (Mbps)</th>
+            </thead>
+            <tbody>
+        `
         for (let movie of this.movieList) {
             this.embyItems.lookup[movie.Id] = movie
             markup += this.renderMovieListItem(movie)
         }
+        let statsMarkup = `
+            Total Movie Count: ${this.movieList.length}
+            <br/>
+            Movies With Subtitles: ${this.movieStats.subtitleCount}
+            <br/>
+            Remux Resolution Tally:
+                Unknown (${this.movieStats.remuxCount.Unknown}/${this.movieStats.totalCount.Unknown}),
+                1080p (${this.movieStats.remuxCount['1080p']}/${this.movieStats.totalCount['1080p']}),
+                4K (${this.movieStats.remuxCount['2160p']}/${this.movieStats.totalCount['2160p']})
+        `
+        markup += '</tbody></table>'
+
         $('#media-list').html(markup)
+        $('#media-stats').html(statsMarkup)
     }
 
     renderMovieListItem(movie) {
-        return `<div
-            class="list-item"
-            onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">
-            ${movie.Name}
-            <ul>
-                <li>Total Size - ${this.pretty(movie.DisplaySize)}GB</li>
-                <li>Quality - ${this.megabitsPerSecond(movie.BitsPerSecond)} Mbps</li>
-            </ul>
-        </div>`
+        return `<tr onClick="window.controls.mediaAnalyzer.inspectMovie(${movie.Id})">
+                <td>${movie.Name}</td>
+                <td>${this.pretty(movie.DisplaySize)}</td>
+                <td>${this.megabitsPerSecond(movie.BitsPerSecond)}</td>
+            </tr>`
     }
 
     sort(sortKind) {
@@ -467,6 +504,7 @@ class MediaAnalyzerControls {
             <button onclick="window.controls.mediaAnalyzer.loadMovies()">Load Movies</button>
             <button onclick="window.controls.mediaAnalyzer.clearCache()">Clear Cache</button>
             <div id="media-info"></div>
+            <div id="media-stats" class="stats"></div>
             <div id="media-sort">
                 <h2>Sort Media <span id="media-count"></span></h2>
                 <button onclick="window.controls.mediaAnalyzer.sort('total-size')">Total Size</button>
