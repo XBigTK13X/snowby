@@ -65,8 +65,12 @@ class ApiClient {
         return this.get('/api/media/episodes')
     }
 
-    clearCache() {
+    clearMediaQualityCache() {
         return this.get('/api/media/cache/clear')
+    }
+
+    clearPseudoTvCache() {
+        return this.get('/api/pseudo-tv/cache/clear')
     }
 }
 
@@ -322,6 +326,10 @@ class PseudoTVControls {
         })
     }
 
+    clearCache() {
+        apiClient.clearPseudoTvCache()
+    }
+
     render() {
         return `
             <div>
@@ -330,6 +338,7 @@ class PseudoTVControls {
                 </h1>
                 <button onclick="window.controls.pseudoTV.generateSchedule()">Generate Schedule</button>
                 <button onclick="window.controls.pseudoTV.getCurrentProgramming()">Current Programming</button>
+                <button onclick="window.controls.pseudoTV.clearCache()">Clear Cache</button>
                 <br/>
                 <div id="progress-log"></div>
                 <div id="programming"></div>
@@ -491,7 +500,7 @@ class MediaAnalyzerControls {
     }
 
     clearCache() {
-        apiClient.clearCache()
+        apiClient.clearMediaQualityCache()
     }
 
     render() {
