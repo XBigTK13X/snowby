@@ -13,7 +13,8 @@ const port = settings.snowbyServerPort
 app.use(express.json())
 
 app.get('/api/pseudo-tv/schedule/generate', async (req, res) => {
-    res.send(await pseudoTV.generateSchedule())
+    pseudoTV.generateSchedule()
+    res.send({ running: true })
 })
 
 app.get('/api/pseudo-tv/schedule/generate/status', async (req, res) => {
@@ -69,6 +70,11 @@ app.get('/api/media/episodes', async (req, res) => {
 
 app.get('/api/media/cache/clear', async (req, res) => {
     mediaQuality.clearCache()
+    res.send({ complete: true })
+})
+
+app.get('/api/pseudo-tv/cache/clear', async (req, res) => {
+    pseudoTV.clearCache()
     res.send({ complete: true })
 })
 

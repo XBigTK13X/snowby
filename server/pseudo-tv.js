@@ -25,7 +25,7 @@ const SearchParams = {
     Recursive: true,
     SortBy: 'ProductionYear,PremiereDate,SortName',
     SortOrder: 'Ascending',
-    Fields: 'ProductionYear,MediaStreams,Path',
+    Fields: 'ProductionYear,MediaStreams,Path,Genres',
 }
 
 const stringify = (data) => {
@@ -94,7 +94,7 @@ const readEmbyTVRatings = (emby) => {
         for (let rating of settings.ratings.series) {
             let items = await embyItemsSearch(emby, settings.ratingParents.series, {
                 IncludeItemTypes: 'Series',
-                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres',
                 OfficialRatings: `TV-${rating}`,
             })
             content.push({ Name: 'TV Rating--' + rating, Items: items })
@@ -110,7 +110,7 @@ const readEmbyGenres = (emby) => {
         for (let genre of genres) {
             let items = await embyItemsSearch(emby, genre.Id, {
                 IncludeItemTypes: 'Movie,Series',
-                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres',
                 Genres: genre.Name,
             })
             content.push({ Name: 'Genre--' + genre.Name, Items: items })
@@ -164,7 +164,7 @@ const readEmbyDecades = (emby) => {
                 }
                 let items = await embyItemsSearch(emby, null, {
                     IncludeItemTypes: kind.kind,
-                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path',
+                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres',
                     Years: years,
                 })
                 content.push({ Name: `Period ${kind.name}--${name}`, Items: items })
@@ -194,8 +194,23 @@ const readEmbyContent = async (emby) => {
 }
 
 const ingestChannelContent = (emby, channel, channelContent) => {
+    let showSpecials = false
     return new Promise(async (resolve) => {
         if (channelContent.Type === 'Series') {
+            let isAnime = false
+            if (channelContent.GenreItems) {
+                isAnime =
+                    channelContent.GenreItems.filter((x) => {
+                        return x.Name === 'Anime'
+                    }).length > 0
+            } else if (!isAnime && channelContent.Genres) {
+                channelContent.Genres.filter((x) => {
+                    return x === 'Anime'
+                }).length > 0
+            }
+            if (isAnime && channel.Name.indexOf('Anime') === -1) {
+                return resolve()
+            }
             let episodes = []
             let seasons = (await emby.seasons(channelContent.Id)).filter((x) => {
                 return !x.NextUp
@@ -204,11 +219,12 @@ const ingestChannelContent = (emby, channel, channelContent) => {
             for (let season of seasons) {
                 if (season.Name === 'Specials') {
                     specials = season
+                } else {
+                    let newEpisodes = await emby.episodes(season.SeriesId, season.Id)
+                    episodes = episodes.concat(newEpisodes)
                 }
-                let newEpisodes = await emby.episodes(season.SeriesId, season.Id)
-                episodes = episodes.concat(newEpisodes)
             }
-            if (specials !== null) {
+            if (showSpecials && specials !== null) {
                 let newEpisodes = await emby.episodes(specials.SeriesId, specials.Id)
                 episodes = episodes.concat(newEpisodes)
             }
@@ -268,6 +284,7 @@ const scheduleChannel = async (channelName, channel) => {
             MaxRunTimeMinutes: blockTime,
             Items: channelItems,
         }
+
         resolve()
     })
 }
@@ -414,8 +431,30 @@ const getScheduleStatus = () => {
     }
 }
 
+const clearCache = () => {
+    if (fs.existsSync(settings.pseudoTV.embyContentFile)) {
+        fs.unlinkSync(settings.pseudoTV.embyContentFile)
+    }
+    if (fs.existsSync(settings.pseudoTV.catalogFile)) {
+        fs.unlinkSync(settings.pseudoTV.catalogFile)
+    }
+    if (fs.existsSync(settings.pseudoTV.scheduleFile)) {
+        fs.unlinkSync(settings.pseudoTV.scheduleFile)
+    }
+    lookup = {}
+    schedule = {}
+    channelNamesCache = null
+    programmingSchedule = null
+    generationMutex = false
+    progressMax = 0
+    progressCount = 0
+    progressMessage = ''
+    generationComplete = false
+}
+
 module.exports = {
     generateSchedule,
     currentProgramming,
     getScheduleStatus,
+    clearCache,
 }
