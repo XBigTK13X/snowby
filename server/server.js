@@ -21,12 +21,9 @@ app.get('/api/pseudo-tv/schedule/generate/status', async (req, res) => {
     res.send(await pseudoTV.getScheduleStatus())
 })
 
-app.get('/api/pseudo-tv/schedule', async (req, res) => {
-    res.send(await pseudoTV.getSchedule())
-})
-
 app.get('/api/pseudo-tv/programming', async (req, res) => {
-    res.send(await pseudoTV.currentProgramming())
+    let timeZone = req.query.timeZone.replace(/--/g, '/')
+    res.send(await pseudoTV.currentProgramming(timeZone))
 })
 
 app.get('/api/tags', async (req, res) => {

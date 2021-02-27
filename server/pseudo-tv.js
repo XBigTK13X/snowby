@@ -337,14 +337,10 @@ const getChannel = (channelIndex) => {
     return { channel: programmingSchedule[channelNamesCache[channelIndex]], name: channelNamesCache[channelIndex] }
 }
 
-const getChannelProgramming = (channelIndex) => {
-    if (channelIndex === undefined) {
-        channelIndex = 0
-    }
+const PROGRAMMING_START = DateTime.fromISO('2020-12-19', { zone: 'utc' }) // This is the canonical start of the television schedule loop
+
+const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
     return new Promise((resolve) => {
-        const start = DateTime.fromISO('2020-12-19')
-        const end = DateTime.local()
-        let diffMinutes = end.diff(start, 'minutes').toObject().minutes
         if (!programmingSchedule) {
             programmingSchedule = JSON.parse(fs.readFileSync(settings.pseudoTV.scheduleFile))
         }
@@ -360,7 +356,7 @@ const getChannelProgramming = (channelIndex) => {
 
         let blockMinutes = diffMinutes % programmingSchedule[channelName].MaxRunTimeMinutes
         let blockLoops = Math.floor(diffMinutes / channel.MaxRunTimeMinutes)
-        let blockStartTime = start.plus({ minutes: blockLoops * channel.MaxRunTimeMinutes })
+        let blockStartTime = PROGRAMMING_START.setZone(timeZone).plus({ minutes: blockLoops * channel.MaxRunTimeMinutes })
         let cleanChannelName = channelName.replace(':', '')
         let parts = cleanChannelName.split('--')
         cleanChannelName = parts[1]
@@ -389,15 +385,15 @@ const getChannelProgramming = (channelIndex) => {
                 Title: currentProgram.Title,
                 Name: currentProgram.SeriesName ? currentProgram.SeriesName : currentProgram.Name,
                 EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
-                StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE),
-                EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE),
+                StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
+                EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
             },
             Next: {
                 Title: nextProgram.Title,
                 Name: nextProgram.SeriesName ? nextProgram.SeriesName : nextProgram.Name,
                 EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
-                StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE),
-                EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE),
+                StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
+                EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
             },
             Playlist: channelPlaylist,
             StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
@@ -408,14 +404,16 @@ const getChannelProgramming = (channelIndex) => {
     })
 }
 
-const currentProgramming = () => {
+const currentProgramming = (timeZone) => {
     return new Promise(async (resolve) => {
+        const end = DateTime.local().setZone(timeZone)
+        let diffMinutes = end.diff(PROGRAMMING_START.setZone(timeZone), 'minutes').toObject().minutes
         let results = []
-        let result = await getChannelProgramming()
+        let result = await getChannelProgramming(0, diffMinutes, timeZone)
         results.push(result)
         let currentIndex = 1
         while (currentIndex < result.channelCount) {
-            results.push(await getChannelProgramming(currentIndex))
+            results.push(await getChannelProgramming(currentIndex, diffMinutes, timeZone))
             currentIndex++
         }
         resolve({ channels: results })

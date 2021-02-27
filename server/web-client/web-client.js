@@ -54,7 +54,7 @@ class ApiClient {
     }
 
     getCurrentProgramming() {
-        return this.get('/api/pseudo-tv/programming')
+        return this.get('/api/pseudo-tv/programming?timeZone=America--Chicago')
     }
 
     loadMovies() {

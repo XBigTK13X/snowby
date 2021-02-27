@@ -7,7 +7,7 @@ class SnowbyClient {
     }
 
     getProgramming() {
-        return this.httpClient.get('/api/pseudo-tv/programming').then((result) => {
+        return this.httpClient.get('/api/pseudo-tv/programming?timeZone=America--Chicago').then((result) => {
             return result.data
         })
     }
