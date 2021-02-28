@@ -10,10 +10,14 @@
 		<button text="App\nExit" ontap="exitApp" />
 	</row>
 	<row>
-		<button text="Sub -" ontap="subSyncMinus" />
-		<button text="Sub +" ontap="subSyncPlus" />
-		<button text="Audio -" ontap="audioSyncMinus" />
-		<button text="Audio +" ontap="audioSyncPlus" />
+		<button text="Subtitles\nSmaller" ontap="subSizeMinus" />
+		<button text="Subtitles\nLarger" ontap="subSizePlus" />
+	</row>
+	<row>
+		<button text="Subtitles\nSooner" ontap="subSyncMinus" />
+		<button text="Subtitles\nLater" ontap="subSyncPlus" />
+		<button text="Audio\nSooner" ontap="audioSyncMinus" />
+		<button text="Audio\nLater" ontap="audioSyncPlus" />
 	</row>
 	<row>
 		<button text="Snowby" ontap="focusSnowby" />

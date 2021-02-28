@@ -14,6 +14,9 @@ class CastTab {
 
     render() {
         return new Promise((resolve) => {
+            if (this.embyItem.Series && this.embyItem.Series.People && this.embyItem.Series.People.length) {
+                this.embyItem.People = this.embyItem.Series.People
+            }
             if (!this.embyItem.People || !this.embyItem.People.length) {
                 return resolve('')
             }

@@ -11,6 +11,12 @@ screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 load-unsafe-playlists=yes
 
+[stereo-audio]
+audio-channels=stereo
+
+[compress-audio]
+af=dynaudnorm=g=5:f=250:r=0.9:p=0.5
+
 [480p]
 glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Upscale_CNN_L_x2_Denoise.glsl"
 glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Auto_Downscale_Pre_x4.glsl"

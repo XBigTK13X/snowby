@@ -64,6 +64,14 @@ actions.subSyncPlus = function()
 	kb.stroke('shift','z')
 end
 
+actions.subSizeMinus = function()
+	kb.stroke('ctrl','i')
+end
+
+actions.subSizePlus = function()
+	kb.stroke('ctrl','shift','i')
+end
+
 actions.audioSyncMinus = function()
 	kb.stroke('ctrl','z')
 end
