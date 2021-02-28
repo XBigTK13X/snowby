@@ -10,14 +10,11 @@ const swapConfig = async (settings) => {
     serverLog('util - Prepping mpv.conf')
     const source = settings.desktopPath('bin/mpv/mpv/mpv.conf.template')
     const destination = settings.desktopPath('bin/mpv/mpv/mpv.conf')
-    if (fs.existsSync(destination)) {
-        serverLog(`util - ${destination} already exists, skip generation`)
-    }
     const mpvRootDir = settings.desktopPath('/bin/mpv')
     const appRootDir = settings.desktopPath('')
-    try {
+    if (fs.existsSync(destination)) {
         fs.unlinkSync(destination)
-    } catch (swallow) {}
+    }
     profiles = ['default']
     const reader = fs.createReadStream(source)
     const writer = fs.createWriteStream(destination)
