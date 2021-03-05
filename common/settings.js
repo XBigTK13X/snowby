@@ -103,6 +103,7 @@ let config = {
         'Cozi TV': 'COZI',
         'KSMO-TV': 'MyNetworkTV',
         theGrio: 'Grio',
+        CourtTV: 'CourtTV',
     },
 }
 

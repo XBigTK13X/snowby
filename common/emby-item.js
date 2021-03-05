@@ -148,7 +148,13 @@ module.exports = class EmbyItem {
 
         this.ChannelCategory = parts[0]
         this.ChannelName = parts[1]
-        this.ChannelName = this.ChannelName.replace(' FHD', '')
+        try {
+            this.ChannelName = this.ChannelName.replace(' FHD', '')
+        } catch {
+            console.log('Failed to parse channel ' + this.Name)
+            this.ChannelName = this.Name
+        }
+
         this.ChannelSlug = this.ChannelName
         if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
             this.ChannelSlug = this.ChannelCategory + ' - ' + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
