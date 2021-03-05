@@ -202,7 +202,7 @@ module.exports = {
             navbar.render({
                 parentId: embyItem.SeriesId,
                 parentName: 'Series',
-                enableTableView: true
+                enableTableView: true,
             })
             return emby.episodes(embyItem.ParentId, embyItem.Id)
         },

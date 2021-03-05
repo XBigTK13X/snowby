@@ -125,15 +125,14 @@ module.exports = {
         return renderGeneratedGrid(generator, parent, children)
     },
     table: (parent, children) => {
-        window.selectEmbyItemTable = (embyItemId, itemKind)=>{
-            if(itemKind === 'Episode' || itemKind === 'Movie'){
+        window.selectEmbyItemTable = (embyItemId, itemKind) => {
+            if (itemKind === 'Episode' || itemKind === 'Movie') {
                 window.location.href = `./play-media.html?embyItemId=${embyItemId}`
             } else {
                 window.location.href = `./emby-items.html?embyItemId=${embyItemId}`
             }
-
         }
-        const generator = (child)=>{
+        const generator = (child) => {
             return `<tr
                     class="clickable"
                     onclick="window.selectEmbyItemTable(${child.Id},'${child.Type}'); return false;"

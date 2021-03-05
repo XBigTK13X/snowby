@@ -57,7 +57,7 @@ module.exports = {
 		      </a>
 			`
         }
-        if(options.enableTableView){
+        if (options.enableTableView) {
             let tableViewParams = util.queryParams()
             if (!tableViewParams.tableView) {
                 tableViewParams.tableView = true

@@ -36,7 +36,7 @@ const getHandler = (emby, itemId) => {
         return emby.embyItem(itemId).then((embyItem) => {
             navbar.render({
                 showToggleButton: embyItem.isCollection(),
-                enableTableView: true
+                enableTableView: true,
             })
             if (embyItem.Type === 'Genre') {
                 return resolve({ handler: handlers.genre, item: embyItem })

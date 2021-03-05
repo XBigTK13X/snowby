@@ -2,7 +2,7 @@ module.exports = () => {
     let embyItem
     return new Promise((resolve) => {
         const _ = require('lodash')
-    const emby = require('../../common/emby-client')
+        const emby = require('../../common/emby-client')
         const util = require('../../common/util')
         const windowPosition = require('../service/window-position')
         const mediaPlayer = require('../media/player')
@@ -54,7 +54,7 @@ module.exports = () => {
                 return handler.getChildren(emby.client, parent)
             })
             .then((children) => {
-                if(util.queryParams().tableView){
+                if (util.queryParams().tableView) {
                     handler.render = renderers.table
                 }
                 const renderedHtml = handler.render(parent, children)
@@ -97,7 +97,7 @@ module.exports = () => {
                 resolve({
                     ...pageOptions,
                     enableRandomChoice: true,
-                    enableTableView: true
+                    enableTableView: true,
                 })
             })
     })
