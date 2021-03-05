@@ -47,7 +47,7 @@ let config = {
     timeout: {
         hdrActivate: 1000,
         loadingMessage: 3000,
-        delaySeek: 200,
+        delaySeek: 1000,
     },
     tileDimension: {
         channelLogo: {
