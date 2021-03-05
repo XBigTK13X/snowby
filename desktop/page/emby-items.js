@@ -2,12 +2,12 @@ module.exports = () => {
     let embyItem
     return new Promise((resolve) => {
         const _ = require('lodash')
-        const emby = require('../../common/emby-client')
-        const navbar = require('../component/navbar')
+    const emby = require('../../common/emby-client')
         const util = require('../../common/util')
         const windowPosition = require('../service/window-position')
         const mediaPlayer = require('../media/player')
         const settings = require('../../common/settings')
+        const renderers = require('../component/renderers')
 
         const queryParams = util.queryParams()
 
@@ -16,7 +16,6 @@ module.exports = () => {
         let handlerMap = require('../component/handler-map')
         let handler
         let parent
-        let enableRandom = true
 
         emby.client
             .connect()
@@ -55,6 +54,9 @@ module.exports = () => {
                 return handler.getChildren(emby.client, parent)
             })
             .then((children) => {
+                if(util.queryParams().tableView){
+                    handler.render = renderers.table
+                }
                 const renderedHtml = handler.render(parent, children)
                 if (children.length) {
                     document.getElementById('emby-items').innerHTML = renderedHtml
@@ -94,7 +96,8 @@ module.exports = () => {
                 const pageOptions = handler.pageOptions ? handler.pageOptions : {}
                 resolve({
                     ...pageOptions,
-                    enableRandomChoice: enableRandom,
+                    enableRandomChoice: true,
+                    enableTableView: true
                 })
             })
     })

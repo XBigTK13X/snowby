@@ -1,6 +1,7 @@
 const handlers = require('./handlers')
 const navbar = require('../component/navbar')
 const _ = require('lodash')
+const util = require('../../common/util')
 
 const collectionHandlers = {
     boxsets: handlers.collections,
@@ -35,6 +36,7 @@ const getHandler = (emby, itemId) => {
         return emby.embyItem(itemId).then((embyItem) => {
             navbar.render({
                 showToggleButton: embyItem.isCollection(),
+                enableTableView: true
             })
             if (embyItem.Type === 'Genre') {
                 return resolve({ handler: handlers.genre, item: embyItem })
