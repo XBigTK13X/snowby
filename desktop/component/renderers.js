@@ -124,6 +124,34 @@ module.exports = {
         }
         return renderGeneratedGrid(generator, parent, children)
     },
+    table: (parent, children) => {
+        window.selectEmbyItemTable = (embyItemId, itemKind)=>{
+            if(itemKind === 'Episode' || itemKind === 'Movie'){
+                window.location.href = `./play-media.html?embyItemId=${embyItemId}`
+            } else {
+                window.location.href = `./emby-items.html?embyItemId=${embyItemId}`
+            }
+
+        }
+        const generator = (child)=>{
+            return `<tr
+                    class="clickable"
+                    onclick="window.selectEmbyItemTable(${child.Id},'${child.Type}'); return false;"
+                >
+                <td>${child.getTitle()} - ${child.Name}</td>
+            </tr>`
+        }
+        return `
+            <table>
+            <thead>
+                <th>Name</th>
+            </thead>
+            <tbody>
+                ${children.map(generator).join('')}
+            </tbody>
+            </table>
+        `
+    },
     tags: (parent, children) => {
         const generator = (child) => {
             let poster = new EmbyPoster(child)

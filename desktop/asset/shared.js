@@ -74,11 +74,11 @@ module.exports = (pageName, options) => {
 
         require('../component/navbar').render(options)
 
-        require(`../page/${pageName}`)().then((result) => {
+        require(`../page/${pageName}`)().then((pageOptions) => {
             util.loadTooltips()
 
-            if (result) {
-                if (result.enableRandomChoice) {
+            if (pageOptions) {
+                if (pageOptions.enableRandomChoice) {
                     window.randomChoice = () => {
                         const choices = document.querySelectorAll('[data-target="random-action"]')
                         if (choices && choices.length > 0) {
@@ -87,15 +87,15 @@ module.exports = (pageName, options) => {
                     }
                     document.getElementById('random-choice-button').setAttribute('style', '')
                 }
-                if (result.enableProfilePicker) {
+                if (pageOptions.enableProfilePicker) {
                     let profilePicker = document.getElementById('profile-picker')
                     const queryParams = util.queryParams()
                     const player = require('../media/player')
                     if (queryParams.mediaProfile) {
                         player.setProfile(queryParams.mediaProfile)
                     } else {
-                        player.setProfile(result.defaultMediaProfile)
-                        queryParams.mediaProfile = result.defaultMediaProfile
+                        player.setProfile(pageOptions.defaultMediaProfile)
+                        queryParams.mediaProfile = pageOptions.defaultMediaProfile
                     }
                     window.changeProfile = (target) => {
                         player.setProfile(target.value)

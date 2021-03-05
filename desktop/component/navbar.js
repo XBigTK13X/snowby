@@ -57,6 +57,21 @@ module.exports = {
 		      </a>
 			`
         }
+        if(options.enableTableView){
+            let tableViewParams = util.queryParams()
+            if (!tableViewParams.tableView) {
+                tableViewParams.tableView = true
+            } else {
+                delete tableViewParams.tableView
+            }
+            const tableViewUrl = `emby-items.html?${util.queryString(tableViewParams)}`
+            navbarContent += `<a onclick="window.reloadPage('${tableViewUrl}'); return false;" href="#" id="table-view-toggle">
+                <div class="navbar-button">
+                  Table
+                </div>
+            </a>`
+        }
+
         if (options.parentId) {
             navbarContent += `
               <a href="emby-items.html?embyItemId=${options.parentId}">
