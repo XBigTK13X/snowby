@@ -54,10 +54,11 @@ module.exports = () => {
                 return handler.getChildren(emby.client, parent)
             })
             .then((children) => {
+                let renderer = handler.render
                 if (util.queryParams().tableView) {
-                    handler.render = renderers.table
+                    renderer = renderers.table
                 }
-                const renderedHtml = handler.render(parent, children)
+                const renderedHtml = renderer(parent, children)
                 if (children.length) {
                     document.getElementById('emby-items').innerHTML = renderedHtml
                 } else {
@@ -97,7 +98,6 @@ module.exports = () => {
                 resolve({
                     ...pageOptions,
                     enableRandomChoice: true,
-                    enableTableView: true,
                 })
             })
     })
