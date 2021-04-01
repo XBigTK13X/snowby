@@ -11,25 +11,24 @@ screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 load-unsafe-playlists=yes
 
-[compress-audio]
-af=dynaudnorm=g=5:f=250:r=0.7:p=0.5
-
 [stereo-audio]
 audio-channels=stereo
 
+[compress-audio]
+af="acompressor=ratio=4,loudnorm"
+
 [dim-subtitles]
-sub-ass=no
-sub-font="Montara Gothic"
-sub-bold=yes
-sub-font-size=42
-sub-spacing=0.8
-font-color="#838383"
-sub-border-color="#2D2D2D"
-sub-blur=0.25
-sub-shadow-color="#00101010"
-sub-shadow-offset=1.5
-sub-border-size=2
-sub-pos=93
+sub-ass-override=force
+sub-color="0.7/0.7/0.7"
+sub-border-color="0.2/0.2/0.2"
+sub-shadow-color="0.0/0.0/0.0"
+
+[comp-audio-and-dim-subs]
+af="acompressor=ratio=4,loudnorm"
+sub-ass-override=force
+sub-color="0.7/0.7/0.7"
+sub-border-color="0.2/0.2/0.2"
+sub-shadow-color="0.0/0.0/0.0"
 
 [anime4k]
 glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Denoise_Bilateral_Mode.glsl"
