@@ -21,3 +21,7 @@ There are also a few features it provides outside of Emby's core functionality.
 - Pseudo TV channel generation and playback
 - Video content profiles for custom graphics filtering
 - Aggregating IPTV channels in a schedule view
+
+## Helpful Links
+
+- [ffmpeg filter docs](https://ffmpeg.org/ffmpeg-filters.html)
