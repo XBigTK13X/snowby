@@ -182,7 +182,7 @@ const tag = (tagId) => {
         let itemList = await embyItemSearch.all(
             {
                 TagIds: tagId,
-                IncludeItemTypes: 'Movie,Episode',
+                IncludeItemTypes: 'Movie,Series',
                 Fields: 'MediaStreams,Path',
             },
             EmbyListItem

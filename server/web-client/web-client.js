@@ -21,6 +21,10 @@ class ApiClient {
         })
     }
 
+    getVersion() {
+        return this.get('/api/version')
+    }
+
     getEmbyItems(kinds) {
         return this.get(`/api/media?kinds=${kinds ? kinds : 'all'}`)
     }
@@ -606,6 +610,7 @@ const loadControls = (sectionKey) => {
 }
 
 let landingPage = `
+<div id="version"></div>
 <div>
 ${Object.keys(sections)
     .map((sectionKey) => {
@@ -621,4 +626,8 @@ ${Object.keys(sections)
 
 $(() => {
     $('#app').html(landingPage)
+    apiClient.getVersion().then((data) => {
+        let markup = `v${data.version} - ${data.date}`
+        $('#version').html(markup)
+    })
 })
