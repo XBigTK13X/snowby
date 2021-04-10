@@ -38,7 +38,7 @@ module.exports = class EmbyItem {
                 StartTime: DateTime.fromISO(this.CurrentProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
                 EndTime: DateTime.fromISO(this.CurrentProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
             }
-            if (this.Programs[0].EpisodeTitle) {
+            if (this.Programs && this.Programs[0].EpisodeTitle) {
                 this.CurrentProgram.EpisodeName = this.Programs[0].EpisodeTitle
             }
         }

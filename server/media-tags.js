@@ -46,7 +46,12 @@ const reapplyAll = () => {
         })
         for (let tag of tags) {
             reapplyProgress++
-            await cascadeTag(tag)
+            try {
+                await cascadeTag(tag)
+            } catch (err) {
+                console.log(`Unable to reapply tag ${tag}`)
+                console.log({ err })
+            }
         }
         reapplyMutex = false
         reapplyMessage = 'All tags reapplied successfully'

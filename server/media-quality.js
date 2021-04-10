@@ -14,39 +14,41 @@ const ONE_BILLION = 1000000000
 class EmbyListItem {
     constructor(responseBody) {
         this.Codecs = {}
-        if (!responseBody.Path) {
-            //console.log({ responseBody })
-            return
-        }
         this.Id = responseBody.Id
         this.Name = responseBody.Name
         this.SeriesName = responseBody.SeriesName
         this.SeasonName = responseBody.SeasonName
         this.Path = responseBody.Path
-        let lowerPath = this.Path.toLowerCase()
-        this.Remuxed = lowerPath.indexOf('remux') !== -1
+        let quality = null
+        if (this.Path) {
+            let lowerPath = this.Path.toLowerCase()
+            this.Remuxed = lowerPath.indexOf('remux') !== -1
+            quality = lowerPath.indexOf('1080p') !== -1 ? '1080p' : lowerPath.indexOf('2160p') !== -1 ? '2160p' : 'Unknown'
+        }
         this.SeriesId = responseBody.SeriesId
 
-        const source = responseBody.MediaSources[0]
-        this.FileSize = source.Size
-        this.DisplaySize = source.Size / ONE_BILLION
-        this.RunTime = source.RunTimeTicks
-        this.BitsPerSecond = this.FileSize / ticks.embyToSeconds(this.RunTime)
-        for (let stream of responseBody.MediaStreams) {
-            if (stream.Type === 'Audio' || stream.Type === 'Video' || stream.Type === 'Subtitle') {
-                if (!_.has(this.Codecs, stream.Type)) {
-                    this.Codecs[stream.Type] = []
+        if (responseBody.MediaSources) {
+            const source = responseBody.MediaSources[0]
+            this.FileSize = source.Size
+            this.DisplaySize = source.Size / ONE_BILLION
+            this.RunTime = source.RunTimeTicks
+            this.BitsPerSecond = this.FileSize / ticks.embyToSeconds(this.RunTime)
+            for (let stream of responseBody.MediaStreams) {
+                if (stream.Type === 'Audio' || stream.Type === 'Video' || stream.Type === 'Subtitle') {
+                    if (!_.has(this.Codecs, stream.Type)) {
+                        this.Codecs[stream.Type] = []
+                    }
+                    this.Codecs[stream.Type].push({
+                        Codec: stream.Codec,
+                        Language: stream.Language,
+                    })
                 }
-                this.Codecs[stream.Type].push({
-                    Codec: stream.Codec,
-                    Language: stream.Language,
-                })
             }
-        }
-        this.Resolution = {
-            Width: this.Codecs['Video'][0].Width,
-            Heigh: this.Codecs['Video'][0].Height,
-            Quality: lowerPath.indexOf('1080p') !== -1 ? '1080p' : lowerPath.indexOf('2160p') !== -1 ? '2160p' : 'Unknown',
+            this.Resolution = {
+                Width: this.Codecs['Video'][0].Width,
+                Heigh: this.Codecs['Video'][0].Height,
+                Quality: quality,
+            }
         }
     }
 }
@@ -174,6 +176,29 @@ const movies = () => {
     })
 }
 
+const tag = (tagId) => {
+    return new Promise(async (resolve) => {
+        console.log(`Searching emby for content tagged ${tagId}`)
+        let itemList = await embyItemSearch.all(
+            {
+                TagIds: tagId,
+                IncludeItemTypes: 'Movie,Episode',
+                Fields: 'MediaStreams,Path',
+            },
+            EmbyListItem
+        )
+        itemList.sort((a, b) => {
+            return a.FileSize > b.FileSize ? -1 : 1
+        })
+        resolve({
+            items: itemList,
+            stats: {
+                itemCount: itemList.length,
+            },
+        })
+    })
+}
+
 const clearCache = () => {
     if (fs.existsSync(settings.mediaQuality.episodesFile)) {
         fs.unlinkSync(settings.mediaQuality.episodesFile)
@@ -186,5 +211,6 @@ const clearCache = () => {
 module.exports = {
     episodes,
     movies,
+    tag,
     clearCache,
 }

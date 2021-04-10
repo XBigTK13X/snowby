@@ -30,6 +30,14 @@ app.get('/api/tags', async (req, res) => {
     res.send(await mediaTags.getAll())
 })
 
+app.get('/api/tags/media', async (req, res) => {
+    let params = {
+        TagIds: req.query.tagId,
+        IncludeItemTypes: 'Movie,Series',
+    }
+    res.send({ items: await embyItemSearch.all(params) })
+})
+
 app.get('/api/tags/reapply', async (req, res) => {
     mediaTags.reapplyAll()
     res.send({ running: true })
@@ -63,6 +71,10 @@ app.get('/api/media/movies', async (req, res) => {
 
 app.get('/api/media/episodes', async (req, res) => {
     res.send(await mediaQuality.episodes())
+})
+
+app.get('/api/media/tag', async (req, res) => {
+    res.send(await mediaQuality.tag(req.query.tagId))
 })
 
 app.get('/api/media/cache/clear', async (req, res) => {

@@ -29,6 +29,10 @@ class ApiClient {
         return this.get(`/api/tags`)
     }
 
+    getTaggedEmbyItems(tagId) {
+        return this.get(`/api/tags/media?tagId=${tagId}`)
+    }
+
     reapplyAllTags() {
         return this.get('/api/tags/reapply')
     }
@@ -63,6 +67,10 @@ class ApiClient {
 
     loadEpisodes() {
         return this.get('/api/media/episodes')
+    }
+
+    loadTag(tagId) {
+        return this.get(`/api/media/tag?tagId=${tagId}`)
     }
 
     clearMediaQualityCache() {
@@ -126,7 +134,15 @@ class TagControls {
         this.showAllMedia()
     }
 
-    showTaggedMedia() {}
+    showTaggedMedia() {
+        apiClient.getTaggedEmbyItems(this.currentTag.Id).then((result) => {
+            this.media.list = result.items
+            for (let item of this.media.list) {
+                this.media.lookup[item.Id] = item.Name
+            }
+            this.refreshMediaItems()
+        })
+    }
 
     showAllMedia() {
         apiClient.getEmbyItems('Folder,Series').then((result) => {
@@ -247,7 +263,7 @@ class TagControls {
 
                 </h2>
                 <div>
-                    <!--<button onClick="window.controls.tag.showTaggedMedia()">Show Tagged Media</button>-->
+                    <button onClick="window.controls.tag.showTaggedMedia()">Show Tagged Media</button>
                     <button onClick="window.controls.tag.showAllMedia()">Show All Media</button>
                     <button onClick="window.controls.tag.tagSelectedMedia()">Tag Selected Media</button>
                 </div>
@@ -468,6 +484,54 @@ class MediaAnalyzerControls {
             </tr>`
     }
 
+    async loadTags() {
+        return apiClient.getTags().then((result) => {
+            this.tags = result.tags
+            let markup = result.tags
+                .sort((a, b) => {
+                    return a.Name > b.Name ? 1 : -1
+                })
+                .map((x) => {
+                    const displayName = x.Name.replace(':', '<br/>')
+                    return `<div class="list-item" onClick="window.controls.mediaAnalyzer.loadTag(${x.Id})">${displayName}</div>`
+                })
+                .join('')
+            $('#media-list').html('<hr/><h3>Tags</h3>' + markup)
+        })
+    }
+
+    async loadTag(tagId, taggedList) {
+        if (!taggedList || this.lastTagId !== tagId) {
+            let taggedResponse = await apiClient.loadTag(tagId)
+            this.taggedList = taggedResponse.items
+            this.taggedStats = taggedResponse.stats
+            this.lastTagId = tagId
+        } else {
+            this.taggedList = this.taggedList
+        }
+        this.activeSet = this.taggedList
+
+        let markup = `<table><thead>
+            <th>Name</th>
+            <th>Total Size (GB)</th>
+            <th>Quality (Mbps)</th>
+        </thead><tbody>`
+        for (let item of this.taggedList) {
+            this.embyItems.lookup[item.Id] = item
+            markup += this.renderTagListItem(item)
+        }
+        markup += `</tbody></table>`
+        $('#media-list').html(markup)
+    }
+
+    renderTagListItem(item) {
+        return `<tr>
+            <td>${item.Name}</td>
+            <td>${this.pretty(item.DisplaySize)}</td>
+            <td>${this.megabitsPerSecond(item.BitsPerSecond)}</td>
+        </tr>`
+    }
+
     sort(sortKind) {
         if (this.currentSort === sortKind) {
             this.sortDirection *= -1
@@ -482,6 +546,8 @@ class MediaAnalyzerControls {
         })
         if (this.activeSet === this.movieList) {
             this.loadMovies(this.activeSet)
+        } else if (this.activeSet === this.taggedList) {
+            this.loadTag(this.lastTagId, this.activeSet)
         } else {
             this.loadEpisodes(this.activeSet)
         }
@@ -511,6 +577,7 @@ class MediaAnalyzerControls {
             </h1>
             <button onclick="window.controls.mediaAnalyzer.loadEpisodes()">Load Episodes</button>
             <button onclick="window.controls.mediaAnalyzer.loadMovies()">Load Movies</button>
+            <button onclick="window.controls.mediaAnalyzer.loadTags()">Load Tag</button>
             <button onclick="window.controls.mediaAnalyzer.clearCache()">Clear Cache</button>
             <div id="media-info"></div>
             <div id="media-stats" class="stats"></div>
