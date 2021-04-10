@@ -87,6 +87,13 @@ app.get('/api/pseudo-tv/cache/clear', async (req, res) => {
     res.send({ complete: true })
 })
 
+app.get('/api/version', async (req, res) => {
+    res.send({
+        version: settings.appVersion,
+        date: settings.versionDate,
+    })
+})
+
 app.use(express.static('.'))
 
 app.get('/', function (req, res) {
@@ -98,5 +105,5 @@ app.all('*', (req, res) => {
 })
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Example app listening at http://0.0.0.0:${port}`)
+    console.log(`Snowby version ${settings.appVersion} listening at http://0.0.0.0:${port}`)
 })
