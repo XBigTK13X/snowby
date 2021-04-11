@@ -13,6 +13,7 @@ load-unsafe-playlists=yes
 
 [stereo-audio]
 audio-channels=stereo
+af="acompressor=ratio=4,loudnorm"
 
 [compress-audio]
 af="acompressor=ratio=4,loudnorm"

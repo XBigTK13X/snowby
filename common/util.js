@@ -15,7 +15,7 @@ const swapConfig = async (settings) => {
     if (fs.existsSync(destination)) {
         fs.unlinkSync(destination)
     }
-    profiles = ['default']
+    profiles = [settings.defaultMediaProfile]
     const reader = fs.createReadStream(source)
     const writer = fs.createWriteStream(destination)
     const lineReader = readLine.createInterface({ input: reader, crlfDelay: Infinity })

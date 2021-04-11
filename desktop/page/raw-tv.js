@@ -82,7 +82,7 @@ module.exports = () => {
             markup += `</tbody></table>`
             document.getElementById('channels').innerHTML = markup
             document.getElementById('header').innerHTML = 'Raw TV'
-            resolve({ enableProfilePicker: true })
+            resolve()
         })
     })
 }

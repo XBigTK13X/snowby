@@ -33,6 +33,7 @@
         "jquery-lazy": "1.7.10",
         "lodash": "4.17.15",
         "luxon": "^1.25.0",
+        "micromodal": "^0.4.6",
         "query-string": "6.13.1",
         "tippy.js": "5.2.1"
     }

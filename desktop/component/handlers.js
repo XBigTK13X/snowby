@@ -106,13 +106,11 @@ module.exports = {
     },
     liveTv: {
         getChildren: (emby) => {
+            navbar.render({ profilePicker: true })
             return emby.tvGuide()
         },
         render: renderers.tvChannels,
         title: 'Live TV',
-        pageOptions: {
-            enableProfilePicker: true,
-        },
     },
     movieList: {
         getChildren: (emby, embyItem) => {
