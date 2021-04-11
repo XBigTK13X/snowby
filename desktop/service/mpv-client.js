@@ -120,7 +120,7 @@ class MpvClient {
         this.lastProfile = profile
         this.profile = profile
         this.defaultOptions = []
-        if (profile && profile !== 'default') {
+        if (profile && profile !== settings.defaultMediaProfile) {
             this.defaultOptions.push(`--profile=${this.profile}`)
         }
     }

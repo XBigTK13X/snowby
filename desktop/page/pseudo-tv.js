@@ -100,8 +100,6 @@ module.exports = () => {
             .catch((err) => {
                 window.loadingStop(channelLoadingMessage)
             })
-        resolve({
-            enableProfilePicker: true,
-        })
+        resolve()
     })
 }

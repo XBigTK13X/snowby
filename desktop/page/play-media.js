@@ -217,10 +217,7 @@ module.exports = () => {
                         window.playMedia(0)
                     }
 
-                    resolve({
-                        enableProfilePicker: true,
-                        defaultMediaProfile: 'default',
-                    })
+                    resolve()
                 })
             })
     })

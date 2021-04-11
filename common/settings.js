@@ -7,11 +7,12 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.6.12',
-    versionDate: 'April 10, 2021',
+    appVersion: '3.6.13',
+    versionDate: 'April 11, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
+    defaultMediaProfile: 'default',
     embyServerURL: null,
     embyTrackProgress: true,
     enableHdrToggle: true,

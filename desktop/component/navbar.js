@@ -1,4 +1,5 @@
 const util = require('../../common/util')
+const settings = require('../../common/settings')
 
 const fidelityBadge = require('./fidelity-badge')
 
@@ -22,6 +23,7 @@ module.exports = {
                   </a>
             `
         }
+
         if (options.showToggleButton) {
             let watchedParams = util.queryParams()
             if (!watchedParams.showWatched) {
@@ -84,7 +86,7 @@ module.exports = {
             let seasonParams = util.queryParams()
             if (seasonParams.hasSeason) {
                 navbarContent += `
-                  <a href="" onclick="()=>{window.reloadPage(emby-items.html?embyItemId=${window.seasonId}}()">
+                  <a href="" onclick="()=>{window.reloadPage(emby-items.html?embyItemId=${window.seasonId}}(); return false;">
                     <div class="navbar-button">
                       Season
                     </div>
@@ -97,10 +99,50 @@ module.exports = {
                     Random
                 </div>
             </a></div>`
+        if (options.profilePicker) {
+            navbarContent += '<div id="profile-picker"></div>'
+        }
         const element = document.getElementById('navbar')
         if (!element) {
             throw new Error("Unable to find an element with ID 'navbar'")
         }
-        document.getElementById('navbar').innerHTML = navbarContent
+        element.innerHTML = navbarContent
+        if (options.profilePicker) {
+            let profilePicker = document.getElementById('profile-picker')
+            const queryParams = util.queryParams()
+            const player = require('../media/player')
+            if (queryParams.mediaProfile) {
+                player.setProfile(queryParams.mediaProfile)
+            } else {
+                player.setProfile(settings.defaultMediaProfile)
+                queryParams.mediaProfile = settings.defaultMediaProfile
+            }
+            window.changeProfile = (target) => {
+                player.setProfile(target.value)
+                const newParams = util.queryParams()
+                newParams.mediaProfile = target.value
+                const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
+                window.reloadPage(url)
+            }
+            const pickerMarkup = `
+            <div>
+                <p>Select a media profile to use.</p>
+                <select onChange="window.changeProfile(this)">
+                ${util
+                    .browserGetMediaProfiles()
+                    .map((profile, ii) => {
+                        return `
+                        <option value="${profile}" ${queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''}/>
+                        ${profile}
+                        </option>
+                    `
+                    })
+                    .join('')}
+                </select>
+            </div>
+            <br/>
+        `
+            profilePicker.innerHTML = pickerMarkup
+        }
     },
 }

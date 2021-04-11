@@ -87,45 +87,6 @@ module.exports = (pageName, options) => {
                     }
                     document.getElementById('random-choice-button').setAttribute('style', '')
                 }
-                if (pageOptions.enableProfilePicker) {
-                    let profilePicker = document.getElementById('profile-picker')
-                    const queryParams = util.queryParams()
-                    const player = require('../media/player')
-                    if (queryParams.mediaProfile) {
-                        player.setProfile(queryParams.mediaProfile)
-                    } else {
-                        player.setProfile(pageOptions.defaultMediaProfile)
-                        queryParams.mediaProfile = pageOptions.defaultMediaProfile
-                    }
-                    window.changeProfile = (target) => {
-                        player.setProfile(target.value)
-                        const newParams = util.queryParams()
-                        newParams.mediaProfile = target.value
-                        const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
-                        window.reloadPage(url)
-                    }
-                    const pickerMarkup = `
-                    <div>
-                        <p>Select a media profile to use.</p>
-                        <select onChange="window.changeProfile(this)">
-                        ${util
-                            .browserGetMediaProfiles()
-                            .map((profile, ii) => {
-                                return `
-                                <option value="${profile}" ${
-                                    queryParams.mediaProfile && profile === queryParams.mediaProfile ? 'selected="true"' : ''
-                                }/>
-                                ${profile}
-                                </option>
-                            `
-                            })
-                            .join('')}
-                        </select>
-                    </div>
-                    <br/>
-                `
-                    profilePicker.innerHTML = pickerMarkup
-                }
             }
             window.$lazyLoad = () => {
                 $('.lazy').Lazy()
