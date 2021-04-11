@@ -80,6 +80,17 @@ module.exports = {
                 </div>
               </a>
             `
+        } else {
+            let seasonParams = util.queryParams()
+            if (seasonParams.hasSeason) {
+                navbarContent += `
+                  <a href="" onclick="()=>{window.reloadPage(emby-items.html?embyItemId=${window.seasonId}}()">
+                    <div class="navbar-button">
+                      Season
+                    </div>
+                  </a>
+                `
+            }
         }
         navbarContent += `<a id="random-choice-button" style="display:none;" href="" onclick="window.randomChoice();return false">
                 <div class="navbar-button">

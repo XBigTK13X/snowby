@@ -93,13 +93,17 @@ class HttpClient {
                 }
             }
             let loadingMessage = 'Making web request to ' + url + '.'
-            util.window.loadingStart(loadingMessage)
+            if (options && !options.quiet) {
+                util.window.loadingStart(loadingMessage)
+            }
             return this.client[method](url, data)
                 .then((result) => {
                     if (settings.debugApiCalls && options && !options.quiet) {
                         util.clientLog('httpClient - result ' + JSON.stringify({ method, url, data, result, config: this.config }))
                     }
-                    util.window.loadingStop(loadingMessage)
+                    if (options && !options.quiet) {
+                        util.window.loadingStop(loadingMessage)
+                    }
                     if (options && options.cache) {
                         let cacheSlug = `${method}-${url}-${data ? JSON.stringify(data) : null}`
                         self.cache.set(cacheSlug, { data: result.data })
@@ -121,7 +125,9 @@ class HttpClient {
                                 })
                         )
                     }
-                    util.window.loadingStop(loadingMessage)
+                    if (options && !options.quiet) {
+                        util.window.loadingStop(loadingMessage)
+                    }
                     return resolve()
                 })
         })

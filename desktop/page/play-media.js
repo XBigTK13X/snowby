@@ -35,10 +35,7 @@ module.exports = () => {
             })
             .then((embyItem) => {
                 if (embyItem.Type === 'Episode') {
-                    navbar.render({
-                        parentId: embyItem.SeasonId,
-                        parentName: 'Season',
-                    })
+                    window.seasonId = embyItem.ParentId
                 }
 
                 document.getElementById('mark-watched-button').onclick = (event) => {

@@ -75,6 +75,7 @@ module.exports = () => {
                 let title = handler.title || (parent && parent.Name)
                 if (
                     queryParams.embyItemId === 'next-up' ||
+                    queryParams.tagName ||
                     (children.length > 0 && parent && parent.Type !== 'Series' && parent.Type !== 'BoxSet' && parent.CollectionType !== 'livetv')
                 ) {
                     title += ` (${children.length} ${children.length === 1 ? ' item' : ' items'})`

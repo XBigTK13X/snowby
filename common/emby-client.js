@@ -180,7 +180,7 @@ class EmbyClient {
             payload.PlaybackPositionTicks = 0
             payload.Played = true
         }
-        return this.httpClient.post(url, payload).then(() => {
+        return this.httpClient.post(url, payload, { quiet: true }).then(() => {
             this.lastProgressUpdate = {
                 embyItemId,
                 playbackPositionTicks,
