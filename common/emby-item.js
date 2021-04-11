@@ -82,6 +82,9 @@ module.exports = class EmbyItem {
 
         if (this.IsPlayable) {
             this.Href = `play-media.html?embyItemId=${this.Id}`
+            if (this.Type === 'Episode') {
+                this.Href += '&hasSeason=true'
+            }
         } else {
             this.Href = `emby-items.html?embyItemId=${this.Id}`
         }

@@ -127,7 +127,12 @@ module.exports = {
     table: (parent, children) => {
         window.selectEmbyItemTable = (embyItemId, itemKind) => {
             if (itemKind === 'Episode' || itemKind === 'Movie') {
-                window.location.href = `./play-media.html?embyItemId=${embyItemId}`
+                let href = `./play-media.html?embyItemId=${embyItemId}`
+                if (itemKind === 'Episode') {
+                    window.location = href + '&hasSeason=true'
+                } else {
+                    window.location.href = href
+                }
             } else {
                 window.location.href = `./emby-items.html?embyItemId=${embyItemId}`
             }
