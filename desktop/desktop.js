@@ -42,6 +42,7 @@ async function createWindow() {
         height: windowHeight,
         webPreferences: {
             nodeIntegration: true,
+            contextIsolation: false
         },
         fullscreen: settings.fullScreen,
         backgroundColor: settings.windowBackgroundColor,

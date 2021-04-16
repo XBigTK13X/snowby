@@ -18,22 +18,22 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "concurrently": "5.2.0",
-        "electron": "9.2.0",
-        "electron-packager": "15.0.0",
-        "node-sass": "4.14.1",
-        "nodemon": "2.0.4",
-        "prettier": "2.0.5"
+        "concurrently": "6.0.2",
+        "electron": "12.0.4",
+        "electron-packager": "15.2.0",
+        "node-sass": "5.0.0",
+        "nodemon": "2.0.7",
+        "prettier": "2.2.1"
     },
     "dependencies": {
-        "axios": "0.19.2",
-        "debounce": "1.2.0",
+        "axios": "0.21.1",
+        "debounce": "1.2.1",
         "express": "^4.17.1",
-        "jquery": "3.5.1",
-        "jquery-lazy": "1.7.10",
-        "lodash": "4.17.15",
-        "luxon": "^1.25.0",
-        "query-string": "6.13.1",
+        "jquery": "3.6.0",
+        "jquery-lazy": "1.7.11",
+        "lodash": "4.17.21",
+        "luxon": "^1.26.0",
+        "query-string": "7.0.0",
         "tippy.js": "5.2.1"
     }
 }
