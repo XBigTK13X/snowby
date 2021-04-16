@@ -512,69 +512,117 @@ table.channel-guide {
     color: darken($snowby-text-front, 20);
 }
 
-/*tippy.js */
-.tippy-tooltip[data-animation='fade'][data-state='hidden'] {
+/*tippy.js - original dist contents*/
+
+.tippy-box[data-animation='fade'][data-state='hidden'] {
     opacity: 0;
 }
-.tippy-iOS {
-    cursor: pointer !important;
-    -webkit-tap-highlight-color: transparent;
-}
-.tippy-popper {
-    pointer-events: none;
+
+[data-tippy-root] {
     max-width: calc(100vw - 10px);
-    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
-    transition-property: transform;
 }
-.tippy-tooltip {
+
+.tippy-box {
     position: relative;
-    color: $snowby-text-front;
+    background-color: #333;
+    color: #fff;
     border-radius: 4px;
     font-size: 14px;
     line-height: 1.4;
-    background-color: $snowby-text-back;
-    transition-property: visibility, opacity, transform;
     outline: 0;
+    transition-property: transform, visibility, opacity;
 }
-.tippy-tooltip[data-placement^='top'] > .tippy-arrow {
-    border-width: 8px 8px 0;
-    border-top-color: $snowby-text-back;
-    margin: 0 3px;
-    transform-origin: 50% 0;
+
+.tippy-box[data-placement^='top'] > .tippy-arrow {
+    bottom: 0;
+}
+
+.tippy-box[data-placement^='top'] > .tippy-arrow:before {
     bottom: -7px;
+    left: 0;
+    border-width: 8px 8px 0;
+    border-top-color: initial;
+    transform-origin: center top;
 }
-.tippy-tooltip[data-placement^='bottom'] > .tippy-arrow {
-    border-width: 0 8px 8px;
-    border-bottom-color: $snowby-text-back;
-    margin: 0 3px;
-    transform-origin: 50% 7px;
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow {
+    top: 0;
+}
+
+.tippy-box[data-placement^='bottom'] > .tippy-arrow:before {
     top: -7px;
+    left: 0;
+    border-width: 0 8px 8px;
+    border-bottom-color: initial;
+    transform-origin: center bottom;
 }
-.tippy-tooltip[data-placement^='left'] > .tippy-arrow {
+
+.tippy-box[data-placement^='left'] > .tippy-arrow {
+    right: 0;
+}
+
+.tippy-box[data-placement^='left'] > .tippy-arrow:before {
     border-width: 8px 0 8px 8px;
-    border-left-color: $snowby-text-back;
-    margin: 3px 0;
-    transform-origin: 0 50%;
+    border-left-color: initial;
     right: -7px;
+    transform-origin: center left;
 }
-.tippy-tooltip[data-placement^='right'] > .tippy-arrow {
-    border-width: 8px 8px 8px 0;
-    border-right-color: $snowby-text-back;
-    margin: 3px 0;
-    transform-origin: 7px 50%;
+
+.tippy-box[data-placement^='right'] > .tippy-arrow {
+    left: 0;
+}
+
+.tippy-box[data-placement^='right'] > .tippy-arrow:before {
     left: -7px;
+    border-width: 8px 8px 8px 0;
+    border-right-color: initial;
+    transform-origin: center right;
 }
-.tippy-tooltip[data-interactive][data-state='visible'] {
-    pointer-events: auto;
-}
-.tippy-tooltip[data-inertia][data-state='visible'] {
+
+.tippy-box[data-inertia][data-state='visible'] {
     transition-timing-function: cubic-bezier(0.54, 1.5, 0.38, 1.11);
 }
+
 .tippy-arrow {
+    width: 16px;
+    height: 16px;
+    color: #333;
+}
+
+.tippy-arrow:before {
+    content: '';
     position: absolute;
     border-color: transparent;
     border-style: solid;
 }
+
 .tippy-content {
+    position: relative;
     padding: 5px 9px;
+    z-index: 1;
+}
+
+/* tippy.js snowby theme */
+.tippy-box[data-theme~='snowby'] {
+    position: relative;
+    color: $snowby-text-front;
+    border-radius: 5px;
+    padding: 10px 10px 10px 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    background-color: $snowby-text-back;
+    border: 1px solid $snowby-text-back;
+    background: $snowby-text-back;
+}
+.tippy-box[data-theme~='snowby'][data-placement^='top'] > .tippy-arrow::before {
+    border-top-color: $snowby-text-back;
+}
+.tippy-box[data-theme~='snowby'][data-placement^='bottom'] > .tippy-arrow::before {
+    border-bottom-color: $snowby-text-back;
+}
+.tippy-box[data-theme~='snowby'][data-placement^='left'] > .tippy-arrow::before {
+    border-left-color: $snowby-text-back;
+}
+.tippy-box[data-theme~='snowby'][data-placement^='right'] > .tippy-arrow::before {
+    border-right-color: $snowby-text-back;
 }

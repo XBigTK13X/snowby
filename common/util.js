@@ -71,6 +71,8 @@ const loadTooltips = () => {
     tippyInstances = tippy('[data-tippy-content]', {
         placement: 'bottom',
         delay: 300,
+        allowHTML: true,
+        theme: 'snowby',
     })
 }
 
