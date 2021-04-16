@@ -86,7 +86,7 @@ module.exports = {
             let seasonParams = util.queryParams()
             if (seasonParams.hasSeason) {
                 navbarContent += `
-                  <a href="" onclick="()=>{window.reloadPage(emby-items.html?embyItemId=${window.seasonId}}(); return false;">
+                  <a href="emby-items.html?embyItemId=${window.seasonId}">
                     <div class="navbar-button">
                       Season
                     </div>
