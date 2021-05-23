@@ -37,6 +37,7 @@ const getHandler = (emby, itemId) => {
             navbar.render({
                 showToggleButton: embyItem.isCollection(),
                 enableTableView: true,
+                sortPicker: true
             })
             if (embyItem.Type === 'Genre') {
                 return resolve({ handler: handlers.genre, item: embyItem })

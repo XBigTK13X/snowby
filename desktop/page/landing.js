@@ -10,7 +10,8 @@ module.exports = () => {
         const ExternalLink = require('../component/external-link')
         const links = [
             new InternalLink('Library', 'library.html'),
-            new EmbyItemLink('Next Up', 'next-up'),
+            //TODO Disabled this link because the latest Emby release broke the API
+            //new EmbyItemLink('Next Up', 'next-up'),
             new EmbyItemLink('In Progress', 'in-progress'),
             new InternalLink('Stream', 'streaming.html'),
             new InternalLink('Search', 'search.html'),

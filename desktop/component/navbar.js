@@ -99,8 +99,8 @@ module.exports = {
                     Random
                 </div>
             </a></div>`
-        if (options.profilePicker) {
-            navbarContent += '<div id="profile-picker"></div>'
+        if (options.profilePicker || options.sortPicker) {
+            navbarContent += '<div id="pickers"><div id="profile-picker"></div><div id="sort-picker"></div></div>'
         }
         const element = document.getElementById('navbar')
         if (!element) {
@@ -140,9 +140,52 @@ module.exports = {
                     .join('')}
                 </select>
             </div>
-            <br/>
         `
             profilePicker.innerHTML = pickerMarkup
+        }
+        if(options.sortPicker){
+            let sortQueryParams = util.queryParams()
+            let sortPicker = document.getElementById('sort-picker')
+            window.changeSort = (target) => {
+                const newParams = util.queryParams()
+                newParams.selectedSort = target.value
+                const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
+                window.reloadPage(url)
+            }
+            window.changeSortDirection = (target)=>{
+                const newParams = util.queryParams()
+                newParams.sortDirection = target.value
+                const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
+                window.reloadPage(url)
+            }
+            let sortPickerMarkup = `
+            <div>
+                <p>Select a field to sort by.</p>
+                <select onChange="window.changeSort(this)">
+                ${settings.sortFields
+                    .map((sortField, ii) => {
+                        return `
+                        <option value="${sortField}" ${sortQueryParams.selectedSort && sortField === sortQueryParams.selectedSort ? 'selected="true"' : ''}/>
+                        ${sortField}
+                        </option>
+                    `
+                    })
+                    .join('')}
+                </select>
+                <select onChange="window.changeSortDirection(this)">
+                ${settings.sortDirections
+                    .map((direction, ii) => {
+                        return `
+                        <option value="${direction}" ${sortQueryParams.sortDirection && direction === sortQueryParams.sortDirection ? 'selected="true"' : ''}/>
+                        ${direction}
+                        </option>
+                    `
+                    })
+                    .join('')}
+                </select>
+            </div>
+        `
+            sortPicker.innerHTML = sortPickerMarkup
         }
     },
 }
