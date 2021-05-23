@@ -90,6 +90,19 @@ class EmbyClient {
         })
     }
 
+    mergeParams(params){
+        let globalParams = util.queryParams()
+        if(globalParams){
+            if(globalParams.selectedSort){
+                params.SortBy = globalParams.selectedSort
+            }
+            if(globalParams.sortDirection){
+                params.SortOrder = globalParams.sortDirection
+            }
+        }
+        return params
+    }
+
     libraryViews() {
         const url = `Users/${this.userId}/Views`
         return this.httpClient.get(url).then((viewsResponse) => {
@@ -121,7 +134,8 @@ class EmbyClient {
     }
 
     embyItems(parentId, searchParams, DataClass) {
-        const query = util.queryString(searchParams)
+        let mergedParams = this.mergeParams(searchParams)
+        const query = util.queryString(mergedParams)
         const url = `Users/${this.userId}/Items?${query}`
         return this.httpClient.get(url).then((itemsResponse) => {
             return itemsResponse.data.Items.map((item) => (DataClass ? new DataClass(item) : new EmbyItem(item)))
@@ -240,9 +254,13 @@ class EmbyClient {
     itemsInProgress() {
         const url = `Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
         return this.httpClient.get(url).then((progressResponse) => {
-            return progressResponse.data.Items.map((item) => {
-                return new EmbyItem(item, { isSearchResult: true })
-            })
+            return progressResponse.data.Items.
+                filter(item=>{
+                    return item && item.UserData && item.UserData.PlaybackPositionTicks
+                })
+                .map((item) => {
+                    return new EmbyItem(item, { isSearchResult: true })
+                })
         })
     }
 
@@ -376,16 +394,22 @@ class EmbyClient {
     }
 
     nextUp() {
-        const nextUpUrl = `Shows/NextUp?Limit=200&Fields=MediaStreams,Path,PrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false`
-        const parentUrl = `Users/${this.userId}/Items?SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName&Filters=IsUnplayed`
+        let mergedParams = this.mergeParams({})
+        const query = util.queryString(mergedParams)
+        //const nextUpUrl = `Users/${this.userId}/Items/Resume?Limit=200&Fields=PremiereDate%2CProductionYear%2CMediaStreams%2CPath%2CPrimaryImageAspectRatio%2CSeriesInfo%2CDateCreated%2CBasicSyncInfo&UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&${query}`
+        const parentUrl = `Users/${this.userId}/Items?MinIndexNumber=3&Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName`
         let parentLookup = {}
-        return Promise.all([this.httpClient.get(nextUpUrl), this.httpClient.get(parentUrl)]).then((responses) => {
-            let nextUpResponse = responses[0]
-            let parentResponse = responses[1]
-            for (let item of parentResponse.data.Items) {
+        return this.httpClient.get(parentUrl).then((parentResponse) => {
+            let items = parentResponse.data.Items.sort((a, b) => {
+                return a.SeriesName > b.SeriesName ? 1 : -1
+            })
+            return items.map(item=>{
+                console.log("Parent",{item})
                 parentLookup[item.Id] = item
-            }
+                return new EmbyItem(item, { showParentImage: true, unwatchedCount: item.UserData.UnplayedItemCount })
+            })
             return nextUpResponse.data.Items.filter((x) => {
+                console.log("Next Up", {x})
                 // Don't show any season that isn't in progress in this view.
                 // If you watched at least two episodes, then assume in progress.
                 if (x.SeasonName === 'Season 1') {
@@ -393,19 +417,6 @@ class EmbyClient {
                 }
                 return x.IndexNumber && x.IndexNumber > 1
             })
-                .sort((a, b) => {
-                    return a.SeriesName > b.SeriesName ? 1 : -1
-                })
-                .map((x) => {
-                    let unwatchedCount = 0
-                    if (_.has(parentLookup, x.SeriesId)) {
-                        let currentParent = parentLookup[x.SeriesId]
-                        if (currentParent.UserData && currentParent.UserData.UnplayedItemCount) {
-                            unwatchedCount = currentParent.UserData.UnplayedItemCount
-                        }
-                    }
-                    return new EmbyItem(x, { showParentImage: true, unwatchedCount: unwatchedCount })
-                })
         })
     }
 

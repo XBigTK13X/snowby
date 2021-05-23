@@ -7,8 +7,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.7.0',
-    versionDate: 'April 15, 2021',
+    appVersion: '3.8.0',
+    versionDate: 'May 23, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -80,6 +80,15 @@ let config = {
         movie: ['G', 'PG', 'PG-13', 'R', 'NR'],
         series: ['Y', 'Y7', 'G', 'PG', '14', 'MA'],
     },
+    sortFields: [
+        "Name",
+        "PremiereDate",
+        "ProductionYear",
+    ],
+    sortDirections: [
+        'Ascending',
+        'Descending'
+    ],
     channelMap: {
         'WDAF-DT': 'FOX',
         KCTV: 'CBS',
