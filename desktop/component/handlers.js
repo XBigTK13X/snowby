@@ -201,7 +201,7 @@ module.exports = {
                 parentId: embyItem.SeriesId,
                 parentName: 'Series',
                 enableTableView: true,
-                sortPicker: true
+                sortPicker: true,
             })
             return emby.episodes(embyItem.ParentId, embyItem.Id)
         },

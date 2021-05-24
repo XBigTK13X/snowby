@@ -143,7 +143,7 @@ module.exports = {
         `
             profilePicker.innerHTML = pickerMarkup
         }
-        if(options.sortPicker){
+        if (options.sortPicker) {
             let sortQueryParams = util.queryParams()
             let sortPicker = document.getElementById('sort-picker')
             window.changeSort = (target) => {
@@ -152,7 +152,7 @@ module.exports = {
                 const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
                 window.reloadPage(url)
             }
-            window.changeSortDirection = (target)=>{
+            window.changeSortDirection = (target) => {
                 const newParams = util.queryParams()
                 newParams.sortDirection = target.value
                 const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
@@ -165,7 +165,9 @@ module.exports = {
                 ${settings.sortFields
                     .map((sortField, ii) => {
                         return `
-                        <option value="${sortField}" ${sortQueryParams.selectedSort && sortField === sortQueryParams.selectedSort ? 'selected="true"' : ''}/>
+                        <option value="${sortField}" ${
+                            sortQueryParams.selectedSort && sortField === sortQueryParams.selectedSort ? 'selected="true"' : ''
+                        }/>
                         ${sortField}
                         </option>
                     `
@@ -176,7 +178,9 @@ module.exports = {
                 ${settings.sortDirections
                     .map((direction, ii) => {
                         return `
-                        <option value="${direction}" ${sortQueryParams.sortDirection && direction === sortQueryParams.sortDirection ? 'selected="true"' : ''}/>
+                        <option value="${direction}" ${
+                            sortQueryParams.sortDirection && direction === sortQueryParams.sortDirection ? 'selected="true"' : ''
+                        }/>
                         ${direction}
                         </option>
                     `
