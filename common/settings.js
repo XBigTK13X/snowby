@@ -80,15 +80,8 @@ let config = {
         movie: ['G', 'PG', 'PG-13', 'R', 'NR'],
         series: ['Y', 'Y7', 'G', 'PG', '14', 'MA'],
     },
-    sortFields: [
-        "Name",
-        "PremiereDate",
-        "ProductionYear",
-    ],
-    sortDirections: [
-        'Ascending',
-        'Descending'
-    ],
+    sortFields: ['Name', 'PremiereDate', 'ProductionYear'],
+    sortDirections: ['Ascending', 'Descending'],
     channelMap: {
         'WDAF-DT': 'FOX',
         KCTV: 'CBS',

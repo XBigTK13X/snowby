@@ -90,13 +90,13 @@ class EmbyClient {
         })
     }
 
-    mergeParams(params){
+    mergeParams(params) {
         let globalParams = util.queryParams()
-        if(globalParams){
-            if(globalParams.selectedSort){
+        if (globalParams) {
+            if (globalParams.selectedSort) {
                 params.SortBy = globalParams.selectedSort
             }
-            if(globalParams.sortDirection){
+            if (globalParams.sortDirection) {
                 params.SortOrder = globalParams.sortDirection
             }
         }
@@ -254,13 +254,11 @@ class EmbyClient {
     itemsInProgress() {
         const url = `Users/${this.userId}/Items/Resume?ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`
         return this.httpClient.get(url).then((progressResponse) => {
-            return progressResponse.data.Items.
-                filter(item=>{
-                    return item && item.UserData && item.UserData.PlaybackPositionTicks
-                })
-                .map((item) => {
-                    return new EmbyItem(item, { isSearchResult: true })
-                })
+            return progressResponse.data.Items.filter((item) => {
+                return item && item.UserData && item.UserData.PlaybackPositionTicks
+            }).map((item) => {
+                return new EmbyItem(item, { isSearchResult: true })
+            })
         })
     }
 
@@ -403,13 +401,13 @@ class EmbyClient {
             let items = parentResponse.data.Items.sort((a, b) => {
                 return a.SeriesName > b.SeriesName ? 1 : -1
             })
-            return items.map(item=>{
-                console.log("Parent",{item})
+            return items.map((item) => {
+                console.log('Parent', { item })
                 parentLookup[item.Id] = item
                 return new EmbyItem(item, { showParentImage: true, unwatchedCount: item.UserData.UnplayedItemCount })
             })
             return nextUpResponse.data.Items.filter((x) => {
-                console.log("Next Up", {x})
+                console.log('Next Up', { x })
                 // Don't show any season that isn't in progress in this view.
                 // If you watched at least two episodes, then assume in progress.
                 if (x.SeasonName === 'Season 1') {
