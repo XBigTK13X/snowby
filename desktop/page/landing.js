@@ -11,7 +11,7 @@ module.exports = () => {
         const links = [
             new InternalLink('Library', 'library.html'),
             //TODO Disabled this link because the latest Emby release broke the API
-            //new EmbyItemLink('Next Up', 'next-up'),
+            new EmbyItemLink('Next Up', 'next-up'),
             new EmbyItemLink('In Progress', 'in-progress'),
             new InternalLink('Stream', 'streaming.html'),
             new InternalLink('Search', 'search.html'),
