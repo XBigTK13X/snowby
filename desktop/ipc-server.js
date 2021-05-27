@@ -106,11 +106,12 @@ class IpcServer {
                 })
             } else {
                 let cleanUrl = url.replace(/&/g, '^&')
-                spawn('cmd.exe', [`/c start firefox ${cleanUrl}`], {
+                spawn('cmd.exe', [`/c start chrome ${cleanUrl}`], {
                     stdio: 'ignore',
                     detached: true,
                 })
             }
+            //spawn('cmd.exe', [`/c start firefox ${url}`], settings.spawnOptions)
             //spawn('cmd.exe', [`/c start chrome ${url}`], settings.spawnOptions)
             //spawn('cmd.exe', [`/c start microsoft-edge:${url}`], settings.spawnOptions)
         })
