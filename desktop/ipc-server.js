@@ -106,7 +106,7 @@ class IpcServer {
                 })
             } else {
                 let cleanUrl = url.replace(/&/g, '^&')
-                spawn('cmd.exe', [`/c start chrome ${cleanUrl}`], {
+                spawn('cmd.exe', [`/c start firefox ${cleanUrl}`], {
                     stdio: 'ignore',
                     detached: true,
                 })
