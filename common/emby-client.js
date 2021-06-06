@@ -414,6 +414,9 @@ class EmbyClient {
                                 return a.SeriesName > b.SeriesName ? 1 : -1
                             })
                             .filter((item) => {
+                                if (!item) {
+                                    return false
+                                }
                                 return (item.IndexNumber > 2 && item.ParentIndexNumber === 1) || (item.IndexNumber > 1 && item.ParentIndexNumber > 1)
                             })
                             .map((item) => {
