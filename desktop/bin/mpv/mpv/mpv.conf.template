@@ -18,8 +18,8 @@ audio-channels=stereo
 
 [dim-subtitles]
 sub-ass-override=force
-sub-color="0.7/0.7/0.7"
-sub-border-color="0.2/0.2/0.2"
+sub-color="0.5/0.5/0.5"
+sub-border-color="0.1/0.1/0.1"
 sub-shadow-color="0.0/0.0/0.0"
 
 [anime4k]
