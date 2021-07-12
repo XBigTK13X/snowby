@@ -159,7 +159,9 @@ module.exports = {
     tags: (parent, children) => {
         const generator = (child) => {
             let poster = new EmbyPoster(child)
-            poster.enableFidelityBadge()
+            if (child.Type === 'Movie') {
+                poster.enableFidelityBadge()
+            }
             poster.enableKindBadge()
             return poster.render()
         }
