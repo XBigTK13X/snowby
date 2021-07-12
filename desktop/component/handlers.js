@@ -170,7 +170,7 @@ module.exports = {
     tags: {
         getChildren: (emby, embyItem) => {
             let tagId = util.queryParams().tagId
-            let includeItemTypes = 'Movie,Episode'
+            let includeItemTypes = 'Movie,Series'
             let params = {
                 Recursive: true,
                 SortBy: 'PremiereDate,ProductionYear,SortName',
