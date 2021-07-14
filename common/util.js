@@ -79,7 +79,10 @@ const loadTooltips = () => {
 let lastLocation = ''
 let lastParams = {}
 const queryParams = (target) => {
-    target = target || location.search
+    target = target
+    if (typeof window !== 'undefined') {
+        target = window.location.search
+    }
     if (lastLocation === target) {
         return { ...lastParams }
     }

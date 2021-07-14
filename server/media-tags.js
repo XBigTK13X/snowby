@@ -84,9 +84,36 @@ const applyTag = (tagId, tagName, embyItemIds) => {
     })
 }
 
+const removeTag = (tagId, embyItemIds) => {
+    return new Promise(async (resolve) => {
+        await emby.connect()
+        for (let embyItemId of embyItemIds) {
+            let embyItem = await emby.rawEmbyItem(embyItemId)
+            let parentItem = null
+            if (embyItem.Type !== 'Folder') {
+                parentItem = await emby.rawEmbyItem(embyItem.ParentId)
+                await emby.removeTag(parentItem.Id, tagId)
+            }
+            let childParams = {
+                IncludeItemTypes: 'Episode,Movie',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Children',
+                ParentId: embyItem.Id,
+            }
+            let children = await embyItemSearch.all(childParams)
+            for (let child of children) {
+                await emby.removeTag(child.Id, tagId)
+            }
+            console.log(`Untagging ${embyItemId} as ${tagId}`)
+            await emby.removeTag(embyItemId, tagId)
+        }
+        resolve()
+    })
+}
+
 module.exports = {
     getAll,
     reapplyAll,
     getReapplyAllStatus,
     applyTag,
+    removeTag,
 }

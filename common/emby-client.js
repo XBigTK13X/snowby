@@ -34,29 +34,55 @@ class EmbyClient {
     }
 
     login() {
-        this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
         const usersURL = 'users/public'
-        return this.httpClient
-            .get(usersURL, null, { cache: true })
-            .then((usersResponse) => {
-                const user = usersResponse.data[0]
-                const loginPayload = {
-                    Username: user.Name,
-                    Pw: '',
-                }
-                this.userId = user.Id
-                this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
-                const loginURL = 'users/authenticatebyname'
-                return this.httpClient.post(loginURL, loginPayload)
-            })
-            .then((loginResponse) => {
-                const authenticatedUser = loginResponse.data
-                this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
-                util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
-                util.window.localStorage.setItem('SnowbyUserId', this.userId)
-                this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
-                return true
-            })
+        this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
+        if (settings.embyUsername && settings.embyPassword) {
+            return this.httpClient
+                .get(usersURL, null, { cache: true })
+                .then((usersResponse) => {
+                    const user = usersResponse.data.filter((x) => {
+                        return x.Name === settings.embyUsername
+                    })[0]
+                    const loginPayload = {
+                        Username: settings.embyUsername,
+                        Pw: settings.embyPassword,
+                    }
+                    this.userId = user.Id
+                    this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
+                    const loginURL = 'users/authenticatebyname'
+                    return this.httpClient.post(loginURL, loginPayload)
+                })
+                .then((loginResponse) => {
+                    const authenticatedUser = loginResponse.data
+                    this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
+                    util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
+                    util.window.localStorage.setItem('SnowbyUserId', this.userId)
+                    this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
+                    return true
+                })
+        } else {
+            return this.httpClient
+                .get(usersURL, null, { cache: true })
+                .then((usersResponse) => {
+                    const user = usersResponse.data[0]
+                    const loginPayload = {
+                        Username: user.Name,
+                        Pw: '',
+                    }
+                    this.userId = user.Id
+                    this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
+                    const loginURL = 'users/authenticatebyname'
+                    return this.httpClient.post(loginURL, loginPayload)
+                })
+                .then((loginResponse) => {
+                    const authenticatedUser = loginResponse.data
+                    this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
+                    util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
+                    util.window.localStorage.setItem('SnowbyUserId', this.userId)
+                    this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
+                    return true
+                })
+        }
     }
 
     connect() {
@@ -131,6 +157,14 @@ class EmbyClient {
                     return result
                 })
             })
+    }
+
+    rawEmbyItem(itemId) {
+        const client = this
+        const url = `Users/${this.userId}/Items/${itemId}`
+        return this.httpClient.get(url).then((itemResponse) => {
+            return itemResponse.data
+        })
     }
 
     embyItems(parentId, searchParams, DataClass) {
@@ -499,6 +533,38 @@ class EmbyClient {
             ],
         }
         return this.httpClient.post(url, payload)
+    }
+
+    removeTag(embyItemId, tagId) {
+        const client = this
+        const getItemUrl = `Users/${this.userId}/Items/${embyItemId}`
+        const updateItemUrl = `Items/${embyItemId}`
+        return new Promise((resolve, reject) => {
+            client.httpClient
+                .get(getItemUrl)
+                .then((itemResponse) => {
+                    let embyItem = itemResponse.data
+                    let tagCount = embyItem.TagItems.length
+                    embyItem.TagItems = embyItem.TagItems.filter((tag) => {
+                        return tag.Id !== tagId
+                    })
+                    if (tagCount !== embyItem.TagItems.length) {
+                        client.httpClient
+                            .post(updateItemUrl, embyItem)
+                            .then(() => {
+                                resolve()
+                            })
+                            .catch((err) => {
+                                reject({ message: `Unable to update the emby item ${embyItemId} removing tag ${tagId}`, err })
+                            })
+                    } else {
+                        resolve()
+                    }
+                })
+                .catch((err) => {
+                    reject({ message: 'Unable to retrieve the emby item', err })
+                })
+        })
     }
 }
 
