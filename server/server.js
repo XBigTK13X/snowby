@@ -55,6 +55,13 @@ app.post('/api/tags/apply', async (req, res) => {
     res.send({ running: true })
 })
 
+app.post('/api/tags/remove', async (req, res) => {
+    const tagId = req.body.tagId
+    const embyItemIds = req.body.embyItemIdsCsv.split(',')
+    mediaTags.removeTag(tagId, embyItemIds)
+    res.send({ running: true })
+})
+
 app.get('/api/media', async (req, res) => {
     let params = {}
     if (req.query.kinds !== 'all') {

@@ -53,6 +53,13 @@ class ApiClient {
         })
     }
 
+    removeTag(tagId, embyItemIds) {
+        return this.post('/api/tags/remove', {
+            tagId: tagId,
+            embyItemIdsCsv: embyItemIds.join(','),
+        })
+    }
+
     generateSchedule() {
         return this.get('/api/pseudo-tv/schedule/generate')
     }
@@ -177,6 +184,13 @@ class TagControls {
         }
     }
 
+    removeTagSelectedMedia() {
+        const embyItemIds = Object.keys(this.media.selection)
+        if (embyItemIds.length > 0) {
+            apiClient.removeTag(this.currentTag.Id, embyItemIds)
+        }
+    }
+
     refreshMediaItems(filterText) {
         let filterElement = document.getElementById('filter-input')
         if (filterElement && !filterText) {
@@ -270,6 +284,7 @@ class TagControls {
                     <button onClick="window.controls.tag.showTaggedMedia()">Show Tagged Media</button>
                     <button onClick="window.controls.tag.showAllMedia()">Show All Media</button>
                     <button onClick="window.controls.tag.tagSelectedMedia()">Tag Selected Media</button>
+                    <button onClick="window.controls.tag.removeTagSelectedMedia()">Untag Selected Media</button>
                 </div>
             </div>
             <div id="media-list">

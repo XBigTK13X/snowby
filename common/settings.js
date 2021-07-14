@@ -7,14 +7,16 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.8.6',
-    versionDate: 'July 12, 2021',
+    appVersion: '3.8.7',
+    versionDate: 'July 14, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
     defaultMediaProfile: 'default',
     embyServerURL: null,
     embyTrackProgress: true,
+    embyPassword: null,
+    embyUsername: null,
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: desktopPath('bin/hdr/hdr-toggle.vbs'),
@@ -125,6 +127,13 @@ if (fs.existsSync(overridePath)) {
         config.newVersionAvailable = true
     }
     config = _.merge(config, overrides)
+}
+
+if (process.env.SNOWBY_EMBY_USERNAME) {
+    config.embyUsername = process.env.SNOWBY_EMBY_USERNAME
+}
+if (process.env.SNOWBY_EMBY_PASSWORD) {
+    config.embyPassword = process.env.SNOWBY_EMBY_PASSWORD
 }
 
 config.desktopPath = desktopPath
