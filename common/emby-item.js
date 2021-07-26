@@ -165,13 +165,14 @@ module.exports = class EmbyItem {
     }
 
     getDiscussionQuery() {
+        let result = ''
         if (this.Type === 'Movie') {
-            return `reddit discussion movie ${this.Name} ${this.ProductionYear}`
+            result = `reddit discussion movie ${this.Name} ${this.ProductionYear}`
         }
         if (this.Type === 'Episode') {
-            return `reddit discussion ${this.SeriesName} ${this.SeasonName} episode ${this.IndexNumber}`
+            result = `reddit discussion ${this.SeriesName} ${this.SeasonName} episode ${this.IndexNumber}`
         }
-        return ''
+        return result.replace(/[^\w\s]/g, '')
     }
 
     getTitle(enableSeriesName, enableEpisodeName) {

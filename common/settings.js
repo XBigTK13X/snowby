@@ -1,14 +1,15 @@
 const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
+const compareVersions = require('compare-versions')
 
 const desktopPath = (relativePath) => {
     return path.join(__dirname, '../desktop/' + relativePath)
 }
 
 let config = {
-    appVersion: '3.8.7',
-    versionDate: 'July 14, 2021',
+    appVersion: '3.8.8',
+    versionDate: 'July 26, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -123,7 +124,7 @@ if (process.platform === 'linux') {
 
 if (fs.existsSync(overridePath)) {
     const overrides = require(overridePath)
-    if (overrides.newVersion && overrides.newVersion !== config.appVersion) {
+    if (overrides.newVersion && compareVersions(config.appVersion, overrides.newVersion) !== 1) {
         config.newVersionAvailable = true
     }
     config = _.merge(config, overrides)
