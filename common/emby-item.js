@@ -281,7 +281,7 @@ module.exports = class EmbyItem {
             return true
         }
         return false
-    }    
+    }
 
     getFidelity() {
         if (!this.MediaStreams) {
@@ -301,7 +301,7 @@ module.exports = class EmbyItem {
                 }
             }
         }
-        
+
         let contentType = ''
         if (this.Path) {
             if (this.Path.includes('Remux')) {
@@ -314,7 +314,7 @@ module.exports = class EmbyItem {
         }
         let result = {
             source: contentType,
-            isHdr
+            isHdr,
         }
         if (videoFidelity.toLowerCase().includes('4k') || videoFidelity.toLowerCase().includes('2160p')) {
             result.resolution = 2160

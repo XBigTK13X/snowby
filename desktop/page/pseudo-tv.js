@@ -34,6 +34,8 @@ module.exports = () => {
                     .map((result, channelIndex) => {
                         let channel = result.channel
                         let progress = result.progress
+                        let currentHighlight = channel.Current.Is4K || channel.Current.IsHDR ? ' uhd-content' : ''
+                        let nextHighlight = channel.Next.Is4K || channel.Next.IsHDR ? ' uhd-content' : ''
                         let currentSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
                         if (channel.Current.EpisodeName) {
                             currentSubtitle = `<br/><span class="program-subtitle">${channel.Current.Title} - ${channel.Current.EpisodeName}</span>`
@@ -54,18 +56,18 @@ module.exports = () => {
                     <td class="cell-medium">
                         ${channel.ChannelName}
                     </td>
-                    <td class="cell-large ellipsify">
+                    <td class="cell-large ellipsify${currentHighlight}">
                         ${channel.Current.Name}
                         ${currentSubtitle}
                     </td>
-                    <td class="cell-small">
+                    <td class="cell-small${currentHighlight}">
                         ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
                     </td>
-                    <td class="cell-large ellipsify">
+                    <td class="cell-large ellipsify${nextHighlight}">
                         ${channel.Next.Name}
                         ${nextSubtitle}
                     </td>
-                    <td class="cell-small">
+                    <td class="cell-small${nextHighlight}">
                         ${channel.Next.StartTime}<br/>${channel.Next.EndTime}
                     </td>
                     <td class="cell-small">

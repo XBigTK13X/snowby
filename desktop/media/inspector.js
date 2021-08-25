@@ -137,7 +137,7 @@ const inspect = (embyItem) => {
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
         const stream = embyItem.MediaStreams[trackIndex]
         let fidelity = embyItem.getFideltiy()
-        isHdr = fidelity.isHdr        
+        isHdr = fidelity.isHdr
         if (stream.Type === 'Audio') {
             audioIndex++
             if (firstAudioRelativeIndex == -1) {

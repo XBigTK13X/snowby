@@ -339,13 +339,13 @@ class PseudoTVControls {
                         ${channel.ChannelName}
                     </td>
                     <td>
-                        ${channel.Current.Name + ((channel.Current.Is4K || channel.Current.IsHDR) ? ' [UHD]' : '')}
+                        ${channel.Current.Name + (channel.Current.Is4K || channel.Current.IsHDR ? ' [UHD]' : '')}
                     </td>
                     <td>
                         ${channel.Current.StartTime}<br/>${channel.Current.EndTime}
                     </td>
                     <td>
-                        ${channel.Next.Name  + ((channel.Next.Is4K || channel.Next.IsHDR) ? ' [UHD]' : '')}
+                        ${channel.Next.Name + (channel.Next.Is4K || channel.Next.IsHDR ? ' [UHD]' : '')}
                     </td>
                     <td>
                         ${channel.Next.StartTime}<br/>${channel.Next.EndTime}

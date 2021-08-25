@@ -37,14 +37,14 @@ const embyItemsSearch = async (emby, embyItemId, additionalSearchParams, allowTa
     let params = {
         ...SearchParams,
         ...additionalSearchParams,
-    }    
+    }
     let items = await emby.embyItems(embyItemId, params)
-    if(!allowTaggedContent){
-        items = items.filter(item=>{
+    if (!allowTaggedContent) {
+        items = items.filter((item) => {
             return !taggedCache[item.Id]
         })
     } else {
-        for(let item of items){
+        for (let item of items) {
             taggedCache[item.Id] = true
         }
     }
@@ -61,7 +61,7 @@ const shrink = (embyItem) => {
         Path: embyItem.Path,
         Title: embyItem.getTitle(),
         Is4K: fidelity.resolution === 2160,
-        IsHDR: fidelity.isHdr
+        IsHDR: fidelity.isHdr,
     }
 }
 
@@ -222,10 +222,10 @@ const ingestChannelContent = (emby, channel, channelContent) => {
                 channelContent.Genres.filter((x) => {
                     return x === 'Anime'
                 }).length > 0
-            }            
+            }
             if (isAnime && channel.Name.indexOf('Anime') === -1) {
                 return resolve()
-            }            
+            }
             let episodes = []
             let seasons = (await emby.seasons(channelContent.Id)).filter((x) => {
                 return !x.NextUp
@@ -404,7 +404,7 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
                 StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 Is4K: currentProgram.Is4K,
-                IsHDR: currentProgram.IsHDR
+                IsHDR: currentProgram.IsHDR,
             },
             Next: {
                 Title: nextProgram.Title,
@@ -413,7 +413,7 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
                 StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 Is4K: nextProgram.Is4K,
-                IsHDR: nextProgram.IsHDR
+                IsHDR: nextProgram.IsHDR,
             },
             Playlist: channelPlaylist,
             StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),
