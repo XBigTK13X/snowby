@@ -136,11 +136,8 @@ const inspect = (embyItem) => {
 
     for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
         const stream = embyItem.MediaStreams[trackIndex]
-        if (stream.Type === 'Video') {
-            if ((stream.VideoRange && stream.VideoRange.includes('HDR')) || (stream.ColorSpace && stream.ColorSpace.includes('2020'))) {
-                isHdr = true
-            }
-        }
+        let fidelity = embyItem.getFideltiy()
+        isHdr = fidelity.isHdr        
         if (stream.Type === 'Audio') {
             audioIndex++
             if (firstAudioRelativeIndex == -1) {

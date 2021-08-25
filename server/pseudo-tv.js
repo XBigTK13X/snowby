@@ -8,6 +8,7 @@ const emby = require('../common/emby-client').client
 
 let lookup = {}
 let schedule = {}
+let taggedCache = {}
 let channelNamesCache = null
 let programmingSchedule = null
 let generationMutex = false
@@ -32,15 +33,26 @@ const stringify = (data) => {
     return JSON.stringify(data)
 }
 
-const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
+const embyItemsSearch = async (emby, embyItemId, additionalSearchParams, allowTaggedContent) => {
     let params = {
         ...SearchParams,
         ...additionalSearchParams,
+    }    
+    let items = await emby.embyItems(embyItemId, params)
+    if(!allowTaggedContent){
+        items = items.filter(item=>{
+            return !taggedCache[item.Id]
+        })
+    } else {
+        for(let item of items){
+            taggedCache[item.Id] = true
+        }
     }
-    return emby.embyItems(embyItemId, params)
+    return items
 }
 
 const shrink = (embyItem) => {
+    let fidelity = embyItem.getFidelity()
     return {
         Name: embyItem.Name,
         Id: embyItem.Id,
@@ -48,6 +60,8 @@ const shrink = (embyItem) => {
         SeriesName: embyItem.SeriesName,
         Path: embyItem.Path,
         Title: embyItem.getTitle(),
+        Is4K: fidelity.resolution === 2160,
+        IsHDR: fidelity.isHdr
     }
 }
 
@@ -110,7 +124,7 @@ const readEmbyGenres = (emby) => {
         for (let genre of genres) {
             let items = await embyItemsSearch(emby, genre.Id, {
                 IncludeItemTypes: 'Movie,Series',
-                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres',
+                Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres,MediaStreams',
                 Genres: genre.Name,
             })
             content.push({ Name: 'Genre--' + genre.Name, Items: items })
@@ -164,7 +178,7 @@ const readEmbyDecades = (emby) => {
                 }
                 let items = await embyItemsSearch(emby, null, {
                     IncludeItemTypes: kind.kind,
-                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres',
+                    Fields: 'BasicSyncInfo,MediaSourceCount,SortName,Path,Genres,MediaStreams',
                     Years: years,
                 })
                 content.push({ Name: `Period ${kind.name}--${name}`, Items: items })
@@ -197,6 +211,7 @@ const ingestChannelContent = (emby, channel, channelContent) => {
     let showSpecials = false
     return new Promise(async (resolve) => {
         if (channelContent.Type === 'Series') {
+            // Limit Anime to only the Anime Genre channel
             let isAnime = false
             if (channelContent.GenreItems) {
                 isAnime =
@@ -207,10 +222,10 @@ const ingestChannelContent = (emby, channel, channelContent) => {
                 channelContent.Genres.filter((x) => {
                     return x === 'Anime'
                 }).length > 0
-            }
+            }            
             if (isAnime && channel.Name.indexOf('Anime') === -1) {
                 return resolve()
-            }
+            }            
             let episodes = []
             let seasons = (await emby.seasons(channelContent.Id)).filter((x) => {
                 return !x.NextUp
@@ -316,6 +331,7 @@ const generateSchedule = async () => {
     generationComplete = false
     generationMutex = true
     lookup = {}
+    taggedCache = {}
     updateMessage('Connecting to Emby')
     await emby.connect()
     progressCount++
@@ -387,6 +403,8 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
                 EpisodeName: currentProgram.SeriesName ? currentProgram.Name : null,
                 StartTime: currentStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 EndTime: currentEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
+                Is4K: currentProgram.Is4K,
+                IsHDR: currentProgram.IsHDR
             },
             Next: {
                 Title: nextProgram.Title,
@@ -394,6 +412,8 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
                 EpisodeName: nextProgram.SeriesName ? nextProgram.Name : null,
                 StartTime: nextStart.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
                 EndTime: nextEnd.toLocaleString(DateTime.TIME_SIMPLE, { zone: timeZone }),
+                Is4K: nextProgram.Is4K,
+                IsHDR: nextProgram.IsHDR
             },
             Playlist: channelPlaylist,
             StartPositionEmbyTicks: ticks.mpvToEmby((blockMinutes - currentProgram.BlockTime) * 60),

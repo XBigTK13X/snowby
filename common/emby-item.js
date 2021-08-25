@@ -281,13 +281,14 @@ module.exports = class EmbyItem {
             return true
         }
         return false
-    }
+    }    
 
     getFidelity() {
         if (!this.MediaStreams) {
             return null
         }
         let videoFidelity = ''
+        let isHdr = false
         for (let ii = 0; ii < this.MediaStreams.length; ii++) {
             let stream = this.MediaStreams[ii]
             if (stream.Type === 'Video' && (stream.IsDefault || videoFidelity === '')) {
@@ -295,8 +296,12 @@ module.exports = class EmbyItem {
                 if (!videoFidelity.toLowerCase().includes(stream.Codec.toLowerCase())) {
                     videoFidelity += stream.Codec
                 }
+                if ((stream.VideoRange && stream.VideoRange.includes('HDR')) || (stream.ColorSpace && stream.ColorSpace.includes('2020'))) {
+                    isHdr = true
+                }
             }
         }
+        
         let contentType = ''
         if (this.Path) {
             if (this.Path.includes('Remux')) {
@@ -309,6 +314,7 @@ module.exports = class EmbyItem {
         }
         let result = {
             source: contentType,
+            isHdr
         }
         if (videoFidelity.toLowerCase().includes('4k') || videoFidelity.toLowerCase().includes('2160p')) {
             result.resolution = 2160
