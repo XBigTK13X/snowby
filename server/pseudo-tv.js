@@ -33,13 +33,13 @@ const stringify = (data) => {
     return JSON.stringify(data)
 }
 
-const embyItemsSearch = async (emby, embyItemId, additionalSearchParams, allowTaggedContent) => {
+const embyItemsSearch = async (emby, embyItemId, additionalSearchParams, markTaggedContent) => {
     let params = {
         ...SearchParams,
         ...additionalSearchParams,
     }
     let items = await emby.embyItems(embyItemId, params)
-    if (!allowTaggedContent) {
+    if (!markTaggedContent) {
         items = items.filter((item) => {
             return !taggedCache[item.Id]
         })
@@ -77,9 +77,14 @@ const readEmbyTagContent = async (emby) => {
             })
         let embyContent = []
         for (let tag of contentTags) {
-            let searchResults = await embyItemsSearch(emby, tag.Id, {
-                TagIds: tag.Id,
-            })
+            let searchResults = await embyItemsSearch(
+                emby,
+                tag.Id,
+                {
+                    TagIds: tag.Id,
+                },
+                true
+            )
             let channelName = tag.Name.replace('Playlist:', '').replace('Channel: ', '')
             embyContent.push({ Name: (tag.Name.includes('Playlist') ? 'Playlist' : 'Channel') + '--' + channelName, Items: searchResults })
         }
@@ -349,10 +354,6 @@ const generateSchedule = async () => {
     generationMutex = false
 }
 
-const getChannel = (channelIndex) => {
-    return { channel: programmingSchedule[channelNamesCache[channelIndex]], name: channelNamesCache[channelIndex] }
-}
-
 const PROGRAMMING_START = DateTime.fromISO('2020-12-19', { zone: 'utc' }) // This is the canonical start of the television schedule loop
 
 const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
@@ -360,7 +361,6 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
         if (!programmingSchedule) {
             programmingSchedule = JSON.parse(fs.readFileSync(settings.pseudoTV.scheduleFile))
         }
-        let results = []
         if (!channelNamesCache) {
             channelNamesCache = Object.keys(programmingSchedule).sort((a, b) => {
                 return a > b ? 1 : -1
@@ -369,6 +369,12 @@ const getChannelProgramming = (channelIndex, diffMinutes, timeZone) => {
         let channelNames = channelNamesCache
         let channelName = channelNames[channelIndex]
         let channel = programmingSchedule[channelName]
+
+        // A channel can be empty if all the items it could contain were included in a Channel or Playlist tag
+        // An example where this happens is the Genre - TV Movies, which I have covered with two Playlist tags
+        if (!channel.Items.length) {
+            return resolve({ channel: null, channelCount: channelNames.length })
+        }
 
         let blockMinutes = diffMinutes % programmingSchedule[channelName].MaxRunTimeMinutes
         let blockLoops = Math.floor(diffMinutes / channel.MaxRunTimeMinutes)
@@ -430,10 +436,15 @@ const currentProgramming = (timeZone) => {
         let diffMinutes = end.diff(PROGRAMMING_START.setZone(timeZone), 'minutes').toObject().minutes
         let results = []
         let result = await getChannelProgramming(0, diffMinutes, timeZone)
-        results.push(result)
+        if (result.channel !== null) {
+            results.push(result)
+        }
         let currentIndex = 1
         while (currentIndex < result.channelCount) {
-            results.push(await getChannelProgramming(currentIndex, diffMinutes, timeZone))
+            result = await getChannelProgramming(currentIndex, diffMinutes, timeZone)
+            if (result.channel !== null) {
+                results.push(result)
+            }
             currentIndex++
         }
         resolve({ channels: results })
