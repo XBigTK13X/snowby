@@ -4,12 +4,12 @@ EXPOSE 24081
 
 COPY package.json package.json
 
-COPY yarn.lock yarn.lock
+COPY package-lock.json package-lock.json
 
-RUN yarn install
+RUN npm install
 
 COPY common common
 
 COPY server server
 
-CMD yarn develop-server
+CMD npm run develop-server
