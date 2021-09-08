@@ -428,7 +428,6 @@ class EmbyClient {
     }
 
     nextUp() {
-        let mergedParams = this.mergeParams({})
         const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName`
         return new Promise((resolve) => {
             this.httpClient.get(parentUrl).then((parentResponse) => {
@@ -451,7 +450,14 @@ class EmbyClient {
                                 if (!item) {
                                     return false
                                 }
-                                return (item.IndexNumber > 2 && item.ParentIndexNumber === 1) || (item.IndexNumber > 1 && item.ParentIndexNumber > 1)
+                                return (
+                                    // Have at least two episodes of the first season been watched?
+                                    (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
+                                    // Has at least one episode of the second (or later) season been watched?
+                                    (item.IndexNumber > 1 && item.ParentIndexNumber > 1) ||
+                                    // Is it a special?
+                                    item.SeasonName === 'Specials'
+                                )
                             })
                             .map((item) => {
                                 return new EmbyItem(item, {
