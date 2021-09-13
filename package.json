@@ -1,6 +1,6 @@
 {
     "name": "snowby",
-    "version": "3.9.4",
+    "version": "3.9.5",
     "description": "Emby frontend that plays media in an external player.",
     "main": "desktop/desktop.js",
     "scripts": {
@@ -13,7 +13,8 @@
         "package-lin": "electron-packager . --overwrite --icon=./desktop/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore m3u/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64 --ignore logs/",
         "format-all": "prettier --write \"desktop/**/*.{js,html,css,scss}\" \"server/**/*.{js,html,css,scss}\" \"common/**/*.{js,html,css,scss}\"",
         "retag-files": "node desktop/script/retag-files.js",
-        "develop-server": "nodemon --watch common --watch server server/server.js"
+        "develop-server": "nodemon --watch common --watch server server/server.js",
+        "run-server": "node server/server.js"
     },
     "author": "",
     "license": "MIT",

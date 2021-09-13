@@ -12,4 +12,4 @@ COPY common common
 
 COPY server server
 
-CMD npm run develop-server
+CMD npm run run-server
