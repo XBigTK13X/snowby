@@ -428,7 +428,7 @@ class EmbyClient {
     }
 
     nextUp() {
-        const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName`
+        const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName%2CParentId`
         return new Promise((resolve) => {
             this.httpClient.get(parentUrl).then((parentResponse) => {
                 let parentLookup = {}
@@ -448,6 +448,9 @@ class EmbyClient {
                             })
                             .filter((item) => {
                                 if (!item) {
+                                    return false
+                                }
+                                if (parentLookup[item.SeriesId].ParentId !== settings.nextUpLibraryId) {
                                     return false
                                 }
                                 return (
