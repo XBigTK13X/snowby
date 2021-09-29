@@ -3,6 +3,9 @@ const isShown = (stream) => {
         return true
     }
     if (stream.Type === 'Audio' || stream.Type === 'Subtitle') {
+        if (stream.IsDefault) {
+            return true
+        }
         if (!stream.DisplayLanguage) {
             return true
         }

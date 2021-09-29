@@ -3,10 +3,8 @@ const player = require('../media/player')
 module.exports = () => {
     return new Promise((resolve) => {
         const _ = require('lodash')
-        const { shell } = require('electron')
 
         const inspector = require('../media/inspector')
-        const settings = require('../../common/settings')
         const util = require('../../common/util')
 
         const InspectionTab = require('../component/inspection-tab')
@@ -21,8 +19,6 @@ module.exports = () => {
         const emby = require('../../common/emby-client')
 
         const queryParams = util.queryParams()
-
-        const navbar = require('../component/navbar')
 
         if (!queryParams.embyItemId) {
             throw new Error('An embyItemId is required to play media', { queryParams })
