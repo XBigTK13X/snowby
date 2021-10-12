@@ -191,8 +191,8 @@ const inspect = (embyItem) => {
         if (hasEnglishAudio) {
             result.audioAbsoluteIndex = englishAudioAbsoluteIndex
             result.audioRelativeIndex = englishAudioRelativeIndex
-            result.subtitleAbsoluteIndex = 0
-            result.subtitleRelativeIndex = 0
+            result.subtitleAbsoluteIndex = subtitleAbsoluteIndex
+            result.subtitleRelativeIndex = subtitleRelativeIndex
         }
         //Foreign show or movie
         else {

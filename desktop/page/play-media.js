@@ -6,6 +6,7 @@ module.exports = () => {
 
         const inspector = require('../media/inspector')
         const util = require('../../common/util')
+        const settings = require('../../common/settings')
 
         const InspectionTab = require('../component/inspection-tab')
         const StreamsTab = require('../component/streams-tab')
@@ -83,6 +84,14 @@ module.exports = () => {
                     },
                 }
 
+                if (!queryParams.mediaProfile && inspection.isHdr) {
+                    player.setProfile(settings.hdrSubtitlesProfile)
+                    const newParams = util.queryParams()
+                    newParams.mediaProfile = settings.hdrSubtitlesProfile
+                    const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
+                    window.reloadPage(url)
+                }
+
                 let headerMarkup = embyItem.getTitle(true)
                 if (embyItem.ProductionYear) {
                     headerMarkup += ` (${embyItem.ProductionYear})`
@@ -119,8 +128,8 @@ module.exports = () => {
                 }
 
                 const tabs = [
-                    new InspectionTab(embyItem, inspection, selectedIndices),
                     new StreamsTab(embyItem, selectedIndices),
+                    new InspectionTab(embyItem, inspection, selectedIndices),
                     new InformationTab(embyItem),
                     new CastTab(embyItem, emby.client),
                     new ChapterTab(embyItem),

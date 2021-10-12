@@ -11,16 +11,20 @@ screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 load-unsafe-playlists=yes
 af="acompressor=ratio=4,loudnorm"
---sub-scale=0.8
+sub-scale=0.8
 
 [stereo-audio]
 audio-channels=stereo
 
 [dim-subtitles]
 sub-ass-override=force
+sub-scale=0.6
 sub-color="0.5/0.5/0.5"
 sub-border-color="0.1/0.1/0.1"
 sub-shadow-color="0.0/0.0/0.0"
+
+[no-audio-filter]
+af=""
 
 [anime4k]
 glsl-shader="<MPV_ROOT_DIR>\shader\Anime4K_v3.1\Anime4K_Denoise_Bilateral_Mode.glsl"
