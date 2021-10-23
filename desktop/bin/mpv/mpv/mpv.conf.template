@@ -11,7 +11,6 @@ screenshot-directory="<MPV_ROOT_DIR>\screenshot"
 screenshot-template="%06n-%F-%P"
 load-unsafe-playlists=yes
 af="acompressor=ratio=4,loudnorm"
-sub-scale=0.8
 
 [stereo-audio]
 audio-channels=stereo

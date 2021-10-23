@@ -77,16 +77,15 @@ module.exports = (pageName, options) => {
         require(`../page/${pageName}`)().then((pageOptions) => {
             util.loadTooltips()
 
-            if (pageOptions) {
-                if (pageOptions.enableRandomChoice) {
-                    window.randomChoice = () => {
-                        const choices = document.querySelectorAll('[data-target="random-action"]')
-                        if (choices && choices.length > 0) {
-                            choices[Math.floor(Math.random() * choices.length)].click()
-                        }
-                    }
-                    document.getElementById('random-choice-button').setAttribute('style', '')
+            window.randomChoice = () => {
+                const choices = document.querySelectorAll('[data-target="random-action"]')
+                if (choices && choices.length > 0) {
+                    choices[Math.floor(Math.random() * choices.length)].click()
                 }
+            }
+
+            if (!pageOptions || (pageOptions && !pageOptions.enableRandomChoice)) {
+                document.getElementById('random-choice-button').setAttribute('style', 'display:none')
             }
             window.$lazyLoad = () => {
                 $('.lazy').Lazy()

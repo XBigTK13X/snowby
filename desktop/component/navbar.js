@@ -59,6 +59,34 @@ module.exports = {
 		      </a>
 			`
         }
+
+        navbarContent += `<a id="random-choice-button" style="" href="" onclick="window.randomChoice();return false">
+                <div class="navbar-button">
+                    Random
+                </div>
+            </a>`
+
+        if (options.parentId) {
+            navbarContent += `
+                <a href="emby-items.html?embyItemId=${options.parentId}">
+                <div class="navbar-button">
+                    ${options.parentName ? options.parentName : 'Parent'}
+                </div>
+                </a>
+            `
+        } else {
+            let seasonParams = util.queryParams()
+            if (seasonParams.hasSeason) {
+                navbarContent += `
+                    <a href="emby-items.html?embyItemId=${window.seasonId}">
+                    <div class="navbar-button">
+                        Season
+                    </div>
+                    </a>
+                `
+            }
+        }
+
         if (options.enableTableView) {
             let tableViewParams = util.queryParams()
             if (!tableViewParams.tableView) {
@@ -74,31 +102,8 @@ module.exports = {
             </a>`
         }
 
-        if (options.parentId) {
-            navbarContent += `
-              <a href="emby-items.html?embyItemId=${options.parentId}">
-                <div class="navbar-button">
-                  ${options.parentName ? options.parentName : 'Parent'}
-                </div>
-              </a>
-            `
-        } else {
-            let seasonParams = util.queryParams()
-            if (seasonParams.hasSeason) {
-                navbarContent += `
-                  <a href="emby-items.html?embyItemId=${window.seasonId}">
-                    <div class="navbar-button">
-                      Season
-                    </div>
-                  </a>
-                `
-            }
-        }
-        navbarContent += `<a id="random-choice-button" style="display:none;" href="" onclick="window.randomChoice();return false">
-                <div class="navbar-button">
-                    Random
-                </div>
-            </a></div>`
+        navbarContent += '</div>'
+
         if (options.profilePicker || options.sortPicker) {
             navbarContent += '<div id="pickers"><div id="profile-picker"></div><div id="sort-picker"></div></div>'
         }
