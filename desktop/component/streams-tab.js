@@ -50,7 +50,9 @@ class StreamsTab {
     render() {
         return new Promise((resolve) => {
             let queryParams = util.queryParams()
-            let html = `<table>
+            let html = `
+            <p>Path - ${this.embyItem.Path}</p>
+            <table>
     	    <tr>
     	        <th>Index</th>
     	        <th>Type</th>
