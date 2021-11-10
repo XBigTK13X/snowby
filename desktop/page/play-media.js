@@ -84,14 +84,6 @@ module.exports = () => {
                     },
                 }
 
-                if (!queryParams.mediaProfile && inspection.isHdr) {
-                    player.setProfile(settings.hdrSubtitlesProfile)
-                    const newParams = util.queryParams()
-                    newParams.mediaProfile = settings.hdrSubtitlesProfile
-                    const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
-                    window.reloadPage(url)
-                }
-
                 let headerMarkup = embyItem.getTitle(true)
                 if (embyItem.ProductionYear) {
                     headerMarkup += ` (${embyItem.ProductionYear})`

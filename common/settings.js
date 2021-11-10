@@ -8,8 +8,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.9.10',
-    versionDate: 'October 30, 2021',
+    appVersion: '3.9.11',
+    versionDate: 'November 10, 2021',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -21,7 +21,6 @@ let config = {
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: desktopPath('bin/hdr/hdr-toggle.vbs'),
-    hdrSubtitlesProfile: 'dim-subtitles',
     httpCacheTTLSeconds: 10,
     inaudibleWavPath: desktopPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
