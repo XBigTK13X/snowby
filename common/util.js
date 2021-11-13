@@ -8,7 +8,7 @@ let profiles = null
 
 const swapConfig = async (settings) => {
     serverLog('util - Prepping mpv.conf')
-    const source = settings.desktopPath('bin/mpv/mpv/mpv.conf.template')
+    const source = settings.desktopPath('bin/mpv/template/mpv.conf')
     const destination = settings.desktopPath('bin/mpv/mpv/mpv.conf')
     const mpvRootDir = settings.desktopPath('/bin/mpv')
     const appRootDir = settings.desktopPath('')
