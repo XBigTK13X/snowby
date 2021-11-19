@@ -36,7 +36,7 @@ class EmbyClient {
     login() {
         const usersURL = 'users/public'
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
-        if (settings.embyUsername && settings.embyPassword) {
+        if (settings.embyUsername && (settings.embyPassword || settings.embyPassword === '')) {
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
@@ -48,6 +48,7 @@ class EmbyClient {
                         Pw: settings.embyPassword,
                     }
                     this.userId = user.Id
+                    this.userName = user.Name
                     this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                     const loginURL = 'users/authenticatebyname'
                     return this.httpClient.post(loginURL, loginPayload)
@@ -57,6 +58,7 @@ class EmbyClient {
                     this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
                     util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
                     util.window.localStorage.setItem('SnowbyUserId', this.userId)
+                    util.window.localStorage.setItem('SnowbyUserName', this.userName)
                     this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                     return true
                 })

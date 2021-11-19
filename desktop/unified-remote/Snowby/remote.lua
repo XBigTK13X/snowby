@@ -73,11 +73,11 @@ actions.subSizePlus = function()
 end
 
 actions.subColorBright = function()
-	kb.stroke('ctrl','/')
+	kb.stroke('ctrl','e')
 end
 
 actions.subColorDark = function()
-	kb.stroke('ctrl','\\')
+	kb.stroke('ctrl','shift','e')
 end
 
 actions.audioSyncMinus = function()
