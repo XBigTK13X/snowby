@@ -15,6 +15,14 @@ shell.SendKeys "{TAB}"
 WScript.Sleep Wait_Key_Milliseconds
 shell.SendKeys "{TAB}"
 WScript.Sleep Wait_Key_Milliseconds
+shell.SendKeys "{TAB}"
+WScript.Sleep Wait_Key_Milliseconds
+shell.SendKeys "{TAB}"
+WScript.Sleep Wait_Key_Milliseconds
+shell.SendKeys "{TAB}"
+WScript.Sleep Wait_Key_Milliseconds
+shell.SendKeys "{TAB}"
+WScript.Sleep Wait_Key_Milliseconds
 shell.SendKeys " "
 WScript.Sleep Wait_Window_Milliseconds
 shell.SendKeys "%{F4}"

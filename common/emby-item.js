@@ -120,7 +120,7 @@ module.exports = class EmbyItem {
         if (!settings.liveTvChannelUrlTemplates) {
             return null
         }
-        if (this.ChannelNumber.indexOf('.') !== -1) {
+        if (this.ChannelNumber && this.ChannelNumber.indexOf('.') !== -1) {
             return settings.liveTvChannelUrlTemplates.homeRun(this.ChannelNumber)
         } else {
             return settings.liveTvChannelUrlTemplates.iptv(this.ChannelNumber)
@@ -154,7 +154,7 @@ module.exports = class EmbyItem {
         try {
             this.ChannelName = this.ChannelName.replace(' FHD', '')
         } catch {
-            console.log('Failed to parse channel ' + this.Name)
+            //console.log('Failed to parse channel ' + this.Name)
             this.ChannelName = this.Name
         }
 
