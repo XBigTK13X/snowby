@@ -11,9 +11,12 @@
 	</row>
 	<row>
 		<button text="Subs\nSmaller" ontap="subSizeMinus" />
-		<button text="Subs\nLarger" ontap="subSizePlus" />
+		<button text="Subs\nLarger" ontap="subSizePlus" />		
+	</row>
+	<row>
 		<button text="Subs\nBright" ontap="subColorBright" />
 		<button text="Subs\nDark" ontap="subColorDark" />
+		<button text="Subs\nHDR Dark" ontap="subColorDarkHdr" />
 	</row>
 	<row>
 		<button text="Subs\nSooner" ontap="subSyncMinus" />

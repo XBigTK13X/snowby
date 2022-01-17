@@ -80,6 +80,10 @@ actions.subColorDark = function()
 	kb.stroke('ctrl','shift','e')
 end
 
+actions.subColorDarkHdr = function()
+	kb.stroke('shift','e')
+end
+
 actions.audioSyncMinus = function()
 	kb.stroke('ctrl','z')
 end
