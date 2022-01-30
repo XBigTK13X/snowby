@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 	<row>
-		<button text="Sleep" ontap="sleepComputer" />
-		<button text="Wake" ontap="@wol,MA:AC:AD:DR:RE:S1" />
+		<button text="SLEEP" ontap="sleepComputer" />
+		<button text="WAKE" ontap="@wol,MA:AC:AD:DR:RE:S1" />
 	</row>
 	<row>
-		<button text="Full\nScreen" ontap="toggleFullScreen" />
-		<button text="Toggle\nHDR" ontap="toggleHdr" />
-		<button text="App\nExit" ontap="exitApp" />
+		<button text="FULL\nSCREEN" ontap="toggleFullScreen" />
+		<button text="TOGGLE\nHDR" ontap="toggleHdr" />
+		<button text="APP\nEXIT" ontap="exitApp" />
 	</row>
 	<row>
-		<button text="Subs\nSmaller" ontap="subSizeMinus" />
-		<button text="Subs\nLarger" ontap="subSizePlus" />		
+		<button text="SUBS\nSMALLER" ontap="subSizeMinus" />
+		<button text="SUBS\nLARGER" ontap="subSizePlus" />		
 	</row>
 	<row>
-		<button text="Subs\nBright" ontap="subColorBright" />
-		<button text="Subs\nDark" ontap="subColorDark" />
-		<button text="Subs\nHDR Dark" ontap="subColorDarkHdr" />
+		<button text="SUBS\nBRIGHT" ontap="subColorBright" />
+		<button text="SUBS\nDARK" ontap="subColorDark" />
+		<button text="SUBS\nHDR DARK" ontap="subColorDarkHdr" />
 	</row>
 	<row>
-		<button text="Subs\nSooner" ontap="subSyncMinus" />
-		<button text="Subs\nLater" ontap="subSyncPlus" />
-		<button text="Audio\nSooner" ontap="audioSyncMinus" />
-		<button text="Audio\nLater" ontap="audioSyncPlus" />
+		<button text="SUBS\nSOONER" ontap="subSyncMinus" />
+		<button text="SUBS\nLATER" ontap="subSyncPlus" />
+		<button text="AUDIO\nSOONER" ontap="audioSyncMinus" />
+		<button text="AUDIO\nLATER" ontap="audioSyncPlus" />
 	</row>
 	<row>
-		<button text="Snowby" ontap="focusSnowby" />
+		<button text="SNOWBY" ontap="focusSnowby" />
 		<button text="MPV" ontap="focusMPV" />
-		<button text="Browser" ontap="focusBrowser" />
+		<button text="BROWSER" ontap="focusBrowser" />
 	</row>
 	<row>
-		<button text="Backward" ontap="jumpBackward" />
-		<button text="Forward" ontap="jumpForward" />
+		<button text="BACKWARD" ontap="jumpBackward" />
+		<button text="FORWARD" ontap="jumpForward" />
 	</row>
 	<row>
-		<button text="Pause / Resume" ontap="toggleMedia" />
+		<button text="PAUSE / RESUME" ontap="toggleMedia" />
 	</row>
 </layout>
