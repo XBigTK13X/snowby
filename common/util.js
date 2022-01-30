@@ -69,10 +69,11 @@ const loadTooltips = () => {
     }
     const tippy = require('tippy.js').default
     tippyInstances = tippy('[data-tippy-content]', {
-        placement: 'bottom',
+        placement: 'auto',
         delay: 300,
         allowHTML: true,
         theme: 'snowby',
+        maxWidth: 'none',
     })
 }
 

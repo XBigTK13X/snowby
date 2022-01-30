@@ -493,12 +493,9 @@ class EmbyClient {
                     <div class='centered'>
                         <p>
                             ${foundPerson.Name.split('"').join("'")}
-                        </p>
-                        <p>as</p>
-                        <p>
+                            as
                             ${foundPerson.Role ? foundPerson.Role.split('"').join("'") : foundPerson.Type.split('"').join("'")}
-                        </p>
-                        <p>in</p>
+                            </p>
                         <p>
                             ${item.Name}
                         </p>

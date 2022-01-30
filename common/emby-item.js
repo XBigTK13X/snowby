@@ -468,9 +468,7 @@ module.exports = class EmbyItem {
             <div class='centered'>
                 <p>
                     ${this.PersonName}
-                </p>
-                <p>as</p>
-                <p>
+                    as
                     ${this.PersonRole}
                 </p>
             </div>
