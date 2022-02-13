@@ -36,7 +36,10 @@ class EmbyClient {
     clearSession() {
         util.window.localStorage.removeItem(EMBY_AUTH_HEADER)
         util.window.localStorage.removeItem('SnowbyUserId')
-        util.window.localStorage.removeItem('SnowbyUserName')
+    }
+
+    imageUrl(userId, imageTag) {
+        return `${settings.embyServerURL}/emby/Users/${userId}/Images/Primary?height=200&tag=${imageTag}&quality=100`
     }
 
     login() {
@@ -73,7 +76,6 @@ class EmbyClient {
                     this.authHeader = `${this.authHeader}, Token="${authenticatedUser.AccessToken}"`
                     util.window.localStorage.setItem(EMBY_AUTH_HEADER, this.authHeader)
                     util.window.localStorage.setItem('SnowbyUserId', this.userId)
-                    util.window.localStorage.setItem('SnowbyUserName', this.userName)
                     this.httpClient.setHeader(EMBY_AUTH_HEADER, this.authHeader)
                     return true
                 })

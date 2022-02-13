@@ -421,6 +421,25 @@ table.channel-guide {
     font-size: 20px;
 }
 
+.profile-image-link {
+    height: 10vw;
+    width: 10vw;
+}
+
+.profile-image {
+    height: 9vw;
+    width: 9vw;
+    margin-top: 0.5vw;
+}
+
+.profile-image-unselected {
+    opacity: 0.25;
+}
+
+.profile-image-selected {
+    opacity: 0.75;
+}
+
 .uhd-content {
     background-color: rgb(78, 39, 72);
 }

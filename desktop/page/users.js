@@ -8,7 +8,7 @@ module.exports = () => {
             util.window.localStorage.setItem('chosen-user-index', userIndex)
             emby.clearSession()
             return emby.connect().then(() => {
-                window.location.href = `./landing.html`
+                //window.location.href = `./landing.html`
             })
         }
 
