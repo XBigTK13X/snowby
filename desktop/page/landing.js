@@ -10,13 +10,16 @@ module.exports = () => {
         const ExternalLink = require('../component/external-link')
         const links = [
             new InternalLink('Library', 'library.html'),
-            //TODO Disabled this link because the latest Emby release broke the API
             new EmbyItemLink('Next Up', 'next-up'),
             new EmbyItemLink('In Progress', 'in-progress'),
             new InternalLink('Stream', 'streaming.html'),
             new InternalLink('Search', 'search.html'),
             new ExternalLink('Intranet', 'http://9914.us'),
         ]
+
+        if (settings.availableUsers) {
+            links.push(new InternalLink('Users', 'users.html'))
+        }
 
         let markup = `<div class="grid center-grid">${links
             .map((link) => {
@@ -27,6 +30,10 @@ module.exports = () => {
         let versionHtml = `v${settings.appVersion} built ${settings.versionDate}`
         if (settings.newVersionAvailable) {
             versionHtml += `<br/><div class="badge badge-best">New version available, v${settings.newVersion}</div>`
+        }
+        const userName = util.window.localStorage.getItem('SnowbyUserName')
+        if (userName) {
+            versionHtml += `<br/>Signed in as ${userName}`
         }
         document.getElementById('version').innerHTML = versionHtml
         document.getElementById('menu-entries').innerHTML = markup

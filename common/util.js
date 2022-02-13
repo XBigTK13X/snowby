@@ -150,6 +150,9 @@ let windowStub = {
         clear: () => {
             windowStorage = {}
         },
+        removeItem: (key) => {
+            delete windowStorage[key]
+        },
     },
     loadingStart: (message) => {},
     loadingStop: () => {},

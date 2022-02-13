@@ -33,19 +33,34 @@ class EmbyClient {
         })
     }
 
+    clearSession() {
+        util.window.localStorage.removeItem(EMBY_AUTH_HEADER)
+        util.window.localStorage.removeItem('SnowbyUserId')
+        util.window.localStorage.removeItem('SnowbyUserName')
+    }
+
     login() {
         const usersURL = 'users/public'
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
-        if (settings.embyUsername && (settings.embyPassword || settings.embyPassword === '')) {
+        var selectedUser = {
+            username: settings.embyUsername,
+            password: settings.embyPassword,
+        }
+        const chosenUserIndex = util.window.localStorage.getItem('chosen-user-index')
+        if (chosenUserIndex !== undefined && settings.availableUsers && chosenUserIndex < settings.availableUsers.length) {
+            selectedUser = settings.availableUsers[chosenUserIndex]
+        }
+        // Use the configured user to authenticate
+        if (selectedUser.username && (selectedUser.password || selectedUser.password === '')) {
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
                     const user = usersResponse.data.filter((x) => {
-                        return x.Name === settings.embyUsername
+                        return x.Name === selectedUser.username
                     })[0]
                     const loginPayload = {
-                        Username: settings.embyUsername,
-                        Pw: settings.embyPassword,
+                        Username: selectedUser.username,
+                        Pw: selectedUser.password,
                     }
                     this.userId = user.Id
                     this.userName = user.Name
@@ -63,6 +78,7 @@ class EmbyClient {
                     return true
                 })
         } else {
+            // Use the first listed user from Emby to authenticate
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {

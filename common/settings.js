@@ -8,8 +8,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.0',
-    versionDate: 'January 30, 2022',
+    appVersion: '3.10.1',
+    versionDate: 'February 12, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -18,6 +18,7 @@ let config = {
     embyTrackProgress: true,
     embyPassword: null,
     embyUsername: null,
+    availableUsers: null,
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
     hdrTogglePath: desktopPath('bin/hdr/hdr-toggle.vbs'),
