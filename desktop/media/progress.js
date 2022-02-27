@@ -1,13 +1,13 @@
 const settings = require('../../common/settings')
-const ticks = require('../../common/ticks')
 const player = require('../media/player')
 const emby = require('../../common/emby-client')
 const util = require('../../common/util')
+const { DateTime } = require('luxon')
 
 const setConnectionStatus = (connected) => {
-    let status = 'Snowby is connected to the media player and monitoring progress.'
+    let status = DateTime.now().toLocaleString(DateTime.TIME_WITH_SECONDS) + ' - Snowby is connected to the media player and monitoring progress.'
     if (!connected) {
-        status = 'Snowby does not think media is playing.'
+        status = DateTime.now().toLocaleString(DateTime.TIME_WITH_SECONDS) + ' - Snowby does not think media is playing.'
     }
     document.getElementById('connection-status').innerHTML = `<p>${status}</p>`
 }
@@ -52,7 +52,8 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                     .catch((mediaFinished) => {
                         util.clientLog('Media finished playing ' + embyItem.Path)
                         setConnectionStatus(false)
-                        clearInterval(trackInterval)
+                        //Keep checking the interval until leaving the page. Just in case the connection dropped for another reason and is still playing
+                        // clearInterval(trackInterval)
                     })
             })
             .catch((err) => {

@@ -147,10 +147,10 @@ module.exports = class EmbyItem {
 
         result = result.replace('*', '')
 
-        let parts = result.split('  ')
+        let parts = result.split(' - ')
 
-        this.ChannelCategory = parts[0]
-        this.ChannelName = parts[1]
+        this.ChannelCategory = parts.shift()
+        this.ChannelName = parts.join(' - ')
         try {
             this.ChannelName = this.ChannelName.replace(' FHD', '')
         } catch {

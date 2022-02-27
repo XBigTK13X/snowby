@@ -6,7 +6,6 @@ module.exports = () => {
 
         const inspector = require('../media/inspector')
         const util = require('../../common/util')
-        const settings = require('../../common/settings')
 
         const InspectionTab = require('../component/inspection-tab')
         const StreamsTab = require('../component/streams-tab')

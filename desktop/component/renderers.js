@@ -176,22 +176,25 @@ module.exports = {
                 </div>
             </a>
         `
-        let html = `
-        <div class="navbar">
-            ${window.channelCategories.list
-                .map((category) => {
-                    return `
-                        <a href="" onclick="window.filterChannels('${category}'); return false;">
-                            <div class="navbar-button">
-                                ${category}
-                            </div>
-                        </a>
-                    `
-                })
-                .join('')}
-                ${settings.liveTvRawM3U ? rawTvLink : ''}
-        </div>
-        `
+        let html = ``
+        if (settings.liveTvDisplayCategories) {
+            html += `
+                <div class="navbar">
+                    ${window.channelCategories.list
+                        .map((category) => {
+                            return `
+                                <a href="" onclick="window.filterChannels('${category}'); return false;">
+                                    <div class="navbar-button">
+                                        ${category}
+                                    </div>
+                                </a>
+                            `
+                        })
+                        .join('')}
+                        ${settings.liveTvRawM3U ? rawTvLink : ''}
+                </div>
+                `
+        }
 
         html += `
         <table class="channel-guide">

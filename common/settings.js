@@ -8,8 +8,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.2',
-    versionDate: 'February 13, 2022',
+    appVersion: '3.10.3',
+    versionDate: 'February 26, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -27,6 +27,7 @@ let config = {
     keepAudioDeviceAwake: true,
     liveTvChannelUrlTemplates: null,
     liveTvRawM3U: null,
+    liveTvDisplayCategories: true,
     mediaQuality: null,
     menuBarVisible: false,
     mpvExePath: desktopPath('bin/mpv/mpv.exe'),
@@ -87,32 +88,7 @@ let config = {
     },
     sortFields: ['Name', 'PremiereDate', 'ProductionYear'],
     sortDirections: ['Ascending', 'Descending'],
-    channelMap: {
-        'WDAF-DT': 'FOX',
-        KCTV: 'CBS',
-        'KMBC-HD': 'ABC',
-        'KCPT-1': 'PBS 1',
-        'KCPT-2': 'PBS 2',
-        'KCWE-HD': 'CW',
-        'KMCI-TV': 'KMCI',
-        'KSHB-TV': 'NBC',
-        ION: 'ION',
-        Quest: 'Quest',
-        'Me TV': 'Me TV',
-        'KCPT-3': 'Create',
-        'KCPT-4': 'PBS Kids',
-        'KMCI-B': 'Bounce',
-        'KSHB-GT': 'GRIT',
-        'KSHB-LF': 'LAFF',
-        qubo: 'QUBO',
-        IONPlus: 'ION Plus',
-        LIGHTtv: 'LIGHT',
-        Dabl: 'DABL',
-        'Cozi TV': 'COZI',
-        'KSMO-TV': 'MyNetworkTV',
-        theGrio: 'Grio',
-        CourtTV: 'CourtTV',
-    },
+    channelMap: null,
 }
 
 let overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'

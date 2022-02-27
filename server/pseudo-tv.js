@@ -3,7 +3,6 @@ const _ = require('lodash')
 const { DateTime } = require('luxon')
 const settings = require('../common/settings')
 const ticks = require('../common/ticks')
-const util = require('../common/util')
 const emby = require('../common/emby-client').client
 
 let lookup = {}

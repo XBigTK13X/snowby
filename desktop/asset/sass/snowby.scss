@@ -46,8 +46,7 @@ $snowby-color-worse: #d18150;
 $snowby-color-worst: #c15050;
 
 html {
-    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, system-ui, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-        'Open Sans', sans-serif;
+    font-family: Verdana, serif;
     background: $snowby-window-color;
     color: $snowby-text-front;
 }
@@ -183,7 +182,6 @@ table.channel-guide {
     color: $snowby-text-front;
     display: inline-block;
     font-size: 20px;
-    font-weight: bold;
     line-height: $snowby-navbar-button-height;
     margin: $snowby-buffer;
     padding: $snowby-buffer;
@@ -209,7 +207,6 @@ table.channel-guide {
 .tab-button {
     background: $snowby-text-back;
     color: $snowby-text-front;
-    font-weight: bold;
     background-color: inherit;
     border: none;
     cursor: pointer;
@@ -313,7 +310,6 @@ table.channel-guide {
     background: $snowby-tile-frame;
     border-radius: $snowby-roundness;
     font-size: $snowby-tile-text-size;
-    font-weight: bold;
     margin: $snowby-buffer;
     overflow: hidden;
     padding: $snowby-buffer;
@@ -348,7 +344,6 @@ table.channel-guide {
     background: $snowby-text-back;
     border-radius: $snowby-roundness;
     font-size: $snowby-tile-text-size;
-    font-weight: bold;
     height: $snowby-center-dimension-y;
     line-height: $snowby-center-dimension-y;
     margin: $snowby-buffer;
