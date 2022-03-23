@@ -1,4 +1,5 @@
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const _ = require('lodash')
 const compareVersions = require('compare-versions')
@@ -8,7 +9,7 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.4',
+    appVersion: '3.10.5',
     versionDate: 'March 23, 2022',
     fullScreen: false,
     debugApiCalls: false,
@@ -21,7 +22,7 @@ let config = {
     availableUsers: null,
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
-    hdrTogglePath: desktopPath('bin/hdr/hdr-toggle.vbs'),
+    hdrTogglePath: desktopPath('bin/hdr/win11/toggle-hdr.vbs'),
     httpCacheTTLSeconds: 10,
     inaudibleWavPath: desktopPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
@@ -91,6 +92,14 @@ let config = {
     channelMap: null,
 }
 
+// FIXME I would love to find a one-liner to programmatically toggle HDR on windows.
+// This whole script calling a shell nonsense is brittle
+// https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information
+// https://docs.microsoft.com/en-us/windows/release-health/release-information
+const windows11Version = '22000'
+if (os.release().indexOf(windows11Version) === -1) {
+    config.hdrTogglePath = desktopPath('bin/hdr/win10/toggle-hdr.vbs')
+}
 let overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'
 
 if (process.platform === 'linux') {
