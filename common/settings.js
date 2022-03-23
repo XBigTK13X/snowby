@@ -8,8 +8,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.3',
-    versionDate: 'February 26, 2022',
+    appVersion: '3.10.4',
+    versionDate: 'March 23, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
