@@ -45,6 +45,7 @@ async function createWindow() {
             contextIsolation: false,
         },
         fullscreen: settings.fullScreen,
+        maximize: true,
         backgroundColor: settings.windowBackgroundColor,
         autoHideMenuBar: !settings.menuBarVisible,
         icon: nativeImage.createFromPath(settings.desktopPath('asset/img/snowflake.ico')),

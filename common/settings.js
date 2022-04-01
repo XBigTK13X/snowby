@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.5',
-    versionDate: 'March 23, 2022',
+    appVersion: '3.10.7',
+    versionDate: 'April 01, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -87,7 +87,7 @@ let config = {
         movie: ['G', 'PG', 'PG-13', 'R', 'NR'],
         series: ['Y', 'Y7', 'G', 'PG', '14', 'MA'],
     },
-    sortFields: ['Name', 'PremiereDate', 'ProductionYear'],
+    sortFields: ['PremiereDate', 'Name', 'ProductionYear'],
     sortDirections: ['Ascending', 'Descending'],
     channelMap: null,
 }

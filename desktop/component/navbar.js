@@ -154,19 +154,21 @@ module.exports = {
             window.changeSort = (target) => {
                 const newParams = util.queryParams()
                 newParams.selectedSort = target.value
+                newParams.sortDirection = document.getElementById('change-direction-select').value
                 const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
                 window.reloadPage(url)
             }
             window.changeSortDirection = (target) => {
                 const newParams = util.queryParams()
                 newParams.sortDirection = target.value
+                newParams.selectedSort = document.getElementById('change-sort-select').value
                 const url = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(newParams)}`
                 window.reloadPage(url)
             }
             let sortPickerMarkup = `
             <div>
                 <p>Select a field to sort by.</p>
-                <select onChange="window.changeSort(this)">
+                <select id="change-sort-select" onChange="window.changeSort(this)">
                 ${settings.sortFields
                     .map((sortField, ii) => {
                         return `
@@ -179,7 +181,7 @@ module.exports = {
                     })
                     .join('')}
                 </select>
-                <select onChange="window.changeSortDirection(this)">
+                <select id="change-direction-select" onChange="window.changeSortDirection(this)">
                 ${settings.sortDirections
                     .map((direction, ii) => {
                         return `

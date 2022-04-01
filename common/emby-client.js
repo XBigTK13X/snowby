@@ -137,16 +137,18 @@ class EmbyClient {
     }
 
     mergeParams(params) {
-        let globalParams = util.queryParams()
-        if (globalParams) {
-            if (globalParams.selectedSort) {
-                params.SortBy = globalParams.selectedSort
+        return new Promise((resolve) => {
+            let globalParams = util.queryParams()
+            if (globalParams) {
+                if (globalParams.selectedSort) {
+                    params.SortBy = globalParams.selectedSort
+                }
+                if (globalParams.sortDirection) {
+                    params.SortOrder = globalParams.sortDirection
+                }
             }
-            if (globalParams.sortDirection) {
-                params.SortOrder = globalParams.sortDirection
-            }
-        }
-        return params
+            return resolve(params)
+        })
     }
 
     libraryViews() {
@@ -187,14 +189,13 @@ class EmbyClient {
         })
     }
 
-    embyItems(parentId, searchParams, DataClass) {
-        let mergedParams = this.mergeParams(searchParams)
+    async embyItems(parentId, searchParams, DataClass) {
+        let mergedParams = await this.mergeParams(searchParams)
         const query = util.queryString(mergedParams)
         const url = `Users/${this.userId}/Items?${query}`
-        return this.httpClient.get(url).then((itemsResponse) => {
-            return itemsResponse.data.Items.map((item) => {
-                return DataClass ? new DataClass(item) : new EmbyItem(item)
-            })
+        let itemsResponse = await this.httpClient.get(url)
+        return itemsResponse.data.Items.map((item) => {
+            return DataClass ? new DataClass(item) : new EmbyItem(item)
         })
     }
 

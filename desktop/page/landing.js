@@ -12,9 +12,7 @@ module.exports = () => {
             new InternalLink('Library', 'library.html'),
             new EmbyItemLink('Next Up', 'next-up'),
             new EmbyItemLink('In Progress', 'in-progress'),
-            new InternalLink('Stream', 'streaming.html'),
             new InternalLink('Search', 'search.html'),
-            new ExternalLink('Intranet', 'http://9914.us'),
         ]
 
         let markup = `<div class="grid center-grid">${links
