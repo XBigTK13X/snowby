@@ -20,7 +20,6 @@ let mainWindow = null
 if (!app.requestSingleInstanceLock()) {
     util.serverLog('main - An instance of Snowby is already running. Exiting the duplicate app.')
     app.quit()
-    return
 } else {
     if (mainWindow) {
         if (mainWindow.isMinimized()) {
@@ -31,6 +30,9 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow() {
+    if (mainWindow !== null) {
+        return
+    }
     await util.swapConfig(settings)
     setTimeout(() => {
         audio.keepAwake()
@@ -44,28 +46,28 @@ async function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
         },
+        show: false,
         fullscreen: settings.fullScreen,
-        maximize: true,
         backgroundColor: settings.windowBackgroundColor,
         autoHideMenuBar: !settings.menuBarVisible,
         icon: nativeImage.createFromPath(settings.desktopPath('asset/img/snowflake.ico')),
     })
-    mainWindow.maximize()
 
     mainWindow.loadFile('desktop/page/landing.html')
 
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.maximize()
+        mainWindow.show()
+    })
 }
 
 app.on('ready', createWindow)
 
-app.on('activate', () => {
-    if (mainWindow === null) {
-        createWindow()
-    }
-})
+app.on('activate', createWindow)
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
