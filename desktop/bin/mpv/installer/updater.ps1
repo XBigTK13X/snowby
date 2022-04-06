@@ -1,6 +1,6 @@
 function Check-7z {
     $7zdir = (Get-Location).Path + "\7z"
-    if (-not (Test-Path ($7zdir + "\7za.exe")))
+    if (-not (Test-Path ($7zdir + "\7za.exe")) -and -not (Test-Path ([Environment]::ExpandEnvironmentVariables("%Programfiles%\7-Zip\7z.exe"))))
     {
         $download_file = (Get-Location).Path + "\7z.zip"
         Write-Host "Downloading 7z" -ForegroundColor Green
@@ -46,10 +46,9 @@ function Check-Mpv {
     return $is_exist
 }
 
-function Download-Mpv ($filename) {
+function Download-Mpv ($filename, $link) {
     Write-Host "Downloading" $filename -ForegroundColor Green
     $global:progressPreference = 'Continue'
-    $link = "https://download.sourceforge.net/mpv-player-windows/" + $filename
     Invoke-WebRequest -Uri $link -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::FireFox -OutFile $filename
 }
 
@@ -78,25 +77,44 @@ function Download-Ytplugin ($plugin, $version) {
 }
 
 function Extract-Mpv ($file) {
-    $7za = (Get-Location).Path + "\7z\7za.exe"
-    Write-Host "Extracting" $file -ForegroundColor Green
-    & $7za x -y $file
+    if (Test-Path ([Environment]::ExpandEnvironmentVariables("%Programfiles%\7-Zip\7z.exe"))) {
+        & ([Environment]::ExpandEnvironmentVariables("%Programfiles%\7-Zip\7z.exe")) x -y $file | FIND "Extracting archive" | Write-Host -ForegroundColor Green
+    }
+    else {
+        $7za = (Get-Location).Path + "\7z\7za.exe"
+        Write-Host "Extracting" $file -ForegroundColor Green
+        & $7za x -y $file
+    }
 }
 
-function Get-Latest-Mpv($Arch) {
-    $i686_link = "https://sourceforge.net/projects/mpv-player-windows/rss?path=/32bit"
-    $x86_64_link = "https://sourceforge.net/projects/mpv-player-windows/rss?path=/64bit"
-    $link = ''
-    switch ($Arch)
-    {
-        i686 { $link = $i686_link}
-        x86_64 { $link = $x86_64_link }
+function Get-Latest-Mpv($Arch, $channel) {
+    $filename = ""
+    $download_link = ""
+    switch -wildcard ($channel) {
+        "daily" {
+            $api_gh = "https://api.github.com/repos/shinchiro/mpv-winbuild-cmake/releases/latest"
+            $json = Invoke-WebRequest $api_gh -MaximumRedirection 0 -ErrorAction Ignore -UseBasicParsing | ConvertFrom-Json
+            $filename = $json.assets | where { $_.name -Match "mpv-$Arch" } | Select-Object -ExpandProperty name
+            $download_link = $json.assets | where { $_.name -Match "mpv-$Arch" } | Select-Object -ExpandProperty browser_download_url
+        }
+        "weekly" {
+            $i686_link = "https://sourceforge.net/projects/mpv-player-windows/rss?path=/32bit"
+            $x86_64_link = "https://sourceforge.net/projects/mpv-player-windows/rss?path=/64bit"
+            $rss_link = ''
+            switch ($Arch)
+            {
+                i686 { $rss_link = $i686_link}
+                x86_64 { $rss_link = $x86_64_link }
+            }
+            Write-Host "Fetching RSS feed for mpv" -ForegroundColor Green
+            $result = [xml](New-Object System.Net.WebClient).DownloadString($rss_link)
+            $latest = $result.rss.channel.item.link[0]
+            $tempname = $latest.split("/")[-2]
+            $filename = [System.Uri]::UnescapeDataString($tempname)
+            $download_link = "https://download.sourceforge.net/mpv-player-windows/" + $filename
+        }
     }
-    Write-Host "Fetching RSS feed for mpv" -ForegroundColor Green
-    $result = [xml](New-Object System.Net.WebClient).DownloadString($link)
-    $latest = $result.rss.channel.item.link[0]
-    $filename = $latest.split("/")[-2]
-    return [System.Uri]::UnescapeDataString($filename)
+    return $filename, $download_link
 }
 
 function Get-Latest-Ytplugin ($plugin) {
@@ -183,14 +201,77 @@ function Test-Admin
     (New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 }
 
+function Create-XML {
+@"
+<settings>
+  <channel>unset</channel>
+  <autodelete>unset</autodelete>
+</settings>
+"@ | Set-Content "settings.xml" -Encoding UTF8
+}
+
+function Check-ChannelRelease {
+    $channel = ""
+    $file = "settings.xml"
+
+    if (-not (Test-Path $file)) {
+        $result = Read-KeyOrTimeout "Choose mpv updates frequency, weekly or daily? [1=weekly/2=daily] (default=1)" "D1"
+        Write-Host ""
+        if ($result -eq 'D1') {
+            $channel = "weekly"
+        }
+        elseif ($result -eq 'D2') {
+            $channel = "daily"
+        }
+        Create-XML
+        [xml]$doc = Get-Content $file
+        $doc.settings.channel = $channel
+        $doc.Save($file)
+    }
+    else {
+        [xml]$doc = Get-Content $file
+        $channel = $doc.settings.channel
+    }
+    return $channel
+}
+
+function Check-Autodelete($archive) {
+    $autodelete = ""
+    $file = "settings.xml"
+
+    if (-not (Test-Path $file)) { exit }
+    [xml]$doc = Get-Content $file
+    if ($doc.settings.autodelete -eq "unset") {
+        $result = Read-KeyOrTimeout "Delete mpv archives after extract? [Y/n] (default=Y)" "Y"
+        Write-Host ""
+        if ($result -eq 'Y') {
+            $autodelete = "true"
+        }
+        elseif ($result -eq 'N') {
+            $autodelete = "false"
+        }
+        $doc.settings.autodelete = $autodelete
+        $doc.Save($file)
+    }
+    if ($doc.settings.autodelete -eq "true") {
+        if (Test-Path $archive)
+        {
+            Remove-Item -Force $archive
+        }
+    }
+}
+
 function Upgrade-Mpv {
     $need_download = $false
     $remoteName = ""
+    $download_link = ""
     $arch = ""
+    $channel = ""
 
     if (Check-Mpv) {
         $arch = (Get-Arch).FileType
-        $remoteName = Get-Latest-Mpv $arch
+        $channel = Check-ChannelRelease
+        $remoteName, $download_link = Get-Latest-Mpv $arch $channel
         $localgit = ExtractGitFromFile
         $localdate = ExtractDateFromFile
         $remotegit = ExtractGitFromURL $remoteName
@@ -227,7 +308,8 @@ function Upgrade-Mpv {
                 Write-Host "Detecting System Type is 32-bit" -ForegroundColor Green
                 $arch = "i686"
             }
-            $remoteName = Get-Latest-Mpv $arch
+            $channel = Check-ChannelRelease
+            $remoteName, $download_link = Get-Latest-Mpv $arch $channel
         }
         else {
             $need_download = $false
@@ -235,10 +317,11 @@ function Upgrade-Mpv {
     }
 
     if ($need_download) {
-        Download-Mpv $remoteName
+        Download-Mpv $remoteName $download_link
         Check-7z
         Extract-Mpv $remoteName
     }
+    Check-Autodelete $remoteName
 }
 
 function Upgrade-Ytplugin {
