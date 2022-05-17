@@ -1,3 +1,6 @@
+const settings = require('../../common/settings')
+const _ = require('lodash')
+
 const fieldContains = (property, needle) => {
     if (property) {
         return property.toLowerCase().includes(needle)
@@ -16,6 +19,10 @@ const streamIsLabeled = (stream, labels) => {
         }
     }
     return false
+}
+
+const isCodecBlacklisted = (stream) => {
+    return settings.codecBlacklist && _.has(settings.codecBlacklist, stream.Codec.toLowerCase())
 }
 
 const calculateEnglishSubtitleScore = (stream) => {
@@ -108,6 +115,9 @@ const inspect = (embyItem) => {
     let englishAudioAbsoluteIndex = 1
     let englishAudioRelativeIndex = 1
 
+    let blacklistedAudio = {}
+    let blacklistedSubtitle = {}
+
     let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
     if (genres.includes('Anime') || genres.includes('Animation')) {
         isAnimated = true
@@ -140,6 +150,10 @@ const inspect = (embyItem) => {
         isHdr = fidelity.isHdr
         if (stream.Type === 'Audio') {
             audioIndex++
+            if (isCodecBlacklisted(stream)) {
+                blacklistedAudio[audioIndex] = true
+                continue
+            }
             if (firstAudioRelativeIndex == -1) {
                 firstAudioRelativeIndex = audioIndex
                 firstAudioAbsoluteIndex = trackIndex
@@ -163,6 +177,10 @@ const inspect = (embyItem) => {
         }
         if (stream.Type === 'Subtitle') {
             subtitleIndex++
+            if (isCodecBlacklisted(stream)) {
+                blacklistedSubtitle[subtitleIndex] = true
+                continue
+            }
             const streamSubtitleScore = calculateEnglishSubtitleScore(stream)
             if (!ignoreInspector && streamSubtitleScore !== null && streamSubtitleScore >= englishSubtitleScore) {
                 hasEnglishSubtitle = true
@@ -185,6 +203,8 @@ const inspect = (embyItem) => {
         subtitleRelativeIndex,
         ignoreInspector,
         isSubbedAnime,
+        blacklistedAudio,
+        blacklistedSubtitle,
     }
     if (!isAnime) {
         // American/British show or movie

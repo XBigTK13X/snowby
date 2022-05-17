@@ -119,7 +119,7 @@ module.exports = () => {
                 }
 
                 const tabs = [
-                    new StreamsTab(embyItem, selectedIndices),
+                    new StreamsTab(embyItem, inspection, selectedIndices),
                     new InspectionTab(embyItem, inspection, selectedIndices),
                     new InformationTab(embyItem),
                     new CastTab(embyItem, emby.client),

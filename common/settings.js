@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.9',
-    versionDate: 'April 06, 2022',
+    appVersion: '3.10.10',
+    versionDate: 'May 16, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -41,6 +41,7 @@ let config = {
     snowbyServerURL: null,
     windowBackgroundColor: '#010101',
     streamingLinks: [],
+    codecBlacklist: {},
     progressWatchedThreshold: {
         minPercent: 5,
         maxPercent: 90,
@@ -115,6 +116,12 @@ if (fs.existsSync(overridePath)) {
         config.newVersionAvailable = true
     }
     config = _.merge(config, overrides)
+}
+
+if (config.codecBlacklist && _.has(config.codecBlacklist, os.hostname())) {
+    config.codecBlacklist = config.codecBlacklist[os.hostname()]
+} else {
+    config.codecBlacklist = {}
 }
 
 if (process.env.SNOWBY_EMBY_USERNAME) {

@@ -1,10 +1,12 @@
 const util = require('../../common/util')
 const mediaStream = require('../media/stream')
+const _ = require('lodash')
 
 class StreamsTab {
-    constructor(embyItem, selectedIndices) {
+    constructor(embyItem, inspection, selectedIndices) {
         this.embyItem = embyItem
         this.selectedIndices = selectedIndices
+        this.inspection = inspection
         this.name = 'Streams'
         this.order = 2
 
@@ -70,6 +72,9 @@ class StreamsTab {
                 }
                 let rowClass = 'class="clickable"'
                 if (stream.Type === 'Subtitle' || stream.Type === 'Audio') {
+                    if (_.has(this.inspection.blacklistedAudio, streamIndex) || _.has(this.inspection.blacklistedSubtitle, streamIndex)) {
+                        rowClass = 'class="clickable highlighted-row-error"'
+                    }
                     if (streamIndex === this.selectedIndices.audio.absolute || streamIndex === this.selectedIndices.subtitle.absolute) {
                         rowClass = 'class="clickable highlighted-row"'
                     }
