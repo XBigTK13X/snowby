@@ -44,10 +44,15 @@ class EmbyListItem {
                     })
                 }
             }
-            this.Resolution = {
-                Width: this.Codecs['Video'][0].Width,
-                Heigh: this.Codecs['Video'][0].Height,
-                Quality: quality,
+            if (!this.Codecs['Video']) {
+                this.IsBroken = true
+                console.log(`Found a broken emby list item\n\t${this.Id}\n\t${this.Path}`)
+            } else {
+                this.Resolution = {
+                    Width: this.Codecs['Video'][0].Width,
+                    Heigh: this.Codecs['Video'][0].Height,
+                    Quality: quality,
+                }
             }
         }
     }

@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.10',
-    versionDate: 'May 16, 2022',
+    appVersion: '3.10.11',
+    versionDate: 'July 29, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -126,9 +126,11 @@ if (config.codecBlacklist && _.has(config.codecBlacklist, os.hostname())) {
 
 if (process.env.SNOWBY_EMBY_USERNAME) {
     config.embyUsername = process.env.SNOWBY_EMBY_USERNAME
+    config.availableUsers = null
 }
 if (process.env.SNOWBY_EMBY_PASSWORD) {
     config.embyPassword = process.env.SNOWBY_EMBY_PASSWORD
+    config.availableUsers = null
 }
 
 config.desktopPath = desktopPath

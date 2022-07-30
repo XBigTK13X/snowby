@@ -196,6 +196,8 @@ class EmbyClient {
         let itemsResponse = await this.httpClient.get(url)
         return itemsResponse.data.Items.map((item) => {
             return DataClass ? new DataClass(item) : new EmbyItem(item)
+        }).filter((x) => {
+            return !x.IsBroken
         })
     }
 
