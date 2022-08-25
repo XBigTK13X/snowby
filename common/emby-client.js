@@ -451,47 +451,45 @@ class EmbyClient {
     }
 
     nextUp() {
-        const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName%2CParentId`
+        const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName%2CParentId%2CPath`
         return new Promise((resolve) => {
             this.httpClient.get(parentUrl).then((parentResponse) => {
                 let parentLookup = {}
-                let nextUpPromises = parentResponse.data.Items.map((item) => {
+                let nextUpPromises = parentResponse.data.Items.filter((item) => {
+                    return item.Path.indexOf(settings.nextUpLibraryFilter) !== -1
+                }).map((item) => {
                     parentLookup[item.Id] = item
                     const nextUpUrl = `Shows/NextUp?SeriesId=${item.Id}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
                     return this.httpClient.get(nextUpUrl)
                 })
                 Promise.all(nextUpPromises).then((nextUpResponses) => {
-                    resolve(
-                        nextUpResponses
-                            .map((item) => {
-                                return item.data.Items[0]
+                    let results = nextUpResponses
+                        .map((item) => {
+                            return item.data.Items[0]
+                        })
+                        .sort((a, b) => {
+                            return a.SeriesName > b.SeriesName ? 1 : -1
+                        })
+                        .filter((item) => {
+                            if (!item) {
+                                return false
+                            }
+                            return (
+                                // Have at least two episodes of the first season been watched?
+                                (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
+                                // Has at least one episode of the second (or later) season been watched?
+                                (item.IndexNumber > 1 && item.ParentIndexNumber > 1) ||
+                                // Is it a special?
+                                item.SeasonName === 'Specials'
+                            )
+                        })
+                        .map((item) => {
+                            return new EmbyItem(item, {
+                                showParentImage: true,
+                                unwatchedCount: parentLookup[item.SeriesId].UserData.UnplayedItemCount,
                             })
-                            .sort((a, b) => {
-                                return a.SeriesName > b.SeriesName ? 1 : -1
-                            })
-                            .filter((item) => {
-                                if (!item) {
-                                    return false
-                                }
-                                if (parentLookup[item.SeriesId].ParentId !== settings.nextUpLibraryId) {
-                                    return false
-                                }
-                                return (
-                                    // Have at least two episodes of the first season been watched?
-                                    (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
-                                    // Has at least one episode of the second (or later) season been watched?
-                                    (item.IndexNumber > 1 && item.ParentIndexNumber > 1) ||
-                                    // Is it a special?
-                                    item.SeasonName === 'Specials'
-                                )
-                            })
-                            .map((item) => {
-                                return new EmbyItem(item, {
-                                    showParentImage: true,
-                                    unwatchedCount: parentLookup[item.SeriesId].UserData.UnplayedItemCount,
-                                })
-                            })
-                    )
+                        })
+                    resolve(results)
                 })
             })
         })

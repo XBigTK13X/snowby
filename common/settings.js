@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.11',
-    versionDate: 'July 29, 2022',
+    appVersion: '3.10.12',
+    versionDate: 'August 24, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -79,7 +79,7 @@ let config = {
     hiddenLibraries: {
         Recordings: true,
     },
-    nextUpLibraryId: '110034',
+    nextUpLibraryFilter: '/tv/',
     ratingParents: {
         movie: 'f137a2dd21bbc1b99aa5c0f6bf02a805',
         series: '767bffe4f11c93ef34b805451a696a4e',
