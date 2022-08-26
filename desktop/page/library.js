@@ -45,6 +45,8 @@ module.exports = () => {
 
                 menuEntries.splice(2, 0, new InternalLink('Pseudo TV', 'pseudo-tv.html'))
 
+                menuEntries.push(new InternalLink('Cameras', 'cameras.html'))
+
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries
                     .map((entry) => {
                         return entry.render()

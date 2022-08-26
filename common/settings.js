@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.12',
-    versionDate: 'August 24, 2022',
+    appVersion: '3.10.13',
+    versionDate: 'August 25, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -91,6 +91,7 @@ let config = {
     sortFields: ['PremiereDate', 'Name', 'ProductionYear'],
     sortDirections: ['Ascending', 'Descending'],
     channelMap: null,
+    frigateCameras: null,
 }
 
 // FIXME I would love to find a one-liner to programmatically toggle HDR on windows.
