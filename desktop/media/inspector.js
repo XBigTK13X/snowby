@@ -33,6 +33,12 @@ const calculateEnglishSubtitleScore = (stream) => {
         return null
     }
     if (streamIsLabeled(stream, ['eng'])) {
+        if (streamIsLabeled(stream, ['pgs', 'pgssub'])) {
+            return 40
+        }
+        if (streamIsLabeled(stream, ['sdh'])) {
+            return 60
+        }
         if (isForced(stream)) {
             return 70
         }
