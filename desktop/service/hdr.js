@@ -1,6 +1,7 @@
 const spawn = require('child_process').spawn
 const settings = require('../../common/settings')
 const util = require('../../common/util')
+const robot = require('@jitsi/robotjs')
 
 let instance
 
@@ -30,12 +31,24 @@ class Hdr {
                     return Promise.resolve()
                 }
                 return new Promise((resolve) => {
-                    const toggleProcess = spawn('cscript.exe', [settings.hdrTogglePath], { stdio: 'ignore' })
-                    toggleProcess.on('close', function (code) {
+                    // Legacy windows 10 HDR toggle handler
+                    if (settings.hdrTogglePath !== null) {
+                        const toggleProcess = spawn('cscript.exe', [settings.hdrTogglePath], { stdio: 'ignore' })
+                        toggleProcess.on('close', function (code) {
+                            setTimeout(() => {
+                                resolve()
+                            }, settings.timeout.hdrActivate)
+                        })
+                    } else {
+                        robot.keyToggle('command', 'down')
+                        robot.keyToggle('alt', 'down')
+                        robot.keyTap('b')
+                        robot.keyToggle('command', 'up')
+                        robot.keyToggle('alt', 'up')
                         setTimeout(() => {
                             resolve()
                         }, settings.timeout.hdrActivate)
-                    })
+                    }
                 })
             })
             .catch((err) => {
@@ -51,7 +64,7 @@ class Hdr {
             const statusProcess = spawn('powershell', [settings.hdrStatusPath])
             statusProcess.stdout.setEncoding('utf8')
             statusProcess.stdout.on('data', function (data) {
-                resolve(parseInt(data) === 1)
+                resolve(data.indexOf('1') !== -1)
             })
             statusProcess.stderr.setEncoding('utf8')
             statusProcess.stderr.on('data', function (data) {

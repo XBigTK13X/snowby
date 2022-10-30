@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.16',
-    versionDate: 'October 16, 2022',
+    appVersion: '3.10.17',
+    versionDate: 'October 29, 2022',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -22,7 +22,7 @@ let config = {
     availableUsers: null,
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
-    hdrTogglePath: desktopPath('bin/hdr/win11/toggle-hdr.vbs'),
+    hdrTogglePath: null,
     httpCacheTTLSeconds: 10,
     inaudibleWavPath: desktopPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
@@ -53,7 +53,7 @@ let config = {
         loadingToast: 100,
     },
     timeout: {
-        hdrActivate: 1000,
+        hdrActivate: 6000,
         loadingMessage: 3000,
         delaySeek: 1000,
     },
@@ -98,8 +98,9 @@ let config = {
 // This whole script calling a shell nonsense is brittle
 // https://docs.microsoft.com/en-us/windows/release-health/windows11-release-information
 // https://docs.microsoft.com/en-us/windows/release-health/release-information
-const windows11Version = '22000'
-if (os.release().indexOf(windows11Version) === -1) {
+let winVersion = parseInt(os.release().split('.')[2], 10)
+const windows11MinVersion = 22000
+if (winVersion < windows11MinVersion) {
     config.hdrTogglePath = desktopPath('bin/hdr/win10/toggle-hdr.vbs')
 }
 let overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'

@@ -33,7 +33,7 @@ actions.focusBrowser = function()
 end
 
 actions.toggleHdr = function()
-	kb.stroke('windows','d5')
+	kb.stroke('windows','leftalt','b')
 end
 
 actions.jumpBackward = function()
