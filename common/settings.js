@@ -9,7 +9,7 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.17',
+    appVersion: '3.10.18',
     versionDate: 'October 29, 2022',
     fullScreen: false,
     debugApiCalls: false,
@@ -26,8 +26,8 @@ let config = {
     httpCacheTTLSeconds: 10,
     inaudibleWavPath: desktopPath('bin/audio/keep-awake.ogg'),
     keepAudioDeviceAwake: true,
-    liveTvChannelUrlTemplates: null,
-    liveTvRawM3U: null,
+    liveTvChannelStreamsJson: null,
+    channelStreams: null,
     liveTvDisplayCategories: true,
     mediaQuality: null,
     menuBarVisible: false,
@@ -118,6 +118,10 @@ if (fs.existsSync(overridePath)) {
         config.newVersionAvailable = true
     }
     config = _.merge(config, overrides)
+}
+
+if (config.liveTvChannelStreamsJson && fs.existsSync(config.liveTvChannelStreamsJson)) {
+    config.channelStreams = require(config.liveTvChannelStreamsJson).channels
 }
 
 if (config.codecBlacklist && _.has(config.codecBlacklist, os.hostname())) {

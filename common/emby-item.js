@@ -117,23 +117,27 @@ module.exports = class EmbyItem {
     }
 
     getStreamURL() {
-        if (!settings.liveTvChannelUrlTemplates) {
+        if (!settings.channelStreams) {
             return null
         }
-        if (this.ChannelNumber && this.ChannelNumber.indexOf('.') !== -1) {
-            return settings.liveTvChannelUrlTemplates.homeRun(this.ChannelNumber)
-        } else {
-            return settings.liveTvChannelUrlTemplates.iptv(this.ChannelNumber)
-        }
+        return settings.channelStreams[this.ChannelName]
     }
 
     getStreamName() {
-        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name} - ${
-            this.CurrentProgram.EpisodeName ? this.CurrentProgram.EpisodeName + ' - ' : ''
-        } ${this.ChannelNumber}`
+        return `${this.ChannelCategory} - ${this.ChannelName} - ${this.CurrentProgram.Name}${
+            this.CurrentProgram.EpisodeName ? ' - ' + this.CurrentProgram.EpisodeName : ''
+        } ${this.ChannelNumber ? ' - ' + this.ChannelNumber : ''}`
     }
 
     processChannelInfo() {
+        if (this.Name.indexOf(';;;') === -1) {
+            this.ChannelName = this.Name
+            this.ChannelSlug = this.Name
+            this.ChannelCategory = 'IPTV'
+            return
+        }
+        // TODO This was back when iptv provider and hdhomerun were mixed
+        //      Need a better system to mark new iptv provider channels.
         if (_.has(CHANNEL_MAP, this.Name)) {
             this.ChannelName = CHANNEL_MAP[this.Name]
             this.ChannelSlug = this.ChannelName

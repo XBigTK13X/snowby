@@ -169,13 +169,6 @@ module.exports = {
     },
     tvChannels: (parent, children) => {
         document.body.style['overflow-y'] = 'scroll'
-        let rawTvLink = `
-            <a href="./raw-tv.html">
-                <div class="navbar-button">
-                    Raw TV
-                </div>
-            </a>
-        `
         let html = ``
         if (settings.liveTvDisplayCategories) {
             html += `
@@ -191,7 +184,6 @@ module.exports = {
                             `
                         })
                         .join('')}
-                        ${settings.liveTvRawM3U ? rawTvLink : ''}
                 </div>
                 `
         }
