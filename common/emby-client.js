@@ -474,6 +474,9 @@ class EmbyClient {
                             if (!item) {
                                 return false
                             }
+                            if (!parentLookup[item.SeriesId] || !parentLookup[item.SeriesId].UserData) {
+                                return false
+                            }
                             return (
                                 // Have at least two episodes of the first season been watched?
                                 (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
