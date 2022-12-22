@@ -21,8 +21,8 @@ class StreamsTab {
         }
 
         window.selectTrack = (streamIndex) => {
-            const stream = embyItem.MediaStreams[streamIndex]
             let queryParams = util.queryParams()
+            const stream = embyItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams[streamIndex]
             if (stream.Type === 'Audio') {
                 if (!queryParams.audioRelativeIndex || parseInt(queryParams.audioRelativeIndex) !== stream.RelativeIndex) {
                     queryParams.audioRelativeIndex = stream.RelativeIndex
@@ -47,6 +47,14 @@ class StreamsTab {
             }
             window.reloadPage(`play-media.html?${util.queryString(queryParams)}`)
         }
+
+        window.selectMediaSource = (mediaSourceIndex) => {
+            let queryParams = util.queryParams()
+            if (!queryParams.mediaSourceIndex || queryParams.mediaSourceIndex !== mediaSourceIndex) {
+                queryParams.mediaSourceIndex = mediaSourceIndex
+            }
+            window.reloadPage(`play-media.html?${util.queryString(queryParams)}`)
+        }
     }
 
     render() {
@@ -65,7 +73,7 @@ class StreamsTab {
     	        <th>Title</th>
     	    </tr>`
             let hiddenStreams = 0
-            html += this.embyItem.MediaStreams.map((stream, streamIndex) => {
+            html += this.embyItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams.map((stream, streamIndex) => {
                 if (!queryParams.showAllStreams && !mediaStream.isShown(stream)) {
                     hiddenStreams++
                     return ''
@@ -91,8 +99,32 @@ class StreamsTab {
     	        </tr>
     	        `
             }).join('')
-            html = `<p onclick="window.toggleAllStreams()">Streams ${hiddenStreams ? `(${hiddenStreams} hidden)` : ''}</a></p>` + html
-            html += `</table>`
+            let toggleHtml = ''
+            if (this.embyItem.MediaSources.length > 1) {
+                toggleHtml += `
+                    <p>Versions</p>
+                    <ul>
+
+                    ${this.embyItem.MediaSources.map((x, xi) => {
+                        if (xi === this.embyItem.MediaSourceIndex || (!this.embyItem.MediaSourceIndex && xi === 0)) {
+                            return (
+                                '<li onclick="window.selectMediaSource(' +
+                                xi +
+                                ')" class="clickable-text big-list-item highlighted-row">' +
+                                x.Name +
+                                '</li>'
+                            )
+                        }
+                        return '<li onclick="window.selectMediaSource(' + xi + ')" class="clickable-text big-list-item">' + x.Name + '</li>'
+                    }).join('')}
+                    </ul>
+                `
+            }
+            toggleHtml += `<p class="clickable-text" onclick="window.toggleAllStreams()">Streams ${
+                hiddenStreams ? `(${hiddenStreams} hidden)` : ''
+            }</a></p>`
+
+            html = toggleHtml + html + `</table>`
             resolve(html)
         })
     }

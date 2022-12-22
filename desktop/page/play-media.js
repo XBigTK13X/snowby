@@ -30,6 +30,10 @@ module.exports = () => {
                 return emby.client.embyItem(queryParams.embyItemId)
             })
             .then((embyItem) => {
+                if (queryParams.mediaSourceIndex) {
+                    embyItem.selectMediaSource(parseInt(queryParams.mediaSourceIndex, 10))
+                }
+
                 if (embyItem.Type === 'Episode') {
                     window.seasonId = embyItem.ParentId
                 }
@@ -71,7 +75,7 @@ module.exports = () => {
                     document.getElementById('discussion-button').setAttribute('style', 'display:none')
                 }
 
-                const inspection = inspector.inspect(embyItem)
+                const inspection = inspector.inspect(embyItem, queryParams.mediaSourceIndex || 0)
                 let selectedIndices = {
                     audio: {
                         absolute: queryParams.audioAbsoluteIndex ? parseInt(queryParams.audioAbsoluteIndex) : inspection.audioAbsoluteIndex,

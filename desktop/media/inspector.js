@@ -95,7 +95,7 @@ const isForced = (stream) => {
     return false
 }
 
-const inspect = (embyItem) => {
+const inspect = (embyItem, mediaSourceIndex) => {
     let hasJapaneseAudio = false
     let hasEnglishSubtitle = false
     let isHdr = false
@@ -150,9 +150,10 @@ const inspect = (embyItem) => {
         }
     }
 
-    for (var trackIndex = 0; trackIndex < embyItem.MediaStreams.length; trackIndex++) {
-        const stream = embyItem.MediaStreams[trackIndex]
-        let fidelity = embyItem.getFidelity()
+    let streams = embyItem.MediaSources[mediaSourceIndex].MediaStreams
+    for (var trackIndex = 0; trackIndex < streams.length; trackIndex++) {
+        const stream = streams[trackIndex]
+        let fidelity = embyItem.getFidelity(mediaSourceIndex)
         isHdr = fidelity.isHdr
         if (stream.Type === 'Audio') {
             audioIndex++

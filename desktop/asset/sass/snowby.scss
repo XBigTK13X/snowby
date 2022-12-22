@@ -534,6 +534,15 @@ table.channel-guide {
     color: darken($snowby-text-front, 20);
 }
 
+.big-list-item {
+    font-size: 30px;
+    margin: 15px 15px;
+}
+
+.clickable-text {
+    cursor: pointer;
+}
+
 /*tippy.js - original dist contents*/
 
 .tippy-box[data-animation='fade'][data-state='hidden'] {

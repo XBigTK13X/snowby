@@ -95,24 +95,35 @@ module.exports = class EmbyItem {
 
         let relativeAudioIndex = 1
         let relativeSubtitleIndex = 1
-        if (this.MediaStreams) {
-            for (let ii = 0; ii < this.MediaStreams.length; ii++) {
-                let stream = this.MediaStreams[ii]
-                if (stream.Type === 'Audio') {
-                    stream.RelativeIndex = relativeAudioIndex
-                    relativeAudioIndex++
+        if (this.MediaSources) {
+            for (let jj = 0; jj < this.MediaSources.length; jj++) {
+                for (let ii = 0; ii < this.MediaSources[jj].MediaStreams.length; ii++) {
+                    let stream = this.MediaSources[jj].MediaStreams[ii]
+                    if (stream.Type === 'Audio') {
+                        stream.RelativeIndex = relativeAudioIndex
+                        relativeAudioIndex++
+                    }
+                    if (stream.Type === 'Subtitle') {
+                        stream.RelativeIndex = relativeSubtitleIndex
+                        relativeSubtitleIndex++
+                    }
+                    stream.AbsoluteIndex = ii
+                    this.MediaSources[jj].MediaStreams[ii] = stream
                 }
-                if (stream.Type === 'Subtitle') {
-                    stream.RelativeIndex = relativeSubtitleIndex
-                    relativeSubtitleIndex++
-                }
-                stream.AbsoluteIndex = ii
-                this.MediaStreams[ii] = stream
             }
         }
         if (this.ExtraType === 'Person') {
             this.PersonRole = this.Role ? this.Role.split('"').join("'") : this.Type.split('"').join("'")
             this.PersonName = this.Name.split('"').join("'")
+        }
+    }
+
+    selectMediaSource(sourceIndex) {
+        this.MediaSourceIndex = sourceIndex
+        this.Path = this.MediaSources[this.MediaSourceIndex].Path
+        this.CleanPath = this.Path.replace('smb:', '')
+        if (process.platform === 'linux') {
+            this.CleanPath = this.Path.replace('smb://9914.us/', '/media/trove/')
         }
     }
 
@@ -287,14 +298,16 @@ module.exports = class EmbyItem {
         return false
     }
 
-    getFidelity() {
+    getFidelity(mediaSourceIndex) {
         if (!this.MediaStreams) {
             return null
         }
+        mediaSourceIndex = mediaSourceIndex || 0
+        let streams = this.MediaSources[mediaSourceIndex].MediaStreams
         let videoFidelity = ''
         let isHdr = false
-        for (let ii = 0; ii < this.MediaStreams.length; ii++) {
-            let stream = this.MediaStreams[ii]
+        for (let ii = 0; ii < streams.length; ii++) {
+            let stream = streams[ii]
             if (stream.Type === 'Video' && (stream.IsDefault || videoFidelity === '')) {
                 videoFidelity = stream.DisplayTitle
                 if (!videoFidelity.toLowerCase().includes(stream.Codec.toLowerCase())) {
@@ -335,12 +348,14 @@ module.exports = class EmbyItem {
         return result
     }
 
-    getFidelityTooltip() {
+    getFidelityTooltip(mediaSourceIndex) {
         if (this.MediaStreams) {
+            mediaSourceIndex = mediaSourceIndex || 0
+            let streams = this.MediaSources[mediaSourceIndex].MediaStreams
             let videoFidelity = ''
             let audioFidelity = ''
-            for (let ii = 0; ii < this.MediaStreams.length; ii++) {
-                let stream = this.MediaStreams[ii]
+            for (let ii = 0; ii < streams.length; ii++) {
+                let stream = streams[ii]
                 if (stream.Type === 'Video' && (stream.IsDefault || videoFidelity === '')) {
                     videoFidelity = stream.DisplayTitle
                     if (!videoFidelity.toLowerCase().includes(stream.Codec.toLowerCase())) {
