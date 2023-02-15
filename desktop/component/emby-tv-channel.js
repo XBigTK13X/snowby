@@ -4,7 +4,6 @@ NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 class EmbyTvChannel {
     constructor(embyItem) {
         this.embyItem = embyItem
-        this.streamUrl = embyItem.getStreamURL()
     }
 
     render() {

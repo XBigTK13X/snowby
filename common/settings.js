@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.10.20',
-    versionDate: 'December 21, 2022',
+    appVersion: '3.11.1',
+    versionDate: 'February 15, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -115,7 +115,7 @@ if (process.platform === 'linux') {
 
 if (fs.existsSync(overridePath)) {
     const overrides = require(overridePath)
-    if (overrides.newVersion && compareVersions(config.appVersion, overrides.newVersion) === -1) {
+    if (overrides.newVersion && compareVersions.compareVersions(config.appVersion, overrides.newVersion) === -1) {
         config.newVersionAvailable = true
     }
     config = _.merge(config, overrides)
