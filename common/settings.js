@@ -28,6 +28,7 @@ let config = {
     keepAudioDeviceAwake: true,
     liveTvChannelStreamsJson: null,
     channelStreams: null,
+    hdHomerunUrl: null,
     liveTvDisplayCategories: true,
     mediaQuality: null,
     menuBarVisible: false,
