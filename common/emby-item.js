@@ -128,7 +128,7 @@ module.exports = class EmbyItem {
     }
 
     getStreamURL() {
-        if(this.ChannelNumber && settings.hdHomerunUrl){
+        if (this.ChannelNumber && settings.hdHomerunUrl) {
             return settings.hdHomerunUrl + this.ChannelNumber
         }
         if (!settings.channelStreams) {
