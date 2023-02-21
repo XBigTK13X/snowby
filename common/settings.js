@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.11.1',
-    versionDate: 'February 15, 2023',
+    appVersion: '3.11.2',
+    versionDate: 'February 20, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -93,6 +93,7 @@ let config = {
     sortDirections: ['Ascending', 'Descending'],
     channelMap: null,
     frigateCameras: null,
+    iptvM3URawLines: null,
 }
 
 // FIXME I would love to find a one-liner to programmatically toggle HDR on windows.
@@ -138,6 +139,17 @@ if (process.env.SNOWBY_EMBY_USERNAME) {
 if (process.env.SNOWBY_EMBY_PASSWORD) {
     config.embyPassword = process.env.SNOWBY_EMBY_PASSWORD
     config.availableUsers = null
+}
+
+if (config.iptvM3URawLines && config.iptvM3URawLines.length) {
+    config.iptvM3ULookup = {}
+    for (let ii = 0; ii < config.iptvM3URawLines.length; ii++) {
+        let line = config.iptvM3URawLines[ii]
+        if (line.indexOf('https') !== -1) {
+            parts = line.split('/')
+            config.iptvM3ULookup[parts[parts.length - 1]] = line
+        }
+    }
 }
 
 config.desktopPath = desktopPath

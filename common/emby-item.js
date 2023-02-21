@@ -128,6 +128,9 @@ module.exports = class EmbyItem {
     }
 
     getStreamURL() {
+        if (this.ChannelNumber > 10000 && settings.iptvM3ULookup) {
+            return settings.iptvM3ULookup[this.ChannelNumber]
+        }
         if (this.ChannelNumber && settings.hdHomerunUrl) {
             return settings.hdHomerunUrl + this.ChannelNumber
         }
@@ -144,41 +147,29 @@ module.exports = class EmbyItem {
     }
 
     processChannelInfo() {
-        if (this.Name.indexOf(';;;') === -1) {
+        if (this.Name.indexOf(' | ') === -1) {
+            if (this.Name.indexOf(':') !== -1) {
+                let parts = this.Name.split(': ')
+                this.ChannelName = parts[1]
+                this.ChannelSlug = parts[1]
+                if (this.Name.indexOf('US: ') !== -1) {
+                    this.ChannelCategory = 'IPCABLE'
+                    return
+                } else {
+                    this.ChannelCategory = 'IPFOR'
+                    return
+                }
+            }
             this.ChannelName = this.Name
             this.ChannelSlug = this.Name
             this.ChannelCategory = 'IPTV'
             return
-        }
-        // TODO This was back when iptv provider and hdhomerun were mixed
-        //      Need a better system to mark new iptv provider channels.
-        if (_.has(CHANNEL_MAP, this.Name)) {
-            this.ChannelName = CHANNEL_MAP[this.Name]
-            this.ChannelSlug = this.ChannelName
-            this.ChannelCategory = 'LOCAL'
-            if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-                this.ChannelSlug = this.ChannelCategory + ' - ' + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
-            }
+        } else {
+            let parts = this.Name.split(' | ')
+            this.ChannelName = parts[1]
+            this.ChannelSlug = parts[1]
+            this.ChannelCategory = parts[0]
             return
-        }
-        let result = this.Name
-
-        result = result.replace('*', '')
-
-        let parts = result.split(' - ')
-
-        this.ChannelCategory = parts.shift()
-        this.ChannelName = parts.join(' - ')
-        try {
-            this.ChannelName = this.ChannelName.replace(' FHD', '')
-        } catch {
-            //console.log('Failed to parse channel ' + this.Name)
-            this.ChannelName = this.Name
-        }
-
-        this.ChannelSlug = this.ChannelName
-        if (this.CurrentProgram.Name && this.CurrentProgram.Name !== 'Unknown') {
-            this.ChannelSlug = this.ChannelCategory + ' - ' + this.CurrentProgram.Name.replace(/'/g, '').toLowerCase()
         }
     }
 
