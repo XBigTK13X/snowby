@@ -457,9 +457,9 @@ class EmbyClient {
                 let parentLookup = {}
                 let nextUpPromises = parentResponse.data.Items.filter((item) => {
                     return item.Path.indexOf(settings.nextUpLibraryFilter) !== -1
-                }).map((item) => {
-                    parentLookup[item.Id] = item
-                    const nextUpUrl = `Shows/NextUp?SeriesId=${item.Id}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
+                }).map((parentItem) => {
+                    parentLookup[parentItem.Id] = parentItem
+                    const nextUpUrl = `Shows/NextUp?SeriesId=${parentItem.Id}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
                     return this.httpClient.get(nextUpUrl)
                 })
                 Promise.all(nextUpPromises).then((nextUpResponses) => {

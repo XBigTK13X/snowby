@@ -252,7 +252,7 @@ module.exports = class EmbyItem {
         if (!this.showSpoilers() && !this.ShowParentImage) {
             return HIDE_SPOILERS_IMAGE_HREF
         }
-        if (Object.keys(this.ImageTags).length > 0) {
+        if (Object.keys(this.ImageTags).length > 0 || this.SeriesPrimaryImageTag) {
             let itemId = this.Id
             let imageType = 'Primary'
             if (!_.has(this.ImageTags, imageType) && _.has(this.ImageTags, 'Thumb')) {
