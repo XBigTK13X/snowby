@@ -3,6 +3,7 @@ const fidelityBadge = require('./fidelity-badge')
 const kindBadge = require('./kind-badge')
 const unwatchedBadge = require('./unwatched-badge')
 const progressBadge = require('./progress-badge')
+const latestEpisodeBadge = require('./latest-episode-badge')
 
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
 
@@ -35,6 +36,10 @@ class EmbyPoster {
         this.progressBadge = progressBadge.render(this.embyItem)
     }
 
+    enableLatestEpisodeBadge() {
+        this.latestEpisodeBadge = latestEpisodeBadge.render(this.embyItem)
+    }
+
     render() {
         let titleMarkup = this.title ? `<div class="grid-item-title">${this.title}</div>` : ''
         let summary = this.embyItem.getTooltipContent()
@@ -43,6 +48,7 @@ class EmbyPoster {
         let kindBadgeMarkup = this.kindBadge ? this.kindBadge : ''
         let unwatchedBadgeMarkup = this.unwatchedBadge ? this.unwatchedBadge : ''
         let progressBadgeMarkup = this.progressBadge ? this.progressBadge : ''
+        let latestEpisodeBadge = this.latestEpisodeBadge ? this.latestEpisodeBadge : ''
         return `
         <a
             data-target="random-action"
@@ -55,6 +61,7 @@ class EmbyPoster {
                     ${fidelityBadgeMarkup}
                     ${kindBadgeMarkup}
                     ${progressBadgeMarkup}
+                    ${latestEpisodeBadge}
     			</div>
     			${titleMarkup}
     		</div>

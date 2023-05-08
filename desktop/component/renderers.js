@@ -102,6 +102,7 @@ module.exports = {
             item.enableProgressBadge()
             item.enableUnwatchedBadge()
             item.enableFidelityBadge()
+            item.enableLatestEpisodeBadge()
             return item.render()
         }
         return renderGeneratedGrid(generator, parent, children)
