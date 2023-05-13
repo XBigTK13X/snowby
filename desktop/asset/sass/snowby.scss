@@ -381,13 +381,15 @@ table.channel-guide {
 }
 
 .tall-grid-item {
-    height: $snowby-tall-dimension-y;
-    width: $snowby-tall-dimension-x;
+    /*height: $snowby-tall-dimension-y;
+    width: $snowby-tall-dimension-x;*/
 }
 
 .tall-image {
     height: $snowby-tall-dimension-y;
     width: $snowby-tall-dimension-x;
+    margin: 2vw;
+    outline: solid black 3px;
 }
 
 .wide-grid-item {
@@ -455,7 +457,7 @@ table.channel-guide {
 
 .badge {
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 15px;
     margin: 3px;
     min-width: 14px;
     opacity: 0.9;

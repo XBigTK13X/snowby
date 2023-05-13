@@ -57,7 +57,7 @@ class EmbyPoster {
             <div ${tooltipMarkup}>
     	        <div class="grid-item tall-grid-item badge-container">
     				<img class="lazy rounded tall-image" src="${NOT_FOUND_IMAGE_HREF}" ${this.imageDataSource} />
-    				${unwatchedBadgeMarkup}
+                    ${unwatchedBadgeMarkup}
                     ${fidelityBadgeMarkup}
                     ${kindBadgeMarkup}
                     ${progressBadgeMarkup}
