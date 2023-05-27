@@ -82,6 +82,10 @@ class HttpClient {
         return this.wrap('post', url, data, options)
     }
 
+    delete(url, data, options){
+        return this.wrap('delete', url, data, options)
+    }
+
     wrap(method, url, data, options) {
         let self = this
         return new Promise((resolve) => {

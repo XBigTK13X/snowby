@@ -22,12 +22,6 @@ class Player {
             .then(() => {
                 return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
             })
-            .then(() => {
-                if (!seekTicks) {
-                    return emby.client.markUnplayed(embyItemId)
-                }
-                return emby.client.updateProgress(embyItemId, seekTicks)
-            })
     }
 
     openStream(streamURL, isHdr, streamName, seekTicks, delayedSeek) {
@@ -68,8 +62,8 @@ class Player {
             })
     }
 
-    getPositionInEmbyTicks() {
-        return this.mediaHandler.getPositionInEmbyTicks()
+    getPositionInSeconds() {
+        return this.mediaHandler.getPositionInSeconds()
     }
 
     setProfile(profile) {

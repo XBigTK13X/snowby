@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.11.6',
-    versionDate: 'May 13, 2023',
+    appVersion: '3.12.1',
+    versionDate: 'May 27, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -43,6 +43,7 @@ let config = {
     windowBackgroundColor: '#010101',
     streamingLinks: [],
     codecBlacklist: {},
+    playlistTags: [],
     progressWatchedThreshold: {
         minPercent: 5,
         maxPercent: 90,

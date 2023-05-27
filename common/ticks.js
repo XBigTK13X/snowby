@@ -2,6 +2,7 @@ const settings = require('./settings')
 
 const TEN_THOUSAND = 10000
 const TEN_MILLION = 10000000
+const ONE_HUNDRED_MILLION = 100000000
 
 const breakdown = (ticksInSecs) => {
     let ticks = ticksInSecs
@@ -38,6 +39,14 @@ const mpvToEmby = (mpvSeconds) => {
     return Math.floor(mpvSeconds * TEN_MILLION)
 }
 
+const mpvToJellyfin = (mpvSeconds) => {
+    return mpvSeconds * TEN_MILLION
+}
+
+const jellyfinToProgress = (jellyfinTicks) => {
+    return jellyfinTicks / ONE_HUNDRED_MILLION
+}
+
 const embyToSeconds = (embyTicks) => {
     return Math.floor(embyTicks / TEN_MILLION)
 }
@@ -57,4 +66,6 @@ module.exports = {
     mpvToEmby,
     stepBack,
     toTimeStamp,
+    mpvToJellyfin,
+    jellyfinToProgress
 }

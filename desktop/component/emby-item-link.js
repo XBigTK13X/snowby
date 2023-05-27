@@ -11,8 +11,8 @@ class EmbyItemLink {
         if (options && options.ratingsFilter) {
             this.href = `${this.href}&ratingsFilter=${options.ratingsFilter}`
         }
-        if (options && options.tagId) {
-            this.href = `${this.href}&tagId=${options.tagId}&showUnwatched=true&tagName=${options.tagName}`
+        if (options && options.tagName) {
+            this.href = `${this.href}&showUnwatched=true&tagName=${options.tagName}`
         }
         if (this.name.length > 15) {
             this.fontResize = 'small-tile-text'

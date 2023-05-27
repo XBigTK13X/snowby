@@ -2,6 +2,7 @@ const settings = require('../../common/settings')
 const player = require('../media/player')
 const emby = require('../../common/emby-client')
 const util = require('../../common/util')
+const ticks = require('../../common/ticks')
 const { DateTime } = require('luxon')
 
 const setConnectionStatus = (connected) => {
@@ -14,31 +15,41 @@ const setConnectionStatus = (connected) => {
 
 let trackInterval = null
 
-const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton, resumeContent, isHdr) => {
-    let lastTicks = -1
+const track = (embyItem) => {
+    let lastPosition = -1
     let mutex = false
     if (trackInterval) {
         clearInterval(trackInterval)
     }
+    let connectFailureMax = 3
+    let connectFailures = connectFailureMax
     trackInterval = setInterval(() => {
+        connectFailures--
+        if(connectFailures <= 0){
+            setConnectionStatus(false)
+            clearInterval(trackInterval)
+            return
+        }
         player
             .connect()
             .then(() => {
+                connectFailures = connectFailureMax
                 player
-                    .getPositionInEmbyTicks()
-                    .then((playbackPositionTicks) => {
+                    .getPositionInSeconds()
+                    .then((playbackPositionSeconds) => {
                         if (!mutex) {
-                            if (playbackPositionTicks != lastTicks && playbackPositionTicks != null) {
-                                lastTicks = playbackPositionTicks
+                            if (playbackPositionSeconds != lastPosition && playbackPositionSeconds != null) {
+                                lastPosition = playbackPositionSeconds
                                 setConnectionStatus(true)
-                                if (playbackPositionTicks > 0) {
+                                if (playbackPositionSeconds > 0) {
                                     mutex = true
                                     emby.client
-                                        .updateProgress(embyItem.Id, playbackPositionTicks, embyItem.RunTimeTicks)
+                                        .updateProgress(embyItem.Id, ticks.mpvToJellyfin(playbackPositionSeconds), embyItem.RunTimeTicks)
                                         .then(() => {
                                             mutex = false
                                             let newParams = util.queryParams()
-                                            newParams.resumeTicks = playbackPositionTicks
+                                            newParams.resumeTicks = playbackPositionSeconds
+                                            // Grab the new position info from media server
                                             window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
                                         })
                                         .catch((err) => {
@@ -49,11 +60,9 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                             }
                         }
                     })
-                    .catch((mediaFinished) => {
+                    .catch(() => {
                         util.clientLog('Media finished playing ' + embyItem.Path)
                         setConnectionStatus(false)
-                        //Keep checking the interval until leaving the page. Just in case the connection dropped for another reason and is still playing
-                        // clearInterval(trackInterval)
                     })
             })
             .catch((err) => {
@@ -61,6 +70,8 @@ const track = (embyItem, audioRelativeIndex, subtitleRelativeIndex, resumeButton
                     util.clientLog('Media disconnected ' + embyItem.Path)
                     setConnectionStatus(false)
                     clearInterval(trackInterval)
+                } else {
+                    util.clientLog(err)
                 }
             })
     }, settings.interval.progressUpdate)

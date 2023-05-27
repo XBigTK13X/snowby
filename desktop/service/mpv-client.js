@@ -102,14 +102,9 @@ class MpvClient {
         return ticks.embyToSeconds(adjustment)
     }
 
-    getPositionInEmbyTicks() {
+    getPositionInSeconds() {
         return new Promise((resolve) => {
-            let position = this.mpv.getTimePosition()
-            if (position === null) {
-                return resolve(null)
-            }
-            const embyTicks = ticks.mpvToEmby(position)
-            return resolve(embyTicks)
+            return resolve(this.mpv.getTimePosition())
         })
     }
 

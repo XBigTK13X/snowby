@@ -168,17 +168,6 @@ module.exports = () => {
                         tabIndex++
                     }
 
-                    const track = () => {
-                        progress.track(
-                            embyItem,
-                            selectedIndices.audio.relative,
-                            selectedIndices.subtitle.relative,
-                            'resume-media-button',
-                            'resume-media-content',
-                            inspection.isHdr
-                        )
-                    }
-
                     window.playMedia = (seekTicks) => {
                         let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in mpv.'
                         window.loadingStart(loadingMessage)
@@ -192,10 +181,10 @@ module.exports = () => {
                                 inspection.isHdr
                             )
                             .then(() => {
-                                track()
+                                progress.track(embyItem)
                                 window.loadingStop(loadingMessage)
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 window.loadingStop(loadingMessage)
                             })
                     }
@@ -211,6 +200,7 @@ module.exports = () => {
                             window.playMedia(embyItem.UserData.PlaybackPositionTicks)
                         }
                     }
+
 
                     document.getElementById('play-media-button').onclick = (event) => {
                         event.preventDefault()

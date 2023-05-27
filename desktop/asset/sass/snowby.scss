@@ -380,15 +380,10 @@ table.channel-guide {
     width: $snowby-square-dimension * 0.8;
 }
 
-.tall-grid-item {
-    /*height: $snowby-tall-dimension-y;
-    width: $snowby-tall-dimension-x;*/
-}
-
 .tall-image {
     height: $snowby-tall-dimension-y;
     width: $snowby-tall-dimension-x;
-    margin: 2vw;
+    margin: 2.5vw;
     outline: solid black 3px;
 }
 

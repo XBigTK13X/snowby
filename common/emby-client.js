@@ -6,6 +6,7 @@ const settings = require('./settings')
 const util = require('./util')
 const HttpClient = require('./http-client')
 const EmbyItem = require('./emby-item')
+const ticks = require('./ticks')
 
 const EMBY_AUTH_HEADER = 'X-Emby-Authorization'
 
@@ -55,9 +56,6 @@ class EmbyClient {
         }
         // Use the configured user to authenticate
         if (selectedUser.username && (selectedUser.password || selectedUser.password === '')) {
-            console.log({
-                selectedUser
-            })
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
@@ -234,7 +232,6 @@ class EmbyClient {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        playbackPositionTicks = Math.floor(playbackPositionTicks)
         if (this.lastProgressUpdate) {
             if (
                 this.lastProgressUpdate.embyItemId === embyItemId &&
@@ -244,17 +241,15 @@ class EmbyClient {
                 return Promise.resolve()
             }
         }
+        const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
+        if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
+            return this.markUnplayed(embyItemId)
+        } else if (positionPercent >= settings.progressWatchedThreshold.maxPercent) {
+            return this.markPlayed(embyItemId)
+        }
         const url = `Users/${this.userId}/PlayingItems/${embyItemId}/Progress`
         const payload = {
             positionTicks: playbackPositionTicks,
-        }
-        const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
-        if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
-            payload.PlaybackPositionTicks = 0
-            payload.Played = false
-        } else if (positionPercent >= settings.progressWatchedThreshold.maxPercent) {
-            payload.PlaybackPositionTicks = 0
-            payload.Played = true
         }
         return this.httpClient.post(url, payload, { quiet: true }).then(() => {
             this.lastProgressUpdate = {
@@ -274,7 +269,7 @@ class EmbyClient {
         return this.httpClient.post(url)
     }
 
-    markPlayed(embyItemId) {
+    markUnplayed(embyItemId) {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
