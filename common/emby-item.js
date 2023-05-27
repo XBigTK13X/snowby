@@ -297,11 +297,10 @@ module.exports = class EmbyItem {
             return null
         }
         mediaSourceIndex = mediaSourceIndex || 0
-        let streams = this.MediaSources[mediaSourceIndex].MediaStreams
         let videoFidelity = ''
         let isHdr = false
-        for (let ii = 0; ii < streams.length; ii++) {
-            let stream = streams[ii]
+        for (let ii = 0; ii < this.MediaStreams.length; ii++) {
+            let stream = this.MediaStreams[ii]
             if (stream.Type === 'Video' && (stream.IsDefault || videoFidelity === '')) {
                 videoFidelity = stream.DisplayTitle
                 if (!videoFidelity.toLowerCase().includes(stream.Codec.toLowerCase())) {

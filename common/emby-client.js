@@ -55,6 +55,9 @@ class EmbyClient {
         }
         // Use the configured user to authenticate
         if (selectedUser.username && (selectedUser.password || selectedUser.password === '')) {
+            console.log({
+                selectedUser
+            })
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
@@ -241,9 +244,9 @@ class EmbyClient {
                 return Promise.resolve()
             }
         }
-        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
+        const url = `Users/${this.userId}/PlayingItems/${embyItemId}/Progress`
         const payload = {
-            PlaybackPositionTicks: playbackPositionTicks,
+            positionTicks: playbackPositionTicks,
         }
         const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
         if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
@@ -267,24 +270,16 @@ class EmbyClient {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        const payload = {
-            PlaybackPositionTicks: 0,
-            Played: true,
-        }
-        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
-        return this.httpClient.post(url, payload)
+        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
+        return this.httpClient.post(url)
     }
 
-    markUnplayed(embyItemId) {
+    markPlayed(embyItemId) {
         if (!settings.embyTrackProgress) {
             return Promise.resolve()
         }
-        const payload = {
-            PlaybackPositionTicks: 0,
-            Played: false,
-        }
-        const url = `Users/${this.userId}/Items/${embyItemId}/UserData`
-        return this.httpClient.post(url, payload)
+        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
+        return this.httpClient.delete(url)
     }
 
     search(query) {
