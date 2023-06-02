@@ -441,12 +441,28 @@ class EmbyClient {
         return new Promise((resolve) => {
             this.httpClient.get(nextUpUrl).then((response) => {
                 resolve(
-                    response.data.Items.map((item) => {
-                        return new EmbyItem(item, {
-                            showParentImage: true,
-                            unwatchedCount: item.ParentUnplayedCount,
-                        })
+                    response.data.Items.sort((a, b) => {
+                        return a.SeriesName > b.SeriesName ? 1 : -1
                     })
+                        .filter((item) => {
+                            if (!item) {
+                                return false
+                            }
+                            return (
+                                // Have at least two episodes of the first season been watched?
+                                (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
+                                // Has at least one episode of the second (or later) season been watched?
+                                (item.IndexNumber > 1 && item.ParentIndexNumber > 1) ||
+                                // Is it a special?
+                                item.SeasonName === 'Specials'
+                            )
+                        })
+                        .map((item) => {
+                            return new EmbyItem(item, {
+                                showParentImage: true,
+                                unwatchedCount: item.ParentUnplayedCount,
+                            })
+                        })
                 )
             })
         })
