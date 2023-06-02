@@ -10,7 +10,7 @@ module.exports = class EmbyItem {
     constructor(responseBody, options) {
         Object.assign(this, responseBody)
 
-        if(!this.MediaStreams && !!this.MediaSources){
+        if (!this.MediaStreams && !!this.MediaSources) {
             this.MediaStreams = this.MediaSources[0].MediaStreams
         }
 

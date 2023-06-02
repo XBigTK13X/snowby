@@ -437,23 +437,17 @@ class EmbyClient {
     }
 
     nextUp() {
-        util.clientLog("Grabbing next up")
-        const nextUpUrl = `/Shows/NextUp?UserId=${this.userId}&Fields=MediaSources`
+        const nextUpUrl = `/Shows/NextUp?UserId=${this.userId}&Fields=MediaSources&DisableFirstEpisode=true`
         return new Promise((resolve) => {
             this.httpClient.get(nextUpUrl).then((response) => {
-                util.clientLog("Got result")
-                console.log({items:response.data.Items})
-                resolve(response.data.Items
-                    .map((item) => {
+                resolve(
+                    response.data.Items.map((item) => {
                         return new EmbyItem(item, {
                             showParentImage: true,
                             unwatchedCount: item.ParentUnplayedCount,
                         })
                     })
                 )
-            })
-            .catch(err=>{
-                util.clientLog(err)
             })
         })
     }
