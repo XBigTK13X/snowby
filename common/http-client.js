@@ -82,7 +82,7 @@ class HttpClient {
         return this.wrap('post', url, data, options)
     }
 
-    delete(url, data, options){
+    delete(url, data, options) {
         return this.wrap('delete', url, data, options)
     }
 

@@ -40,7 +40,7 @@ const mpvToEmby = (mpvSeconds) => {
 }
 
 const mpvToJellyfin = (mpvSeconds) => {
-    return mpvSeconds * TEN_MILLION
+    return Math.floor(mpvSeconds * TEN_MILLION)
 }
 
 const jellyfinToProgress = (jellyfinTicks) => {
@@ -67,5 +67,5 @@ module.exports = {
     stepBack,
     toTimeStamp,
     mpvToJellyfin,
-    jellyfinToProgress
+    jellyfinToProgress,
 }

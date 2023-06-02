@@ -6,7 +6,6 @@ const settings = require('./settings')
 const util = require('./util')
 const HttpClient = require('./http-client')
 const EmbyItem = require('./emby-item')
-const ticks = require('./ticks')
 
 const EMBY_AUTH_HEADER = 'X-Emby-Authorization'
 
@@ -247,11 +246,8 @@ class EmbyClient {
         } else if (positionPercent >= settings.progressWatchedThreshold.maxPercent) {
             return this.markPlayed(embyItemId)
         }
-        const url = `Users/${this.userId}/PlayingItems/${embyItemId}/Progress`
-        const payload = {
-            positionTicks: playbackPositionTicks,
-        }
-        return this.httpClient.post(url, payload, { quiet: true }).then(() => {
+        const url = `Users/${this.userId}/Progress/${embyItemId}?PositionTicks=${playbackPositionTicks}`
+        return this.httpClient.post(url, {}, { quiet: true }).then(() => {
             this.lastProgressUpdate = {
                 embyItemId,
                 playbackPositionTicks,
@@ -441,49 +437,23 @@ class EmbyClient {
     }
 
     nextUp() {
-        const parentUrl = `Users/${this.userId}/Items?Filters=IsUnplayed&SortBy=SortName&SortOrder=Ascending&IncludeItemTypes=Series&Recursive=true&Fields=BasicSyncInfo%2CMediaSourceCount%2CSortName%2CParentId%2CPath`
+        util.clientLog("Grabbing next up")
+        const nextUpUrl = `/Shows/NextUp?UserId=${this.userId}&Fields=MediaSources`
         return new Promise((resolve) => {
-            this.httpClient.get(parentUrl).then((parentResponse) => {
-                let parentLookup = {}
-                let nextUpPromises = parentResponse.data.Items.filter((item) => {
-                    return item.Path.indexOf(settings.nextUpLibraryFilter) !== -1
-                }).map((parentItem) => {
-                    parentLookup[parentItem.Id] = parentItem
-                    const nextUpUrl = `Shows/NextUp?SeriesId=${parentItem.Id}&UserId=${this.userId}&Fields=PrimaryImageAspectRatio%2CMediaStreams&Limit=1&EnableTotalRecordCount=false`
-                    return this.httpClient.get(nextUpUrl)
-                })
-                Promise.all(nextUpPromises).then((nextUpResponses) => {
-                    let results = nextUpResponses
-                        .map((item) => {
-                            return item.data.Items[0]
+            this.httpClient.get(nextUpUrl).then((response) => {
+                util.clientLog("Got result")
+                console.log({items:response.data.Items})
+                resolve(response.data.Items
+                    .map((item) => {
+                        return new EmbyItem(item, {
+                            showParentImage: true,
+                            unwatchedCount: item.ParentUnplayedCount,
                         })
-                        .sort((a, b) => {
-                            return a.SeriesName > b.SeriesName ? 1 : -1
-                        })
-                        .filter((item) => {
-                            if (!item) {
-                                return false
-                            }
-                            if (!parentLookup[item.SeriesId] || !parentLookup[item.SeriesId].UserData) {
-                                return false
-                            }
-                            return (
-                                // Have at least two episodes of the first season been watched?
-                                (item.IndexNumber > 2 && item.ParentIndexNumber === 1) ||
-                                // Has at least one episode of the second (or later) season been watched?
-                                (item.IndexNumber > 1 && item.ParentIndexNumber > 1) ||
-                                // Is it a special?
-                                item.SeasonName === 'Specials'
-                            )
-                        })
-                        .map((item) => {
-                            return new EmbyItem(item, {
-                                showParentImage: true,
-                                unwatchedCount: parentLookup[item.SeriesId].UserData.UnplayedItemCount,
-                            })
-                        })
-                    resolve(results)
-                })
+                    })
+                )
+            })
+            .catch(err=>{
+                util.clientLog(err)
             })
         })
     }
@@ -491,7 +461,7 @@ class EmbyClient {
     person(personId) {
         let fields =
             'Fields=ExternalUrls%2CPeople%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear%2CAudioInfo%2CSeriesInfo%2CParentId%2CPrimaryImageAspectRatio%2CBasicSyncInfo%2CProductionYear&'
-        const personUrl = `/Users/${this.userId}/Items?SortOrder=Ascending&IncludeItemTypes=Series%2CMovie&Recursive=true&${fields}IncludePeople=true&StartIndex=0&CollapseBoxSetItems=false&SortBy=SortName&PersonIds=${personId}&EnableTotalRecordCount=false`
+        const personUrl = `Users/${this.userId}/Items?SortOrder=Ascending&IncludeItemTypes=Series%2CMovie&Recursive=true&${fields}IncludePeople=true&StartIndex=0&CollapseBoxSetItems=false&SortBy=SortName&PersonIds=${personId}&EnableTotalRecordCount=false`
         return this.httpClient.get(personUrl).then((response) => {
             return response.data.Items.map((item) => {
                 let foundPerson = null
@@ -519,7 +489,7 @@ class EmbyClient {
     }
 
     specialFeatures(embyItemId) {
-        const url = `/Users/${this.userId}/Items/${embyItemId}/SpecialFeatures`
+        const url = `Users/${this.userId}/Items/${embyItemId}/SpecialFeatures`
         return this.httpClient.get(url).then((response) => {
             return response.data.map((item) => {
                 let tooltip = `

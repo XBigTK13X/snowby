@@ -17,11 +17,9 @@ class Player {
     }
 
     openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
-        return hdr
-            .configure(isHdr)
-            .then(() => {
-                return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
-            })
+        return hdr.configure(isHdr).then(() => {
+            return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
+        })
     }
 
     openStream(streamURL, isHdr, streamName, seekTicks, delayedSeek) {

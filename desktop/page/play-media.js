@@ -201,7 +201,6 @@ module.exports = () => {
                         }
                     }
 
-
                     document.getElementById('play-media-button').onclick = (event) => {
                         event.preventDefault()
                         window.playMedia(0)

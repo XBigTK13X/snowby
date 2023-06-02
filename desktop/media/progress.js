@@ -25,7 +25,7 @@ const track = (embyItem) => {
     let connectFailures = connectFailureMax
     trackInterval = setInterval(() => {
         connectFailures--
-        if(connectFailures <= 0){
+        if (connectFailures <= 0) {
             setConnectionStatus(false)
             clearInterval(trackInterval)
             return
