@@ -24,7 +24,7 @@ const saveOnChange = (pageId) => {
 }
 
 const storageKey = (pageId) => {
-    return `emby-item-${pageId}-scroll`
+    return `jellyfin-item-${pageId}-scroll`
 }
 
 module.exports = {

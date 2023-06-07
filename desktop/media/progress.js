@@ -1,6 +1,6 @@
 const settings = require('../../common/settings')
 const player = require('../media/player')
-const emby = require('../../common/emby-client')
+const jellyfin = require('../../common/jellyfin-client')
 const util = require('../../common/util')
 const ticks = require('../../common/ticks')
 const { DateTime } = require('luxon')
@@ -15,7 +15,7 @@ const setConnectionStatus = (connected) => {
 
 let trackInterval = null
 
-const track = (embyItem) => {
+const track = (jellyfinItem) => {
     let lastPosition = -1
     let mutex = false
     if (trackInterval) {
@@ -43,8 +43,8 @@ const track = (embyItem) => {
                                 setConnectionStatus(true)
                                 if (playbackPositionSeconds > 0) {
                                     mutex = true
-                                    emby.client
-                                        .updateProgress(embyItem.Id, ticks.mpvToJellyfin(playbackPositionSeconds), embyItem.RunTimeTicks)
+                                    jellyfin.client
+                                        .updateProgress(jellyfinItem.Id, ticks.mpvToJellyfin(playbackPositionSeconds), jellyfinItem.RunTimeTicks)
                                         .then(() => {
                                             mutex = false
                                             let newParams = util.queryParams()
@@ -54,20 +54,20 @@ const track = (embyItem) => {
                                         })
                                         .catch((err) => {
                                             mutex = false
-                                            util.clientLog('Failed to update emby progress ' + embyItem.Path)
+                                            util.clientLog('Failed to update jellyfin progress ' + jellyfinItem.Path)
                                         })
                                 }
                             }
                         }
                     })
                     .catch(() => {
-                        util.clientLog('Media finished playing ' + embyItem.Path)
+                        util.clientLog('Media finished playing ' + jellyfinItem.Path)
                         setConnectionStatus(false)
                     })
             })
             .catch((err) => {
                 if (err === 'disconnected') {
-                    util.clientLog('Media disconnected ' + embyItem.Path)
+                    util.clientLog('Media disconnected ' + jellyfinItem.Path)
                     setConnectionStatus(false)
                     clearInterval(trackInterval)
                 } else {

@@ -28,30 +28,30 @@ const customHandlers = {
     ratings: handlers.ratingList,
 }
 
-const getHandler = (emby, itemId) => {
+const getHandler = (jellyfin, itemId) => {
     return new Promise((resolve) => {
         if (_.has(customHandlers, itemId)) {
             return resolve({ handler: customHandlers[itemId] })
         }
-        return emby.embyItem(itemId).then((embyItem) => {
+        return jellyfin.jellyfinItem(itemId).then((jellyfinItem) => {
             navbar.render({
-                showToggleButton: embyItem.isCollection(),
+                showToggleButton: jellyfinItem.isCollection(),
                 enableTableView: true,
                 sortPicker: true,
             })
-            if (embyItem.Type === 'Genre') {
-                return resolve({ handler: handlers.genre, item: embyItem })
+            if (jellyfinItem.Type === 'Genre') {
+                return resolve({ handler: handlers.genre, item: jellyfinItem })
             }
-            if (!_.isNil(embyItem.CollectionType)) {
-                if (_.has(collectionHandlers, embyItem.CollectionType)) {
-                    return resolve({ handler: collectionHandlers[embyItem.CollectionType], item: embyItem })
+            if (!_.isNil(jellyfinItem.CollectionType)) {
+                if (_.has(collectionHandlers, jellyfinItem.CollectionType)) {
+                    return resolve({ handler: collectionHandlers[jellyfinItem.CollectionType], item: jellyfinItem })
                 }
-                throw 'Unhandled emby collection type ' + embyItem.CollectionType
+                throw 'Unhandled jellyfin collection type ' + jellyfinItem.CollectionType
             }
-            if (_.has(typeHandlers, embyItem.Type)) {
-                return resolve({ handler: typeHandlers[embyItem.Type], item: embyItem })
+            if (_.has(typeHandlers, jellyfinItem.Type)) {
+                return resolve({ handler: typeHandlers[jellyfinItem.Type], item: jellyfinItem })
             }
-            throw 'Unhandled emby item type ' + embyItem.Type
+            throw 'Unhandled jellyfin item type ' + jellyfinItem.Type
         })
     })
 }

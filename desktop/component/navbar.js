@@ -31,7 +31,7 @@ module.exports = {
             } else {
                 delete watchedParams.showWatched
             }
-            const watchedUrl = `emby-items.html?${util.queryString(watchedParams)}`
+            const watchedUrl = `jellyfin-items.html?${util.queryString(watchedParams)}`
 
             let badgeParams = util.queryParams()
             if (!badgeParams.hideBadges) {
@@ -39,7 +39,7 @@ module.exports = {
             } else {
                 delete badgeParams.hideBadges
             }
-            const badgeUrl = `emby-items.html?${util.queryString(badgeParams)}`
+            const badgeUrl = `jellyfin-items.html?${util.queryString(badgeParams)}`
 
             navbarContent += `
 			  <a onclick="window.reloadPage('${watchedUrl}'); return false;" href="#" id="watched-toggle">
@@ -68,7 +68,7 @@ module.exports = {
 
         if (options.parentId) {
             navbarContent += `
-                <a href="emby-items.html?embyItemId=${options.parentId}">
+                <a href="jellyfin-items.html?jellyfinItemId=${options.parentId}">
                 <div class="navbar-button">
                     ${options.parentName ? options.parentName : 'Parent'}
                 </div>
@@ -78,7 +78,7 @@ module.exports = {
             let seasonParams = util.queryParams()
             if (seasonParams.hasSeason) {
                 navbarContent += `
-                    <a href="emby-items.html?embyItemId=${window.seasonId}">
+                    <a href="jellyfin-items.html?jellyfinItemId=${window.seasonId}">
                     <div class="navbar-button">
                         Season
                     </div>
@@ -94,7 +94,7 @@ module.exports = {
             } else {
                 delete tableViewParams.tableView
             }
-            const tableViewUrl = `emby-items.html?${util.queryString(tableViewParams)}`
+            const tableViewUrl = `jellyfin-items.html?${util.queryString(tableViewParams)}`
             navbarContent += `<a onclick="window.reloadPage('${tableViewUrl}'); return false;" href="#" id="table-view-toggle">
                 <div class="navbar-button">
                   Table

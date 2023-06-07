@@ -1,7 +1,7 @@
 {
     "name": "snowby",
     "version": "3.11.6",
-    "description": "Emby frontend that plays media in an external player.",
+    "description": "Jellyfin frontend that plays media in an external player.",
     "main": "desktop/desktop.js",
     "scripts": {
         "start": "electron .",
@@ -11,10 +11,8 @@
         "package-all": "npm run package-win",
         "package-win": "electron-packager . --overwrite --icon=./desktop/asset/img/snowflake.ico --platform=win32 --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore m3u/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64 --ignore logs/",
         "package-lin": "electron-packager . --overwrite --icon=./desktop/asset/img/snowflake.ico --platform=linux --arch=x64 --ignore pdn/ --ignore screenshot/ --ignore m3u/ --ignore mpv.log --ignore keep-awake_data/ --ignore snowby-ipc.log --ignore snowby-linux-x64 --ignore snowby-win32-x64 --ignore logs/",
-        "format-all": "prettier --write \"desktop/**/*.{js,html,css,scss}\" \"server/**/*.{js,html,css,scss}\" \"common/**/*.{js,html,css,scss}\"",
-        "retag-files": "node desktop/script/retag-files.js",
-        "develop-server": "nodemon --watch common --watch server server/server.js",
-        "run-server": "node server/server.js"
+        "format-all": "prettier --write \"desktop/**/*.{js,html,css,scss}\" \"common/**/*.{js,html,css,scss}\"",
+        "retag-files": "node desktop/script/retag-files.js"
     },
     "author": "",
     "license": "MIT",
@@ -23,7 +21,6 @@
         "electron": "23.0.0",
         "electron-packager": "17.1.1",
         "node-sass": "8.0.0",
-        "nodemon": "2.0.20",
         "prettier": "2.8.4"
     },
     "dependencies": {
@@ -31,7 +28,6 @@
         "axios": "1.3.3",
         "compare-versions": "5.0.3",
         "debounce": "1.2.1",
-        "express": "4.18.2",
         "jquery": "3.6.3",
         "jquery-lazy": "1.7.11",
         "lodash": "4.17.21",

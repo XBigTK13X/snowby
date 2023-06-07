@@ -10,7 +10,7 @@ const SearchParams = {
     SortOrder: 'Ascending',
 }
 
-const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
+const jellyfinItemsSearch = (jellyfin, jellyfinItemId, additionalSearchParams) => {
     let params = {
         ...SearchParams,
         ...additionalSearchParams,
@@ -23,7 +23,7 @@ const embyItemsSearch = (emby, embyItemId, additionalSearchParams) => {
             params.Filters += '&IsUnplayed'
         }
     }
-    return emby.embyItems(embyItemId, params)
+    return jellyfin.jellyfinItems(jellyfinItemId, params)
 }
 
 class Rating {
@@ -45,9 +45,9 @@ class Rating {
 
 module.exports = {
     boxSet: {
-        getChildren: (emby, embyItem) => {
-            return emby.embyItems(embyItem.Id, {
-                ParentId: embyItem.Id,
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfin.jellyfinItems(jellyfinItem.Id, {
+                ParentId: jellyfinItem.Id,
                 Fields: 'DateCreated,Genres,MediaStreams,ParentId,Path,SortName,ProductionYear',
                 IncludeItemTypes: 'Movie',
                 SortBy: 'ProductionYear',
@@ -56,38 +56,38 @@ module.exports = {
         render: renderers.boxSet,
     },
     collectionFolder: {
-        getChildren: (emby, embyItem) => {
-            return embyItemsSearch(emby, embyItem.Id, {
-                ParentId: embyItem.Id,
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, {
+                ParentId: jellyfinItem.Id,
             })
         },
         render: renderers.posters,
     },
     collections: {
-        getChildren: (emby, embyItem) => {
-            return embyItemsSearch(emby, embyItem.Id, {
-                ParentId: embyItem.Id,
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, {
+                ParentId: jellyfinItem.Id,
             })
         },
         render: renderers.posters,
     },
     genre: {
-        getChildren: (emby, embyItem) => {
+        getChildren: (jellyfin, jellyfinItem) => {
             let includeItemTypes = 'Series,Movie'
             if (util.queryParams().includeItemTypes) {
                 includeItemTypes = util.queryParams().includeItemTypes
             }
-            return embyItemsSearch(emby, embyItem.Id, {
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, {
                 IncludeItemTypes: includeItemTypes,
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
-                Genres: embyItem.Name,
+                Genres: jellyfinItem.Name,
             })
         },
         render: renderers.posters,
     },
     genreList: {
-        getChildren: (emby) => {
-            return emby.genres(util.queryParams().genreFilter)
+        getChildren: (jellyfin) => {
+            return jellyfin.genres(util.queryParams().genreFilter)
         },
         render: renderers.genreList,
         title:
@@ -98,22 +98,22 @@ module.exports = {
                 : 'All Genres',
     },
     inProgress: {
-        getChildren: (emby) => {
-            return emby.itemsInProgress()
+        getChildren: (jellyfin) => {
+            return jellyfin.itemsInProgress()
         },
         render: renderers.inProgress,
         title: 'In Progress',
     },
     liveTv: {
-        getChildren: (emby) => {
+        getChildren: (jellyfin) => {
             navbar.render({ profilePicker: true })
-            return emby.tvGuide()
+            return jellyfin.tvGuide()
         },
         render: renderers.tvChannels,
         title: 'Live TV',
     },
     movieList: {
-        getChildren: (emby, embyItem) => {
+        getChildren: (jellyfin, jellyfinItem) => {
             let options = {
                 IncludeItemTypes: 'Movie',
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
@@ -122,39 +122,39 @@ module.exports = {
             if (rating) {
                 options.OfficialRatings = rating
             }
-            return embyItemsSearch(emby, embyItem.Id, options)
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, options)
         },
         render: renderers.movieList,
     },
     nextUp: {
-        getChildren: (emby) => {
-            return emby.nextUp()
+        getChildren: (jellyfin) => {
+            return jellyfin.nextUp()
         },
         render: renderers.nextUp,
         title: 'Next Up',
     },
     person: {
-        getChildren: (emby, embyItem) => {
-            return emby.person(embyItem.Id)
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfin.person(jellyfinItem.Id)
         },
         render: renderers.person,
     },
     playlistList: {
-        getChildren: (emby, embyItem) => {
-            return embyItemsSearch(emby, embyItem.Id, {
-                ParentId: embyItem.Id,
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, {
+                ParentId: jellyfinItem.Id,
             })
         },
         render: renderers.playlistList,
     },
     playlist: {
-        getChildren: (emby, embyItem) => {
-            return emby.playlist(embyItem.Id)
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfin.playlist(jellyfinItem.Id)
         },
         render: renderers.playlist,
     },
     ratingList: {
-        getChildren: (emby) => {
+        getChildren: (jellyfin) => {
             if (util.queryParams().ratingsFilter === 'Movie') {
                 return settings.ratings.movie.map((x) => {
                     return new Rating('movie', x)
@@ -168,7 +168,7 @@ module.exports = {
         title: util.queryParams().ratingsFilter === 'Movie' ? 'Movie Ratings' : 'TV Show Ratings',
     },
     tags: {
-        getChildren: (emby, embyItem) => {
+        getChildren: (jellyfin, jellyfinItem) => {
             let tagName = util.queryParams().tagName
             let includeItemTypes = 'Movie,Series'
             let params = {
@@ -179,7 +179,7 @@ module.exports = {
                 Fields: 'DateCreated,Genres,MediaStreams,Overview,ParentId,Path,SortName',
                 Tags: tagName,
             }
-            return emby.embyItems(null, params).then((items) => {
+            return jellyfin.jellyfinItems(null, params).then((items) => {
                 return items.map((x) => {
                     x.ShowSpoilers = true
                     return x
@@ -190,27 +190,27 @@ module.exports = {
         title: util.queryParams().tagName ? util.queryParams().tagName.replace('Playlist:', '') : 'Playlist',
     },
     tvSeries: {
-        getChildren: (emby, embyItem) => {
-            return emby.seasons(embyItem.Id)
+        getChildren: (jellyfin, jellyfinItem) => {
+            return jellyfin.seasons(jellyfinItem.Id)
         },
         render: renderers.tvSeries,
     },
     tvSeason: {
-        getChildren: (emby, embyItem) => {
+        getChildren: (jellyfin, jellyfinItem) => {
             navbar.render({
-                parentId: embyItem.SeriesId,
+                parentId: jellyfinItem.SeriesId,
                 parentName: 'Series',
                 enableTableView: true,
                 sortPicker: true,
             })
-            return emby.episodes(embyItem.ParentId, embyItem.Id)
+            return jellyfin.episodes(jellyfinItem.ParentId, jellyfinItem.Id)
         },
         render: renderers.tvSeason,
     },
     tvShowList: {
-        getChildren: (emby, embyItem) => {
+        getChildren: (jellyfin, jellyfinItem) => {
             let options = {
-                ParentId: embyItem.Id,
+                ParentId: jellyfinItem.Id,
                 IncludeItemTypes: 'Series',
                 Fields: 'BasicSyncInfo,MediaSourceCount,SortName',
             }
@@ -218,7 +218,7 @@ module.exports = {
             if (rating) {
                 options.OfficialRatings = rating
             }
-            return embyItemsSearch(emby, embyItem.Id, options).then((results) => {
+            return jellyfinItemsSearch(jellyfin, jellyfinItem.Id, options).then((results) => {
                 return results
             })
         },

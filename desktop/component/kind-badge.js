@@ -1,18 +1,18 @@
 const util = require('../../common/util')
 
-const render = (embyItem) => {
+const render = (jellyfinItem) => {
     if (util.queryParams().hideBadges) {
         return ''
     }
     let kindBadge = 'neutral'
-    if (embyItem.Type === 'Episode') {
+    if (jellyfinItem.Type === 'Episode') {
         kindBadge = `neutral`
-    } else if (embyItem.Type === 'Series') {
+    } else if (jellyfinItem.Type === 'Series') {
         kindBadge = `good`
-    } else if (embyItem.Type === 'Movie') {
+    } else if (jellyfinItem.Type === 'Movie') {
         kindBadge = `best`
     }
-    const mediaKind = embyItem.Type === 'Series' ? 'TV Show' : embyItem.Type
+    const mediaKind = jellyfinItem.Type === 'Series' ? 'TV Show' : jellyfinItem.Type
     return `<span class="badge badge-bottom-right badge-${kindBadge}">${mediaKind}</span>`
 }
 

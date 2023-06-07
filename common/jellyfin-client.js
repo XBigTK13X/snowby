@@ -5,13 +5,13 @@ const { DateTime, Duration } = require('luxon')
 const settings = require('./settings')
 const util = require('./util')
 const HttpClient = require('./http-client')
-const EmbyItem = require('./emby-item')
+const JellyfinItem = require('./jellyfin-item')
 
 const EMBY_AUTH_HEADER = 'X-Emby-Authorization'
 
-class EmbyClient {
+class JellyfinClient {
     constructor() {
-        this.httpClient = new HttpClient(`${settings.embyServerURL}/emby/`)
+        this.httpClient = new HttpClient(`${settings.jellyfinServerURL}/Emby/`)
         this.authHeader = null
         this.userId = null
     }
@@ -39,15 +39,15 @@ class EmbyClient {
     }
 
     imageUrl(userId, imageTag) {
-        return `${settings.embyServerURL}/emby/Users/${userId}/Images/Primary?height=200&tag=${imageTag}&quality=100`
+        return `${settings.jellyfinServerURL}/Emby/Users/${userId}/Images/Primary?height=200&tag=${imageTag}&quality=100`
     }
 
     login() {
         const usersURL = 'users/public'
         this.authHeader = `MediaBrowser Client="Snowby", Device="${os.hostname()}", DeviceId="${os.hostname()}", Version="1.0.0.0"`
         var selectedUser = {
-            username: settings.embyUsername,
-            password: settings.embyPassword,
+            username: settings.jellyfinUsername,
+            password: settings.jellyfinPassword,
         }
         const chosenUserIndex = util.window.localStorage.getItem('chosen-user-index')
         if (chosenUserIndex !== undefined && settings.availableUsers && chosenUserIndex < settings.availableUsers.length) {
@@ -80,7 +80,7 @@ class EmbyClient {
                     return true
                 })
         } else {
-            // Use the first listed user from Emby to authenticate
+            // Use the first listed user from Jellyfin to authenticate
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
@@ -154,21 +154,21 @@ class EmbyClient {
     libraryViews() {
         const url = `Users/${this.userId}/Views`
         return this.httpClient.get(url).then((viewsResponse) => {
-            return viewsResponse.data.Items.map((item) => new EmbyItem(item))
+            return viewsResponse.data.Items.map((item) => new JellyfinItem(item))
         })
     }
 
-    embyItem(itemId) {
+    jellyfinItem(itemId) {
         const client = this
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient
             .get(url)
             .then((itemResponse) => {
-                const result = new EmbyItem(itemResponse.data)
+                const result = new JellyfinItem(itemResponse.data)
                 if (result.Type !== 'Episode') {
                     return result
                 }
-                return client.embyItem(result.SeriesId).then((seriesItem) => {
+                return client.jellyfinItem(result.SeriesId).then((seriesItem) => {
                     result.Series = seriesItem
                     return result
                 })
@@ -181,7 +181,7 @@ class EmbyClient {
             })
     }
 
-    rawEmbyItem(itemId) {
+    rawJellyfinItem(itemId) {
         const client = this
         const url = `Users/${this.userId}/Items/${itemId}`
         return this.httpClient.get(url).then((itemResponse) => {
@@ -189,13 +189,13 @@ class EmbyClient {
         })
     }
 
-    async embyItems(parentId, searchParams, DataClass) {
+    async jellyfinItems(parentId, searchParams, DataClass) {
         let mergedParams = await this.mergeParams(searchParams)
         const query = util.queryString(mergedParams)
         const url = `Users/${this.userId}/Items?${query}`
         let itemsResponse = await this.httpClient.get(url)
         return itemsResponse.data.Items.map((item) => {
-            return DataClass ? new DataClass(item) : new EmbyItem(item)
+            return DataClass ? new DataClass(item) : new JellyfinItem(item)
         }).filter((x) => {
             return !x.IsBroken
         })
@@ -208,9 +208,9 @@ class EmbyClient {
             let results = []
             let nextUp = responses[1].data.Items[0]
             if (nextUp) {
-                results.push(new EmbyItem(nextUp, { nextUp: true }))
+                results.push(new JellyfinItem(nextUp, { nextUp: true }))
             }
-            results = results.concat(responses[0].data.Items.map((item) => new EmbyItem(item)))
+            results = results.concat(responses[0].data.Items.map((item) => new JellyfinItem(item)))
             return results
         })
     }
@@ -223,17 +223,17 @@ class EmbyClient {
         })
         const url = `Shows/${seriesId}/Episodes?${query}`
         return this.httpClient.get(url).then((episodesResponse) => {
-            return episodesResponse.data.Items.map((item) => new EmbyItem(item))
+            return episodesResponse.data.Items.map((item) => new JellyfinItem(item))
         })
     }
 
-    updateProgress(embyItemId, playbackPositionTicks, runTimeTicks) {
-        if (!settings.embyTrackProgress) {
+    updateProgress(jellyfinItemId, playbackPositionTicks, runTimeTicks) {
+        if (!settings.jellyfinTrackProgress) {
             return Promise.resolve()
         }
         if (this.lastProgressUpdate) {
             if (
-                this.lastProgressUpdate.embyItemId === embyItemId &&
+                this.lastProgressUpdate.jellyfinItemId === jellyfinItemId &&
                 this.lastProgressUpdate.playbackPositionTicks === playbackPositionTicks &&
                 this.lastProgressUpdate.runTimeTicks === runTimeTicks
             ) {
@@ -242,14 +242,14 @@ class EmbyClient {
         }
         const positionPercent = Math.round((playbackPositionTicks / runTimeTicks) * 100)
         if (positionPercent <= settings.progressWatchedThreshold.minPercent) {
-            return this.markUnplayed(embyItemId)
+            return this.markUnplayed(jellyfinItemId)
         } else if (positionPercent >= settings.progressWatchedThreshold.maxPercent) {
-            return this.markPlayed(embyItemId)
+            return this.markPlayed(jellyfinItemId)
         }
-        const url = `Users/${this.userId}/Progress/${embyItemId}?PositionTicks=${playbackPositionTicks}`
+        const url = `Users/${this.userId}/Progress/${jellyfinItemId}?PositionTicks=${playbackPositionTicks}`
         return this.httpClient.post(url, {}, { quiet: true }).then(() => {
             this.lastProgressUpdate = {
-                embyItemId,
+                jellyfinItemId,
                 playbackPositionTicks,
                 runTimeTicks,
             }
@@ -257,19 +257,19 @@ class EmbyClient {
         })
     }
 
-    markPlayed(embyItemId) {
-        if (!settings.embyTrackProgress) {
+    markPlayed(jellyfinItemId) {
+        if (!settings.jellyfinTrackProgress) {
             return Promise.resolve()
         }
-        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
+        const url = `Users/${this.userId}/PlayedItems/${jellyfinItemId}`
         return this.httpClient.post(url)
     }
 
-    markUnplayed(embyItemId) {
-        if (!settings.embyTrackProgress) {
+    markUnplayed(jellyfinItemId) {
+        if (!settings.jellyfinTrackProgress) {
             return Promise.resolve()
         }
-        const url = `Users/${this.userId}/PlayedItems/${embyItemId}`
+        const url = `Users/${this.userId}/PlayedItems/${jellyfinItemId}`
         return this.httpClient.delete(url)
     }
 
@@ -279,9 +279,9 @@ class EmbyClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then((responses) => {
             return [
-                responses[0].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
-                responses[1].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
-                responses[2].data.Items.map((item) => new EmbyItem(item, { showSpoilers: true })),
+                responses[0].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
+                responses[1].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
+                responses[2].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
             ]
         })
     }
@@ -302,17 +302,17 @@ class EmbyClient {
             return progressResponse.data.Items.filter((item) => {
                 return item && item.UserData && item.UserData.PlaybackPositionTicks
             }).map((item) => {
-                return new EmbyItem(item, { isSearchResult: true })
+                return new JellyfinItem(item, { isSearchResult: true })
             })
         })
     }
 
-    playlist(embyItemId) {
+    playlist(jellyfinItemId) {
         const fields = 'ProductionYear,MediaStreams,Path'
-        const url = `Playlists/${embyItemId}/Items?EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&UserId=${this.userId}&Fields=${fields}`
+        const url = `Playlists/${jellyfinItemId}/Items?EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&UserId=${this.userId}&Fields=${fields}`
         return this.httpClient.get(url).then((playlistResponse) => {
             return playlistResponse.data.Items.map((item) => {
-                return new EmbyItem(item)
+                return new JellyfinItem(item)
             })
         })
     }
@@ -326,25 +326,25 @@ class EmbyClient {
         }
         return this.httpClient.get(url).then((guideResponse) => {
             return guideResponse.data.Items.map((item) => {
-                let embyItem = new EmbyItem(item)
-                embyItem.processChannelInfo()
-                if (!_.has(util.window.duplicateChannels, embyItem.ChannelSlug)) {
-                    util.window.duplicateChannels[embyItem.ChannelSlug] = {
+                let jellyfinItem = new JellyfinItem(item)
+                jellyfinItem.processChannelInfo()
+                if (!_.has(util.window.duplicateChannels, jellyfinItem.ChannelSlug)) {
+                    util.window.duplicateChannels[jellyfinItem.ChannelSlug] = {
                         index: 0,
                         items: [],
                     }
                 }
-                if (!_.has(util.window.channelCategories.lookup, embyItem.ChannelCategory)) {
-                    util.window.channelCategories.lookup[embyItem.ChannelCategory] = true
-                    util.window.channelCategories.list.push(embyItem.ChannelCategory)
+                if (!_.has(util.window.channelCategories.lookup, jellyfinItem.ChannelCategory)) {
+                    util.window.channelCategories.lookup[jellyfinItem.ChannelCategory] = true
+                    util.window.channelCategories.list.push(jellyfinItem.ChannelCategory)
                     util.window.channelCategories.list.sort()
                 }
-                util.window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
-                if (util.window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
-                    return embyItem
+                util.window.duplicateChannels[jellyfinItem.ChannelSlug].items.push(jellyfinItem)
+                if (util.window.duplicateChannels[jellyfinItem.ChannelSlug].items.length === 1) {
+                    return jellyfinItem
                 }
-                util.window.duplicateChannels[embyItem.ChannelSlug].index += 1
-                util.window.duplicateChannels[embyItem.ChannelSlug].items[0].ChannelCount += 1
+                util.window.duplicateChannels[jellyfinItem.ChannelSlug].index += 1
+                util.window.duplicateChannels[jellyfinItem.ChannelSlug].items[0].ChannelCount += 1
                 return null
             })
                 .filter((x) => {
@@ -371,7 +371,7 @@ class EmbyClient {
                     return x
                 })
                 .map((x) => {
-                    return new EmbyItem(x)
+                    return new JellyfinItem(x)
                 })
         })
     }
@@ -379,7 +379,7 @@ class EmbyClient {
     buildImageURL(itemId, imageTag, width, height) {
         width *= 2
         height *= 2
-        let result = `${settings.embyServerURL}/emby/Items/${itemId}/Images/Primary`
+        let result = `${settings.jellyfinServerURL}/Emby/Items/${itemId}/Images/Primary`
         result += '?maxWidth=' + width + '&maxHeight=' + height
         result += '&tag=' + imageTag + '&quality=100'
         return result
@@ -407,7 +407,7 @@ class EmbyClient {
                             )
                         })
                         .map((item) => {
-                            return new EmbyItem(item, {
+                            return new JellyfinItem(item, {
                                 showParentImage: true,
                                 unwatchedCount: item.ParentUnplayedCount,
                             })
@@ -442,13 +442,13 @@ class EmbyClient {
                         </p>
                     </div>
                     `
-                return new EmbyItem(item, { tooltip: tooltip })
+                return new JellyfinItem(item, { tooltip: tooltip })
             })
         })
     }
 
-    specialFeatures(embyItemId) {
-        const url = `Users/${this.userId}/Items/${embyItemId}/SpecialFeatures`
+    specialFeatures(jellyfinItemId) {
+        const url = `Users/${this.userId}/Items/${jellyfinItemId}/SpecialFeatures`
         return this.httpClient.get(url).then((response) => {
             return response.data.map((item) => {
                 let tooltip = `
@@ -459,7 +459,7 @@ class EmbyClient {
                     </div>
                     `
 
-                return new EmbyItem(item, { tooltip: tooltip, href: 'play-media.html?embyItemId=' + item.Id })
+                return new JellyfinItem(item, { tooltip: tooltip, href: 'play-media.html?jellyfinItemId=' + item.Id })
             })
         })
     }
@@ -471,8 +471,8 @@ class EmbyClient {
         })
     }
 
-    addTag(embyItemId, tag) {
-        const url = `/Items/${embyItemId}/Tags/Add`
+    addTag(jellyfinItemId, tag) {
+        const url = `/Items/${jellyfinItemId}/Tags/Add`
         const payload = {
             Tags: [
                 {
@@ -484,40 +484,40 @@ class EmbyClient {
         return this.httpClient.post(url, payload)
     }
 
-    removeTag(embyItemId, tagId) {
+    removeTag(jellyfinItemId, tagId) {
         const client = this
-        const getItemUrl = `Users/${this.userId}/Items/${embyItemId}`
-        const updateItemUrl = `Items/${embyItemId}`
+        const getItemUrl = `Users/${this.userId}/Items/${jellyfinItemId}`
+        const updateItemUrl = `Items/${jellyfinItemId}`
         return new Promise((resolve, reject) => {
             client.httpClient
                 .get(getItemUrl)
                 .then((itemResponse) => {
-                    let embyItem = itemResponse.data
-                    let tagCount = embyItem.TagItems.length
-                    embyItem.TagItems = embyItem.TagItems.filter((tag) => {
+                    let jellyfinItem = itemResponse.data
+                    let tagCount = jellyfinItem.TagItems.length
+                    jellyfinItem.TagItems = jellyfinItem.TagItems.filter((tag) => {
                         return tag.Id !== tagId
                     })
-                    if (tagCount !== embyItem.TagItems.length) {
+                    if (tagCount !== jellyfinItem.TagItems.length) {
                         client.httpClient
-                            .post(updateItemUrl, embyItem)
+                            .post(updateItemUrl, jellyfinItem)
                             .then(() => {
                                 resolve()
                             })
                             .catch((err) => {
-                                reject({ message: `Unable to update the emby item ${embyItemId} removing tag ${tagId}`, err })
+                                reject({ message: `Unable to update the jellyfin item ${jellyfinItemId} removing tag ${tagId}`, err })
                             })
                     } else {
                         resolve()
                     }
                 })
                 .catch((err) => {
-                    reject({ message: 'Unable to retrieve the emby item', err })
+                    reject({ message: 'Unable to retrieve the jellyfin item', err })
                 })
         })
     }
 }
 
-const instance = new EmbyClient()
+const instance = new JellyfinClient()
 
 module.exports = {
     client: instance,

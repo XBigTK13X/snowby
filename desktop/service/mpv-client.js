@@ -99,7 +99,7 @@ class MpvClient {
 
     seek(seekTicks) {
         let adjustment = ticks.stepBack(seekTicks)
-        return ticks.embyToSeconds(adjustment)
+        return ticks.jellyfinToSeconds(adjustment)
     }
 
     getPositionInSeconds() {

@@ -1,10 +1,10 @@
 const fidelityBadge = require('./fidelity-badge')
 
-class EmbyTextItem {
-    constructor(embyItem) {
-        this.content = embyItem.getTitle()
-        this.href = embyItem.Href
-        this.embyItem = embyItem
+class JellyfinTextItem {
+    constructor(jellyfinItem) {
+        this.content = jellyfinItem.getTitle()
+        this.href = jellyfinItem.Href
+        this.jellyfinItem = jellyfinItem
     }
 
     setHref(href) {
@@ -12,7 +12,7 @@ class EmbyTextItem {
     }
 
     enableFidelityBadge() {
-        this.fidelityBadge = fidelityBadge.render(this.embyItem)
+        this.fidelityBadge = fidelityBadge.render(this.jellyfinItem)
     }
 
     render() {
@@ -32,4 +32,4 @@ class EmbyTextItem {
     }
 }
 
-module.exports = EmbyTextItem
+module.exports = JellyfinTextItem

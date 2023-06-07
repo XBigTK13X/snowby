@@ -5,26 +5,26 @@ const progressBadge = require('./progress-badge')
 
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-square.png`
 
-class EmbyMixedItem {
-    constructor(embyItem) {
-        this.href = embyItem.Href
-        this.imageFormat = embyItem.Type === 'Episode' ? 'wide' : 'tall'
-        this.imageUrl = embyItem.getImageUrl(settings.tileDimension[this.imageFormat].x, settings.tileDimension[this.imageFormat].y)
-        this.embyItemId = embyItem.Id
-        this.embyItem = embyItem
+class JellyfinMixedItem {
+    constructor(jellyfinItem) {
+        this.href = jellyfinItem.Href
+        this.imageFormat = jellyfinItem.Type === 'Episode' ? 'wide' : 'tall'
+        this.imageUrl = jellyfinItem.getImageUrl(settings.tileDimension[this.imageFormat].x, settings.tileDimension[this.imageFormat].y)
+        this.jellyfinItemId = jellyfinItem.Id
+        this.jellyfinItem = jellyfinItem
         this.imageCenter = this.imageFormat === 'wide' ? 'top-spacer-wide' : 'top-spacer-tall'
     }
 
     enableKindBadge() {
-        this.kindBadge = kindBadge.render(this.embyItem)
+        this.kindBadge = kindBadge.render(this.jellyfinItem)
     }
 
     enableProgressBadge() {
-        this.progressBadge = progressBadge.render(this.embyItem)
+        this.progressBadge = progressBadge.render(this.jellyfinItem)
     }
 
     render() {
-        let summary = this.embyItem.getTooltipContent()
+        let summary = this.jellyfinItem.getTooltipContent()
         let tooltipMarkup = summary ? `data-tippy-content="<div class='snowby-tooltip'>${summary}</div>"` : ''
         let kindBadgeMarkup = this.kindBadge ? this.kindBadge : ''
         let progressBadgeMarkup = this.progressBadge ? this.progressBadge : ''
@@ -46,4 +46,4 @@ class EmbyMixedItem {
     }
 }
 
-module.exports = EmbyMixedItem
+module.exports = JellyfinMixedItem

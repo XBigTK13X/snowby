@@ -1,10 +1,10 @@
 module.exports = () => {
     return new Promise((resolve) => {
-        const EmbyItemLink = require('../component/emby-item-link')
+        const JellyfinItemLink = require('../component/jellyfin-item-link')
         const categories = [
-            new EmbyItemLink('Movies', 'genres', { genreFilter: 'Movie' }),
-            new EmbyItemLink('Shows', 'genres', { genreFilter: 'Series' }),
-            new EmbyItemLink('Both', 'genres'),
+            new JellyfinItemLink('Movies', 'genres', { genreFilter: 'Movie' }),
+            new JellyfinItemLink('Shows', 'genres', { genreFilter: 'Series' }),
+            new JellyfinItemLink('Both', 'genres'),
         ]
         const categoriesMarkup = `<div class="grid center-grid">${categories
             .map((x) => {

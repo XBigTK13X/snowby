@@ -6,7 +6,7 @@ const m3u = require('./m3u-client')
 
 const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
 
-module.exports = class EmbyItem {
+module.exports = class JellyfinItem {
     constructor(responseBody, options) {
         Object.assign(this, responseBody)
 
@@ -57,12 +57,12 @@ module.exports = class EmbyItem {
         this.IsPlayable = this.Type === 'Movie' || this.Type === 'Episode'
 
         if (this.IsPlayable) {
-            this.Href = `play-media.html?embyItemId=${this.Id}`
+            this.Href = `play-media.html?jellyfinItemId=${this.Id}`
             if (this.Type === 'Episode') {
                 this.Href += '&hasSeason=true'
             }
         } else {
-            this.Href = `emby-items.html?embyItemId=${this.Id}`
+            this.Href = `jellyfin-items.html?jellyfinItemId=${this.Id}`
         }
 
         if (this.ForcedHref) {
@@ -192,7 +192,7 @@ module.exports = class EmbyItem {
             let buildImageUrl = (itemId, imageTag, width, height) => {
                 width *= 2
                 height *= 2
-                let result = `${settings.embyServerURL}/emby/Items/${itemId}/Images/Primary`
+                let result = `${settings.jellyfinServerURL}/Emby/Items/${itemId}/Images/Primary`
                 result += '?maxWidth=' + width + '&maxHeight=' + height
                 result += '&tag=' + imageTag + '&quality=100'
                 return result
@@ -217,13 +217,13 @@ module.exports = class EmbyItem {
                 imageTag = this.SeriesPrimaryImageTag
             }
 
-            var result = settings.embyServerURL + '/emby/Items/' + itemId + '/Images/' + imageType
+            var result = settings.jellyfinServerURL + '/Emby/Items/' + itemId + '/Images/' + imageType
             result += '?maxWidth=' + width + '&maxHeight=' + height
             result += '&tag=' + imageTag + '&quality=100'
             return result
         }
         if (this.Type === 'Season') {
-            var result = settings.embyServerURL + '/emby/Items/' + this.SeriesId + '/Images/Primary'
+            var result = settings.jellyfinServerURL + '/Emby/Items/' + this.SeriesId + '/Images/Primary'
             result += '?maxWidth=' + width + '&maxHeight=' + height
             result += '&tag=' + this.SeriesPrimaryImageTag + '&quality=100'
             return result
@@ -390,11 +390,8 @@ module.exports = class EmbyItem {
         if (this.ForceTooltip) {
             return this.ForceTooltip
         }
-        let rating = this.OfficialRating || null
-        let overview = this.showSpoilers() ? this.Overview || null : '[Hidden]'
         let tagline = this.Taglines && this.Taglines[0]
         let seriesName = this.SeriesName || null
-        let releaseYear = this.ProductionYear || null
 
         if (this.Type === 'Movie' || this.Type === 'Episode') {
             let episodeTitle = this.Type === 'Episode' ? (this.showSpoilers() ? this.Name : '[Hidden]') : null
@@ -420,7 +417,6 @@ module.exports = class EmbyItem {
             <div>
                 <h3 class='centered'>${this.getTitle()}</h3>
                 ${tagline ? `<h4 class='centered'>${tagline}</h4>` : ''}
-                ${overview ? `<p class='centered'>${overview}</p>` : ''}
                 ${unplayedCount ? unplayedCount + ' New Episode' + (unplayedCount > 1 ? 's' : '') : ''}
             </div>
             `

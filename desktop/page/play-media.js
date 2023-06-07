@@ -16,37 +16,37 @@ module.exports = () => {
         const ExternalLinksTab = require('../component/external-links-tab')
 
         const progress = require('../media/progress')
-        const emby = require('../../common/emby-client')
+        const jellyfin = require('../../common/jellyfin-client')
 
         const queryParams = util.queryParams()
 
-        if (!queryParams.embyItemId) {
-            throw new Error('An embyItemId is required to play media', { queryParams })
+        if (!queryParams.jellyfinItemId) {
+            throw new Error('An jellyfinItemId is required to play media', { queryParams })
         }
 
-        emby.client
+        jellyfin.client
             .connect()
             .then(() => {
-                return emby.client.embyItem(queryParams.embyItemId)
+                return jellyfin.client.jellyfinItem(queryParams.jellyfinItemId)
             })
-            .then((embyItem) => {
+            .then((jellyfinItem) => {
                 if (queryParams.mediaSourceIndex) {
-                    embyItem.selectMediaSource(parseInt(queryParams.mediaSourceIndex, 10))
+                    jellyfinItem.selectMediaSource(parseInt(queryParams.mediaSourceIndex, 10))
                 }
 
-                if (embyItem.Type === 'Episode') {
-                    window.seasonId = embyItem.ParentId
+                if (jellyfinItem.Type === 'Episode') {
+                    window.seasonId = jellyfinItem.ParentId
                 }
 
                 document.getElementById('mark-watched-button').onclick = (event) => {
                     event.preventDefault()
-                    emby.client.markPlayed(queryParams.embyItemId)
+                    jellyfin.client.markPlayed(queryParams.jellyfinItemId)
                     return false
                 }
 
                 document.getElementById('mark-unwatched-button').onclick = (event) => {
                     event.preventDefault()
-                    emby.client.markUnplayed(queryParams.embyItemId)
+                    jellyfin.client.markUnplayed(queryParams.jellyfinItemId)
                     return false
                 }
 
@@ -61,7 +61,7 @@ module.exports = () => {
                     window.reloadPage(`play-media.html?${util.queryString(newParams)}`)
                 }
 
-                let discussionQuery = embyItem.getDiscussionQuery()
+                let discussionQuery = jellyfinItem.getDiscussionQuery()
                 if (discussionQuery) {
                     document.getElementById('discussion-button').onclick = (event) => {
                         event.preventDefault()
@@ -75,7 +75,7 @@ module.exports = () => {
                     document.getElementById('discussion-button').setAttribute('style', 'display:none')
                 }
 
-                const inspection = inspector.inspect(embyItem, queryParams.mediaSourceIndex || 0)
+                const inspection = inspector.inspect(jellyfinItem, queryParams.mediaSourceIndex || 0)
                 let selectedIndices = {
                     audio: {
                         absolute: queryParams.audioAbsoluteIndex ? parseInt(queryParams.audioAbsoluteIndex) : inspection.audioAbsoluteIndex,
@@ -87,12 +87,12 @@ module.exports = () => {
                     },
                 }
 
-                let headerMarkup = embyItem.getTitle(true)
-                if (embyItem.ProductionYear) {
-                    headerMarkup += ` (${embyItem.ProductionYear})`
+                let headerMarkup = jellyfinItem.getTitle(true)
+                if (jellyfinItem.ProductionYear) {
+                    headerMarkup += ` (${jellyfinItem.ProductionYear})`
                 }
                 document.getElementById('header').innerHTML = headerMarkup
-                document.getElementById('tagline').innerHTML = embyItem.getTagline()
+                document.getElementById('tagline').innerHTML = jellyfinItem.getTagline()
 
                 const loadTab = (targetId, content) => {
                     const active = queryParams.openTab === targetId || (!queryParams.openTab && targetId === 'inspection-button')
@@ -123,13 +123,13 @@ module.exports = () => {
                 }
 
                 const tabs = [
-                    new StreamsTab(embyItem, inspection, selectedIndices),
-                    new InspectionTab(embyItem, inspection, selectedIndices),
-                    new InformationTab(embyItem),
-                    new CastTab(embyItem, emby.client),
-                    new ChapterTab(embyItem),
-                    new ExtrasTab(embyItem),
-                    new ExternalLinksTab(embyItem),
+                    new StreamsTab(jellyfinItem, inspection, selectedIndices),
+                    new InspectionTab(jellyfinItem, inspection, selectedIndices),
+                    new InformationTab(jellyfinItem),
+                    new CastTab(jellyfinItem, jellyfin.client),
+                    new ChapterTab(jellyfinItem),
+                    new ExtrasTab(jellyfinItem),
+                    new ExternalLinksTab(jellyfinItem),
                 ]
 
                 Promise.all(
@@ -169,19 +169,19 @@ module.exports = () => {
                     }
 
                     window.playMedia = (seekTicks) => {
-                        let loadingMessage = 'Playing ' + embyItem.CleanPath + ' in mpv.'
+                        let loadingMessage = 'Playing ' + jellyfinItem.CleanPath + ' in mpv.'
                         window.loadingStart(loadingMessage)
                         player
                             .openFile(
-                                embyItem.Id,
-                                embyItem.CleanPath,
+                                jellyfinItem.Id,
+                                jellyfinItem.CleanPath,
                                 selectedIndices.audio.relative,
                                 selectedIndices.subtitle.relative,
                                 seekTicks,
                                 inspection.isHdr
                             )
                             .then(() => {
-                                progress.track(embyItem)
+                                progress.track(jellyfinItem)
                                 window.loadingStop(loadingMessage)
                             })
                             .catch((err) => {
@@ -190,14 +190,14 @@ module.exports = () => {
                     }
 
                     window.playExtra = (extraId) => {
-                        window.location.href = `./play-media.html?embyItemId=${extraId}`
+                        window.location.href = `./play-media.html?jellyfinItemId=${extraId}`
                     }
 
-                    if (embyItem.UserData && embyItem.UserData.PlaybackPositionTicks) {
+                    if (jellyfinItem.UserData && jellyfinItem.UserData.PlaybackPositionTicks) {
                         document.getElementById('resume-media-button').style = null
                         document.getElementById('resume-media-button').onclick = (event) => {
                             event.preventDefault()
-                            window.playMedia(embyItem.UserData.PlaybackPositionTicks)
+                            window.playMedia(jellyfinItem.UserData.PlaybackPositionTicks)
                         }
                     }
 

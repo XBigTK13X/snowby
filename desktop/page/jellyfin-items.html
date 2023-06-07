@@ -6,12 +6,14 @@
         <link rel="stylesheet" type="text/css" href="../asset/css/snowby.css" />
     </head>
     <body class="noselect">
+        <input type="text" autofocus style="display: none" id="search-redirect" />
         <div id="navbar"></div>
         <h1 id="header">Loading...</h1>
-        <div id="user-list"></div>
+        <div id="jellyfin-items"></div>
+        <div id="top"></div>
         <div class="bottom-left-pin" id="loading"></div>
         <script>
-            require('../asset/shared')('users')
+            require('../asset/shared')('jellyfin-items', { sortPicker: true })
         </script>
     </body>
 </html>

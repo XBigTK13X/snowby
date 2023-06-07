@@ -3,8 +3,8 @@ const mediaStream = require('../media/stream')
 const _ = require('lodash')
 
 class StreamsTab {
-    constructor(embyItem, inspection, selectedIndices) {
-        this.embyItem = embyItem
+    constructor(jellyfinItem, inspection, selectedIndices) {
+        this.jellyfinItem = jellyfinItem
         this.selectedIndices = selectedIndices
         this.inspection = inspection
         this.name = 'Streams'
@@ -22,7 +22,7 @@ class StreamsTab {
 
         window.selectTrack = (streamIndex) => {
             let queryParams = util.queryParams()
-            const stream = embyItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams[streamIndex]
+            const stream = jellyfinItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams[streamIndex]
             if (stream.Type === 'Audio') {
                 if (!queryParams.audioRelativeIndex || parseInt(queryParams.audioRelativeIndex) !== stream.RelativeIndex) {
                     queryParams.audioRelativeIndex = stream.RelativeIndex
@@ -61,7 +61,7 @@ class StreamsTab {
         return new Promise((resolve) => {
             let queryParams = util.queryParams()
             let html = `
-            <p>Path - ${this.embyItem.Path}</p>
+            <p>Path - ${this.jellyfinItem.Path}</p>
             <table>
     	    <tr>
     	        <th>Index</th>
@@ -73,7 +73,7 @@ class StreamsTab {
     	        <th>Title</th>
     	    </tr>`
             let hiddenStreams = 0
-            html += this.embyItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams.map((stream, streamIndex) => {
+            html += this.jellyfinItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams.map((stream, streamIndex) => {
                 if (!queryParams.showAllStreams && !mediaStream.isShown(stream)) {
                     hiddenStreams++
                     return ''
@@ -100,13 +100,13 @@ class StreamsTab {
     	        `
             }).join('')
             let toggleHtml = ''
-            if (this.embyItem.MediaSources.length > 1) {
+            if (this.jellyfinItem.MediaSources.length > 1) {
                 toggleHtml += `
                     <p>Versions</p>
                     <ul>
 
-                    ${this.embyItem.MediaSources.map((x, xi) => {
-                        if (xi === this.embyItem.MediaSourceIndex || (!this.embyItem.MediaSourceIndex && xi === 0)) {
+                    ${this.jellyfinItem.MediaSources.map((x, xi) => {
+                        if (xi === this.jellyfinItem.MediaSourceIndex || (!this.jellyfinItem.MediaSourceIndex && xi === 0)) {
                             return (
                                 '<li onclick="window.selectMediaSource(' +
                                 xi +

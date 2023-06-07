@@ -24,11 +24,11 @@ FIDELITY_BADGE_COLORS = {
     },
 }
 
-const render = (embyItem) => {
+const render = (jellyfinItem) => {
     if (util.queryParams().hideBadges) {
         return ''
     }
-    const fidelity = embyItem.getFidelity()
+    const fidelity = jellyfinItem.getFidelity()
     if (!_.has(FIDELITY_BADGE_COLORS, fidelity.resolution) || !_.has(FIDELITY_BADGE_COLORS[fidelity.resolution], fidelity.source)) {
         throw new Error(`No badge color defined for ${fidelity.resolution}->${fidelity.source}`)
     }

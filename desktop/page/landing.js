@@ -1,17 +1,17 @@
 module.exports = () => {
     return new Promise((resolve, reject) => {
-        const emby = require('../../common/emby-client').client
+        const jellyfin = require('../../common/jellyfin-client').client
         const util = require('../../common/util')
         // Helps prevent dangling MPV media sessions when flipping through Snowby
         util.killMpv()
         const settings = require('../../common/settings')
         const InternalLink = require('../component/internal-link')
-        const EmbyItemLink = require('../component/emby-item-link')
+        const JellyfinItemLink = require('../component/jellyfin-item-link')
         const ExternalLink = require('../component/external-link')
         const links = [
             new InternalLink('Library', 'library.html'),
-            new EmbyItemLink('Next Up', 'next-up'),
-            new EmbyItemLink('In Progress', 'in-progress'),
+            new JellyfinItemLink('Next Up', 'next-up'),
+            new JellyfinItemLink('In Progress', 'in-progress'),
             new InternalLink('Search', 'search.html'),
         ]
 
@@ -25,8 +25,8 @@ module.exports = () => {
         if (settings.availableUsers) {
             window.selectUser = (userIndex) => {
                 util.window.localStorage.setItem('chosen-user-index', userIndex)
-                emby.clearSession()
-                return emby.connect().then(() => {
+                jellyfin.clearSession()
+                return jellyfin.connect().then(() => {
                     window.location.href = `./landing.html`
                 })
             }
@@ -40,7 +40,7 @@ module.exports = () => {
                     return `<a class="grid-item square-grid-item${selectionClass} profile-image-link" href="" onclick="window.selectUser(${userIndex});return false" data-tippy-content="<div class='snowby-tooltip'>${
                         user.username
                     }</div>">
-                        <img class="profile-image rounded " src="${emby.imageUrl(user.id, user.imageTag)}" />
+                        <img class="profile-image rounded " src="${jellyfin.imageUrl(user.id, user.imageTag)}" />
                     </a>`
                 })
                 .join('')}</div>`

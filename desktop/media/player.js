@@ -1,5 +1,5 @@
 const ticks = require('../../common/ticks')
-const emby = require('../../common/emby-client')
+const jellyfin = require('../../common/jellyfin-client')
 const settings = require('../../common/settings')
 const mpv = require('../service/mpv-client')
 const hdr = require('../service/hdr').client
@@ -16,7 +16,7 @@ class Player {
         return this.mediaHandler.connect()
     }
 
-    openFile(embyItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
+    openFile(jellyfinItemId, mediaPath, audioIndex, subtitleIndex, seekTicks, isHdr) {
         return hdr.configure(isHdr).then(() => {
             return this.mediaHandler.openPath(mediaPath, audioIndex, subtitleIndex, seekTicks)
         })

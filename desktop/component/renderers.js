@@ -1,8 +1,8 @@
-const EmbyMixedItem = require('../component/emby-mixed-item')
-const EmbyPoster = require('../component/emby-poster')
-const EmbyTextItem = require('../component/emby-text-item')
-const EmbyThumbnail = require('../component/emby-thumbnail')
-const EmbyTvChannel = require('../component/emby-tv-channel')
+const JellyfinMixedItem = require('../component/jellyfin-mixed-item')
+const JellyfinPoster = require('../component/jellyfin-poster')
+const JellyfinTextItem = require('../component/jellyfin-text-item')
+const JellyfinThumbnail = require('../component/jellyfin-thumbnail')
+const JellyfinTvChannel = require('../component/jellyfin-tv-channel')
 const ExternalLink = require('../component/external-link')
 const _ = require('lodash')
 const util = require('../../common/util')
@@ -28,17 +28,17 @@ const renderGeneratedGrid = (itemGenerator, parent, children) => {
 
 module.exports = {
     mixed: (parent, children) => {
-        return renderGrid(EmbyMixedItem, parent, children)
+        return renderGrid(JellyfinMixedItem, parent, children)
     },
     posters: (parent, children) => {
-        return renderGrid(EmbyPoster, parent, children)
+        return renderGrid(JellyfinPoster, parent, children)
     },
     thumbnails: (parent, children) => {
-        return renderGrid(EmbyThumbnail, parent, children)
+        return renderGrid(JellyfinThumbnail, parent, children)
     },
     boxSet: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableFidelityBadge()
             return poster.render()
         }
@@ -54,11 +54,11 @@ module.exports = {
                 }).join(' ') +
                 '</div>'
         }
-        return externals + renderGrid(EmbyPoster, parent, children)
+        return externals + renderGrid(JellyfinPoster, parent, children)
     },
     playlist: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableFidelityBadge()
             poster.enableKindBadge()
             return poster.render()
@@ -67,7 +67,7 @@ module.exports = {
     },
     playlistList: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableTitle()
             return poster.render()
         }
@@ -75,8 +75,8 @@ module.exports = {
     },
     genreList: (parent, children) => {
         const generator = (child) => {
-            let text = new EmbyTextItem(child)
-            let href = `emby-items.html?embyItemId=${child.Id}&showWatched=true`
+            let text = new JellyfinTextItem(child)
+            let href = `jellyfin-items.html?jellyfinItemId=${child.Id}&showWatched=true`
             const queryParams = util.queryParams()
             if (queryParams.genreFilter) {
                 href += `&includeItemTypes=${queryParams.genreFilter}`
@@ -90,7 +90,7 @@ module.exports = {
     },
     movieList: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableFidelityBadge()
             return poster.render()
         }
@@ -98,7 +98,7 @@ module.exports = {
     },
     nextUp: (parent, children) => {
         const generator = (child) => {
-            let item = new EmbyPoster(child)
+            let item = new JellyfinPoster(child)
             item.enableProgressBadge()
             item.enableUnwatchedBadge()
             item.enableFidelityBadge()
@@ -109,7 +109,7 @@ module.exports = {
     },
     inProgress: (parent, children) => {
         const generator = (child) => {
-            let mixed = new EmbyMixedItem(child)
+            let mixed = new JellyfinMixedItem(child)
             mixed.enableKindBadge()
             mixed.enableProgressBadge()
             return mixed.render()
@@ -118,30 +118,30 @@ module.exports = {
     },
     ratingList: (parent, children) => {
         const generator = (child) => {
-            let text = new EmbyTextItem(child)
-            let href = `emby-items.html?embyItemId=${child.ParentId}&showWatched=true&rating=${child.Rating}`
+            let text = new JellyfinTextItem(child)
+            let href = `jellyfin-items.html?jellyfinItemId=${child.ParentId}&showWatched=true&rating=${child.Rating}`
             text.setHref(href)
             return text.render()
         }
         return renderGeneratedGrid(generator, parent, children)
     },
     table: (parent, children) => {
-        window.selectEmbyItemTable = (embyItemId, itemKind) => {
+        window.selectJellyfinItemTable = (jellyfinItemId, itemKind) => {
             if (itemKind === 'Episode' || itemKind === 'Movie') {
-                let href = `./play-media.html?embyItemId=${embyItemId}`
+                let href = `./play-media.html?jellyfinItemId=${jellyfinItemId}`
                 if (itemKind === 'Episode') {
                     window.location = href + '&hasSeason=true'
                 } else {
                     window.location.href = href
                 }
             } else {
-                window.location.href = `./emby-items.html?embyItemId=${embyItemId}`
+                window.location.href = `./jellyfin-items.html?jellyfinItemId=${jellyfinItemId}`
             }
         }
         const generator = (child) => {
             return `<tr
                     class="clickable"
-                    onclick="window.selectEmbyItemTable(${child.Id},'${child.Type}'); return false;"
+                    onclick="window.selectJellyfinItemTable(${child.Id},'${child.Type}'); return false;"
                 >
                 <td>${child.getTitle()} - ${child.Name}</td>
             </tr>`
@@ -159,7 +159,7 @@ module.exports = {
     },
     tags: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             if (child.Type === 'Movie') {
                 poster.enableFidelityBadge()
             }
@@ -204,12 +204,10 @@ module.exports = {
         <tbody>
         `
 
-        let duplicateChannels = {}
-
         html += children
             .map((child) => {
-                const embyChannel = new EmbyTvChannel(child)
-                return embyChannel.render()
+                const jellyfinChannel = new JellyfinTvChannel(child)
+                return jellyfinChannel.render()
             })
             .join('')
         html += `</tbody></table>`
@@ -217,7 +215,7 @@ module.exports = {
     },
     tvSeason: (parent, children) => {
         const generator = (child) => {
-            let thumbnail = new EmbyThumbnail(child)
+            let thumbnail = new JellyfinThumbnail(child)
             thumbnail.enableTitle()
             thumbnail.enableFidelityBadge()
             return thumbnail.render()
@@ -226,12 +224,12 @@ module.exports = {
     },
     tvSeries: (parent, children) => {
         const nextUpGenerator = (child) => {
-            let text = new EmbyTextItem(child)
+            let text = new JellyfinTextItem(child)
             text.enableFidelityBadge()
             return text.render()
         }
         const seasonGenerator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableTitle()
             poster.enableUnwatchedBadge()
             return poster.render()
@@ -246,7 +244,7 @@ module.exports = {
     },
     tvShowList: (parent, children) => {
         const generator = (child) => {
-            let poster = new EmbyPoster(child)
+            let poster = new JellyfinPoster(child)
             poster.enableUnwatchedBadge()
             return poster.render()
         }

@@ -3,28 +3,28 @@ const ticks = require('../../common/ticks')
 const { DateTime, Duration } = require('luxon')
 
 class InspectionTab {
-    constructor(embyItem, inspection, selectedIndices) {
-        this.embyItem = embyItem
+    constructor(jellyfinItem, inspection, selectedIndices) {
+        this.jellyfinItem = jellyfinItem
         this.inspection = inspection
         this.selectedIndices = selectedIndices
         this.name = 'Inspection'
         this.order = 1
     }
 
-    render(embyItem, inspection) {
+    render(jellyfinItem, inspection) {
         return new Promise((resolve) => {
-            const fileSize = size.getDisplay(this.embyItem.CleanPath)
+            const fileSize = size.getDisplay(this.jellyfinItem.CleanPath)
             let html = ``
-            if (this.embyItem.RunTimeTicks) {
-                const runTime = ticks.toTimeStamp(this.embyItem.RunTimeTicks)
+            if (this.jellyfinItem.RunTimeTicks) {
+                const runTime = ticks.toTimeStamp(this.jellyfinItem.RunTimeTicks)
                 html += `<p>Run Time - ${runTime}</p>`
             }
-            let runTimeBreakdown = ticks.breakdown(ticks.embyToSeconds(this.embyItem.RunTimeTicks))
-            if (this.embyItem.UserData.PlaybackPositionTicks) {
-                const remainingTicks = this.embyItem.RunTimeTicks - this.embyItem.UserData.PlaybackPositionTicks
+            let runTimeBreakdown = ticks.breakdown(ticks.jellyfinToSeconds(this.jellyfinItem.RunTimeTicks))
+            if (this.jellyfinItem.UserData.PlaybackPositionTicks) {
+                const remainingTicks = this.jellyfinItem.RunTimeTicks - this.jellyfinItem.UserData.PlaybackPositionTicks
                 const remaining = ticks.toTimeStamp(remainingTicks)
-                runTimeBreakdown = ticks.breakdown(ticks.embyToSeconds(remainingTicks))
-                html += `<p>Watched - ${ticks.toTimeStamp(this.embyItem.UserData.PlaybackPositionTicks)}</p>`
+                runTimeBreakdown = ticks.breakdown(ticks.jellyfinToSeconds(remainingTicks))
+                html += `<p>Watched - ${ticks.toTimeStamp(this.jellyfinItem.UserData.PlaybackPositionTicks)}</p>`
                 html += `<p>Remaining - ${remaining}</p>`
             }
 
@@ -61,7 +61,7 @@ class InspectionTab {
                 html += `<p>Snowby thinks this uses an SDR color space. It will only use standard video output when playing.<p>`
             }
             html += `
-                <p>Path - ${this.embyItem.Path}</p>
+                <p>Path - ${this.jellyfinItem.Path}</p>
                 <p>Size - ${fileSize}</p>
             `
             resolve(html)

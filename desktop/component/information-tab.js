@@ -1,13 +1,13 @@
 class InformationTab {
-    constructor(embyItem) {
-        this.embyItem = embyItem
+    constructor(jellyfinItem) {
+        this.jellyfinItem = jellyfinItem
         this.name = 'Information'
         this.order = 3
     }
 
     render() {
         return new Promise((resolve) => {
-            this.embyItem.getPlayMediaSummary().then((summary) => {
+            this.jellyfinItem.getPlayMediaSummary().then((summary) => {
                 resolve(summary)
             })
         })

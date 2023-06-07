@@ -23,8 +23,8 @@ const pad = (num) => {
     return num
 }
 
-const toTimeStamp = (embyTicks) => {
-    const b = breakdown(Math.floor(embyTicks / TEN_MILLION))
+const toTimeStamp = (jellyfinTicks) => {
+    const b = breakdown(Math.floor(jellyfinTicks / TEN_MILLION))
     let timestamp = `${pad(b.seconds)}s`
     if (b.minutes || b.hours) {
         timestamp = `${pad(b.minutes)}m ${timestamp}`
@@ -35,10 +35,6 @@ const toTimeStamp = (embyTicks) => {
     return timestamp
 }
 
-const mpvToEmby = (mpvSeconds) => {
-    return Math.floor(mpvSeconds * TEN_MILLION)
-}
-
 const mpvToJellyfin = (mpvSeconds) => {
     return Math.floor(mpvSeconds * TEN_MILLION)
 }
@@ -47,23 +43,23 @@ const jellyfinToProgress = (jellyfinTicks) => {
     return jellyfinTicks / ONE_HUNDRED_MILLION
 }
 
-const embyToSeconds = (embyTicks) => {
-    return Math.floor(embyTicks / TEN_MILLION)
+const jellyfinToSeconds = (jellyfinTicks) => {
+    return Math.floor(jellyfinTicks / TEN_MILLION)
 }
 
-const stepBack = (embyTicks) => {
+const stepBack = (jellyfinTicks) => {
     const adjustment = Math.floor(TEN_MILLION * settings.stepBackSeconds)
-    if (embyTicks < adjustment) {
+    if (jellyfinTicks < adjustment) {
         return 0
     } else {
-        return Math.floor(embyTicks - adjustment)
+        return Math.floor(jellyfinTicks - adjustment)
     }
 }
 
 module.exports = {
-    embyToSeconds,
+    jellyfinToSeconds,
     breakdown,
-    mpvToEmby,
+    mpvToJellyfin,
     stepBack,
     toTimeStamp,
     mpvToJellyfin,

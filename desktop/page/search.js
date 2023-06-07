@@ -1,31 +1,31 @@
 module.exports = () => {
     return new Promise((resolve) => {
         const debounce = require('debounce')
-        const emby = require('../../common/emby-client')
-        const EmbyMixedItem = require('../component/emby-mixed-item')
+        const jellyfin = require('../../common/jellyfin-client')
+        const JellyfinMixedItem = require('../component/jellyfin-mixed-item')
         const util = require('../../common/util')
 
         const queryParams = util.queryParams()
 
         const executeQuery = debounce((queryText) => {
             if (queryText.length > 1) {
-                emby.client.search(queryText).then((results) => {
+                jellyfin.client.search(queryText).then((results) => {
                     const foundResults = results[0].length || results[1].length || results[2].length
                     let resultsCount = 0
                     if (foundResults) {
                         let renderedItems = `<div class="grid square-grid">`
-                        for (let embyItems of results) {
-                            for (let embyItem of embyItems) {
-                                let mixed = new EmbyMixedItem(embyItem)
+                        for (let jellyfinItems of results) {
+                            for (let jellyfinItem of jellyfinItems) {
+                                let mixed = new JellyfinMixedItem(jellyfinItem)
                                 mixed.enableKindBadge()
                                 renderedItems += mixed.render()
                                 resultsCount++
                             }
                         }
                         renderedItems += `</div>`
-                        document.getElementById('emby-items').innerHTML = renderedItems
+                        document.getElementById('jellyfin-items').innerHTML = renderedItems
                     } else {
-                        document.getElementById('emby-items').innerHTML = '<p class="empty-results">No results found. Try a different search.</p>'
+                        document.getElementById('jellyfin-items').innerHTML = '<p class="empty-results">No results found. Try a different search.</p>'
                     }
 
                     window.history.replaceState(null, null, `search.html?${util.queryString({ query: queryText })}`)
@@ -40,7 +40,7 @@ module.exports = () => {
             }
         }, 200)
 
-        emby.client.connect().then(() => {
+        jellyfin.client.connect().then(() => {
             if (queryParams.query) {
                 document.getElementById('query-input').value = queryParams.query
                 executeQuery(queryParams.query)

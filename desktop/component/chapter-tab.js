@@ -1,15 +1,15 @@
 const ticks = require('../../common/ticks')
 
 class ChapterTab {
-    constructor(embyItem) {
-        this.embyItem = embyItem
+    constructor(jellyfinItem) {
+        this.jellyfinItem = jellyfinItem
         this.name = 'Chapters'
         this.order = 5
     }
 
     render() {
         return new Promise((resolve) => {
-            if (!this.embyItem.Chapters || !this.embyItem.Chapters.length) {
+            if (!this.jellyfinItem.Chapters || !this.jellyfinItem.Chapters.length) {
                 return resolve('')
             }
             let html = `<table>
@@ -19,7 +19,7 @@ class ChapterTab {
                 <th>Time</th>
             </tr>`
             let chapterIndex = 0
-            for (let chapter of this.embyItem.Chapters) {
+            for (let chapter of this.jellyfinItem.Chapters) {
                 html += `
                     <tr
                         class="clickable"

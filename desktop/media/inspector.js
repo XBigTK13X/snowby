@@ -95,7 +95,7 @@ const isForced = (stream) => {
     return false
 }
 
-const inspect = (embyItem, mediaSourceIndex) => {
+const inspect = (jellyfinItem, mediaSourceIndex) => {
     let hasJapaneseAudio = false
     let hasEnglishSubtitle = false
     let isHdr = false
@@ -124,13 +124,13 @@ const inspect = (embyItem, mediaSourceIndex) => {
     let blacklistedAudio = {}
     let blacklistedSubtitle = {}
 
-    let genres = embyItem.Genres.concat(embyItem.Series ? embyItem.Series.Genres : [])
+    let genres = jellyfinItem.Genres.concat(jellyfinItem.Series ? jellyfinItem.Series.Genres : [])
     if (genres.includes('Anime') || genres.includes('Animation')) {
         isAnimated = true
     }
 
-    if (embyItem.TagItems) {
-        for (let tag of embyItem.TagItems) {
+    if (jellyfinItem.TagItems) {
+        for (let tag of jellyfinItem.TagItems) {
             if (tag.Name === 'DubbedAnime' || tag.Name.includes('Playlist:') || tag.Name === 'IgnoreInspector') {
                 ignoreInspector = true
             }
@@ -139,8 +139,8 @@ const inspect = (embyItem, mediaSourceIndex) => {
             }
         }
     }
-    if (embyItem.Series && embyItem.Series.TagItems) {
-        for (let tag of embyItem.Series.TagItems) {
+    if (jellyfinItem.Series && jellyfinItem.Series.TagItems) {
+        for (let tag of jellyfinItem.Series.TagItems) {
             if (tag.Name === 'DubbedAnime' || tag.Name === 'IgnoreInspector') {
                 ignoreInspector = true
             }
@@ -150,10 +150,10 @@ const inspect = (embyItem, mediaSourceIndex) => {
         }
     }
 
-    let streams = embyItem.MediaSources[mediaSourceIndex].MediaStreams
+    let streams = jellyfinItem.MediaSources[mediaSourceIndex].MediaStreams
     for (var trackIndex = 0; trackIndex < streams.length; trackIndex++) {
         const stream = streams[trackIndex]
-        let fidelity = embyItem.getFidelity(mediaSourceIndex)
+        let fidelity = jellyfinItem.getFidelity(mediaSourceIndex)
         isHdr = fidelity.isHdr
         if (stream.Type === 'Audio') {
             audioIndex++

@@ -1,9 +1,9 @@
 module.exports = () => {
     return new Promise((resolve) => {
-        const EmbyItemLink = require('../component/emby-item-link')
+        const JellyfinItemLink = require('../component/jellyfin-item-link')
         const categories = [
-            new EmbyItemLink('Movies', 'ratings', { ratingsFilter: 'Movie' }),
-            new EmbyItemLink('Shows', 'ratings', { ratingsFilter: 'Series' }),
+            new JellyfinItemLink('Movies', 'ratings', { ratingsFilter: 'Movie' }),
+            new JellyfinItemLink('Shows', 'ratings', { ratingsFilter: 'Series' }),
         ]
         const categoriesMarkup = `<div class="grid center-grid">${categories
             .map((x) => {

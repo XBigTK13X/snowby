@@ -9,16 +9,16 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '3.12.7',
+    appVersion: '4.0.0',
     versionDate: 'June 07, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
     defaultMediaProfile: 'default',
-    embyServerURL: null,
-    embyTrackProgress: true,
-    embyPassword: null,
-    embyUsername: null,
+    jellyfinServerURL: null,
+    jellyfinTrackProgress: true,
+    jellyfinPassword: null,
+    jellyfinUsername: null,
     availableUsers: null,
     enableHdrToggle: true,
     hdrStatusPath: desktopPath('bin/hdr/check-hdr.ps1'),
@@ -36,8 +36,6 @@ let config = {
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
     pseudoTV: null,
     stepBackSeconds: 4,
-    snowbyServerPort: 24081,
-    snowbyServerURL: null,
     windowBackgroundColor: '#010101',
     streamingLinks: [],
     codecBlacklist: {},
@@ -127,11 +125,11 @@ if (config.codecBlacklist && _.has(config.codecBlacklist, os.hostname())) {
 }
 
 if (process.env.SNOWBY_EMBY_USERNAME) {
-    config.embyUsername = process.env.SNOWBY_EMBY_USERNAME
+    config.jellyfinUsername = process.env.SNOWBY_EMBY_USERNAME
     config.availableUsers = null
 }
 if (process.env.SNOWBY_EMBY_PASSWORD) {
-    config.embyPassword = process.env.SNOWBY_EMBY_PASSWORD
+    config.jellyfinPassword = process.env.SNOWBY_EMBY_PASSWORD
     config.availableUsers = null
 }
 

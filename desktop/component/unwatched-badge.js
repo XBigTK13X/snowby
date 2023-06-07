@@ -1,10 +1,10 @@
 const util = require('../../common/util')
 
-const render = (embyItem) => {
+const render = (jellyfinItem) => {
     if (util.queryParams().hideBadges) {
         return ''
     }
-    const unwatchedCount = embyItem.getUnwatchedCount()
+    const unwatchedCount = jellyfinItem.getUnwatchedCount()
     if (!unwatchedCount) {
         return ''
     }

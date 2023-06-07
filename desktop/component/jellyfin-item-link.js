@@ -1,10 +1,10 @@
-class EmbyItemLink {
-    constructor(name, embyItemId, options) {
+class JellyfinItemLink {
+    constructor(name, jellyfinItemId, options) {
         this.name = name
-        this.embyItemId = embyItemId
+        this.jellyfinItemId = jellyfinItemId
         this.fontResize = ''
 
-        this.href = `emby-items.html?embyItemId=${this.embyItemId}`
+        this.href = `jellyfin-items.html?jellyfinItemId=${this.jellyfinItemId}`
         if (options && options.genreFilter) {
             this.href = `${this.href}&genreFilter=${options.genreFilter}`
         }
@@ -32,4 +32,4 @@ class EmbyItemLink {
     }
 }
 
-module.exports = EmbyItemLink
+module.exports = JellyfinItemLink

@@ -1,26 +1,18 @@
 # snowby
 
-Snowman's Emby
+Snowman's ~~Emby~~ Jellyfin
 
 ## WIKI
 
 A lot of information, including screenshots, can be found on the [WIKI](https://github.com/XBigTK13X/snowby/wiki).
 
-## Why not use the stock Emby client?
+## Why not use the stock Jellyfin client?
 
-I was unhappy with the audio output and subtitle handling on both the Android and Windows PC Emby clients. Emby server is the best tool for managing a large library of video content, but the players kept causing me annoyances.
+This project started as an alternative desktop client for Emby. I have since moved the underlying server from Emby to Jellyfin. Although Jellyfin has a number of advantages, I still prefer the usability and some of the features in my client.
 
-My Emby client really only works for my library. If there is a request from someone to make it work on their setup, I am open to making the few small changes necessary to fit with another server instance.
+Originally with Emby, I was unhappy with the audio output and subtitle handling on both the Android and Windows PC clients. Emby server was the best tool for managing a large library of video content, but the players kept causing me annoyances.
 
-## Why use snowby?
-
-Especially if you are watching 4K UHD HDR content or anime, snowby does it better. It uses a different video player with better subtitle handling and can force Windows 10 into HDR mode depending on the video content.
-
-There are also a few features it provides outside of Emby's core functionality.
-
-- Pseudo TV channel generation and playback
-- Video content profiles for custom graphics filtering
-- Aggregating IPTV channels in a schedule view
+My client really only works for my library. If there is a request from someone to make it work on their setup, I am open to making the few small changes necessary to fit with another server instance.
 
 ## Helpful Links
 

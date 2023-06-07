@@ -1,8 +1,8 @@
 module.exports = () => {
-    let embyItem
+    let jellyfinItem
     return new Promise((resolve) => {
         const _ = require('lodash')
-        const emby = require('../../common/emby-client')
+        const jellyfin = require('../../common/jellyfin-client')
         const util = require('../../common/util')
         const windowPosition = require('../service/window-position')
         const mediaPlayer = require('../media/player')
@@ -11,13 +11,13 @@ module.exports = () => {
 
         const queryParams = util.queryParams()
 
-        windowPosition.saveOnChange(queryParams.embyItemId)
+        windowPosition.saveOnChange(queryParams.jellyfinItemId)
 
         let handlerMap = require('../component/handler-map')
         let handler
         let parent
 
-        emby.client
+        jellyfin.client
             .connect()
             .then(() => {
                 window.playChannel = (channelSlug) => {
@@ -48,12 +48,12 @@ module.exports = () => {
                         tag.setAttribute('style', show)
                     }
                 }
-                return handlerMap.getHandler(emby.client, queryParams.embyItemId)
+                return handlerMap.getHandler(jellyfin.client, queryParams.jellyfinItemId)
             })
             .then((result) => {
                 handler = result.handler
                 parent = result.item
-                return handler.getChildren(emby.client, parent)
+                return handler.getChildren(jellyfin.client, parent)
             })
             .then((children) => {
                 let renderer = handler.render
@@ -62,7 +62,7 @@ module.exports = () => {
                 }
                 const renderedHtml = renderer(parent, children)
                 if (children.length) {
-                    document.getElementById('emby-items').innerHTML = renderedHtml
+                    document.getElementById('jellyfin-items').innerHTML = renderedHtml
                 } else {
                     let watchedParams = util.queryParams()
                     if (!watchedParams.showWatched) {
@@ -70,13 +70,13 @@ module.exports = () => {
                         const watchedUrl = `${window.location.pathname.split('/').slice(-1)[0]}?${util.queryString(watchedParams)}`
                         window.reloadPage(watchedUrl)
                     } else {
-                        document.getElementById('emby-items').innerHTML = '<p class="empty-results">No items found.</p>'
+                        document.getElementById('jellyfin-items').innerHTML = '<p class="empty-results">No items found.</p>'
                     }
                 }
 
                 let title = handler.title || (parent && parent.Name)
                 if (
-                    queryParams.embyItemId === 'next-up' ||
+                    queryParams.jellyfinItemId === 'next-up' ||
                     queryParams.tagName ||
                     (children.length > 0 && parent && parent.Type !== 'Series' && parent.Type !== 'BoxSet' && parent.CollectionType !== 'livetv')
                 ) {
@@ -96,7 +96,7 @@ module.exports = () => {
                 }
             })
             .then(() => {
-                windowPosition.restore(queryParams.embyItemId)
+                windowPosition.restore(queryParams.jellyfinItemId)
                 const pageOptions = handler.pageOptions ? handler.pageOptions : {}
                 resolve({
                     ...pageOptions,

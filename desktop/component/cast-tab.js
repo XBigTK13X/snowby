@@ -1,36 +1,36 @@
 const _ = require('lodash')
-const EmbyPoster = require('./emby-poster')
-const EmbyItem = require('../../common/emby-item')
+const JellyfinPoster = require('./jellyfin-poster')
+const JellyfinItem = require('../../common/jellyfin-item')
 
 NOT_FOUND_IMAGE_HREF = `../asset/img/media-not-found-vertical.png`
 
 class CastTab {
-    constructor(embyItem, embyClient) {
-        this.embyItem = embyItem
-        this.embyClient = embyClient
+    constructor(jellyfinItem, jellyfinClient) {
+        this.jellyfinItem = jellyfinItem
+        this.jellyfinClient = jellyfinClient
         this.name = 'Cast & Crew'
         this.order = 4
     }
 
     render() {
         return new Promise((resolve) => {
-            if (this.embyItem.Series && this.embyItem.Series.People && this.embyItem.Series.People.length) {
-                this.embyItem.People = this.embyItem.Series.People
+            if (this.jellyfinItem.Series && this.jellyfinItem.Series.People && this.jellyfinItem.Series.People.length) {
+                this.jellyfinItem.People = this.jellyfinItem.Series.People
             }
-            if (!this.embyItem.People || !this.embyItem.People.length) {
+            if (!this.jellyfinItem.People || !this.jellyfinItem.People.length) {
                 return resolve('')
             }
             let dedupe = {}
-            let people = this.embyItem.People
-            if (this.embyItem.Series && this.embyItem.Series.People) {
-                people = this.embyItem.Series.People
+            let people = this.jellyfinItem.People
+            if (this.jellyfinItem.Series && this.jellyfinItem.Series.People) {
+                people = this.jellyfinItem.Series.People
             }
             if (!people) {
                 return resolve('')
             }
             let peopleHtml = people
                 .map((x) => {
-                    return new EmbyItem(
+                    return new JellyfinItem(
                         { ...x, ExtraType: 'Person' },
                         { imageTag: x.PrimaryImageTag, noImageTag: x.PrimaryImageTag ? null : NOT_FOUND_IMAGE_HREF }
                     )
@@ -47,7 +47,7 @@ class CastTab {
                     return a.PersonRole > b.PersonRole ? 1 : -1
                 })
                 .map((x) => {
-                    return new EmbyPoster(x).render()
+                    return new JellyfinPoster(x).render()
                 })
                 .join(' ')
             resolve(`<div class="grid square-grid">${peopleHtml}</div>`)
