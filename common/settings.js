@@ -3,15 +3,14 @@ const os = require('os')
 const path = require('path')
 const _ = require('lodash')
 const compareVersions = require('compare-versions')
-const M3u = require('./m3u-client')
 
 const desktopPath = (relativePath) => {
     return path.join(__dirname, '../desktop/' + relativePath)
 }
 
 let config = {
-    appVersion: '3.12.6',
-    versionDate: 'June 06, 2023',
+    appVersion: '3.12.7',
+    versionDate: 'June 07, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -134,32 +133,6 @@ if (process.env.SNOWBY_EMBY_USERNAME) {
 if (process.env.SNOWBY_EMBY_PASSWORD) {
     config.embyPassword = process.env.SNOWBY_EMBY_PASSWORD
     config.availableUsers = null
-}
-
-config.parseM3u = () => {
-    return new Promise((resolve) => {
-        if (!config.iptvM3ULookup) {
-            config.iptvM3ULookup = {}
-            if (config.iptvM3uUrl) {
-                const m3u = new M3u()
-                m3u.read(config.iptvM3uUrl).then((m3uLines) => {
-                    const lines = m3uLines.data.split('\n')
-                    for (let ii = 1; ii < lines.length; ii += 2) {
-                        let line = lines[ii]
-                        if (!!line && line.length > 0) {
-                            channelNumber = line.split('tvg-chno="')[1].split('"')[0]
-                            config.iptvM3ULookup[channelNumber] = lines[ii + 1]
-                        }
-                    }
-                    resolve(config.iptvM3ULookup)
-                })
-            } else {
-                resolve(null)
-            }
-        } else {
-            resolve(config.iptvM3ULookup)
-        }
-    })
 }
 
 config.desktopPath = desktopPath

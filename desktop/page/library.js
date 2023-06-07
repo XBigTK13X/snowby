@@ -21,10 +21,10 @@ module.exports = () => {
                 }
 
                 menuEntries.sort((a, b) => {
-                    if (a.name === 'TV Shows' || a.name === 'Movies') {
+                    if (a.name === 'Shows' || a.name === 'Movies') {
                         return -1
                     }
-                    if (b.name === 'TV Shows' || b.name === 'Movies') {
+                    if (b.name === 'Shows' || b.name === 'Movies') {
                         return 1
                     }
                     if (b.name === 'Live TV') {

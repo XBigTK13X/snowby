@@ -3,7 +3,7 @@ module.exports = () => {
         const EmbyItemLink = require('../component/emby-item-link')
         const categories = [
             new EmbyItemLink('Movies', 'genres', { genreFilter: 'Movie' }),
-            new EmbyItemLink('TV Shows', 'genres', { genreFilter: 'Series' }),
+            new EmbyItemLink('Shows', 'genres', { genreFilter: 'Series' }),
             new EmbyItemLink('Both', 'genres'),
         ]
         const categoriesMarkup = `<div class="grid center-grid">${categories

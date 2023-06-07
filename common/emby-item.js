@@ -2,6 +2,7 @@ const { shell } = require('electron')
 const _ = require('lodash')
 const settings = require('./settings')
 const { DateTime } = require('luxon')
+const m3u = require('./m3u-client')
 
 const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
 
@@ -104,7 +105,7 @@ module.exports = class EmbyItem {
 
     getStreamURL() {
         return new Promise((resolve) => {
-            settings.parseM3u().then((m3uLookup) => {
+            m3u.read(settings.iptvM3uUrl).then((m3uLookup) => {
                 resolve(m3uLookup[this.ChannelNumber])
             })
         })
