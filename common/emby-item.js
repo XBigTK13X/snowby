@@ -3,7 +3,6 @@ const _ = require('lodash')
 const settings = require('./settings')
 const { DateTime } = require('luxon')
 
-const CHANNEL_MAP = settings.channelMap
 const HIDE_SPOILERS_IMAGE_HREF = `../asset/img/no-spoilers.png`
 
 module.exports = class EmbyItem {
@@ -44,34 +43,6 @@ module.exports = class EmbyItem {
             }
             if (this.Programs && this.Programs[0].EpisodeTitle) {
                 this.CurrentProgram.EpisodeName = this.Programs[0].EpisodeTitle
-            }
-        }
-        if (this.Programs && this.Programs.length > 1) {
-            this.NextProgram = this.Programs[1]
-            if (!this.NextProgram) {
-                this.NextProgram = {
-                    Name: 'Unknown',
-                    EpisodeName: '',
-                    StartTime: '???',
-                    EndTime: '???',
-                }
-            } else {
-                this.NextProgram = {
-                    Name: this.NextProgram.Name,
-                    EpisodeName: '',
-                    StartTime: DateTime.fromISO(this.NextProgram.StartDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
-                    EndTime: DateTime.fromISO(this.NextProgram.EndDate).toLocaleString(DateTime.TIME_SIMPLE).replace('AM', '').replace('PM', ''),
-                }
-                if (this.Programs[1].EpisodeTitle) {
-                    this.NextProgram.EpisodeName = this.Programs[1].EpisodeTitle
-                }
-            }
-        } else {
-            this.NextProgram = {
-                Name: 'Unknown',
-                EpisodeName: '',
-                StartTime: '???',
-                EndTime: '???',
             }
         }
 
@@ -132,16 +103,11 @@ module.exports = class EmbyItem {
     }
 
     getStreamURL() {
-        if (this.ChannelNumber > 10000 && settings.iptvM3ULookup) {
-            return settings.iptvM3ULookup[this.ChannelNumber]
-        }
-        if (this.ChannelNumber && settings.hdHomerunUrl) {
-            return settings.hdHomerunUrl + this.ChannelNumber
-        }
-        if (!settings.channelStreams) {
-            return null
-        }
-        return settings.channelStreams[this.ChannelName]
+        return new Promise((resolve) => {
+            settings.parseM3u().then((m3uLookup) => {
+                resolve(m3uLookup[this.ChannelNumber])
+            })
+        })
     }
 
     getStreamName() {
@@ -151,30 +117,10 @@ module.exports = class EmbyItem {
     }
 
     processChannelInfo() {
-        if (this.Name.indexOf(' | ') === -1) {
-            if (this.Name.indexOf(':') !== -1) {
-                let parts = this.Name.split(': ')
-                this.ChannelName = parts[1]
-                this.ChannelSlug = parts[1]
-                if (this.Name.indexOf('US: ') !== -1) {
-                    this.ChannelCategory = 'IPCABLE'
-                    return
-                } else {
-                    this.ChannelCategory = 'IPFOR'
-                    return
-                }
-            }
-            this.ChannelName = this.Name
-            this.ChannelSlug = this.Name
-            this.ChannelCategory = 'IPTV'
-            return
-        } else {
-            let parts = this.Name.split(' | ')
-            this.ChannelName = parts[1]
-            this.ChannelSlug = parts[1]
-            this.ChannelCategory = parts[0]
-            return
-        }
+        const parts = this.Name.split(': ')
+        this.ChannelCategory = parts[0]
+        this.ChannelName = parts[1]
+        this.ChannelSlug = parts[1]
     }
 
     getDiscussionQuery() {

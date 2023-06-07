@@ -197,8 +197,6 @@ module.exports = {
             <th class="cell-medium">Channel</th>
             <th class="cell-large">Now Playing</th>
             <th class="cell-small">Time</th>
-            <th class="cell-large">Next Up</th>
-            <th class="cell-small">Time</th>
             <th class="cell-small">Streams</th>
             <th class="cell-small">Active</th>
         </tr>

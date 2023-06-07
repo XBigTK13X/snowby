@@ -317,55 +317,8 @@ class EmbyClient {
         })
     }
 
-    liveChannels() {
-        const fields = `PrimaryImageAspectRatio%2CChannelInfo%2CSortName%2CMediaSources`
-        const url = `LiveTv/Channels?UserId=${this.userId}&ImageTypeLimit=1&EnableImageTypes=Primary%2CBackdrop%2CBanner%2CThumb&EnableTotalRecordCount=false&StartIndex=0&Limit=400&Fields=${fields}`
-        util.window.duplicateChannels = {}
-        util.window.channelCategories = {
-            lookup: { ALL: true },
-            list: ['ALL'],
-        }
-        return this.httpClient.get(url).then((channelsResponse) => {
-            return channelsResponse.data.Items.map((item) => {
-                let embyItem = new EmbyItem(item)
-                embyItem.processChannelInfo()
-                if (!_.has(util.window.duplicateChannels, embyItem.ChannelSlug)) {
-                    util.window.duplicateChannels[embyItem.ChannelSlug] = {
-                        index: 0,
-                        items: [],
-                    }
-                }
-                if (!_.has(util.window.channelCategories.lookup, embyItem.ChannelCategory)) {
-                    util.window.channelCategories.lookup[embyItem.ChannelCategory] = true
-                    util.window.channelCategories.list.push(embyItem.ChannelCategory)
-                    util.window.channelCategories.list.sort()
-                }
-                util.window.duplicateChannels[embyItem.ChannelSlug].items.push(embyItem)
-                if (util.window.duplicateChannels[embyItem.ChannelSlug].items.length === 1) {
-                    return embyItem
-                }
-                util.window.duplicateChannels[embyItem.ChannelSlug].index += 1
-                return null
-            })
-                .filter((x) => {
-                    return x !== null
-                })
-                .sort((a, b) => {
-                    if (a.ChannelCategory !== b.ChannelCategory) {
-                        return a.ChannelCategory > b.ChannelCategory ? 1 : -1
-                    }
-                    return a.ChannelName > b.ChannelName ? 1 : -1
-                })
-        })
-    }
-
     tvGuide() {
-        const startDate = DateTime.utc()
-        const duration = Duration.fromObject({ hours: 6 })
-        const endDate = startDate.plus(duration)
-        const url = `LiveTv/EPG?Limit=3000&MaxStartDate=${endDate.toISO()}&MinEndDate=${startDate.toISO()}&AddCurrentProgram=true&EnableUserData=false&UserId=${
-            this.userId
-        }`
+        const url = `LiveTv/Channels?StartIndex=0&AddCurrentProgram=true&UserId=${this.userId}&Fields=ChannelInfo`
         util.window.duplicateChannels = {}
         util.window.channelCategories = {
             lookup: { ALL: true },
@@ -373,8 +326,7 @@ class EmbyClient {
         }
         return this.httpClient.get(url).then((guideResponse) => {
             return guideResponse.data.Items.map((item) => {
-                item.Channel.Programs = item.Programs
-                let embyItem = new EmbyItem(item.Channel)
+                let embyItem = new EmbyItem(item)
                 embyItem.processChannelInfo()
                 if (!_.has(util.window.duplicateChannels, embyItem.ChannelSlug)) {
                     util.window.duplicateChannels[embyItem.ChannelSlug] = {
@@ -399,10 +351,7 @@ class EmbyClient {
                     return x !== null
                 })
                 .sort((a, b) => {
-                    if (a.ChannelCategory !== b.ChannelCategory) {
-                        return a.ChannelCategory > b.ChannelCategory ? 1 : -1
-                    }
-                    return a.ChannelName > b.ChannelName ? 1 : -1
+                    return a.ChannelNumber > b.ChannelNumber ? 1 : -1
                 })
         })
     }

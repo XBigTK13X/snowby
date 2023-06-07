@@ -11,10 +11,6 @@ class EmbyTvChannel {
         if (this.embyItem.CurrentProgram.EpisodeName) {
             subtitle = `<br/><span class="program-subtitle">${this.embyItem.CurrentProgram.EpisodeName}</span>`
         }
-        let nextSubtitle = '<br/><span class="program-subtitle" style="opacity:0;">-</span>'
-        if (this.embyItem.NextProgram.EpisodeName) {
-            nextSubtitle = `<br/><span class="program-subtitle">${this.embyItem.NextProgram.EpisodeName}</span>`
-        }
         return `
         <tr
         	class="clickable"
@@ -34,13 +30,6 @@ class EmbyTvChannel {
 			</td>
 			<td class="cell-small">
 				${this.embyItem.CurrentProgram.StartTime}<br/>${this.embyItem.CurrentProgram.EndTime}
-			</td>
-			<td class="cell-large ellipsify">
-				${this.embyItem.NextProgram.Name}
-				${nextSubtitle}
-			</td>
-			<td class="cell-small">
-				${this.embyItem.NextProgram.StartTime}<br/>${this.embyItem.NextProgram.EndTime}
 			</td>
 			<td class="cell-small">${this.embyItem.ChannelCount}</td>
 			<td class="cell-small" id="active-channel-${this.embyItem.ChannelSlug}" class="centered">
