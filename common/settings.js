@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '4.0.0',
-    versionDate: 'June 07, 2023',
+    appVersion: '4.0.1',
+    versionDate: 'July 26, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -34,7 +34,6 @@ let config = {
     mpvConfigFile: desktopPath('bin/mpv/mpv/mpv.conf'),
     mpvInputFile: desktopPath('bin/mpv/mpv/input.conf'),
     mpvSocketPath: '\\\\.\\pipe\\snowby-mpv-ipc',
-    pseudoTV: null,
     stepBackSeconds: 4,
     windowBackgroundColor: '#010101',
     streamingLinks: [],

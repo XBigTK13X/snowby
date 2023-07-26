@@ -42,9 +42,6 @@ module.exports = () => {
                 menuEntries.push(new InternalLink('Playlists', 'playlists.html'))
                 menuEntries.push(new InternalLink('Genres', 'genres.html'))
                 menuEntries.push(new InternalLink('Ratings', 'ratings.html'))
-
-                menuEntries.splice(2, 0, new InternalLink('Pseudo TV', 'pseudo-tv.html'))
-
                 menuEntries.push(new InternalLink('Cameras', 'cameras.html'))
 
                 let menuEntriesMarkup = `<div class="grid center-grid">${menuEntries

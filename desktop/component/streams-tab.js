@@ -57,8 +57,24 @@ class StreamsTab {
         }
     }
 
+    clean(title, codec) {
+        if (!title) {
+            return ''
+        }
+        let result = ''
+        let parts = title.split(' - ')
+        for (let part of parts) {
+            if ((codec && codec.toLowerCase() === part.toLowerCase()) || part.length <= 3 || part === 'Default') {
+                continue
+            }
+            result += part + ' '
+        }
+        return result
+    }
+
     render() {
         return new Promise((resolve) => {
+            let self = this
             let queryParams = util.queryParams()
             let html = `
             <p>Path - ${this.jellyfinItem.Path}</p>
@@ -70,7 +86,6 @@ class StreamsTab {
     	        <th>Quality</th>
     	        <th>Codec</th>
     	        <th>Language</th>
-    	        <th>Title</th>
     	    </tr>`
             let hiddenStreams = 0
             html += this.jellyfinItem.MediaSources[queryParams.mediaSourceIndex || 0].MediaStreams.map((stream, streamIndex) => {
@@ -91,11 +106,10 @@ class StreamsTab {
     	        <tr ${rowClass} onClick="window.selectTrack(${streamIndex})">
     	            <td>${(streamIndex === 0 ? 0 : streamIndex) || ''}</td>
     	            <td>${stream.Type || ''}</td>
-    	            <td>${stream.DisplayTitle || ''}</td>
+    	            <td>${self.clean(stream.DisplayTitle, stream.Codec) || ''}</td>
     	            <td>${mediaStream.quality(stream)}</td>
-    	            <td>${stream.Codec.toLowerCase() || ''}</td>
-    	            <td>${stream.DisplayLanguage || ''}</td>
-    	            <td>${stream.Title || ''}</td>
+    	            <td>${stream.Codec || ''}</td>
+    	            <td>${stream.Language || ''}</td>
     	        </tr>
     	        `
             }).join('')

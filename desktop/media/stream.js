@@ -6,11 +6,11 @@ const isShown = (stream) => {
         if (stream.IsDefault) {
             return true
         }
-        if (!stream.DisplayLanguage) {
+        if (!stream.Language) {
             return true
         }
-        const displayLanguage = stream.DisplayLanguage.toLowerCase()
-        if (displayLanguage.includes('und') || displayLanguage.includes('eng') || displayLanguage.includes('jap')) {
+        const lang = stream.Language.toLowerCase()
+        if (lang.includes('und') || lang.includes('eng') || lang.includes('jap') || lang.includes('jpn')) {
             return true
         }
     }
@@ -22,7 +22,7 @@ const quality = (stream) => {
     if (stream.Type === 'Video') {
         result = `${stream.VideoRange}`
         if (stream.BitRate) {
-            result += `@ ${Math.round(stream.BitRate / 100000) / 10} Mbps`
+            result += ` @ ${Math.round(stream.BitRate / 100000) / 10} Mbps`
         }
     }
     if (stream.Type === 'Audio') {

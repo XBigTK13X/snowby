@@ -7,7 +7,6 @@ module.exports = () => {
         const settings = require('../../common/settings')
         const InternalLink = require('../component/internal-link')
         const JellyfinItemLink = require('../component/jellyfin-item-link')
-        const ExternalLink = require('../component/external-link')
         const links = [
             new InternalLink('Library', 'library.html'),
             new JellyfinItemLink('Next Up', 'next-up'),
