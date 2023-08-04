@@ -211,7 +211,7 @@ module.exports = class JellyfinItem {
             }
             let imageTag = this.ImageTags[imageType]
 
-            if (this.ShowParentImage) {
+            if (this.ShowParentImage && this.SeriesPrimaryImageTag) {
                 itemId = this.SeriesId
                 imageType = 'Primary'
                 imageTag = this.SeriesPrimaryImageTag

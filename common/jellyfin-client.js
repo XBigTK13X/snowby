@@ -279,9 +279,9 @@ class JellyfinClient {
         const episodeURL = this.buildSearchURL(query, 'Episode')
         return Promise.all([this.httpClient.get(seriesURL), this.httpClient.get(movieURL), this.httpClient.get(episodeURL)]).then((responses) => {
             return [
-                responses[0].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
-                responses[1].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
-                responses[2].data.Items.map((item) => new JellyfinItem(item, { showSpoilers: true })),
+                responses[0].data.Items.map((item) => new JellyfinItem(item, { showParentImage: true, showSpoilers: true })),
+                responses[1].data.Items.map((item) => new JellyfinItem(item, { showParentImage: true, showSpoilers: true })),
+                responses[2].data.Items.map((item) => new JellyfinItem(item, { showParentImage: true, showSpoilers: true })),
             ]
         })
     }
@@ -302,7 +302,7 @@ class JellyfinClient {
             return progressResponse.data.Items.filter((item) => {
                 return item && item.UserData && item.UserData.PlaybackPositionTicks
             }).map((item) => {
-                return new JellyfinItem(item, { isSearchResult: true })
+                return new JellyfinItem(item, { showParentImage: true })
             })
         })
     }

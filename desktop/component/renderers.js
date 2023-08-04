@@ -28,7 +28,7 @@ const renderGeneratedGrid = (itemGenerator, parent, children) => {
 
 module.exports = {
     mixed: (parent, children) => {
-        return renderGrid(JellyfinMixedItem, parent, children)
+        return renderGrid(JellyfinPoster, parent, children)
     },
     posters: (parent, children) => {
         return renderGrid(JellyfinPoster, parent, children)
@@ -109,7 +109,7 @@ module.exports = {
     },
     inProgress: (parent, children) => {
         const generator = (child) => {
-            let mixed = new JellyfinMixedItem(child)
+            let mixed = new JellyfinPoster(child)
             mixed.enableKindBadge()
             mixed.enableProgressBadge()
             return mixed.render()
