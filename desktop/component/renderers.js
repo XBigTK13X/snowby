@@ -141,7 +141,7 @@ module.exports = {
         const generator = (child) => {
             return `<tr
                     class="clickable"
-                    onclick="window.selectJellyfinItemTable(${child.Id},'${child.Type}'); return false;"
+                    onclick="window.selectJellyfinItemTable('${child.Id}','${child.Type}'); return false;"
                 >
                 <td>${child.getTitle()} - ${child.Name}</td>
             </tr>`
