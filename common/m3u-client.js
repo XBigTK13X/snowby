@@ -17,7 +17,8 @@ class M3uClient {
                         for (let ii = 1; ii < lines.length; ii += 2) {
                             let line = lines[ii]
                             if (!!line && line.length > 0) {
-                                const channelNumber = line.split('tvg-chno="')[1].split('"')[0]
+                                //const channelNumber = line.split('tvg-chno="')[1].split('"')[0]
+                                const channelNumber = line.split('channel-id="')[1].split('"')[0]
                                 self.channelLookup[channelNumber] = lines[ii + 1]
                             }
                         }

@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '4.0.4',
-    versionDate: 'September 14, 2023',
+    appVersion: '4.0.5',
+    versionDate: 'September 23, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -87,7 +87,6 @@ let config = {
     },
     sortFields: ['PremiereDate', 'Name', 'ProductionYear'],
     sortDirections: ['Ascending', 'Descending'],
-    frigateCameras: null,
     iptvM3uUrl: null,
 }
 

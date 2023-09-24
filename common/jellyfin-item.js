@@ -118,10 +118,10 @@ module.exports = class JellyfinItem {
     }
 
     processChannelInfo() {
-        const parts = this.Name.split(': ')
+        let parts = this.ChannelNumber.split('.')
         this.ChannelCategory = parts[0]
-        this.ChannelName = parts[1]
-        this.ChannelSlug = parts[1]
+        this.ChannelName = this.Name
+        this.ChannelSlug = this.ChannelNumber
     }
 
     getDiscussionQuery() {
