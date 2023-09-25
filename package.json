@@ -1,6 +1,6 @@
 {
     "name": "snowby",
-    "version": "4.0.5",
+    "version": "4.0.6",
     "description": "Jellyfin frontend that plays media in an external player.",
     "main": "desktop/desktop.js",
     "scripts": {
