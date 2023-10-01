@@ -32,9 +32,8 @@ class Player {
                 return new Promise((resolve, reject) => {
                     let maxAttempts = 20
                     let attempts = 19
-                    let refreshMilliseconds = 400
                     let streamMessage = `Waiting up to ${Math.round(
-                        (maxAttempts * refreshMilliseconds) / 1000
+                        (maxAttempts * settings.interval.streamBuffer) / 1000
                     )} seconds for stream contents to buffer.`
                     window.loadingStart(streamMessage)
                     let refreshInterval = setInterval(async () => {

@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '4.0.6',
-    versionDate: 'September 24, 2023',
+    appVersion: '4.0.7',
+    versionDate: 'October 01, 2023',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -46,7 +46,7 @@ let config = {
     interval: {
         videoPlayerConnect: 200,
         progressUpdate: 2000,
-        streamBuffer: 400,
+        streamBuffer: 800,
         loadingToast: 100,
     },
     timeout: {

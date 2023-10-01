@@ -106,7 +106,7 @@ module.exports = class JellyfinItem {
     getStreamURL() {
         return new Promise((resolve) => {
             m3u.read(settings.iptvM3uUrl).then((m3uLookup) => {
-                resolve(m3uLookup[this.ChannelNumber])
+                resolve(m3uLookup[this.ChannelNumber + ' (d)'])
             })
         })
     }

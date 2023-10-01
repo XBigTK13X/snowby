@@ -327,6 +327,9 @@ class JellyfinClient {
         return this.httpClient.get(url).then((guideResponse) => {
             return guideResponse.data.Items.map((item) => {
                 let jellyfinItem = new JellyfinItem(item)
+                if (!_.has(jellyfinItem, 'ChannelNumber')) {
+                    return null
+                }
                 jellyfinItem.processChannelInfo()
                 if (!_.has(util.window.duplicateChannels, jellyfinItem.ChannelSlug)) {
                     util.window.duplicateChannels[jellyfinItem.ChannelSlug] = {
