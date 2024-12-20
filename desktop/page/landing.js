@@ -44,6 +44,15 @@ module.exports = () => {
                 })
                 .join('')}</div>`
         }
+
+        // window.createLibrary = ()=>{
+        //     jellyfin.connect().then(()=>{
+        //         jellyfin.createShowsLibrary()
+        //     })
+        // }
+
+        // markup = `<button onclick="window.createLibrary()">Create Library!</button>` + markup
+
         versionMarkup += `<p>v${settings.appVersion} built ${settings.versionDate}</p>`
         if (settings.newVersionAvailable) {
             versionMarkup += `<br/><div class="badge badge-best">New version available, v${settings.newVersion}</div>`

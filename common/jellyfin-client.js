@@ -54,7 +54,7 @@ class JellyfinClient {
             selectedUser = settings.availableUsers[chosenUserIndex]
         }
         // Use the configured user to authenticate
-        if (selectedUser.username && (selectedUser.password || selectedUser.password === '')) {
+        if (selectedUser.username) {
             return this.httpClient
                 .get(usersURL, null, { cache: true })
                 .then((usersResponse) => {
@@ -518,6 +518,196 @@ class JellyfinClient {
                 })
         })
     }
+
+    createShowsLibrary(libraryId) {
+        return new Promise(async (topResolve,topReject)=>{
+        console.log("Creating library")
+
+        const library = {
+            Id: 'a656b907eb3a73532e40e44b968d0225',
+            LibraryOptions: {
+                EnablePhotos: true,
+                EnableRealtimeMonitor: true,
+                EnableLUFSScan: false,
+                EnableChapterImageExtraction: false,
+                ExtractChapterImagesDuringLibraryScan: false,
+                PathInfos: [
+                    { Path: '/mnt/shows/marvel', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\marvel' },
+                    { Path: '/mnt/shows/anime/precure', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\precure' },
+                    { Path: '/mnt/shows/anime/gundam', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\gundam' },
+                    { Path: '/mnt/shows/anime/trigger', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\trigger' },
+
+                    { Path: '/mnt/shows/anime/[number]', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\[number]' },
+                    { Path: '/mnt/shows/cartoon/[number]', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\[number]' },
+                    { Path: '/mnt/shows/live-action/[number]', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\live-action\\[number]' },
+
+                    { Path: '/mnt/shows/anime/a', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\a' },
+                    { Path: '/mnt/shows/anime/b', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\b' },
+                    { Path: '/mnt/shows/anime/c', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\c' },
+                    { Path: '/mnt/shows/anime/d', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\d' },
+                    { Path: '/mnt/shows/anime/e', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\e' },
+                    { Path: '/mnt/shows/anime/f', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\f' },
+                    { Path: '/mnt/shows/anime/g', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\g' },
+                    { Path: '/mnt/shows/anime/h', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\h' },
+                    { Path: '/mnt/shows/anime/i', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\i' },
+                    { Path: '/mnt/shows/anime/j', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\j' },
+                    { Path: '/mnt/shows/anime/k', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\k' },
+                    { Path: '/mnt/shows/anime/l', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\l' },
+                    { Path: '/mnt/shows/anime/m', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\m' },
+                    { Path: '/mnt/shows/anime/n', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\n' },
+                    { Path: '/mnt/shows/anime/o', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\o' },
+                    { Path: '/mnt/shows/anime/p', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\p' },
+                    { Path: '/mnt/shows/anime/r', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\r' },
+                    { Path: '/mnt/shows/anime/s', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\s' },
+                    { Path: '/mnt/shows/anime/t', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\t' },
+                    { Path: '/mnt/shows/anime/u', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\u' },
+                    { Path: '/mnt/shows/anime/v', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\v' },
+                    { Path: '/mnt/shows/anime/w', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\w' },
+                    { Path: '/mnt/shows/anime/y', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\y' },
+                    { Path: '/mnt/shows/anime/z', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\anime\\z' },
+
+                    { Path: '/mnt/shows/cartoon/a', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\a' },
+                    { Path: '/mnt/shows/cartoon/b', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\b' },
+                    { Path: '/mnt/shows/cartoon/c', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\c' },
+                    { Path: '/mnt/shows/cartoon/d', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\d' },
+                    { Path: '/mnt/shows/cartoon/e', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\e' },
+                    { Path: '/mnt/shows/cartoon/f', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\f' },
+                    { Path: '/mnt/shows/cartoon/g', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\g' },
+                    { Path: '/mnt/shows/cartoon/h', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\h' },
+                    { Path: '/mnt/shows/cartoon/i', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\i' },
+                    { Path: '/mnt/shows/cartoon/j', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\j' },
+                    { Path: '/mnt/shows/cartoon/k', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\k' },
+                    { Path: '/mnt/shows/cartoon/l', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\l' },
+                    { Path: '/mnt/shows/cartoon/m', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\m' },
+                    { Path: '/mnt/shows/cartoon/n', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\n' },
+                    { Path: '/mnt/shows/cartoon/o', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\o' },
+                    { Path: '/mnt/shows/cartoon/p', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\p' },
+                    { Path: '/mnt/shows/cartoon/q', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\q' },
+                    { Path: '/mnt/shows/cartoon/r', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\r' },
+                    { Path: '/mnt/shows/cartoon/s', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\s' },
+                    { Path: '/mnt/shows/cartoon/t', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\t' },
+                    { Path: '/mnt/shows/cartoon/u', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\u' },
+                    { Path: '/mnt/shows/cartoon/v', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\v' },
+                    { Path: '/mnt/shows/cartoon/w', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\w' },
+                    { Path: '/mnt/shows/cartoon/x', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\x' },
+                    { Path: '/mnt/shows/cartoon/y', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\y' },
+                    { Path: '/mnt/shows/cartoon/z', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\cartoon\\z' },
+
+                    { Path: '/mnt/shows/live-action/a', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\a' },
+                    { Path: '/mnt/shows/live-action/b', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\b' },
+                    { Path: '/mnt/shows/live-action/c', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\c' },
+                    { Path: '/mnt/shows/live-action/d', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\d' },
+                    { Path: '/mnt/shows/live-action/e', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\e' },
+                    { Path: '/mnt/shows/live-action/f', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\f' },
+                    { Path: '/mnt/shows/live-action/g', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\g' },
+                    { Path: '/mnt/shows/live-action/h', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\h' },
+                    { Path: '/mnt/shows/live-action/i', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\i' },
+                    { Path: '/mnt/shows/live-action/j', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\j' },
+                    { Path: '/mnt/shows/live-action/k', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\k' },
+                    { Path: '/mnt/shows/live-action/l', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\l' },
+                    { Path: '/mnt/shows/live-action/m', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\m' },
+                    { Path: '/mnt/shows/live-action/n', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\n' },
+                    { Path: '/mnt/shows/live-action/o', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\o' },
+                    { Path: '/mnt/shows/live-action/p', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\p' },
+                    { Path: '/mnt/shows/live-action/q', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\q' },
+                    { Path: '/mnt/shows/live-action/r', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\r' },
+                    { Path: '/mnt/shows/live-action/s', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\s' },
+                    { Path: '/mnt/shows/live-action/t', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\t' },
+                    { Path: '/mnt/shows/live-action/u', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\u' },
+                    { Path: '/mnt/shows/live-action/v', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\v' },
+                    { Path: '/mnt/shows/live-action/w', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\w' },
+                    { Path: '/mnt/shows/live-action/x', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\x' },
+                    { Path: '/mnt/shows/live-action/y', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\y' },
+                    { Path: '/mnt/shows/live-action/z', NetworkPath: '\\\\juggernaut.9914.us\\j-media\\tv\\live-action\\z' },
+                ],
+                SaveLocalMetadata: true,
+                EnableInternetProviders: true,
+                EnableAutomaticSeriesGrouping: false,
+                EnableEmbeddedTitles: false,
+                EnableEmbeddedExtrasTitles: false,
+                EnableEmbeddedEpisodeInfos: false,
+                AutomaticRefreshIntervalDays: 0,
+                PreferredMetadataLanguage: 'en',
+                MetadataCountryCode: 'US',
+                SeasonZeroDisplayName: 'Specials',
+                MetadataSavers: ['Nfo'],
+                DisabledLocalMetadataReaders: [],
+                LocalMetadataReaderOrder: ['Nfo'],
+                DisabledSubtitleFetchers: [],
+                SubtitleFetcherOrder: [],
+                SkipSubtitlesIfEmbeddedSubtitlesPresent: false,
+                SkipSubtitlesIfAudioTrackMatches: false,
+                SubtitleDownloadLanguages: [],
+                RequirePerfectSubtitleMatch: true,
+                SaveSubtitlesWithMedia: true,
+                AutomaticallyAddToCollection: false,
+                AllowEmbeddedSubtitles: 'AllowAll',
+                TypeOptions: [
+                    {
+                        Type: 'Series',
+                        MetadataFetchers: ['TheMovieDb', 'The Open Movie Database'],
+                        MetadataFetcherOrder: ['TheMovieDb', 'The Open Movie Database'],
+                        ImageFetchers: ['TheMovieDb'],
+                        ImageFetcherOrder: ['TheMovieDb'],
+                        ImageOptions: [],
+                    },
+                    {
+                        Type: 'Season',
+                        MetadataFetchers: ['TheMovieDb'],
+                        MetadataFetcherOrder: ['TheMovieDb'],
+                        ImageFetchers: ['TheMovieDb'],
+                        ImageFetcherOrder: ['TheMovieDb'],
+                        ImageOptions: [],
+                    },
+                    {
+                        Type: 'Episode',
+                        MetadataFetchers: ['TheMovieDb', 'The Open Movie Database'],
+                        MetadataFetcherOrder: ['TheMovieDb', 'The Open Movie Database'],
+                        ImageFetchers: ['TheMovieDb', 'The Open Movie Database', 'Embedded Image Extractor', 'Screen Grabber'],
+                        ImageFetcherOrder: ['TheMovieDb', 'The Open Movie Database', 'Embedded Image Extractor', 'Screen Grabber'],
+                        ImageOptions: [],
+                    },
+                ],
+                EnableArchiveMediaFiles: false,
+            },
+        }
+
+        const writeLibraryUrl = `${settings.jellyfinServerURL}/Emby/Library/VirtualFolders/LibraryOptions`
+        const addPathUrl = `${settings.jellyfinServerURL}/Library/VirtualFolders/Paths`
+        let promises = []
+        for(let libraryPath of library.LibraryOptions.PathInfos){
+            //Clean out existing folders before recreating them
+            //const delPathUrl = `${settings.jellyfinServerURL}/Library/VirtualFolders/Paths?name=Shows&refreshLibrary=false&path=${libraryPath.Path}`
+            //promises.push(this.httpClient.delete(delPathUrl))
+            //continue
+            const pathPayload = {
+                Name: 'Shows',
+                PathInfo:{
+                    NetworkPath:libraryPath.NetworkPath,
+                    Path:libraryPath.Path
+                }
+            }
+            promises.push(()=>{return this.httpClient.post(addPathUrl,pathPayload)})
+        }
+         promises.push(()=>{return new Promise((resolve, reject) => {
+            this.httpClient
+                .post(writeLibraryUrl,library)
+                .then((writeResponse) => {
+                    console.log({writeResponse})
+                    topResolve(writeResponse)
+                })
+                .catch((err) => {
+                    console.log({err})
+                    topReject({ message: 'Unable to save library', err })
+                })
+        })})
+        for(let pr of promises){
+            const result = await pr()
+            console.log({result})
+        }
+    })
+    }
+
 }
 
 const instance = new JellyfinClient()

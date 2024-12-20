@@ -9,8 +9,8 @@ const desktopPath = (relativePath) => {
 }
 
 let config = {
-    appVersion: '4.0.7',
-    versionDate: 'October 01, 2023',
+    appVersion: '4.0.8',
+    versionDate: 'December 20, 2024',
     fullScreen: false,
     debugApiCalls: false,
     debugMpvSocket: false,
@@ -99,13 +99,13 @@ const windows11MinVersion = 22000
 if (winVersion < windows11MinVersion) {
     config.hdrTogglePath = desktopPath('bin/hdr/win10/toggle-hdr.vbs')
 }
-let overridePath = '\\\\9914.us\\share\\software\\snowby\\snowby-overrides.js'
+let overridePath = '\\\\juggernaut.9914.us\\software\\snowby\\snowby-overrides.js'
 
 if (process.platform === 'linux') {
     config.enableHdrToggle = false
     config.mpvExePath = '/usr/bin/mpv'
     config.mpvSocketPath = desktopPath('bin/mpv/socket')
-    overridePath = '/media/trove/share/software/snowby/snowby-overrides.js'
+    overridePath = '/mnt/software/snowby/snowby-overrides.js'
 }
 
 if (fs.existsSync(overridePath)) {

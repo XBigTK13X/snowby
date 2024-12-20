@@ -49,6 +49,7 @@ module.exports = class JellyfinItem {
 
         if (this.Path) {
             this.CleanPath = this.Path.replace('smb:', '')
+            this.CleanPath = this.Path.replaceAll("/","\\")
             if (process.platform === 'linux') {
                 this.CleanPath = this.Path.replace('smb://9914.us/', '/media/trove/')
             }
