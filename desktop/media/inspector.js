@@ -198,7 +198,17 @@ const inspect = (jellyfinItem, mediaSourceIndex) => {
         }
     }
 
-    const isAnime = (isAnimated && hasEnglishSubtitle && hasJapaneseAudio) || isSubbedAnime
+    // Old logic
+    let isAnime = (isAnimated && hasEnglishSubtitle && hasJapaneseAudio) || isSubbedAnime
+
+    // New logic
+    isAnime = false
+    for(let mediaSource of jellyfinItem.MediaSources){
+        if(mediaSource.Path.indexOf('\\\\anime\\\\') !== -1){
+            isAnime = true
+        }
+    }
+
 
     // Japanese anime
     const result = {
